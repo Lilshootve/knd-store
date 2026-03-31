@@ -193,6 +193,15 @@ body::before {
 #roster-list .roster-entry:hover::before { opacity:1; }
 #roster-list .roster-entry.selected { border-color:var(--cyan); background:rgba(0,30,65,0.95); }
 #roster-list .roster-entry.in-squad { opacity:0.4; pointer-events:none; }
+#roster-list .roster-entry[draggable="true"] { cursor:grab; }
+#roster-list .roster-entry.dragging-source { opacity:0.45; cursor:grabbing; }
+.squad-slot-column.slot-drag-over .squad-slot-card-wrap {
+  outline:2px solid var(--cyan);
+  outline-offset:4px;
+  background:rgba(0,229,255,0.06);
+  border-radius:4px;
+}
+.squad-slot-column.slot-drag-over { transition:background .15s; }
 #roster-list .re-thumb {
   width:100%; height:84px; min-height:84px; max-height:84px; background:rgba(0,229,255,0.05);
   border:1px solid rgba(0,229,255,0.12); flex:0 0 auto;
@@ -632,6 +641,7 @@ async function init() {
   } catch (e) {}
   initBigViewer();
   renderAllSquadSlots();
+  initSquadSlotDnD();
   // Expose globals for HTML onclick handlers
   window.handleSlotClick = handleSlotClick;
   window.removeFromSlot = removeFromSlot;
@@ -668,7 +678,27 @@ function buildRoster(filter = 'all', search = '') {
     d.id = 'acard-' + av.id;
     d.style.cssText = `--rarity-color:${RARITY_HEX[rar] || RARITY_HEX.common};animation:fadeSlideIn .3s ease both;animation-delay:${i*0.04}s`;
     d.onclick = () => selectCard(av);
-    const thumbHtml = av.image ? `<img src="${av.image}" alt="">` : '◆';
+    if (!inSquad) {
+      d.setAttribute('draggable', 'true');
+      d.addEventListener('dragstart', function (e) {
+        const payload = JSON.stringify({ avatarId: av.id });
+        try {
+          e.dataTransfer.setData('application/json', payload);
+        } catch (err) { /* ignore */ }
+        e.dataTransfer.setData('text/plain', payload);
+        e.dataTransfer.effectAllowed = 'copyMove';
+        d.classList.add('dragging-source');
+      });
+      d.addEventListener('dragend', function () {
+        d.classList.remove('dragging-source');
+        document.querySelectorAll('.squad-slot-column.slot-drag-over').forEach(function (c) {
+          c.classList.remove('slot-drag-over');
+        });
+      });
+    } else {
+      d.setAttribute('draggable', 'false');
+    }
+    const thumbHtml = av.image ? `<img src="${av.image}" alt="" draggable="false">` : '◆';
     d.innerHTML = `
       <div class="re-thumb">${thumbHtml}</div>
       <div class="re-info">
@@ -708,7 +738,7 @@ function selectCard(av) {
     assignToSlot(activeSlot, av);
     activeSlot = null;
   }
-  showToast(`${av.name} SELECTED — CLICK A SLOT OR DRAG`);
+  showToast(`${av.name} SELECTED — CLICK A SLOT OR DRAG TO FORMATION`);
 }
 
 // ═══ SLOT LOGIC ══════════════════════════════════
@@ -789,12 +819,61 @@ function renderAllSquadSlots() {
 }
 
 function assignToSlot(slotIdx, av) {
+  // Clear this avatar from any other slot (move / avoids duplicate IDs)
+  for (let i = 0; i < squad.length; i++) {
+    if (squad[i] && squad[i].id === av.id) {
+      squad[i] = null;
+    }
+  }
+  // Drop on a filled slot replaces occupant (previous unit returns to roster list)
   squad[slotIdx] = av;
   document.querySelectorAll('.squad-slot-column').forEach(s => s.classList.remove('active'));
-  renderSquadSlot(slotIdx);
+  renderAllSquadSlots();
   updateEngageButton();
   buildRoster(currentFilter, document.getElementById('roster-search').value);
   showToast(`${av.name} → ${SLOT_POS[slotIdx]} POSITION`);
+}
+
+function initSquadSlotDnD() {
+  document.querySelectorAll('.squad-slot-column').forEach((col) => {
+    if (col.dataset.kndDndBound === '1') return;
+    col.dataset.kndDndBound = '1';
+    const slotIdx = parseInt(col.getAttribute('data-slot-index'), 10);
+    if (Number.isNaN(slotIdx)) return;
+
+    col.addEventListener('dragenter', function (e) {
+      e.preventDefault();
+      col.classList.add('slot-drag-over');
+    });
+    col.addEventListener('dragover', function (e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+      col.classList.add('slot-drag-over');
+    });
+    col.addEventListener('dragleave', function (e) {
+      const rel = e.relatedTarget;
+      if (!rel || !col.contains(rel)) {
+        col.classList.remove('slot-drag-over');
+      }
+    });
+    col.addEventListener('drop', function (e) {
+      e.preventDefault();
+      col.classList.remove('slot-drag-over');
+      let payload = {};
+      try {
+        const raw = e.dataTransfer.getData('application/json') || e.dataTransfer.getData('text/plain');
+        if (raw) payload = JSON.parse(raw);
+      } catch (err) {
+        return;
+      }
+      const aid = payload.avatarId != null ? payload.avatarId : payload.id;
+      if (aid == null) return;
+      const av = AVATARS.find(a => String(a.id) === String(aid));
+      if (!av) return;
+      assignToSlot(slotIdx, av);
+      showBigPreview(av);
+    });
+  });
 }
 
 window.removeFromSlot = function(e, slotIdx) {
