@@ -33,6 +33,15 @@ require_once __DIR__ . '/../../includes/favicon_links.php';
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/levels.css?v=<?php echo file_exists(__DIR__ . '/../../assets/css/levels.css') ? filemtime(__DIR__ . '/../../assets/css/levels.css') : 0; ?>">
+<?php
+if (!$embed) {
+    $cfxCss = __DIR__ . '/../../assets/css/cursor-fx.css';
+    if (is_file($cfxCss)) { ?>
+<link rel="stylesheet" href="/assets/css/cursor-fx.css?v=<?php echo (int) filemtime($cfxCss); ?>">
+<?php
+    }
+}
+?>
 <?php if ($embed): ?>
 <link rel="stylesheet" href="/assets/css/arena-embed.css?v=<?php echo $arenaEmbedCssV; ?>">
 <?php endif; ?>
@@ -585,6 +594,9 @@ html.mw-portrait-dismissed body:not(.arena-embed) .mw-portrait-gate{display:none
 <?php if ($embed): ?><div class="arena-embed-inner"><?php endif; ?>
 <div id="bg"></div>
 <div id="floor"></div>
+<?php if (!$embed): ?>
+<div id="knd-cursor-fx-root" class="knd-cursor-fx-root" aria-hidden="true"></div>
+<?php endif; ?>
 <div id="sf"></div>
 
 <!-- NAV -->
@@ -829,5 +841,14 @@ $mwAudioV = file_exists(__DIR__ . '/../../assets/js/mind-wars-audio.js') ? filem
   </div>
 </div>
 <?php if ($embed): ?></div><?php endif; ?>
+<?php
+if (!$embed) {
+    $cfxJs = __DIR__ . '/../../assets/js/cursor-fx.js';
+    if (is_file($cfxJs)) { ?>
+<script src="/assets/js/cursor-fx.js?v=<?php echo (int) filemtime($cfxJs); ?>" defer></script>
+<?php
+    }
+}
+?>
 </body>
 </html>

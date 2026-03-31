@@ -28,6 +28,11 @@ $extraHead = $LOBBY_EXTRA_HEAD_HTML ?? '';
 <link rel="stylesheet" href="/assets/css/levels.css?v=<?php echo (int) $levelsCssV; ?>">
 <link rel="stylesheet" href="/games/mind-wars/lobby.css?v=<?php echo (int) $cssV; ?>">
 <link rel="stylesheet" href="/games/mind-wars/mw-avatar-cards.css?v=<?php echo (int) $mwCardCssV; ?>">
+<?php
+$cfxCss = __DIR__ . '/../../assets/css/cursor-fx.css';
+if (is_file($cfxCss)) { ?>
+<link rel="stylesheet" href="/assets/css/cursor-fx.css?v=<?php echo (int) filemtime($cfxCss); ?>">
+<?php } ?>
 <?php echo $extraHead; ?>
 </head>
 <body>
@@ -58,6 +63,8 @@ $extraHead = $LOBBY_EXTRA_HEAD_HTML ?? '';
   <div class="horizon"></div>
   <div class="persp-floor"></div>
 </div>
+
+<div id="knd-cursor-fx-root" class="knd-cursor-fx-root" aria-hidden="true"></div>
 
 <div id="toast-container"></div>
 
@@ -234,6 +241,11 @@ window.MW_LOBBY_INITIAL = <?php echo json_encode($L, JSON_UNESCAPED_UNICODE); ?>
 </script>
 <script src="/games/mind-wars/mw-avatar-card.js?v=<?php echo (int) $mwCardJsV; ?>"></script>
 <script src="/games/mind-wars/lobby.js?v=<?php echo (int) $jsV; ?>"></script>
+<?php
+$cfxJs = __DIR__ . '/../../assets/js/cursor-fx.js';
+if (is_file($cfxJs)) { ?>
+<script src="/assets/js/cursor-fx.js?v=<?php echo (int) filemtime($cfxJs); ?>" defer></script>
+<?php } ?>
 <?php if (!empty($LOBBY_EXTRA_SCRIPTS_AFTER_LOBBY_JS)) {
     echo $LOBBY_EXTRA_SCRIPTS_AFTER_LOBBY_JS;
 } ?>
