@@ -362,16 +362,27 @@
       if (lbl) lbl.textContent = '—';
       return;
     }
-    const ke = Math.max(0, parseInt(sel.knowledge_energy_into_level, 10) || 0);
-    const req = Math.max(1, parseInt(sel.knowledge_energy_required_current, 10) || 1);
-    const toNext = Math.max(0, parseInt(sel.knowledge_energy_to_next_level, 10) || 0);
+    const n = function (v) {
+      const x = Number(v);
+      return Number.isFinite(x) ? Math.floor(x) : NaN;
+    };
+    let ke = n(sel.knowledge_energy_into_level);
+    if (!Number.isFinite(ke) || ke < 0) ke = 0;
+    let req = n(sel.knowledge_energy_required_current);
+    if (!Number.isFinite(req) || req < 1) req = 1;
+    let toNext = n(sel.knowledge_energy_to_next_level);
+    if (!Number.isFinite(toNext) || toNext < 0) {
+      toNext = Math.max(0, req - ke);
+    }
     const filled = Math.min(10, Math.round((ke / req) * 10));
     for (let i = 0; i < 10; i++) {
       const o = document.createElement('div');
       o.className = 'orb' + (i < filled ? '' : ' empty');
       wrap.appendChild(o);
     }
-    if (lbl) lbl.textContent = toNext > 0 ? toNext + ' KE to next level' : 'MAX';
+    if (lbl) {
+      lbl.textContent = toNext > 0 ? String(toNext) + ' KE to next level' : 'MAX';
+    }
   }
 
   function renderMissions(missions) {

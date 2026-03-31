@@ -111,9 +111,18 @@
       if (lbl) lbl.textContent = '—';
       return;
     }
-    var ke = Math.max(0, parseInt(sel.knowledge_energy_into_level, 10) || 0);
-    var req = Math.max(1, parseInt(sel.knowledge_energy_required_current, 10) || 1);
-    var toNext = Math.max(0, parseInt(sel.knowledge_energy_to_next_level, 10) || 0);
+    function n(v) {
+      var x = Number(v);
+      return isFinite(x) ? Math.floor(x) : NaN;
+    }
+    var ke = n(sel.knowledge_energy_into_level);
+    if (!isFinite(ke) || ke < 0) ke = 0;
+    var req = n(sel.knowledge_energy_required_current);
+    if (!isFinite(req) || req < 1) req = 1;
+    var toNext = n(sel.knowledge_energy_to_next_level);
+    if (!isFinite(toNext) || toNext < 0) {
+      toNext = Math.max(0, req - ke);
+    }
     var filled = Math.min(10, Math.round((ke / req) * 10));
     for (var i = 0; i < 10; i++) {
       var o = document.createElement('div');
@@ -122,7 +131,7 @@
         : 'background:rgba(0,232,255,.06);border:1px solid rgba(0,232,255,.15)');
       wrap.appendChild(o);
     }
-    if (lbl) lbl.textContent = toNext > 0 ? toNext + ' KE to next level' : 'MAX';
+    if (lbl) lbl.textContent = toNext > 0 ? String(toNext) + ' KE to next level' : 'MAX';
   }
 
   function renderMissions(missions) {
