@@ -398,6 +398,62 @@ body.modal-open .modal-backdrop.show {
   color: var(--lr-gold) !important;
 }
 
+/* Modal content is moved to <body> by JS; keep dark theme there too. */
+.lastroll-modal .lastroll-modal-content,
+.modal-content.lastroll-modal-content {
+  background: var(--lr-glass) !important;
+  border: 1px solid rgba(0,232,255,.18) !important;
+  backdrop-filter: blur(24px);
+  color: var(--lr-t1) !important;
+}
+
+.lastroll-modal .lastroll-modal-header {
+  border-bottom: 1px solid rgba(0,232,255,.1) !important;
+  background: rgba(0,232,255,.04);
+}
+
+.lastroll-modal .modal-title {
+  font-family: var(--lr-FD) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 3px !important;
+  text-transform: uppercase;
+  color: var(--lr-c) !important;
+}
+
+.lastroll-modal .modal-body,
+.lastroll-modal .form-label,
+.lastroll-modal .lastroll-modal-payout-hint {
+  color: var(--lr-t1) !important;
+}
+
+.lastroll-modal .modal-body .form-label {
+  font-family: var(--lr-FM) !important;
+  font-size: 10px !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase;
+  color: var(--lr-t3) !important;
+}
+
+.lastroll-modal .modal-body .form-select,
+.lastroll-modal .modal-body .form-control {
+  background: rgba(0,0,0,.35) !important;
+  border: 1px solid rgba(0,232,255,.15) !important;
+  color: var(--lr-t1) !important;
+  font-family: var(--lr-FM) !important;
+}
+
+.lastroll-modal .modal-body .form-select:focus,
+.lastroll-modal .modal-body .form-control:focus {
+  border-color: var(--lr-c) !important;
+  box-shadow: 0 0 0 1px rgba(0,232,255,.2), 0 0 16px rgba(0,232,255,.12) !important;
+}
+
+.lastroll-modal .lastroll-modal-payout-hint {
+  background: rgba(0,232,255,.04) !important;
+  border: 1px solid rgba(0,232,255,.12) !important;
+}
+
 /* ── BADGES ── */
 .lastroll-page .badge.bg-secondary {
   font-family: var(--lr-FM) !important;
