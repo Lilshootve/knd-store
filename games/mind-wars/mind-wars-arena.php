@@ -548,6 +548,27 @@ html.mw-portrait-dismissed body:not(.arena-embed) .mw-portrait-gate{display:none
   .azone{height:auto;min-height:200px;max-height:42vh}
   .stage{flex-wrap:wrap;justify-content:center;gap:8px}
 }
+/* Compact HUD: same breakpoint family as Mind Wars lobby (wide phone landscape) */
+@media (max-width:1100px),
+       screen and (max-height:560px) and (max-width:1360px){
+  html{font-size:16px}
+  .nav{flex-wrap:wrap;height:auto;min-height:52px;padding:8px max(14px, env(safe-area-inset-right,0)) 8px max(14px, env(safe-area-inset-left,0));gap:8px}
+  .nav-logo{font-size:14px}
+  .nav-center{font-size:clamp(9px, 2.4vw, 12px);letter-spacing:2px;text-align:center;flex:1 1 200px}
+  .nav-right{font-size:9px;flex-wrap:wrap;justify-content:flex-end;gap:8px}
+  .arena{padding:12px max(12px, env(safe-area-inset-right,0)) max(12px, env(safe-area-inset-bottom,0)) max(12px, env(safe-area-inset-left,0));gap:12px;min-height:calc(100dvh - 56px)}
+  .bhdr{flex-wrap:wrap;gap:10px}
+  .stage{flex-wrap:wrap;justify-content:center;gap:10px;align-items:flex-start}
+  .bcard{width:min(92vw, 300px)}
+  .vs-col{padding:0 8px;margin-top:0;align-self:center}
+  .vs-glyph{font-size:clamp(28px, 8vw, 48px)}
+  .cholo{height:min(200px, 36vh)}
+  .azone{height:auto;min-height:220px;max-height:none}
+  #arena-lobby{min-height:calc(100dvh - 56px);padding:14px max(12px, env(safe-area-inset-right,0)) max(14px, env(safe-area-inset-bottom,0)) max(12px, env(safe-area-inset-left,0))}
+  .lobby-box{width:100%;max-width:100%;box-sizing:border-box}
+  .lobby-mode-row{flex-wrap:wrap;justify-content:center}
+  .lobby-submode-row{grid-template-columns:1fr;max-width:100%;width:100%}
+}
 </style>
 </head>
 <body<?php echo $embed ? ' class="arena-embed mind-wars-arena-context"' : ''; ?>>

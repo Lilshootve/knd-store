@@ -183,7 +183,7 @@ if (stripos($html, '</head>') !== false) {
 // Nota: usamos regex para evitar problemas con saltos de línea \r\n vs \n.
 if (strpos($html, 'id="surrender-btn"') === false) {
     // Important: use a real newline so we don't end up with literal "\n" text in the DOM.
-    $replacement = '$1    <button type="button" id="surrender-btn" class="surrender-btn-arena" style="margin-left: 1350px;" onclick="showSurrenderConfirm()">SURRENDER</button>' . "\n" . '$2';
+    $replacement = '$1    <button type="button" id="surrender-btn" class="surrender-btn-arena" onclick="showSurrenderConfirm()">SURRENDER</button>' . "\n" . '$2';
 
     // 1) Match exact static text present in template (YOUR TURN / ROUND 1)
     $pattern1 = '/(<div id="battle-hud-strip">\s*<div class="bhs-center">\s*<div id="tl"[^>]*>\s*YOUR TURN\s*<\/div>\s*<div id="rl">\s*ROUND 1\s*<\/div>\s*<\/div>\s*)(<\/div>\s*<div id="arena">)/';
@@ -207,8 +207,8 @@ $surrenderInject = <<<HTML
 
 <style id="mw-squad-surrender-style">
 /* SURRENDER BUTTON */
-#surrender-btn,.surrender-btn-arena{background:transparent;border:1px solid rgba(255,34,68,.3);color:rgba(255,100,120,.7);font-family:var(--FD);font-size:9.2px;font-weight:700;letter-spacing:2px;padding:5px 14px;cursor:pointer;transition:all .22s}
-#surrender-btn{width:154px;box-sizing:border-box;overflow:hidden;margin-right:10px;margin-left:1350px}
+#surrender-btn,.surrender-btn-arena{background:transparent;border:1px solid rgba(255,34,68,.3);color:rgba(255,100,120,.7);font-family:var(--FD);font-size:9.2px;font-weight:700;letter-spacing:2px;padding:5px 12px;cursor:pointer;transition:all .22s;box-sizing:border-box;margin:0}
+#surrender-btn{min-width:auto;max-width:min(160px,40vw)}
 #surrender-btn:hover,.surrender-btn-arena:hover{border-color:var(--red);color:var(--red);box-shadow:0 0 14px rgba(255,34,68,.25)}
 
 /* SURRENDER CONFIRM MODAL */

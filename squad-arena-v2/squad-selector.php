@@ -407,8 +407,9 @@ body::before {
 html.mw-portrait-dismissed .mw-portrait-gate{ display:none !important; }
 @media (orientation:portrait) and (max-width:926px){ .mw-portrait-gate{ display:flex; } }
 
-/* Mobile / narrow: stack columns, scroll main */
-@media (max-width:900px){
+/* Mobile / narrow: stack columns, scroll main (≤1100px = phone landscape) */
+@media (max-width:1100px),
+       screen and (max-height:560px) and (max-width:1360px){
   #app{ min-height:100vh; min-height:100dvh; height:auto; max-height:none; }
   #header{ flex-wrap:wrap; padding:10px 14px; gap:8px; }
   #header-right{ display:none; }

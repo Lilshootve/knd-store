@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>MIND WARS — Squad Arena 3v3</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
@@ -34,15 +34,23 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
 ══════════════════════════════════════════════════════════════════*/
 header.topbar{flex-shrink:0}
 #battle-hud-strip{
-  display:flex;align-items:center;justify-content:center;
-  padding:6px 16px;
+  display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:center;
+  gap:8px 12px;
+  padding:6px max(12px, env(safe-area-inset-right,0)) 6px max(12px, env(safe-area-inset-left,0));
   background:linear-gradient(180deg,rgba(1,4,8,.92),rgba(1,4,8,.75));
   border-bottom:1px solid rgba(0,240,255,.08);
   min-height:36px;z-index:19;flex-shrink:0;position:relative;
 }
 #battle-hud-strip::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,transparent 5%,var(--c) 30%,var(--m) 50%,var(--c) 70%,transparent 95%);opacity:.22}
-.bhs-center{display:flex;flex-direction:column;align-items:center;gap:2px}
+.bhs-center{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  flex:1 1 auto;min-width:0;justify-content:center;
+}
+#battle-hud-strip .surrender-btn-arena,
+#battle-hud-strip #surrender-btn{
+  margin:0!important;flex-shrink:0;align-self:center;
+}
 #tl{font-family:var(--FD);font-size:11px;font-weight:900;letter-spacing:5px;text-shadow:0 0 18px rgba(0,240,255,.4)}
 #rl{font-family:var(--FM);font-size:8px;letter-spacing:2px;color:var(--t3);margin-top:1px}
 
@@ -463,6 +471,22 @@ header.topbar{flex-shrink:0}
   #apanel .pu-pack>.skc:nth-child(6){grid-column:2;grid-row:3}
   #apanel .pu-pack>.skc:nth-child(7){grid-column:3;grid-row:3}
   .skd{display:none}.skn{font-size:10px}
+}
+/* Phones/tablets landscape + narrow desktops: more canvas, readable HUD */
+@media (max-width:1100px),
+       screen and (max-height:560px) and (max-width:1360px){
+  header.topbar .tb-identity{max-width:min(180px,40vw)}
+  header.topbar .tb-currency{display:flex!important;gap:4px}
+  header.topbar .currency-chip{padding:2px 6px;font-size:10px}
+  #tl{font-size:9px;letter-spacing:3px}
+  #rl{font-size:7px}
+  .mw-hp-bar-group{opacity:.72}
+  #mw-player-bars{bottom:max(8px, env(safe-area-inset-bottom,0));left:6px}
+  #mw-enemy-bars{bottom:max(8px, env(safe-area-inset-bottom,0));right:6px}
+  .mw-hp-track{width:min(92px,22vw)}
+  .mw-unit-name-tag{font-size:6px}
+  #mw-ability-caption{bottom:max(36px, calc(env(safe-area-inset-bottom, 0px) + 20px))}
+  #mw-ability-name{font-size:11px}
 }
 </style>
 </head>
