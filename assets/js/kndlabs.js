@@ -138,7 +138,10 @@
     updateBalance: function(kp) {
       var sel = this.config.balanceEl;
       var el = typeof sel === 'string' ? document.querySelector(sel) : sel;
-      if (el) el.innerHTML = '<i class="fas fa-coins me-1"></i>' + parseInt(kp, 10).toLocaleString() + ' KP';
+      var val = parseInt(kp, 10).toLocaleString();
+      if (el) el.innerHTML = '<i class="fas fa-coins me-1"></i>' + val + ' KP';
+      var studioBal = document.getElementById('knd-labs-studio-balance');
+      if (studioBal) studioBal.textContent = val;
     },
 
     showStatus: function(jobId) {
