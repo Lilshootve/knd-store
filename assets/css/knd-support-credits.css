@@ -1,0 +1,667 @@
+/**
+ * KND Support Credits / Points — from support-credits/knd-points-v2.html, scoped under .knd-support-credits-page.
+ */
+.knd-support-credits-page {
+  --void: #010508;
+  --deep: #020a10;
+  --surface: #04131c;
+  --glass: rgba(6, 24, 36, 0.72);
+  --c: #00e8ff;
+  --cb: rgba(0, 232, 255, 0.22);
+  --gold: #ffcc00;
+  --green: #00ff99;
+  --red: #ff2255;
+  --t1: rgba(220, 248, 255, 0.97);
+  --t2: rgba(155, 215, 235, 0.7);
+  --t3: rgba(90, 165, 190, 0.42);
+  --t4: rgba(60, 120, 145, 0.22);
+  --FD: "Orbitron", monospace;
+  --FB: "Rajdhani", sans-serif;
+  --FM: "Share Tech Mono", monospace;
+  position: relative;
+  z-index: 1;
+  color: var(--t1);
+  font-family: var(--FB);
+  overflow-x: hidden;
+  font-size: 20px;
+  line-height: 1.65;
+  background: var(--void);
+  min-height: 50vh;
+}
+
+.knd-support-credits-page::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.025) 2px,
+    rgba(0, 0, 0, 0.025) 3px
+  );
+}
+
+.knd-support-credits-page #ksc-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.knd-support-credits-page #ksc-bg-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.knd-support-credits-page #ksc-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(ellipse 55% 35% at 50% 12%, rgba(0, 50, 120, 0.1), transparent 50%);
+}
+
+.knd-support-credits-page .ksc-page-inner {
+  position: relative;
+  z-index: 3;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.knd-support-credits-page .ksc-hero {
+  padding: 100px 0 28px;
+  text-align: center;
+}
+
+.knd-support-credits-page .ksc-hero-badge {
+  display: inline-flex;
+  padding: 4px 16px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(0, 232, 255, 0.15);
+  background: rgba(0, 232, 255, 0.03);
+  font-family: var(--FM);
+  font-size: 9px;
+  letter-spacing: 4px;
+  color: var(--c);
+  animation: ksc-fadeUp 0.7s ease both;
+}
+
+@keyframes ksc-fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.knd-support-credits-page .ksc-hero-title {
+  font-family: var(--FD);
+  font-size: clamp(30px, 6vw, 48px);
+  font-weight: 900;
+  letter-spacing: clamp(4px, 1vw, 8px);
+  margin-bottom: 10px;
+  color: var(--t1);
+  animation: ksc-fadeUp 0.7s ease 0.1s both;
+}
+
+.knd-support-credits-page .ksc-hero-sub {
+  font-size: clamp(17px, 2.2vw, 21px);
+  color: var(--t2);
+  max-width: 520px;
+  margin: 0 auto;
+  animation: ksc-fadeUp 0.7s ease 0.2s both;
+}
+
+.knd-support-credits-page .ksc-balance-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 32px 0 40px;
+}
+
+.knd-support-credits-page .ksc-bal-card {
+  background: var(--glass);
+  border: 1px solid rgba(0, 232, 255, 0.06);
+  backdrop-filter: blur(14px);
+  padding: 18px 14px;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.knd-support-credits-page .ksc-bal-card:hover {
+  border-color: rgba(0, 232, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.knd-support-credits-page .ksc-bal-label {
+  font-family: var(--FM);
+  font-size: 8px;
+  letter-spacing: 2.5px;
+  color: var(--t3);
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.knd-support-credits-page .ksc-bal-value {
+  font-family: var(--FD);
+  font-size: clamp(20px, 3.5vw, 28px);
+  font-weight: 900;
+  color: var(--c);
+  letter-spacing: 2px;
+}
+
+.knd-support-credits-page .ksc-purchase-card {
+  background: var(--glass);
+  border: 1px solid rgba(0, 232, 255, 0.08);
+  backdrop-filter: blur(20px);
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 28px;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+}
+
+.knd-support-credits-page .ksc-purchase-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--c), transparent);
+}
+
+.knd-support-credits-page .ksc-pc-title {
+  font-family: var(--FD);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: var(--c);
+  margin-bottom: 24px;
+}
+
+.knd-support-credits-page .ksc-field-label {
+  font-family: var(--FM);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--t3);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.knd-support-credits-page .ksc-amount-grid {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.knd-support-credits-page .ksc-amount-chip {
+  font-family: var(--FD);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 14px 0;
+  flex: 1;
+  min-width: 70px;
+  text-align: center;
+  border: 1px solid rgba(0, 232, 255, 0.1);
+  color: var(--t3);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.knd-support-credits-page .ksc-amount-chip:hover {
+  border-color: rgba(0, 232, 255, 0.2);
+  color: var(--t1);
+}
+
+.knd-support-credits-page .ksc-amount-chip.active {
+  border-color: var(--c);
+  color: var(--c);
+  background: rgba(0, 232, 255, 0.05);
+}
+
+.knd-support-credits-page .ksc-amount-chip .ksc-chip-kp {
+  display: block;
+  font-family: var(--FM);
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: var(--t4);
+  margin-top: 3px;
+}
+
+.knd-support-credits-page .ksc-amount-chip.active .ksc-chip-kp {
+  color: var(--t3);
+}
+
+.knd-support-credits-page .ksc-custom-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+
+.knd-support-credits-page .ksc-custom-prefix {
+  font-family: var(--FD);
+  font-size: 16px;
+  color: var(--t2);
+}
+
+.knd-support-credits-page .ksc-custom-input {
+  width: 100px;
+  padding: 9px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 232, 255, 0.08);
+  color: var(--t1);
+  font-family: var(--FD);
+  font-size: 15px;
+  letter-spacing: 2px;
+  outline: none;
+  transition: all 0.3s;
+  border-radius: 2px;
+}
+
+.knd-support-credits-page .ksc-custom-input:focus {
+  border-color: var(--c);
+  box-shadow: 0 0 8px rgba(0, 232, 255, 0.08);
+}
+
+.knd-support-credits-page .ksc-custom-eq {
+  font-family: var(--FM);
+  font-size: 12px;
+  color: var(--t3);
+}
+
+.knd-support-credits-page .ksc-custom-eq strong {
+  color: var(--gold);
+  font-family: var(--FD);
+  font-size: 15px;
+}
+
+.knd-support-credits-page .ksc-method-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.knd-support-credits-page .ksc-method-card {
+  padding: 14px 6px;
+  text-align: center;
+  border: 1px solid rgba(0, 232, 255, 0.06);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+  color: inherit;
+  font: inherit;
+}
+
+.knd-support-credits-page .ksc-method-card:hover {
+  border-color: rgba(0, 232, 255, 0.12);
+}
+
+.knd-support-credits-page .ksc-method-card.active {
+  border-color: var(--c);
+  background: rgba(0, 232, 255, 0.04);
+}
+
+.knd-support-credits-page .ksc-method-card.active::after {
+  content: "✓";
+  position: absolute;
+  top: 3px;
+  right: 5px;
+  font-size: 9px;
+  color: var(--c);
+}
+
+.knd-support-credits-page .ksc-mc-icon {
+  font-size: 20px;
+  margin-bottom: 5px;
+  line-height: 1;
+}
+
+.knd-support-credits-page .ksc-mc-name {
+  font-family: var(--FM);
+  font-size: 7px;
+  letter-spacing: 1.5px;
+  color: var(--t3);
+}
+
+.knd-support-credits-page .ksc-method-card.active .ksc-mc-name {
+  color: var(--c);
+}
+
+.knd-support-credits-page .ksc-notes-input {
+  width: 100%;
+  padding: 9px 14px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 232, 255, 0.06);
+  color: var(--t2);
+  font-family: var(--FM);
+  font-size: 12px;
+  outline: none;
+  transition: all 0.3s;
+  border-radius: 2px;
+  margin-bottom: 20px;
+}
+
+.knd-support-credits-page .ksc-notes-input:focus {
+  border-color: var(--c);
+  box-shadow: 0 0 6px rgba(0, 232, 255, 0.06);
+}
+
+.knd-support-credits-page .ksc-notes-input::placeholder {
+  color: var(--t4);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+}
+
+.knd-support-credits-page .ksc-submit-btn {
+  width: 100%;
+  padding: 15px;
+  font-family: var(--FD);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  border: 2px solid var(--c);
+  color: var(--c);
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+  clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px);
+}
+
+.knd-support-credits-page .ksc-submit-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(0, 232, 255, 0.06), transparent);
+  animation: ksc-sweep 3s ease infinite;
+}
+
+@keyframes ksc-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.knd-support-credits-page .ksc-submit-btn:hover:not(:disabled) {
+  box-shadow: 0 0 24px rgba(0, 232, 255, 0.15);
+  background: rgba(0, 232, 255, 0.05);
+  letter-spacing: 7px;
+}
+
+.knd-support-credits-page .ksc-submit-btn:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.knd-support-credits-page .ksc-submit-btn.success {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.knd-support-credits-page .ksc-submit-btn.success::before {
+  display: none;
+}
+
+.knd-support-credits-page .ksc-result {
+  margin-top: 20px;
+}
+
+.knd-support-credits-page .ksc-alert {
+  padding: 12px 14px;
+  font-family: var(--FM);
+  font-size: 13px;
+  line-height: 1.5;
+  border-radius: 2px;
+  border: 1px solid;
+}
+
+.knd-support-credits-page .ksc-alert--success {
+  border-color: rgba(0, 255, 153, 0.35);
+  background: rgba(0, 255, 153, 0.06);
+  color: var(--green);
+}
+
+.knd-support-credits-page .ksc-alert--error {
+  border-color: rgba(255, 34, 85, 0.35);
+  background: rgba(255, 34, 85, 0.06);
+  color: var(--t1);
+}
+
+.knd-support-credits-page .ksc-expiring-alert {
+  margin-bottom: 24px;
+  padding: 14px 16px;
+  font-family: var(--FM);
+  font-size: 13px;
+  border: 1px solid rgba(253, 126, 20, 0.35);
+  background: rgba(253, 126, 20, 0.08);
+  color: #fd7e14;
+  border-radius: 2px;
+}
+
+.knd-support-credits-page .ksc-expiring-alert .badge {
+  margin-left: 4px;
+}
+
+.knd-support-credits-page .ksc-info-card {
+  background: var(--glass);
+  border: 1px solid rgba(0, 232, 255, 0.06);
+  backdrop-filter: blur(14px);
+  padding: 28px;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.knd-support-credits-page .ksc-info-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 232, 255, 0.12), transparent);
+}
+
+.knd-support-credits-page .ksc-info-title {
+  font-family: var(--FD);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--c);
+  margin-bottom: 16px;
+}
+
+.knd-support-credits-page .ksc-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.knd-support-credits-page .ksc-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.knd-support-credits-page .ksc-step-num {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--FD);
+  font-size: 11px;
+  font-weight: 900;
+  color: var(--c);
+  border: 1px solid rgba(0, 232, 255, 0.15);
+  background: rgba(0, 232, 255, 0.03);
+}
+
+.knd-support-credits-page .ksc-step-text {
+  font-size: 17px;
+  color: var(--t2);
+  padding-top: 3px;
+}
+
+.knd-support-credits-page .ksc-legal {
+  padding-top: 18px;
+  border-top: 1px solid rgba(0, 232, 255, 0.05);
+}
+
+.knd-support-credits-page .ksc-legal-title {
+  font-family: var(--FM);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--t3);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.knd-support-credits-page .ksc-legal-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.knd-support-credits-page .ksc-legal-list li {
+  font-family: var(--FM);
+  font-size: 12px;
+  color: var(--t3);
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  line-height: 1.6;
+}
+
+.knd-support-credits-page .ksc-legal-list li::before {
+  content: "·";
+  font-size: 14px;
+  color: var(--t4);
+  flex-shrink: 0;
+}
+
+.knd-support-credits-page .ksc-history-card {
+  background: var(--glass);
+  border: 1px solid rgba(0, 232, 255, 0.06);
+  backdrop-filter: blur(14px);
+  padding: 28px;
+  margin-bottom: 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.knd-support-credits-page .ksc-hist-title {
+  font-family: var(--FD);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--c);
+  margin-bottom: 14px;
+}
+
+.knd-support-credits-page .ksc-hist-table-wrap {
+  overflow-x: auto;
+}
+
+.knd-support-credits-page .ksc-hist-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.knd-support-credits-page .ksc-hist-table thead th {
+  font-family: var(--FM);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--t4);
+  text-transform: uppercase;
+  padding: 8px;
+  border-bottom: 1px solid rgba(0, 232, 255, 0.05);
+  text-align: left;
+}
+
+.knd-support-credits-page .ksc-hist-table tbody td {
+  font-family: var(--FM);
+  font-size: 13px;
+  color: var(--t2);
+  padding: 10px 8px;
+  border-bottom: 1px solid rgba(0, 232, 255, 0.03);
+}
+
+.knd-support-credits-page .ksc-hist-table tbody tr:hover {
+  background: rgba(0, 232, 255, 0.015);
+}
+
+.knd-support-credits-page .ksc-hist-kp {
+  color: var(--gold);
+  font-family: var(--FD);
+}
+
+.knd-support-credits-page .ksc-hist-status {
+  font-family: var(--FM);
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  padding: 2px 8px;
+  display: inline-block;
+}
+
+.knd-support-credits-page .ksc-hist-status--pending {
+  color: var(--t3);
+  border: 1px solid rgba(0, 232, 255, 0.1);
+}
+
+.knd-support-credits-page .ksc-hist-status--confirmed {
+  color: var(--green);
+  border: 1px solid rgba(0, 255, 153, 0.15);
+}
+
+.knd-support-credits-page .ksc-hist-status--rejected,
+.knd-support-credits-page .ksc-hist-status--disputed {
+  color: var(--red);
+  border: 1px solid rgba(255, 34, 85, 0.2);
+}
+
+.knd-support-credits-page .ksc-hist-status--refunded {
+  color: var(--t3);
+  border: 1px solid rgba(90, 165, 190, 0.2);
+}
+
+@media (max-width: 768px) {
+  .knd-support-credits-page .ksc-balance-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .knd-support-credits-page .ksc-method-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .knd-support-credits-page .ksc-amount-chip {
+    min-width: calc(50% - 5px);
+    flex: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .knd-support-credits-page .ksc-method-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

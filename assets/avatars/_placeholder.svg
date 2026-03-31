@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="var(--av-primary, #259cae)">
+  <rect width="100" height="100" fill="transparent"/>
+  <rect x="35" y="25" width="30" height="50" rx="4" fill="currentColor"/>
+  <circle cx="50" cy="35" r="12" fill="currentColor"/>
+</svg>

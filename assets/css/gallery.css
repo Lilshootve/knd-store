@@ -1,0 +1,145 @@
+/**
+ * KND Gallery - Full-width compact grid and lightbox.
+ * Objetivo: galería casi full-width, espacio mínimo entre imágenes, look moderno.
+ */
+
+/* Contenedor: ancho fluido, poco padding lateral */
+.knd-gallery-container {
+    max-width: 100%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+@media (min-width: 576px) {
+    .knd-gallery-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+/* Título centrado, estilo KND */
+.knd-gallery-title {
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    font-weight: 700;
+    color: var(--knd-text, #f3f7ff);
+    letter-spacing: 0.02em;
+    text-shadow: 0 0 24px rgba(53, 194, 255, 0.15);
+}
+
+/* Grid: gutters mínimos para aspecto compacto y continuo */
+.knd-gallery-grid {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.knd-gallery-col {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
+@media (min-width: 576px) {
+    .knd-gallery-col {
+        padding-left: 0.35rem;
+        padding-right: 0.35rem;
+        padding-top: 0.35rem;
+        padding-bottom: 0.35rem;
+    }
+}
+
+/* Cada ítem: bordes redondeados, overflow para la imagen */
+.knd-gallery-item {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: rgba(11, 18, 32, 0.6);
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.knd-gallery-item:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(53, 194, 255, 0.08);
+}
+
+/* Imagen llena el espacio con object-fit: cover para consistencia visual */
+.knd-gallery-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.2s ease;
+}
+
+.knd-gallery-item:hover .knd-gallery-img {
+    opacity: 0.95;
+}
+
+/* ---------- Lightbox ---------- */
+.knd-gallery-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1060;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.knd-gallery-lightbox[aria-hidden="false"] {
+    opacity: 1;
+    visibility: visible;
+}
+
+.knd-gallery-lightbox-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 10, 20, 0.92);
+    cursor: pointer;
+}
+
+.knd-gallery-lightbox-content {
+    position: relative;
+    z-index: 2;
+    max-width: 95vw;
+    max-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.knd-gallery-lightbox-img {
+    max-width: 100%;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+}
+
+.knd-gallery-lightbox-close {
+    position: absolute;
+    top: -2.5rem;
+    right: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.knd-gallery-lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}

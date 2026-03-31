@@ -1,0 +1,105 @@
+/**
+ * KND Store — Sistema visual de niveles 1-10
+ * Escala gaming/tech premium, coherente con Orbitron e identidad futurista.
+ * Niveles 1-4: discretos | 5-8: llamativos | 9-10: premium/legendario
+ */
+:root {
+  /* ── Escala exacta de colores ── */
+  --level-1: #3A3A3A;
+  --level-2: #6B4F3A;
+  --level-3: #8A8A8A;
+  --level-4: #C0C0C0;
+  --level-5: #3B82F6;
+  --level-6: #00BFFF;
+  --level-7: #8B5CF6;
+  --level-8: #A855F7;
+  --level-9: #F97316;
+  --level-10: #FFD700;
+
+  /* Texto recomendado (contraste en fondos oscuros) */
+  --level-1-text: #e0e0e0;
+  --level-2-text: #e8d8c8;
+  --level-3-text: #e8e8e8;
+  --level-4-text: #1a1a1a;
+  --level-5-text: #ffffff;
+  --level-6-text: #ffffff;
+  --level-7-text: #ffffff;
+  --level-8-text: #ffffff;
+  --level-9-text: #1a0a00;
+  --level-10-text: #1a1400;
+
+  /* Bordes */
+  --level-1-border: rgba(58, 58, 58, 0.6);
+  --level-2-border: rgba(107, 79, 58, 0.6);
+  --level-3-border: rgba(138, 138, 138, 0.6);
+  --level-4-border: rgba(192, 192, 192, 0.6);
+  --level-5-border: rgba(59, 130, 246, 0.7);
+  --level-6-border: rgba(0, 191, 255, 0.7);
+  --level-7-border: rgba(139, 92, 246, 0.7);
+  --level-8-border: rgba(168, 85, 247, 0.7);
+  --level-9-border: rgba(249, 115, 22, 0.8);
+  --level-10-border: rgba(255, 215, 0, 0.85);
+
+  /* Glow (ninguno 1-4, suave 5-8, fuerte 9-10) */
+  --level-1-glow: transparent;
+  --level-2-glow: transparent;
+  --level-3-glow: transparent;
+  --level-4-glow: transparent;
+  --level-5-glow: rgba(59, 130, 246, 0.35);
+  --level-6-glow: rgba(0, 191, 255, 0.4);
+  --level-7-glow: rgba(139, 92, 246, 0.45);
+  --level-8-glow: rgba(168, 85, 247, 0.5);
+  --level-9-glow: rgba(249, 115, 22, 0.55);
+  --level-10-glow: rgba(255, 215, 0, 0.6);
+}
+
+/* ── Clase base para badges de nivel ── */
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+/* ── Clases por nivel (color de fondo/borde para badge) ── */
+.level-1 { background: rgba(58, 58, 58, 0.35); border: 1px solid var(--level-1-border); color: var(--level-1-text); }
+.level-2 { background: rgba(107, 79, 58, 0.35); border: 1px solid var(--level-2-border); color: var(--level-2-text); }
+.level-3 { background: rgba(138, 138, 138, 0.3); border: 1px solid var(--level-3-border); color: var(--level-3-text); }
+.level-4 { background: rgba(192, 192, 192, 0.25); border: 1px solid var(--level-4-border); color: var(--level-4-text); }
+.level-5 { background: rgba(59, 130, 246, 0.3); border: 1px solid var(--level-5-border); color: var(--level-5-text); box-shadow: 0 0 8px var(--level-5-glow); }
+.level-6 { background: rgba(0, 191, 255, 0.3); border: 1px solid var(--level-6-border); color: var(--level-6-text); box-shadow: 0 0 10px var(--level-6-glow); }
+.level-7 { background: rgba(139, 92, 246, 0.3); border: 1px solid var(--level-7-border); color: var(--level-7-text); box-shadow: 0 0 12px var(--level-7-glow); }
+.level-8 { background: rgba(168, 85, 247, 0.35); border: 1px solid var(--level-8-border); color: var(--level-8-text); box-shadow: 0 0 14px var(--level-8-glow); }
+.level-9 { background: rgba(249, 115, 22, 0.4); border: 1px solid var(--level-9-border); color: var(--level-9-text); box-shadow: 0 0 16px var(--level-9-glow); }
+.level-10 { background: rgba(255, 215, 0, 0.35); border: 1px solid var(--level-10-border); color: var(--level-10-text); box-shadow: 0 0 18px var(--level-10-glow); }
+
+/* ── Solo color de texto ── */
+.text-level-1 { color: var(--level-1) !important; }
+.text-level-2 { color: var(--level-2) !important; }
+.text-level-3 { color: var(--level-3) !important; }
+.text-level-4 { color: var(--level-4) !important; }
+.text-level-5 { color: var(--level-5) !important; }
+.text-level-6 { color: var(--level-6) !important; }
+.text-level-7 { color: var(--level-7) !important; }
+.text-level-8 { color: var(--level-8) !important; }
+.text-level-9 { color: var(--level-9) !important; }
+.text-level-10 { color: var(--level-10) !important; }
+
+/* ── Solo borde ── */
+.border-level-1 { border-color: var(--level-1) !important; }
+.border-level-2 { border-color: var(--level-2) !important; }
+.border-level-3 { border-color: var(--level-3) !important; }
+.border-level-4 { border-color: var(--level-4) !important; }
+.border-level-5 { border-color: var(--level-5) !important; }
+.border-level-6 { border-color: var(--level-6) !important; }
+.border-level-7 { border-color: var(--level-7) !important; }
+.border-level-8 { border-color: var(--level-8) !important; }
+.border-level-9 { border-color: var(--level-9) !important; }
+.border-level-10 { border-color: var(--level-10) !important; }

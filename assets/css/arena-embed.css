@@ -1,0 +1,115 @@
+/**
+ * Arena Embed - Styles for game content when loaded in iframe (embed mode)
+ * Reduces padding since there is no site nav/header
+ */
+
+body.arena-embed.auth-page .auth-split-layout {
+  padding-top: 1rem !important;
+}
+
+body.arena-embed .hero-section,
+body.arena-embed .mw-section,
+body.arena-embed .knowledge-duel-section {
+  padding-top: 1rem !important;
+  padding-bottom: 1.5rem !important;
+  min-height: auto !important;
+}
+
+.arena-embed-inner {
+  min-height: 100%;
+}
+
+/* LastRoll embed — full viewport; single scroll on the page (no inner column scroll) */
+body.arena-embed.lastroll-context {
+  background: #050608 !important;
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+body.arena-embed.lastroll-context .arena-embed-inner {
+  min-height: 100vh;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  padding: 0.75rem 1rem 1.5rem;
+  max-width: 100%;
+  overflow: visible;
+}
+
+/* Undo Mind Wars shell scroll trap — let window/body scroll the whole lobby */
+body.arena-embed.lastroll-context .lastroll-center-wrap {
+  max-height: none !important;
+  overflow-y: visible !important;
+  overflow-x: hidden;
+  padding-right: 0;
+}
+
+body.arena-embed.lastroll-context .lastroll-hero,
+body.arena-embed.lastroll-context .lastroll-game-area {
+  padding-top: 0.5rem !important;
+  padding-bottom: 1rem !important;
+}
+
+body.arena-embed.lastroll-context .container,
+body.arena-embed.lastroll-context .container-fluid {
+  max-width: 100%;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+/* Insight embed — compact, premium layout */
+body.arena-embed.insight-context {
+  background: #050608 !important;
+  min-height: 100%;
+}
+
+body.arena-embed.insight-context .arena-embed-inner {
+  padding: 0.75rem 1rem 1.5rem;
+  max-width: 100%;
+}
+
+body.arena-embed.insight-context .hero-section {
+  padding-top: 0.5rem !important;
+  padding-bottom: 1rem !important;
+}
+
+body.arena-embed.insight-context .container {
+  max-width: 100%;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+body.arena-embed.insight-context .container-fluid {
+  max-width: 100%;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+body.arena-embed.insight-context .arena-embed-inner {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+body.arena-embed.insight-context .insight-knd-arena.embed-fill {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Mind Wars Arena embed — no nav, full viewport */
+body.arena-embed.mind-wars-arena-context {
+  min-height: 100%;
+}
+
+body.arena-embed.mind-wars-arena-context .arena-embed-inner {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+body.arena-embed.mind-wars-arena-context #arena-lobby,
+body.arena-embed.mind-wars-arena-context .arena {
+  min-height: 100vh;
+}

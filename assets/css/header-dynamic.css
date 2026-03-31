@@ -1,0 +1,70 @@
+/**
+ * KND Store - Header dinámico (scroll-aware)
+ * Estados: top (transparente) → scrolled (sólido) → hidden (oculto al bajar) / visible al subir.
+ * Compatible con Bootstrap navbar. Sin librerías externas.
+ */
+
+/* Altura del header para offset del contenido (topbar concept ≈ 56px) */
+:root {
+  --knd-header-height: 56px;
+}
+
+/* -------------------------------------------------------------------------
+   Offset global: el contenido empieza debajo del header fixed
+   ------------------------------------------------------------------------- */
+body {
+  padding-top: var(--knd-header-height) !important;
+}
+
+/* -------------------------------------------------------------------------
+   Base: header fijo para poder animar translateY (override sticky si existe)
+   ------------------------------------------------------------------------- */
+.site-header {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1020;
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.28s ease,
+    box-shadow 0.28s ease;
+}
+
+/* -------------------------------------------------------------------------
+   Estado inicial y scrolled (legacy navbar only — not knd-skin topbar)
+   ------------------------------------------------------------------------- */
+body:not(.knd-skin) .site-header:not(.header-scrolled),
+body:not(.knd-skin) .site-header.header-scrolled {
+  background: linear-gradient(to bottom, rgba(3, 8, 24, 0.96), rgba(3, 8, 24, 0.92)) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(0, 229, 255, 0.25) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.9) !important;
+}
+
+body.knd-skin .site-header.header-scrolled {
+  background: rgba(1, 5, 8, 0.95) !important;
+  border-bottom-color: rgba(0, 232, 255, 0.12) !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.65) !important;
+}
+
+/* -------------------------------------------------------------------------
+   Estado hidden: scroll hacia abajo → header se oculta con animación vertical
+   ------------------------------------------------------------------------- */
+.site-header.header-hidden {
+  transform: translateY(-100%);
+}
+
+/* particles-bg y primer bloque quedan ya desplazados por body padding-top */
+
+/* Logo brand: logo.png + hexagon SVG */
+.knd-logo-brand {
+  gap: 0.25rem;
+}
+.knd-logo-hex {
+  width: 24px;
+  height: 24px;
+  color: #00e5ff;
+  flex-shrink: 0;
+}

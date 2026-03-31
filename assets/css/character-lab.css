@@ -1,0 +1,18 @@
+/**
+ * Character Lab - Page styles
+ */
+.character-lab-form .character-lab-dropzone {
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+.character-lab-form .character-lab-dropzone:hover,
+.character-lab-form .character-lab-dropzone.is-dragover {
+    border-color: var(--knd-neon-cyan, #00d4ff) !important;
+    background: rgba(0, 212, 255, 0.05);
+}
+.character-lab-viewer model-viewer {
+    min-height: 320px;
+}
+.recent-thumb:hover {
+    opacity: 0.9;
+}

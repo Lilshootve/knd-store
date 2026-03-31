@@ -1,0 +1,134 @@
+/**
+ * Admin - Tablas y cards siempre visibles
+ * Alineado con knd-skin (void / cyan accent)
+ */
+
+body.admin-page {
+  padding-top: 48px !important;
+  background: var(--void, #010508) !important;
+  color: rgba(232, 236, 240, 0.95) !important;
+}
+
+.knd-admin-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  background: rgba(1, 5, 8, 0.96);
+  border-bottom: 1px solid rgba(0, 232, 255, 0.1);
+  backdrop-filter: blur(16px);
+}
+
+.knd-admin-topbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 8px 20px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.knd-admin-tb-logo {
+  font-family: var(--FD, 'Orbitron', monospace);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: var(--c, #00e8ff);
+  text-decoration: none;
+  margin-right: auto;
+}
+.knd-admin-tb-logo:hover {
+  color: var(--c, #00e8ff);
+  text-shadow: 0 0 12px rgba(0, 232, 255, 0.35);
+}
+
+.knd-admin-tb-title {
+  font-family: var(--FM, 'Share Tech Mono', monospace);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--t3, rgba(90, 165, 190, 0.5));
+}
+
+.knd-admin-tb-user {
+  font-size: 12px;
+  color: var(--t2, rgba(155, 215, 235, 0.75));
+}
+
+.knd-admin-tb-link {
+  font-family: var(--FD, 'Orbitron', monospace);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--t3, rgba(90, 165, 190, 0.55));
+  text-decoration: none;
+  padding: 6px 10px;
+  border: 1px solid rgba(0, 232, 255, 0.12);
+}
+.knd-admin-tb-link:hover {
+  color: var(--c, #00e8ff);
+  border-color: rgba(0, 232, 255, 0.25);
+}
+
+.knd-admin-tb-cta {
+  font-family: var(--FD, 'Orbitron', monospace);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border: 1px solid var(--c, #00e8ff);
+  color: var(--c, #00e8ff);
+  text-decoration: none;
+  background: rgba(0, 232, 255, 0.06);
+}
+.knd-admin-tb-cta:hover {
+  background: rgba(0, 232, 255, 0.2);
+  color: #fff;
+}
+
+/* Cards visibles por defecto (no solo on hover) */
+body.admin-page .card,
+body.admin-page .card-body {
+  background: rgba(12, 15, 22, 0.9) !important;
+  color: #e8ecf0 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+body.admin-page .card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+body.admin-page .card-header {
+  background: rgba(15, 20, 35, 0.9) !important;
+  color: #e8ecf0 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+body.admin-page .card-title {
+  color: #e8ecf0 !important;
+}
+body.admin-page .card-text {
+  color: rgba(232, 236, 240, 0.85) !important;
+}
+
+body.admin-page .table,
+body.admin-page .table-dark,
+body.admin-page .table-sm {
+  --bs-table-bg: transparent !important;
+  --bs-table-color: #e8ecf0 !important;
+  --bs-table-border-color: rgba(255,255,255,0.08) !important;
+  --bs-table-hover-bg: rgba(255,255,255,0.06) !important;
+  --bs-table-hover-color: #fff !important;
+}
+body.admin-page .table th {
+  color: var(--c, #00e8ff) !important;
+  border-color: rgba(255,255,255,0.1) !important;
+}
+body.admin-page .table td {
+  color: #e8ecf0 !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}

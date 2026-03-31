@@ -1,0 +1,512 @@
+/**
+ * KND Labs — "concept" visual theme (knd-labs-concept.html).
+ * Scoped to body.knd-labs-concept; loads after labs-next.css / knd-labs.css.
+ */
+body.knd-labs-concept.knd-labs-next {
+  --lc-void: #010508;
+  --lc-deep: #020a10;
+  --lc-surface: #04131c;
+  --lc-glass: rgba(6, 24, 36, 0.78);
+  --lc-c: #00e8ff;
+  --lc-c-dim: rgba(0, 232, 255, 0.12);
+  --lc-m: #d44fff;
+  --lc-gold: #ffcc00;
+  --lc-green: #00ff99;
+  --lc-red: #ff2255;
+  --lc-t1: rgba(220, 248, 255, 0.95);
+  --lc-t2: rgba(155, 215, 235, 0.62);
+  --lc-t3: rgba(90, 165, 190, 0.55);
+  --lc-t4: rgba(60, 120, 145, 0.35);
+  --lc-FD: "Orbitron", system-ui, sans-serif;
+  --lc-FB: "Rajdhani", system-ui, sans-serif;
+  --lc-FM: "Share Tech Mono", ui-monospace, monospace;
+}
+
+body.knd-labs-concept.knd-labs-next,
+body.knd-labs-concept.knd-labs-next .ln-app {
+  font-family: var(--lc-FB);
+}
+
+/* App shell: void background, no lab hero image */
+body.knd-labs-concept.knd-labs-next .ln-app {
+  position: relative;
+  background: var(--lc-void) !important;
+  background-image: none !important;
+  color: var(--lc-t1);
+}
+
+/* Gradient + scanline confined to .ln-app (do not cover global site header) */
+body.knd-labs-concept.knd-labs-next .ln-app::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 45% at 50% 0%, rgba(0, 60, 140, 0.14) 0%, transparent 55%),
+    radial-gradient(ellipse 35% 35% at 85% 70%, rgba(155, 48, 255, 0.07) 0%, transparent 50%),
+    radial-gradient(ellipse 35% 35% at 10% 55%, rgba(0, 232, 255, 0.06) 0%, transparent 50%);
+}
+
+body.knd-labs-concept.knd-labs-next .ln-app::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.025) 2px,
+    rgba(0, 0, 0, 0.025) 3px
+  );
+}
+
+body.knd-labs-concept.knd-labs-next #particles-bg {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Sidebar */
+body.knd-labs-concept.knd-labs-next .ln-sidebar {
+  position: relative;
+  z-index: 2;
+  width: 220px;
+  min-width: 220px;
+  background: rgba(2, 10, 16, 0.95) !important;
+  border-right: 1px solid rgba(0, 232, 255, 0.06) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+body.knd-labs-concept.knd-labs-next .ln-sidebar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(0, 232, 255, 0.15) 30%,
+    rgba(0, 232, 255, 0.15) 70%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-sidebar-head {
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(0, 232, 255, 0.06);
+}
+
+body.knd-labs-concept.knd-labs-next .ln-brand {
+  color: var(--lc-t1);
+}
+
+body.knd-labs-concept.knd-labs-next .ln-brand:hover {
+  color: var(--lc-c);
+}
+
+body.knd-labs-concept.knd-labs-next .ln-brand-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: rgba(0, 232, 255, 0.08);
+  border: 1px solid rgba(0, 232, 255, 0.2);
+  color: var(--lc-c);
+  box-shadow: 0 0 10px rgba(0, 232, 255, 0.1);
+}
+
+body.knd-labs-concept.knd-labs-next .ln-brand-text {
+  font-family: var(--lc-FD);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: var(--lc-c);
+  text-shadow: 0 0 12px rgba(0, 232, 255, 0.3);
+}
+
+/* Balance chip (KP) */
+body.knd-labs-concept.knd-labs-next .ln-balance-chip {
+  margin: 0 14px 12px;
+  padding: 8px 12px;
+  background: rgba(255, 204, 0, 0.04);
+  border: 1px solid rgba(255, 204, 0, 0.12);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--lc-FM);
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--lc-gold);
+  border-radius: 0;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-balance-chip .ln-balance-val {
+  font-weight: 600;
+  color: var(--lc-gold);
+}
+
+body.knd-labs-concept.knd-labs-next .ln-balance-chip .ln-balance-lbl {
+  color: var(--lc-t3);
+  text-transform: uppercase;
+  font-size: 9px;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-balance-chip .ln-balance-icon {
+  font-size: 11px;
+  opacity: 0.9;
+  color: var(--lc-gold);
+}
+
+/* Section labels in nav */
+body.knd-labs-concept.knd-labs-next .ln-nav-section-label {
+  list-style: none;
+  font-family: var(--lc-FM);
+  font-size: 7px;
+  letter-spacing: 2.5px;
+  color: var(--lc-t4);
+  text-transform: uppercase;
+  padding: 8px 14px 4px;
+  margin: 0;
+  pointer-events: none;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-nav {
+  padding-top: 4px;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-tools-list {
+  padding: 0 0.5rem;
+}
+
+body.knd-labs-concept.knd-labs-next a.ln-tool,
+body.knd-labs-concept.knd-labs-next .ln-tool {
+  position: relative;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--lc-t3);
+  font-family: var(--lc-FB);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 9px 14px;
+  margin: 1px 8px;
+  width: calc(100% - 16px);
+  box-sizing: border-box;
+  transform: none;
+}
+
+body.knd-labs-concept.knd-labs-next a.ln-tool:hover,
+body.knd-labs-concept.knd-labs-next .ln-tool:hover {
+  background: rgba(0, 232, 255, 0.03);
+  color: var(--lc-t2);
+  border-color: rgba(0, 232, 255, 0.06);
+  transform: none;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-tool-active,
+body.knd-labs-concept.knd-labs-next .ln-tool[aria-current="true"] {
+  background: rgba(0, 232, 255, 0.06) !important;
+  color: var(--lc-c) !important;
+  border-color: rgba(0, 232, 255, 0.12) !important;
+  box-shadow: none !important;
+  position: relative;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-tool-active::before,
+body.knd-labs-concept.knd-labs-next .ln-tool[aria-current="true"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: var(--lc-c);
+  box-shadow: 0 0 8px var(--lc-c);
+  border-radius: 1px;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-tool-active,
+body.knd-labs-concept.knd-labs-next .ln-tool[aria-current="true"] {
+  padding-left: 18px;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-tool i {
+  color: inherit;
+  filter: drop-shadow(0 0 4px rgba(0, 232, 255, 0.35));
+}
+
+body.knd-labs-concept.knd-labs-next .ln-tool-viewer-link {
+  border-radius: 3px;
+  border: 1px dashed rgba(0, 232, 255, 0.12);
+  color: var(--lc-t2);
+  font-size: 12px;
+  margin: 8px 8px 0;
+  width: calc(100% - 16px);
+}
+
+body.knd-labs-concept.knd-labs-next .ln-tool-viewer-link:hover {
+  background: rgba(0, 232, 255, 0.05);
+  color: var(--lc-c);
+  border-color: rgba(0, 232, 255, 0.2);
+}
+
+body.knd-labs-concept.knd-labs-next .ln-sidebar-sep {
+  height: 1px;
+  margin: 8px 18px;
+  background: rgba(0, 232, 255, 0.05);
+}
+
+body.knd-labs-concept.knd-labs-next .ln-sec-item {
+  font-family: var(--lc-FM);
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--lc-t4);
+  border-radius: 3px;
+  padding: 7px 14px;
+  margin: 1px 8px;
+  width: calc(100% - 16px);
+}
+
+body.knd-labs-concept.knd-labs-next .ln-sec-item:hover {
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--lc-t2);
+}
+
+/* Main: ambient glow → cyan (above .ln-app::after scanline) */
+body.knd-labs-concept.knd-labs-next .ln-body {
+  position: relative;
+  z-index: 2;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-body::before {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0, 232, 255, 0.06) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 70% at 50% 50%, rgba(212, 79, 255, 0.06) 0%, transparent 60%),
+    radial-gradient(circle at 30% 60%, rgba(0, 232, 255, 0.05) 0%, transparent 45%) !important;
+  filter: blur(80px);
+}
+
+body.knd-labs-concept.knd-labs-next .ln-editor::before {
+  background: radial-gradient(circle, rgba(0, 232, 255, 0.1), transparent 58%) !important;
+}
+
+/* Typography / headers */
+body.knd-labs-concept.knd-labs-next .ln-editor-title,
+body.knd-labs-concept.knd-labs-next .ln-t2i-header .ln-editor-title {
+  font-family: var(--lc-FD);
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: var(--lc-t1);
+  text-transform: uppercase;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-editor-subtitle,
+body.knd-labs-concept.knd-labs-next .ln-t2i-header .ln-editor-subtitle {
+  font-family: var(--lc-FM);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--lc-t3);
+}
+
+/* Panels & forms */
+body.knd-labs-concept.knd-labs-next .ln-composer-wrap,
+body.knd-labs-concept.knd-labs-next .knd-panel-soft,
+body.knd-labs-concept.knd-labs-next .ln-t2i-preview-wrap {
+  background: var(--lc-glass) !important;
+  border: 1px solid rgba(0, 232, 255, 0.08) !important;
+  border-radius: 2px !important;
+  box-shadow: none !important;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-composer-wrap:focus-within {
+  border-color: rgba(0, 232, 255, 0.35) !important;
+  box-shadow: 0 0 14px rgba(0, 232, 255, 0.12) !important;
+}
+
+body.knd-labs-concept.knd-labs-next .form-control,
+body.knd-labs-concept.knd-labs-next .form-select,
+body.knd-labs-concept.knd-labs-next textarea.form-control {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(0, 232, 255, 0.08) !important;
+  color: var(--lc-t1) !important;
+  border-radius: 2px !important;
+  font-family: var(--lc-FB);
+}
+
+body.knd-labs-concept.knd-labs-next .form-control:focus,
+body.knd-labs-concept.knd-labs-next .form-select:focus {
+  border-color: var(--lc-c) !important;
+  box-shadow: 0 0 12px rgba(0, 232, 255, 0.12) !important;
+}
+
+body.knd-labs-concept.knd-labs-next label,
+body.knd-labs-concept.knd-labs-next .form-label {
+  font-family: var(--lc-FM);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--lc-t3);
+  text-transform: uppercase;
+}
+
+/* Primary CTA (generate, etc.) */
+body.knd-labs-concept.knd-labs-next .ln-t2i-cta,
+body.knd-labs-concept.knd-labs-next .ln-t2i-gen-area .btn-primary,
+body.knd-labs-concept.knd-labs-next button[type="submit"].btn-primary {
+  font-family: var(--lc-FD) !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: 4px !important;
+  text-transform: uppercase !important;
+  border: 2px solid var(--lc-c) !important;
+  color: var(--lc-c) !important;
+  background: linear-gradient(135deg, rgba(0, 232, 255, 0.06), rgba(0, 232, 255, 0.02)) !important;
+  border-radius: 0 !important;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  box-shadow: none !important;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-t2i-cta:hover,
+body.knd-labs-concept.knd-labs-next .ln-t2i-gen-area .btn-primary:hover {
+  box-shadow: 0 0 28px rgba(0, 232, 255, 0.2) !important;
+  background: rgba(0, 232, 255, 0.1) !important;
+}
+
+body.knd-labs-concept.knd-labs-next .labs-action {
+  font-family: var(--lc-FD);
+  font-size: 7px;
+  letter-spacing: 2px;
+  border: 1px solid rgba(0, 232, 255, 0.15);
+  color: var(--lc-t3);
+  text-transform: uppercase;
+}
+
+body.knd-labs-concept.knd-labs-next .labs-action--primary {
+  border-color: rgba(0, 232, 255, 0.25);
+  color: var(--lc-c);
+}
+
+body.knd-labs-concept.knd-labs-next .labs-action:hover {
+  border-color: var(--lc-c);
+  color: var(--lc-c);
+}
+
+body.knd-labs-concept.knd-labs-next .texture-mode-chip.active,
+body.knd-labs-concept.knd-labs-next .texture-mode-chip.is-active {
+  background: rgba(0, 232, 255, 0.08) !important;
+  color: var(--lc-c) !important;
+  border-color: rgba(0, 232, 255, 0.3) !important;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-pill {
+  border-color: rgba(0, 232, 255, 0.2);
+}
+
+body.knd-labs-concept.knd-labs-next .ln-pill:hover,
+body.knd-labs-concept.knd-labs-next .ln-pill.active {
+  border-color: var(--lc-c);
+  color: var(--lc-c);
+}
+
+/* Recent strip */
+body.knd-labs-concept.knd-labs-next .ln-recent {
+  position: relative;
+  z-index: 3;
+  background: rgba(2, 10, 16, 0.85) !important;
+  border-top: 1px solid rgba(0, 232, 255, 0.05) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: none !important;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-recent-title {
+  font-family: var(--lc-FD);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: var(--lc-t3);
+}
+
+body.knd-labs-concept.knd-labs-next .ln-recent-link {
+  font-family: var(--lc-FM);
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  color: var(--lc-t4);
+}
+
+body.knd-labs-concept.knd-labs-next .ln-recent-link:hover {
+  color: var(--lc-c);
+}
+
+body.knd-labs-concept.knd-labs-next .ln-job-card {
+  width: 80px;
+  border-radius: 0 !important;
+  background: rgba(0, 0, 0, 0.35) !important;
+  border: 1px solid rgba(0, 232, 255, 0.06) !important;
+  box-shadow: none !important;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-job-card:hover {
+  border-color: rgba(0, 232, 255, 0.2) !important;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-job-card-thumb {
+  aspect-ratio: 4 / 3;
+  min-height: 60px;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-job-card-date {
+  font-family: var(--lc-FM);
+  font-size: 6px;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-job-card-status {
+  font-family: var(--lc-FM);
+  font-size: 6px;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-job-card[data-status="done"] .ln-job-card-status {
+  background: rgba(0, 255, 153, 0.12) !important;
+  color: var(--lc-green) !important;
+}
+
+body.knd-labs-concept.knd-labs-next .ln-recent-empty {
+  border-color: rgba(0, 232, 255, 0.08);
+  border-radius: 2px;
+}
+
+/* Drawer */
+body.knd-labs-concept.knd-labs-next .knd-details-drawer {
+  background: rgba(2, 10, 16, 0.95) !important;
+  border-left: 1px solid rgba(0, 232, 255, 0.1) !important;
+  font-family: var(--lc-FB);
+}
+
+body.knd-labs-concept.knd-labs-next .knd-details-drawer__header {
+  border-bottom: 1px solid rgba(0, 232, 255, 0.08);
+  font-family: var(--lc-FD);
+  letter-spacing: 2px;
+}
+
+/* Alerts / status */
+body.knd-labs-concept.knd-labs-next .alert-danger {
+  background: rgba(255, 34, 85, 0.05);
+  border: 1px solid rgba(255, 34, 85, 0.25);
+  color: var(--lc-t1);
+}
+
+body.knd-labs-concept.knd-labs-next .text-white-50 {
+  color: var(--lc-t1) !important;
+  opacity: 0.6;
+}
+
+/* 3D lab overrides when theme + 3d-lab.css */
+body.knd-labs-concept.knd-labs-next .ln-3d-lab-wrap .ln-editor-title,
+body.knd-labs-concept.knd-labs-next .ln-t2i-header .ln-editor-title {
+  font-family: var(--lc-FD);
+}

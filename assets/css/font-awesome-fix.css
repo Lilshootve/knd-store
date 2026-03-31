@@ -1,0 +1,199 @@
+/* Font Awesome Fix - KND Store */
+
+/* Configuración base para Font Awesome */
+.fas, .fab, .far, .fa {
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 6 Brands', 'Font Awesome 6 Regular', sans-serif !important;
+    font-weight: 900;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+/* Estilos para iconos de categorías - SIEMPRE usar Font Awesome */
+.category-icon {
+    font-size: 2.5rem;
+    color: var(--knd-neon-blue);
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60px;
+}
+
+/* Asegurar que los iconos dentro de category-icon SIEMPRE usen Font Awesome */
+/* Esta regla tiene máxima prioridad para anular cualquier fallback */
+.category-icon .fas,
+.category-icon .fab,
+.category-icon .far,
+.category-icon .fa {
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 6 Brands', 'Font Awesome 6 Regular', sans-serif !important;
+    font-weight: 900 !important;
+    font-style: normal !important;
+    display: inline-block !important;
+    width: 1em !important;
+    height: 1em !important;
+    line-height: 1 !important;
+    text-rendering: auto !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    speak: none !important;
+    font-variant: normal !important;
+    text-transform: none !important;
+}
+
+/* Anular fallbacks para iconos de categorías - SIEMPRE mostrar Font Awesome */
+/* Asegurar que los iconos de categorías NUNCA usen fallbacks, incluso si fontawesome-fallback está activa */
+.fontawesome-fallback .category-icon .fas,
+.fontawesome-fallback .category-icon .fab,
+.fontawesome-fallback .category-icon .far,
+.fontawesome-fallback .category-icon .fa {
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 6 Brands', 'Font Awesome 6 Regular', sans-serif !important;
+    font-weight: 900 !important;
+    font-style: normal !important;
+    display: inline-block !important;
+    width: 1em !important;
+    height: 1em !important;
+    line-height: 1 !important;
+    text-rendering: auto !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    /* Anular cualquier regla de fallback que cambie la fuente */
+}
+
+/* Asegurar que el contenido ::before de Font Awesome se mantenga para iconos de categorías */
+.category-icon .fas::before,
+.category-icon .fab::before,
+.category-icon .far::before,
+.category-icon .fa::before {
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 6 Brands', 'Font Awesome 6 Regular', sans-serif !important;
+    font-weight: 900 !important;
+}
+
+/* Anular cualquier fallback que intente eliminar el contenido de los iconos de categorías */
+.fontawesome-fallback .category-icon .fas::before,
+.fontawesome-fallback .category-icon .fab::before,
+.fontawesome-fallback .category-icon .far::before,
+.fontawesome-fallback .category-icon .fa::before {
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 6 Brands', 'Font Awesome 6 Regular', sans-serif !important;
+    font-weight: 900 !important;
+    /* NO eliminar el content - dejar que Font Awesome lo maneje */
+}
+
+.category-card:hover .category-icon {
+    color: var(--knd-electric-purple);
+    transform: scale(1.1);
+}
+
+/* Fallback visual para iconos que no cargan - solo si el elemento está realmente vacío */
+.category-icon:empty::before {
+    content: "□";
+    font-size: 2rem;
+    color: var(--knd-neon-blue);
+    opacity: 0.5;
+}
+
+/* NO aplicar fallback a elementos <i> dentro de category-icon - Font Awesome usa ::before */
+
+/* Animación de carga para iconos */
+@keyframes iconLoad {
+    0% { opacity: 0; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.fas, .fab, .far {
+    animation: iconLoad 0.3s ease-in-out;
+}
+
+/* Responsive para iconos */
+@media (max-width: 768px) {
+    .category-icon {
+        font-size: 2rem;
+        min-height: 50px;
+    }
+}
+
+@media (max-width: 576px) {
+    .category-icon {
+        font-size: 1.8rem;
+        min-height: 40px;
+    }
+}
+
+/* Fallback simple para cuando Font Awesome no carga */
+/* EXCEPTO para iconos de categorías - estos siempre usan Font Awesome */
+.fontawesome-fallback .fas:not(.category-icon .fas),
+.fontawesome-fallback .fab:not(.category-icon .fab),
+.fontawesome-fallback .far:not(.category-icon .far) {
+    font-family: Arial, sans-serif !important;
+    font-size: 1em;
+    line-height: 1.2;
+    display: inline-block;
+}
+
+/* Asegurar que los iconos de categorías NUNCA usen el fallback de Arial */
+.fontawesome-fallback .category-icon .fas,
+.fontawesome-fallback .category-icon .fab,
+.fontawesome-fallback .category-icon .far {
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 6 Brands', 'Font Awesome 6 Regular', sans-serif !important;
+}
+
+.fontawesome-fallback .fa-rocket::before { content: "🚀"; }
+.fontawesome-fallback .fa-gamepad::before { content: "🎮"; }
+.fontawesome-fallback .fa-headset::before { content: "🎧"; }
+.fontawesome-fallback .fa-code::before { content: "💻"; }
+.fontawesome-fallback .fa-microchip::before { content: "🔧"; }
+.fontawesome-fallback .fa-search::before { content: "🔍"; }
+.fontawesome-fallback .fa-eye::before { content: "👁️"; }
+.fontawesome-fallback .fa-envelope::before { content: "📧"; }
+.fontawesome-fallback .fa-phone::before { content: "📞"; }
+.fontawesome-fallback .fa-clock::before { content: "⏰"; }
+.fontawesome-fallback .fa-palette::before { content: "🎨"; }
+.fontawesome-fallback .fa-magic::before { content: "✨"; }
+.fontawesome-fallback .fa-brain::before { content: "🧠"; }
+.fontawesome-fallback .fa-credit-card::before { content: "💳"; }
+.fontawesome-fallback .fa-coins::before { content: "🪙"; }
+.fontawesome-fallback .fa-tools::before { content: "🔧"; }
+.fontawesome-fallback .fa-shopping-cart::before { content: "🛒"; }
+.fontawesome-fallback .fa-user-astronaut::before { content: "👨‍🚀"; }
+.fontawesome-fallback .fa-crown::before { content: "👑"; }
+.fontawesome-fallback .fa-home::before { content: "🏠"; }
+.fontawesome-fallback .fa-info-circle::before { content: "ℹ️"; }
+.fontawesome-fallback .fa-shipping-fast::before { content: "🚚"; }
+.fontawesome-fallback .fa-shield-alt::before { content: "🛡️"; }
+.fontawesome-fallback .fa-check-circle::before { content: "✅"; }
+.fontawesome-fallback .fa-cogs::before { content: "⚙️"; }
+.fontawesome-fallback .fa-globe::before { content: "🌍"; }
+.fontawesome-fallback .fa-paper-plane::before { content: "📮"; }
+.fontawesome-fallback .fa-exclamation-triangle::before { content: "⚠️"; }
+.fontawesome-fallback .fa-undo::before { content: "↩️"; }
+.fontawesome-fallback .fa-copyright::before { content: "©️"; }
+.fontawesome-fallback .fa-file-contract::before { content: "📄"; }
+.fontawesome-fallback .fa-database::before { content: "🗄️"; }
+.fontawesome-fallback .fa-lock::before { content: "🔒"; }
+.fontawesome-fallback .fa-cookie-bite::before { content: "🍪"; }
+.fontawesome-fallback .fa-share-alt::before { content: "📤"; }
+.fontawesome-fallback .fa-user-shield::before { content: "👤🛡️"; }
+.fontawesome-fallback .fa-user-check::before { content: "👤✅"; }
+.fontawesome-fallback .fa-edit::before { content: "✏️"; }
+.fontawesome-fallback .fa-satellite::before { content: "🛰️"; }
+.fontawesome-fallback .fa-broadcast-tower::before { content: "📡"; }
+.fontawesome-fallback .fa-bullseye::before { content: "🎯"; }
+.fontawesome-fallback .fa-comments::before { content: "💬"; }
+.fontawesome-fallback .fa-robot::before { content: "🤖"; }
+.fontawesome-fallback .fa-dice::before { content: "🎲"; }
+.fontawesome-fallback .fa-crystal-ball::before { content: "🔮"; }
+.fontawesome-fallback .fa-question-circle::before { content: "❓"; }
+.fontawesome-fallback .fa-vial::before { content: "🧪"; }
+.fontawesome-fallback .fa-list::before { content: "📋"; }
+.fontawesome-fallback .fa-download::before { content: "⬇️"; }
+.fontawesome-fallback .fa-arrow-left::before { content: "←"; }
+.fontawesome-fallback .fa-sign-in-alt::before { content: "➡️"; }
+.fontawesome-fallback .fa-user-plus::before { content: "👤+"; } 

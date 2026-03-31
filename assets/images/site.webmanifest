@@ -1,0 +1,73 @@
+{
+    "name": "KND Store - Tu Tienda Galáctica",
+    "short_name": "KND Store",
+    "description": "Tu tienda galáctica de productos únicos y tecnología de vanguardia",
+    "start_url": "/index.php",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#259cae",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "es",
+    "dir": "ltr",
+    "categories": ["shopping", "technology", "entertainment"],
+    "icons": [
+        {
+            "src": "/assets/images/web-app-manifest-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/assets/images/web-app-manifest-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/assets/images/apple-touch-icon.png",
+            "sizes": "180x180",
+            "type": "image/png"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Catálogo",
+            "short_name": "Productos",
+            "description": "Ver todos los productos",
+            "url": "/products.php",
+            "icons": [
+                {
+                    "src": "/assets/images/web-app-manifest-192x192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Contacto",
+            "short_name": "Contacto",
+            "description": "Contactar con soporte",
+            "url": "/contact.php",
+            "icons": [
+                {
+                    "src": "/assets/images/web-app-manifest-192x192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/assets/images/screenshot-wide.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide"
+        },
+        {
+            "src": "/assets/images/screenshot-narrow.png",
+            "sizes": "750x1334",
+            "type": "image/png",
+            "form_factor": "narrow"
+        }
+    ]
+}

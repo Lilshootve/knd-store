@@ -1,0 +1,96 @@
+/* KND Avatar v1 - Stage, layers, shop cards, rarity */
+
+.avatar-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  max-width: 512px;
+  max-height: 512px;
+  margin: 0 auto;
+  background: rgba(10, 14, 23, 0.6);
+  border-radius: 12px;
+  overflow: hidden;
+  --av-primary: #259cae;
+  --av-secondary: #00d4ff;
+  --av-accent: #ae2565;
+  --av-metal: #9ca3af;
+  --av-glass: rgba(255,255,255,0.15);
+}
+
+.avatar-stage-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-layer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.avatar-layer svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.avatar-layer img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.avatar-shop-card {
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+  padding: 1rem;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.avatar-shop-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,212,255,.12);
+}
+
+.avatar-shop-card.rarity-common { border-color: rgba(156,163,175,.4); }
+.avatar-shop-card.rarity-rare { border-color: rgba(96,165,250,.5); }
+.avatar-shop-card.rarity-epic { border-color: rgba(167,139,250,.5); box-shadow: 0 0 12px rgba(167,139,250,.15); }
+.avatar-shop-card.rarity-legendary { border-color: rgba(251,191,36,.5); box-shadow: 0 0 16px rgba(251,191,36,.2); }
+
+.avatar-shop-card.rarity-epic.frame-equipped {
+  animation: avatar-glow-pulse 2.5s ease-in-out infinite;
+}
+
+.avatar-shop-card.rarity-legendary.frame-equipped {
+  animation: avatar-micro-pulse 3s ease-in-out infinite;
+}
+
+@keyframes avatar-glow-pulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(167,139,250,.15); }
+  50% { box-shadow: 0 0 20px rgba(167,139,250,.35); }
+}
+
+@keyframes avatar-micro-pulse {
+  0%, 100% { box-shadow: 0 0 16px rgba(251,191,36,.2); }
+  50% { box-shadow: 0 0 22px rgba(251,191,36,.4); }
+}
+
+.avatar-rarity-badge {
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.avatar-rarity-common { color: #9ca3af; }
+.avatar-rarity-rare { color: #60a5fa; }
+.avatar-rarity-epic { color: #a78bfa; }
+.avatar-rarity-legendary { color: #fbbf24; }
+
+/* Avatar modal overlay - defined in style.css (Avatar Modal HUD section) */

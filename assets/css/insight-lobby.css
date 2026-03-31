@@ -1,0 +1,105 @@
+/**
+ * KND Insight inside Mind Wars lobby shell (center column).
+ */
+.insight-lobby-center {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+  padding: 0 6px 8px;
+  box-sizing: border-box;
+}
+
+.insight-lobby-hero {
+  flex-shrink: 0;
+  text-align: center;
+  padding: 6px 8px 10px;
+}
+
+.insight-lobby-hero .insight-lobby-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  color: #c4b5fd;
+  font-family: var(--FD, 'Orbitron', sans-serif);
+  margin-bottom: 6px;
+}
+
+.insight-lobby-hero .insight-lobby-title {
+  font-family: var(--FD, 'Orbitron', sans-serif);
+  font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--t2, rgba(155, 215, 235, 0.75));
+  margin: 0 0 4px;
+}
+
+.insight-lobby-hero .insight-lobby-sub {
+  font-family: var(--FB, 'Rajdhani', sans-serif);
+  font-size: 0.8rem;
+  color: var(--t3, rgba(90, 165, 190, 0.55));
+  margin: 0;
+  line-height: 1.35;
+}
+
+/* Game fills the column below the hero strip */
+.insight-knd-arena.insight-in-shell {
+  flex: 1;
+  min-height: min(520px, calc(100vh - 220px));
+  max-height: calc(100vh - 180px);
+  box-sizing: content-box;
+  margin-bottom: 425px;
+}
+
+.insight-knd-arena.insight-in-shell #insight-arena-bg {
+  inset: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 575px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.insight-knd-arena.insight-in-shell .insight-arena-app {
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+}
+
+.insight-knd-arena.insight-in-shell .entry-bar {
+  position: relative;
+  left: auto;
+  right: auto;
+  top: auto;
+  bottom: auto;
+  transform: none;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  z-index: 2;
+  flex-shrink: 0;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .insight-knd-arena.insight-in-shell .entry-bar {
+    position: relative;
+    top: auto;
+    bottom: auto;
+  }
+}
+
+@media (max-width: 1185px) {
+  .insight-lobby-center {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .insight-knd-arena.insight-in-shell {
+    max-height: none;
+  }
+}

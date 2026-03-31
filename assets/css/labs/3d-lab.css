@@ -1,0 +1,352 @@
+/**
+ * 3D Lab - Page styles (premium glassmorphism)
+ * Scoped to 3D Lab only via :has(.labs-3d-hero). No DOM/JS changes.
+ */
+
+/* -------------------------------------------------------------------------
+   Local design tokens – navy/blue-black base, cyan accent, subtle violet
+   ------------------------------------------------------------------------- */
+.labs-tool-section:has(.labs-3d-hero) {
+  --l3d-surface: rgba(8, 18, 32, 0.48);
+  --l3d-surface-heavier: rgba(6, 14, 26, 0.58);
+  --l3d-border: rgba(255, 255, 255, 0.08);
+  --l3d-border-mid: rgba(255, 255, 255, 0.10);
+  --l3d-accent: rgba(53, 194, 255, 0.85);
+  --l3d-accent-soft: rgba(103, 213, 255, 0.5);
+  --l3d-violet: rgba(139, 92, 255, 0.25);
+  --l3d-blur: 14px;
+  --l3d-radius: 14px;
+  --l3d-radius-sm: 10px;
+  --l3d-shadow-deep: 0 24px 48px rgba(0, 0, 0, 0.35);
+  --l3d-shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.2);
+  --l3d-inner-highlight: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 12px);
+}
+
+/* Background: reduce wallpaper protagonism so cards stand out */
+.labs-tool-section:has(.labs-3d-hero)::before {
+  opacity: 0.22;
+}
+.labs-tool-section:has(.labs-3d-hero)::after {
+  background: linear-gradient(180deg,
+    rgba(6, 12, 24, 0.62) 0%,
+    rgba(6, 12, 24, 0.45) 35%,
+    rgba(6, 12, 24, 0.5) 65%,
+    rgba(6, 12, 24, 0.72) 100%);
+}
+
+/* -------------------------------------------------------------------------
+   Hero header – translucent glass, subtle top highlight, soft shadow
+   ------------------------------------------------------------------------- */
+.labs-tool-section:has(.labs-3d-hero) .labs-3d-hero.glass-card-neon {
+  background: var(--l3d-inner-highlight),
+    linear-gradient(145deg, rgba(10, 22, 42, 0.52) 0%, rgba(6, 16, 32, 0.42) 100%) !important;
+  backdrop-filter: blur(var(--l3d-blur));
+  -webkit-backdrop-filter: blur(var(--l3d-blur));
+  border: 1px solid var(--l3d-border-mid) !important;
+  border-radius: var(--l3d-radius) !important;
+  box-shadow: var(--l3d-shadow-deep);
+}
+.labs-tool-section:has(.labs-3d-hero) .labs-3d-hero .badge {
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--l3d-border-mid);
+  color: var(--knd-text-alt);
+}
+.labs-tool-section:has(.labs-3d-hero) .labs-3d-hero h2 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--knd-text) !important;
+}
+.labs-tool-section:has(.labs-3d-hero) .labs-3d-hero p.text-white-50 {
+  color: var(--knd-text-alt) !important;
+  font-weight: 400;
+}
+
+/* -------------------------------------------------------------------------
+   Left panel (controls) – glass surface
+   ------------------------------------------------------------------------- */
+.labs-tool-section:has(.labs-3d-hero) .knd-workspace .knd-panel:first-of-type {
+  background: var(--l3d-inner-highlight),
+    linear-gradient(165deg, var(--l3d-surface) 0%, var(--l3d-surface-heavier) 100%) !important;
+  backdrop-filter: blur(var(--l3d-blur));
+  -webkit-backdrop-filter: blur(var(--l3d-blur));
+  border: 1px solid var(--l3d-border) !important;
+  border-radius: var(--l3d-radius) !important;
+  box-shadow: var(--l3d-shadow-soft);
+}
+
+/* -------------------------------------------------------------------------
+   Center preview panel – protagonist, subtle halo/glow
+   ------------------------------------------------------------------------- */
+.labs-tool-section:has(.labs-3d-hero) .knd-workspace .knd-canvas.knd-panel-soft {
+  background: var(--l3d-inner-highlight),
+    linear-gradient(165deg, rgba(10, 24, 48, 0.42) 0%, rgba(6, 16, 32, 0.52) 100%) !important;
+  backdrop-filter: blur(var(--l3d-blur));
+  -webkit-backdrop-filter: blur(var(--l3d-blur));
+  border: 1px solid var(--l3d-border-mid) !important;
+  border-radius: var(--l3d-radius) !important;
+  box-shadow: var(--l3d-shadow-soft),
+    0 0 0 1px rgba(53, 194, 255, 0.06),
+    0 0 32px -8px rgba(53, 194, 255, 0.08);
+}
+/* Placeholder empty state – clearer hierarchy */
+.labs-tool-section:has(.labs-3d-hero) #l3d-placeholder-empty.labs-placeholder-tips.knd-canvas__empty {
+  padding: 2rem 1.5rem;
+}
+.labs-tool-section:has(.labs-3d-hero) #l3d-placeholder-empty.labs-placeholder-tips.knd-canvas__empty i {
+  color: var(--l3d-accent-soft) !important;
+  opacity: 0.5;
+}
+.labs-tool-section:has(.labs-3d-hero) #l3d-placeholder-empty.labs-placeholder-tips.knd-canvas__empty p:first-of-type {
+  color: var(--knd-text) !important;
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+}
+.labs-tool-section:has(.labs-3d-hero) #l3d-placeholder-empty.labs-placeholder-tips.knd-canvas__empty p.text-white-50.small {
+  color: var(--knd-text-alt) !important;
+  font-weight: 400;
+}
+.labs-tool-section:has(.labs-3d-hero) .labs-result-preview {
+  background: transparent;
+  border-radius: var(--l3d-radius);
+}
+
+/* -------------------------------------------------------------------------
+   Right panel (credits + recent) – glass
+   ------------------------------------------------------------------------- */
+.labs-tool-section:has(.labs-3d-hero) .knd-workspace .knd-panel:last-of-type {
+  background: var(--l3d-inner-highlight),
+    linear-gradient(165deg, var(--l3d-surface) 0%, var(--l3d-surface-heavier) 100%) !important;
+  backdrop-filter: blur(var(--l3d-blur));
+  -webkit-backdrop-filter: blur(var(--l3d-blur));
+  border: 1px solid var(--l3d-border) !important;
+  border-radius: var(--l3d-radius) !important;
+  box-shadow: var(--l3d-shadow-soft);
+}
+
+/* Section titles – clearer hierarchy */
+.labs-tool-section:has(.labs-3d-hero) .knd-workspace .knd-section-title {
+  color: var(--knd-text-alt) !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.labs-tool-section:has(.labs-3d-hero) .knd-label,
+.labs-tool-section:has(.labs-3d-hero) .labs-form .form-label.text-white-50 {
+  color: var(--knd-text-alt) !important;
+  font-weight: 500;
+}
+.labs-tool-section:has(.labs-3d-hero) .labs-form .form-label.small {
+  color: var(--knd-muted) !important;
+  font-weight: 400;
+}
+
+/* -------------------------------------------------------------------------
+   Inputs, selects, textarea – translucent, consistent radius, focus
+   ------------------------------------------------------------------------- */
+.labs-tool-section:has(.labs-3d-hero) .labs-form .knd-textarea,
+.labs-tool-section:has(.labs-3d-hero) .labs-form .knd-input,
+.labs-tool-section:has(.labs-3d-hero) .labs-form .knd-select,
+.labs-tool-section:has(.labs-3d-hero) .labs-form .form-select {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid var(--l3d-border) !important;
+  border-radius: var(--l3d-radius-sm) !important;
+  color: var(--knd-text) !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.labs-tool-section:has(.labs-3d-hero) .labs-form .knd-textarea:hover,
+.labs-tool-section:has(.labs-3d-hero) .labs-form .knd-input:hover,
+.labs-tool-section:has(.labs-3d-hero) .labs-form .knd-select:hover {
+  border-color: var(--l3d-border-mid) !important;
+}
+.labs-tool-section:has(.labs-3d-hero) .labs-form .knd-textarea:focus,
+.labs-tool-section:has(.labs-3d-hero) .labs-form .knd-input:focus,
+.labs-tool-section:has(.labs-3d-hero) .labs-form .knd-select:focus,
+.labs-tool-section:has(.labs-3d-hero) .labs-form .form-select:focus {
+  border-color: var(--l3d-accent-soft) !important;
+  box-shadow: 0 0 0 1px rgba(53, 194, 255, 0.12) !important;
+}
+#l3d-mode-select {
+  min-width: 100%;
+}
+
+/* -------------------------------------------------------------------------
+   Dropzone – glass, subtle border
+   ------------------------------------------------------------------------- */
+.labs-tool-section:has(.labs-3d-hero) .labs-3d-dropzone {
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px dashed var(--l3d-border-mid) !important;
+  border-radius: var(--l3d-radius-sm);
+}
+.labs-tool-section:has(.labs-3d-hero) .labs-3d-dropzone:hover,
+.labs-tool-section:has(.labs-3d-hero) .labs-3d-dropzone.is-dragover {
+  border-color: var(--l3d-accent-soft) !important;
+  background: rgba(53, 194, 255, 0.06) !important;
+  box-shadow: 0 0 0 1px rgba(53, 194, 255, 0.08) inset;
+}
+
+/* -------------------------------------------------------------------------
+   Generate 3D button – premium, better contrast, elegant hover
+   ------------------------------------------------------------------------- */
+.labs-tool-section:has(.labs-3d-hero) .labs-gen-btn {
+  background: linear-gradient(180deg, rgba(53, 194, 255, 0.18) 0%, rgba(53, 194, 255, 0.08) 100%) !important;
+  border: 1px solid rgba(53, 194, 255, 0.35) !important;
+  color: rgba(232, 246, 255, 0.98) !important;
+  font-weight: 600;
+  border-radius: var(--l3d-radius-sm);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25), 0 0 20px rgba(53, 194, 255, 0.1);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+.labs-tool-section:has(.labs-3d-hero) .labs-gen-btn:hover:not(:disabled) {
+  border-color: rgba(53, 194, 255, 0.55) !important;
+  background: linear-gradient(180deg, rgba(53, 194, 255, 0.22) 0%, rgba(53, 194, 255, 0.12) 100%) !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3), 0 0 28px rgba(53, 194, 255, 0.15);
+}
+.labs-tool-section:has(.labs-3d-hero) .labs-gen-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.labs-tool-section:has(.labs-3d-hero) .labs-gen-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* -------------------------------------------------------------------------
+   Cost area, result actions, status – aligned with glass
+   ------------------------------------------------------------------------- */
+.labs-tool-section:has(.labs-3d-hero) .labs-gen-area {
+  flex-shrink: 0;
+}
+.labs-tool-section:has(.labs-3d-hero) .labs-gen-area .knd-muted {
+  color: var(--knd-text-alt) !important;
+}
+.labs-tool-section:has(.labs-3d-hero) .labs-result-actions-panel {
+  background: var(--l3d-surface) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--l3d-border) !important;
+  border-radius: var(--l3d-radius) !important;
+  box-shadow: var(--l3d-shadow-soft);
+}
+.labs-tool-section:has(.labs-3d-hero) .labs-action--primary {
+  border-radius: var(--l3d-radius-sm);
+}
+
+/* -------------------------------------------------------------------------
+   Recent Creations section (below workspace) – card grid glass
+   ------------------------------------------------------------------------- */
+.labs-tool-section:has(.labs-3d-hero) .labs-recent-creations .knd-section-title {
+  color: var(--knd-text-alt) !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.labs-tool-section:has(.labs-3d-hero) .labs-recent-creations .knd-card-grid {
+  gap: 1rem;
+}
+/* Cards in grid – glass, inner highlight, subtle shadow */
+.labs-tool-section:has(.labs-3d-hero) .labs-recent-creations .knd-showcase-card,
+.labs-tool-section:has(.labs-3d-hero) .labs-recent-creations .knd-card {
+  background: var(--l3d-inner-highlight),
+    linear-gradient(165deg, var(--l3d-surface) 0%, var(--l3d-surface-heavier) 100%) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--l3d-border) !important;
+  border-radius: var(--l3d-radius) !important;
+  box-shadow: var(--l3d-shadow-soft);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.labs-tool-section:has(.labs-3d-hero) .labs-recent-creations .knd-showcase-card:hover,
+.labs-tool-section:has(.labs-3d-hero) .labs-recent-creations .knd-card:hover {
+  border-color: var(--l3d-border-mid) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+}
+.labs-tool-section:has(.labs-3d-hero) .labs-recent-creations .knd-showcase-card .btn {
+  font-size: 0.8rem;
+  white-space: nowrap;
+  border-radius: 8px;
+}
+
+/* Recent card (in right sidebar list) – same glass feel */
+.labs-3d-recent-card {
+  border: 1px solid var(--l3d-border);
+  border-radius: var(--l3d-radius-sm);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.03);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.labs-3d-recent-card:hover {
+  border-color: var(--l3d-border-mid);
+}
+.labs-3d-recent-card.selected {
+  border-color: var(--l3d-accent-soft);
+  box-shadow: 0 0 0 1px rgba(53, 194, 255, 0.15);
+}
+
+/* -------------------------------------------------------------------------
+   Viewer area – model viewer bg, toolbar
+   ------------------------------------------------------------------------- */
+#l3d-model-viewer {
+  background: #0d1424;
+  border-radius: 0 0 var(--l3d-radius-sm) var(--l3d-radius-sm);
+}
+.labs-tool-section:has(.labs-3d-hero) #l3d-viewer-toolbar .btn {
+  font-size: 0.8rem;
+  border-radius: 8px;
+  border-color: var(--l3d-border);
+  color: var(--knd-text-alt);
+}
+.labs-tool-section:has(.labs-3d-hero) #l3d-viewer-toolbar .btn:hover {
+  border-color: var(--l3d-border-mid);
+  color: var(--knd-text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* -------------------------------------------------------------------------
+   Placeholder loading – stepper and spinner
+   ------------------------------------------------------------------------- */
+#l3d-placeholder-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  padding: 1.5rem;
+}
+#l3d-placeholder-loading .ai-spinner {
+  color: var(--l3d-accent-soft) !important;
+}
+
+/* -------------------------------------------------------------------------
+   Add Credits button – consistent with secondary actions
+   ------------------------------------------------------------------------- */
+.labs-tool-section:has(.labs-3d-hero) .knd-workspace .knd-btn-secondary {
+  border-radius: var(--l3d-radius-sm);
+  border-color: var(--l3d-border-mid);
+  background: rgba(255, 255, 255, 0.04);
+}
+.labs-tool-section:has(.labs-3d-hero) .knd-workspace .knd-btn-secondary:hover {
+  border-color: var(--l3d-accent-soft);
+  background: rgba(53, 194, 255, 0.08);
+}
+.labs-tool-section:has(.labs-3d-hero) .knd-divider {
+  border: none;
+  background: var(--l3d-border);
+  opacity: 0.8;
+}
+
+/* -------------------------------------------------------------------------
+   Responsive – keep existing breakpoints, adjust blur if needed on low-end
+   ------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .labs-tool-section:has(.labs-3d-hero) .labs-3d-hero.glass-card-neon,
+  .labs-tool-section:has(.labs-3d-hero) .knd-workspace .knd-panel,
+  .labs-tool-section:has(.labs-3d-hero) .knd-workspace .knd-canvas.knd-panel-soft {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}

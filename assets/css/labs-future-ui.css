@@ -1,0 +1,463 @@
+/**
+ * KND Labs Future UI - Premium Sci-Fi Design System
+ * Scope: .lfu wrapper. 70% SaaS / 20% sci-fi / 10% gaming.
+ * Paleta sobria, iluminación controlada.
+ */
+
+/* === Variables === */
+.lfu {
+  --lfu-bg-main: #070B14;
+  --lfu-bg-secondary: #0B1220;
+  --lfu-panel: #0E1628;
+  --lfu-panel-alt: #101A30;
+  --lfu-border: rgba(90, 180, 255, 0.18);
+  --lfu-border-focus: rgba(53, 194, 255, 0.4);
+  --lfu-cyan: #35C2FF;
+  --lfu-cyan-soft: #67D5FF;
+  --lfu-violet: #8B5CFF;
+  --lfu-magenta: #D946EF;
+  --lfu-text: #F3F7FF;
+  --lfu-text-secondary: #9FB0CC;
+  --lfu-glow-subtle: 0 0 12px rgba(53, 194, 255, 0.15);
+  --lfu-transition: 0.2s ease;
+}
+
+/* === Base === */
+.lfu {
+  background: linear-gradient(180deg, rgba(11, 25, 45, 0.4) 0%, var(--lfu-bg-main) 25%, var(--lfu-bg-main) 100%);
+  min-height: 100vh;
+  color: var(--lfu-text);
+  font-family: inherit;
+}
+
+.lfu * {
+  box-sizing: border-box;
+}
+
+/* === Panel Card === */
+.lfu .lfu-panel {
+  background: var(--lfu-panel);
+  border: 1px solid var(--lfu-border);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  transition: border-color var(--lfu-transition);
+}
+
+.lfu .lfu-panel:hover {
+  border-color: rgba(90, 180, 255, 0.25);
+}
+
+.lfu .lfu-panel-alt {
+  background: var(--lfu-panel-alt);
+}
+
+/* === Panel Header === */
+.lfu .lfu-panel-header {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--lfu-text);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+/* === Section Title === */
+.lfu .lfu-section-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--lfu-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+}
+
+/* === Input / Textarea (sci-fi limpio) === */
+.lfu .lfu-input,
+.lfu .lfu-textarea {
+  width: 100%;
+  background: rgba(7, 11, 20, 0.6);
+  border: 1px solid var(--lfu-border);
+  border-radius: 8px;
+  padding: 0.65rem 0.9rem;
+  color: var(--lfu-text);
+  font-size: 0.9rem;
+  transition: border-color var(--lfu-transition), box-shadow var(--lfu-transition);
+}
+
+.lfu .lfu-input::placeholder,
+.lfu .lfu-textarea::placeholder {
+  color: rgba(159, 176, 204, 0.5);
+}
+
+.lfu .lfu-input:focus,
+.lfu .lfu-textarea:focus {
+  outline: none;
+  border-color: var(--lfu-border-focus);
+  box-shadow: var(--lfu-glow-subtle);
+}
+
+.lfu .lfu-textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+/* === Label === */
+.lfu .lfu-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--lfu-text-secondary);
+  margin-bottom: 0.4rem;
+}
+
+/* === Chip / Preset Pill === */
+.lfu .lfu-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+  color: var(--lfu-text-secondary);
+  background: transparent;
+  border: 1px solid var(--lfu-border);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all var(--lfu-transition);
+  box-shadow: none;
+}
+
+.lfu .lfu-chip:hover {
+  color: var(--lfu-cyan-soft);
+  border-color: rgba(53, 194, 255, 0.5);
+  box-shadow: 0 0 12px rgba(53, 194, 255, 0.15);
+}
+
+.lfu .lfu-chip.active {
+  color: var(--lfu-cyan);
+  border-color: var(--lfu-cyan);
+  background: rgba(53, 194, 255, 0.12);
+  box-shadow: 0 0 14px rgba(53, 194, 255, 0.2);
+}
+
+/* === Buttons === */
+.lfu .lfu-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, var(--lfu-cyan) 0%, var(--lfu-violet) 100%);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 0 24px rgba(53, 194, 255, 0.2), 0 0 48px rgba(139, 92, 255, 0.08);
+  transition: opacity var(--lfu-transition), transform var(--lfu-transition), box-shadow var(--lfu-transition);
+}
+
+.lfu .lfu-btn-primary:hover {
+  opacity: 0.95;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(53, 194, 255, 0.25), 0 0 32px rgba(139, 92, 255, 0.12);
+}
+
+.lfu .lfu-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  color: var(--lfu-cyan-soft);
+  background: transparent;
+  border: 1px solid var(--lfu-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--lfu-transition);
+}
+
+.lfu .lfu-btn-secondary:hover {
+  border-color: var(--lfu-cyan);
+  background: rgba(53, 194, 255, 0.06);
+}
+
+/* === Toggle === */
+.lfu .lfu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+}
+
+.lfu .lfu-toggle-label {
+  font-size: 0.85rem;
+  color: var(--lfu-text-secondary);
+}
+
+.lfu .lfu-toggle-switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: var(--lfu-panel-alt);
+  border: 1px solid var(--lfu-border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all var(--lfu-transition);
+}
+
+.lfu .lfu-toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: var(--lfu-text-secondary);
+  border-radius: 50%;
+  transition: transform var(--lfu-transition);
+}
+
+.lfu .lfu-toggle-switch.active {
+  border-color: var(--lfu-cyan);
+  background: rgba(53, 194, 255, 0.1);
+}
+
+.lfu .lfu-toggle-switch.active::after {
+  transform: translateX(20px);
+  background: var(--lfu-cyan);
+}
+
+/* === Badge Status === */
+.lfu .lfu-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.lfu .lfu-badge.completed {
+  background: rgba(34, 197, 94, 0.22);
+  color: #6ee7b7;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+.lfu .lfu-badge.processing {
+  background: rgba(251, 191, 36, 0.22);
+  color: #fcd34d;
+  border: 1px solid rgba(251, 191, 36, 0.4);
+}
+
+.lfu .lfu-badge.failed {
+  background: rgba(239, 68, 68, 0.22);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+/* === Divider === */
+.lfu .lfu-divider {
+  height: 1px;
+  background: var(--lfu-border);
+  margin: 0.75rem 0;
+  opacity: 0.6;
+}
+
+/* === History Item === */
+.lfu .lfu-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  font-size: 0.85rem;
+  color: var(--lfu-text-secondary);
+  transition: color var(--lfu-transition);
+}
+
+.lfu .lfu-history-item:hover {
+  color: var(--lfu-text);
+}
+
+/* === Result Preview === */
+.lfu .lfu-result {
+  min-height: 260px;
+  background: linear-gradient(165deg, rgba(14, 22, 40, 0.6) 0%, var(--lfu-bg-secondary) 100%);
+  border: 1px solid rgba(90, 180, 255, 0.22);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.lfu .lfu-result-placeholder {
+  text-align: center;
+  padding: 2rem;
+  color: var(--lfu-text-secondary);
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+}
+
+.lfu .lfu-result-placeholder i {
+  display: block;
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  color: var(--lfu-cyan-soft);
+  opacity: 0.4;
+}
+
+.lfu .lfu-result-placeholder p {
+  margin: 0;
+  font-weight: 500;
+  color: var(--lfu-text-secondary);
+}
+
+/* === Select === */
+.lfu .lfu-select {
+  width: 100%;
+  background: rgba(7, 11, 20, 0.6);
+  border: 1px solid var(--lfu-border);
+  border-radius: 8px;
+  padding: 0.5rem 0.9rem;
+  color: var(--lfu-text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color var(--lfu-transition);
+}
+
+.lfu .lfu-select:focus {
+  outline: none;
+  border-color: var(--lfu-border-focus);
+}
+
+/* === Aspect Ratio Buttons === */
+.lfu .lfu-aspect-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.lfu .lfu-aspect-btn {
+  width: 48px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--lfu-border);
+  border-radius: 8px;
+  color: var(--lfu-text-secondary);
+  cursor: pointer;
+  transition: all var(--lfu-transition);
+}
+
+.lfu .lfu-aspect-btn:hover,
+.lfu .lfu-aspect-btn.active {
+  color: var(--lfu-cyan);
+  border-color: var(--lfu-cyan);
+  background: rgba(53, 194, 255, 0.06);
+}
+
+/* === Layout Overrides === */
+.lfu .lfu-page {
+  padding-top: 100px;
+  padding-bottom: 3rem;
+}
+
+.lfu .lfu-breadcrumb {
+  font-size: 0.8rem;
+  color: var(--lfu-text-secondary);
+  margin-bottom: 1rem;
+}
+
+.lfu .lfu-breadcrumb a {
+  color: var(--lfu-cyan-soft);
+  text-decoration: none;
+}
+
+.lfu .lfu-breadcrumb a:hover {
+  color: var(--lfu-cyan);
+}
+
+.lfu .lfu-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--lfu-text);
+  margin-bottom: 0.25rem;
+}
+
+.lfu .lfu-subtitle {
+  font-size: 0.95rem;
+  color: var(--lfu-text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+/* === Sidebar Credits === */
+.lfu .lfu-credits {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--lfu-text);
+}
+
+.lfu .lfu-credits i {
+  color: var(--lfu-cyan);
+}
+
+/* === Collapsible === */
+.lfu .lfu-collapse-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5rem 0;
+  font-size: 0.85rem;
+  color: var(--lfu-text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--lfu-transition);
+}
+
+.lfu .lfu-collapse-trigger:hover {
+  color: var(--lfu-text);
+}
+
+.lfu .lfu-collapse-trigger i {
+  transition: transform var(--lfu-transition);
+}
+
+.lfu .lfu-collapse-trigger[aria-expanded="true"] i {
+  transform: rotate(180deg);
+}
+
+.lfu .lfu-collapse-content {
+  padding-top: 0.5rem;
+}
+
+/* === Responsive === */
+@media (max-width: 991px) {
+  .lfu .lfu-result {
+    min-height: 200px;
+  }
+
+  .lfu .lfu-result-placeholder i {
+    font-size: 2.75rem;
+  }
+
+  .lfu .lfu-sidebar {
+    margin-top: 1.5rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .lfu .lfu-panel {
+    padding: 1rem;
+  }
+
+  .lfu .lfu-title {
+    font-size: 1.4rem;
+  }
+}

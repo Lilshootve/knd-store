@@ -1,0 +1,326 @@
+/**
+ * KND Insight — Premium Above/Under Visual Identity
+ * Vision, prediction, intuition. Distinct from LastRoll (gold).
+ * @scope .insight-page, .arena-embed.insight-context
+ */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap');
+
+:root {
+  --insight-bg: #050608;
+  --insight-bg-elevated: #0a0d12;
+  --insight-surface: rgba(12, 16, 24, 0.85);
+  --insight-surface-glass: rgba(14, 20, 32, 0.72);
+  --insight-border: rgba(139, 92, 246, 0.12);
+  --insight-border-active: rgba(139, 92, 246, 0.35);
+  --insight-accent: #8b5cf6;
+  --insight-accent-alt: #a78bfa;
+  --insight-accent-soft: rgba(139, 92, 246, 0.15);
+  --insight-accent-glow: rgba(139, 92, 246, 0.25);
+  --insight-under: #22d3ee;
+  --insight-under-soft: rgba(34, 211, 238, 0.15);
+  --insight-above: #f472b6;
+  --insight-above-soft: rgba(244, 114, 182, 0.15);
+  --insight-danger: #e74c3c;
+  --insight-danger-soft: rgba(231, 76, 60, 0.12);
+  --insight-success: #27ae60;
+  --insight-success-soft: rgba(39, 174, 96, 0.12);
+  --insight-text: rgba(255, 252, 245, 0.98);
+  --insight-text-muted: rgba(255, 252, 245, 0.65);
+  --insight-text-dim: rgba(255, 252, 245, 0.45);
+  --insight-radius: 14px;
+  --insight-radius-sm: 10px;
+  --insight-font-display: 'Syne', 'Orbitron', system-ui, sans-serif;
+  --insight-font-mono: 'JetBrains Mono', 'Consolas', monospace;
+  --insight-transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Brand & Header ───────────────────────────────────────── */
+.insight-page .insight-brand {
+  font-family: var(--insight-font-display);
+  font-weight: 800;
+  font-size: 2rem;
+  letter-spacing: 0.02em;
+  background: linear-gradient(135deg, #e9d5ff 0%, var(--insight-accent) 50%, #6d28d9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.insight-page .insight-brand i {
+  -webkit-text-fill-color: var(--insight-accent);
+  margin-right: 0.5rem;
+}
+
+.insight-page .insight-subtitle {
+  font-size: 0.9rem;
+  color: var(--insight-text-muted);
+  margin-top: 0.25rem;
+}
+
+.insight-page .insight-beta-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  background: var(--insight-accent-soft);
+  border: 1px solid var(--insight-border-active);
+  color: var(--insight-accent);
+}
+
+/* ── Balance Card ─────────────────────────────────────────── */
+.insight-page .insight-balance-card {
+  background: var(--insight-surface-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--insight-border);
+  border-radius: var(--insight-radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.02);
+  transition: border-color var(--insight-transition), box-shadow var(--insight-transition);
+  animation: insight-card-in 0.4s ease-out;
+}
+
+.insight-page .insight-balance-card:hover {
+  border-color: var(--insight-border-active);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 24px rgba(139, 92, 246, 0.08);
+}
+
+.insight-page .insight-kp-value {
+  font-family: var(--insight-font-mono);
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--insight-accent);
+  text-shadow: 0 0 24px rgba(139, 92, 246, 0.2);
+}
+
+.insight-page .insight-entry-select {
+  background: var(--insight-bg-elevated) !important;
+  border: 1px solid var(--insight-border) !important;
+  color: var(--insight-text) !important;
+  font-family: var(--insight-font-mono) !important;
+  font-weight: 600 !important;
+  border-radius: var(--insight-radius-sm) !important;
+}
+
+.insight-page .insight-entry-select:focus {
+  border-color: var(--insight-accent) !important;
+  box-shadow: 0 0 0 3px var(--insight-accent-soft) !important;
+}
+
+.insight-page .insight-payout-preview {
+  color: var(--insight-success) !important;
+  font-weight: 700;
+}
+
+/* ── Dice ────────────────────────────────────────────────── */
+.insight-page .insight-dice-wrap,
+.insight-page #au-dice-wrap.dr-hud-card {
+  background: linear-gradient(145deg, rgba(14, 20, 32, 0.9) 0%, rgba(8, 12, 20, 0.95) 100%) !important;
+  border: 1px solid var(--insight-border-active) !important;
+  border-radius: 18px;
+  padding: 16px 20px 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03), 0 0 24px rgba(139, 92, 246, 0.1);
+}
+
+.insight-page .insight-dice-wrap .dr-dice-plate,
+.insight-page #au-dice-wrap .dr-dice-plate {
+  fill: rgba(8, 12, 24, 0.9);
+  stroke: rgba(139, 92, 246, 0.35);
+}
+
+.insight-page .insight-dice-wrap .dr-dice-glow,
+.insight-page #au-dice-wrap .dr-dice-glow {
+  fill: rgba(139, 92, 246, 0.06);
+}
+
+.insight-page .insight-dice-wrap .dr-dice-text,
+.insight-page #au-dice-wrap .dr-dice-text {
+  font-family: var(--insight-font-mono);
+  fill: rgba(139, 92, 246, 0.95);
+}
+
+.insight-page .insight-dice-wrap .dr-dice-text.dr-critical,
+.insight-page #au-dice-wrap .dr-dice-text.dr-critical {
+  fill: var(--insight-danger);
+  filter: drop-shadow(0 0 8px rgba(231, 76, 60, 0.5));
+}
+
+.insight-page .insight-dice-wrap.dr-rolling,
+.insight-page #au-dice-wrap.dr-rolling {
+  border-color: var(--insight-accent) !important;
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.25), 0 0 60px rgba(139, 92, 246, 0.1) !important;
+  animation: insight-dice-pulse 0.8s ease-in-out infinite;
+}
+
+.insight-page .insight-dice-wrap.dr-result,
+.insight-page #au-dice-wrap.dr-result {
+  border-color: var(--insight-accent) !important;
+  box-shadow: 0 0 24px rgba(139, 92, 246, 0.2) !important;
+}
+
+@keyframes insight-dice-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.2), 0 0 40px rgba(139, 92, 246, 0.08); }
+  50% { box-shadow: 0 0 35px rgba(139, 92, 246, 0.35), 0 0 70px rgba(139, 92, 246, 0.15); }
+}
+
+/* ── Action Buttons ──────────────────────────────────────── */
+.insight-page .insight-btn-under {
+  background: var(--insight-under-soft) !important;
+  border: 2px solid rgba(34, 211, 238, 0.5) !important;
+  color: var(--insight-under) !important;
+  font-family: var(--insight-font-display) !important;
+  font-weight: 700 !important;
+  min-width: 140px;
+  padding: 16px 24px;
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+  border-radius: var(--insight-radius);
+  transition: transform var(--insight-transition), box-shadow var(--insight-transition);
+}
+
+.insight-page .insight-btn-under:hover:not(:disabled) {
+  background: rgba(34, 211, 238, 0.25) !important;
+  border-color: var(--insight-under) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(34, 211, 238, 0.3);
+  color: #fff !important;
+}
+
+.insight-page .insight-btn-above {
+  background: var(--insight-above-soft) !important;
+  border: 2px solid rgba(244, 114, 182, 0.5) !important;
+  color: var(--insight-above) !important;
+  font-family: var(--insight-font-display) !important;
+  font-weight: 700 !important;
+  min-width: 140px;
+  padding: 16px 24px;
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+  border-radius: var(--insight-radius);
+  transition: transform var(--insight-transition), box-shadow var(--insight-transition);
+}
+
+.insight-page .insight-btn-above:hover:not(:disabled) {
+  background: rgba(244, 114, 182, 0.25) !important;
+  border-color: var(--insight-above) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(244, 114, 182, 0.3);
+  color: #fff !important;
+}
+
+.insight-page .insight-btn-under:disabled,
+.insight-page .insight-btn-above:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Result Banner ───────────────────────────────────────── */
+.insight-page .insight-result-banner {
+  border-radius: var(--insight-radius);
+  overflow: hidden;
+  animation: insight-banner-in 0.4s ease-out;
+}
+
+.insight-page .insight-result-banner.win .alert {
+  background: var(--insight-success-soft) !important;
+  border: 1px solid rgba(39, 174, 96, 0.4) !important;
+  color: var(--insight-text) !important;
+  box-shadow: 0 0 20px rgba(39, 174, 96, 0.15);
+}
+
+.insight-page .insight-result-banner.lose .alert {
+  background: var(--insight-danger-soft) !important;
+  border: 1px solid rgba(231, 76, 60, 0.4) !important;
+  color: var(--insight-text) !important;
+  box-shadow: 0 0 20px rgba(231, 76, 60, 0.1);
+}
+
+@keyframes insight-banner-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes insight-card-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── History Card ───────────────────────────────────────── */
+.insight-page .insight-history-card {
+  background: var(--insight-surface-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--insight-border);
+  border-radius: var(--insight-radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.02);
+  animation: insight-card-in 0.4s ease-out 0.1s both;
+}
+
+.insight-page .insight-history-card:hover {
+  border-color: var(--insight-border-active);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 24px rgba(139, 92, 246, 0.08);
+}
+
+.insight-page .insight-history-title {
+  font-family: var(--insight-font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--insight-text);
+  margin-bottom: 1rem;
+}
+
+.insight-page .insight-history-title i {
+  color: var(--insight-accent);
+  margin-right: 0.5rem;
+}
+
+.insight-page .insight-history-card .table {
+  --bs-table-bg: transparent;
+  --bs-table-border-color: var(--insight-border);
+}
+
+.insight-page .insight-history-card th {
+  font-family: var(--insight-font-display);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--insight-text-muted);
+  border-color: var(--insight-border);
+}
+
+.insight-page .insight-history-card td {
+  color: var(--insight-text);
+  border-color: var(--insight-border);
+  font-family: var(--insight-font-mono);
+  font-size: 0.9rem;
+}
+
+.insight-page .insight-history-card .insight-row-win {
+  background: var(--insight-success-soft);
+}
+
+.insight-page .insight-history-card .insight-row-win td {
+  border-color: rgba(39, 174, 96, 0.2);
+}
+
+.insight-page .insight-history-card .insight-row-lose {
+  background: var(--insight-danger-soft);
+}
+
+.insight-page .insight-history-card .insight-row-lose td {
+  border-color: rgba(231, 76, 60, 0.2);
+}
+
+/* ── Back Link ───────────────────────────────────────────── */
+.insight-page .insight-back-link {
+  font-size: 0.85rem;
+  color: var(--insight-text-muted);
+  text-decoration: none;
+  transition: color var(--insight-transition);
+}
+
+.insight-page .insight-back-link:hover {
+  color: var(--insight-accent);
+}

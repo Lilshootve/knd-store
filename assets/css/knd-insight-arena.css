@@ -1,0 +1,1052 @@
+/**
+ * KND Insight — Holographic Prediction Arena (from knd-insight-concept.html)
+ * Scoped to .insight-knd-arena so it coexists with site nav / embed.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+
+/* ═══════════════════════════════════════════════════════════
+   KND INSIGHT — HOLOGRAPHIC PREDICTION ARENA
+   Split-zone UI. Left=UNDER (cold blue). Right=ABOVE (hot magenta).
+═══════════════════════════════════════════════════════════ */
+.insight-knd-arena {
+  --void: #010508;
+  --deep: #020c14;
+  --surface: #04131c;
+  --c: #00e8ff;
+  --c2: #00a8bb;
+  --cg: rgba(0, 232, 255, 0.12);
+  --m: #d44fff;
+  --m2: #9b30ff;
+  --mg: rgba(212, 79, 255, 0.12);
+  --gold: #ffcc00;
+  --green: #00ff99;
+  --red: #ff2255;
+  --t1: rgba(220, 248, 255, 0.95);
+  --t2: rgba(155, 215, 235, 0.62);
+  --t3: rgba(90, 165, 190, 0.38);
+  --FD: 'Orbitron', monospace;
+  --FB: 'Rajdhani', sans-serif;
+  --FM: 'Share Tech Mono', monospace;
+  position: relative;
+  z-index: 1;
+  min-height: min(720px, calc(100vh - 96px));
+  overflow: hidden;
+  background: var(--void);
+  color: var(--t1);
+  font-family: var(--FB);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
+  box-sizing: border-box;
+}
+
+.insight-knd-arena.embed-fill {
+  min-height: 100vh;
+}
+
+.insight-knd-arena,
+.insight-knd-arena * {
+  box-sizing: border-box;
+}
+
+/* Scanlines */
+.insight-knd-arena::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.04) 2px,
+    rgba(0, 0, 0, 0.04) 3px
+  );
+}
+
+/* ── BACKGROUND ── */
+.insight-knd-arena #insight-arena-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.insight-knd-arena #insight-arena-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 50% 60% at 25% 50%, rgba(0, 100, 180, 0.12), transparent 60%),
+    radial-gradient(ellipse 50% 60% at 75% 50%, rgba(160, 40, 200, 0.1), transparent 60%),
+    radial-gradient(ellipse 80% 40% at 50% 110%, rgba(0, 40, 80, 0.2), transparent 50%),
+    var(--void);
+}
+.insight-knd-arena #insight-arena-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 232, 255, 0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 232, 255, 0.012) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.insight-knd-arena .bg-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    transparent 5%,
+    rgba(255, 255, 255, 0.08) 30%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.08) 70%,
+    transparent 95%
+  );
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.04);
+  z-index: 1;
+}
+
+/* ── LAYOUT ── */
+.insight-knd-arena .insight-arena-app {
+  position: relative;
+  z-index: 1;
+  min-height: inherit;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+}
+
+/* ── TOP BAR ── */
+.insight-knd-arena .topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 56px;
+  background: rgba(2, 12, 20, 0.88);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  z-index: 10;
+}
+.insight-knd-arena .tb-brand {
+  font-family: var(--FD);
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: var(--c);
+  text-shadow: 0 0 18px rgba(0, 232, 255, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.insight-knd-arena .tb-brand .eye {
+  font-size: 20px;
+  filter: drop-shadow(0 0 8px var(--c));
+  animation: insightEyePulse 3s ease-in-out infinite;
+}
+@keyframes insightEyePulse {
+  0%,
+  100% {
+    opacity: 0.7;
+    filter: drop-shadow(0 0 6px var(--c));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 14px var(--m));
+  }
+}
+.insight-knd-arena .tb-balance {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--FM);
+  font-size: 13px;
+  color: var(--gold);
+  padding: 4px 12px;
+  border: 1px solid rgba(255, 204, 0, 0.2);
+  background: rgba(255, 204, 0, 0.04);
+  border-radius: 20px;
+}
+.insight-knd-arena .tb-streak {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--FD);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--green);
+  text-shadow: 0 0 8px rgba(0, 255, 153, 0.4);
+}
+.insight-knd-arena .tb-streak.cold {
+  color: var(--red);
+  text-shadow: 0 0 8px rgba(255, 34, 85, 0.4);
+}
+.insight-knd-arena .tb-back {
+  font-family: var(--FM);
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--t3);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.insight-knd-arena .tb-back:hover {
+  color: var(--c);
+}
+
+/* ── MAIN ARENA ── */
+.insight-knd-arena .arena {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  overflow: hidden;
+  min-height: 280px;
+}
+
+/* Split zones */
+.insight-knd-arena .zone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  overflow: hidden;
+  gap: 10px;
+  padding: 20px;
+}
+.insight-knd-arena .zone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.insight-knd-arena .zone:hover::before {
+  opacity: 1;
+}
+.insight-knd-arena .zone:active {
+  transform: scale(0.98);
+}
+.insight-knd-arena .zone-under::before {
+  background: radial-gradient(ellipse at 50% 60%, rgba(0, 120, 200, 0.15), transparent 65%);
+}
+.insight-knd-arena .zone-under:hover {
+  background: rgba(0, 120, 200, 0.04);
+}
+.insight-knd-arena .zone-under .zone-arrow {
+  color: var(--c);
+  text-shadow: 0 0 20px rgba(0, 232, 255, 0.5);
+}
+.insight-knd-arena .zone-above::before {
+  background: radial-gradient(ellipse at 50% 40%, rgba(180, 40, 220, 0.12), transparent 65%);
+}
+.insight-knd-arena .zone-above:hover {
+  background: rgba(180, 40, 220, 0.04);
+}
+.insight-knd-arena .zone-above .zone-arrow {
+  color: var(--m);
+  text-shadow: 0 0 20px rgba(212, 79, 255, 0.5);
+}
+.insight-knd-arena .zone-arrow {
+  font-size: clamp(48px, 8vw, 72px);
+  transition: transform 0.3s;
+}
+.insight-knd-arena .zone:hover .zone-arrow {
+  transform: scale(1.15);
+}
+.insight-knd-arena .zone-label {
+  font-family: var(--FD);
+  font-size: clamp(20px, 4vw, 32px);
+  font-weight: 900;
+  letter-spacing: 6px;
+}
+.insight-knd-arena .zone-range {
+  font-family: var(--FM);
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: var(--t3);
+}
+.insight-knd-arena .zone-odds {
+  font-family: var(--FM);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--t3);
+  margin-top: 4px;
+}
+.insight-knd-arena .zone-under:hover {
+  border-right: 1px solid rgba(0, 232, 255, 0.15);
+}
+.insight-knd-arena .zone-above:hover {
+  border-left: 1px solid rgba(212, 79, 255, 0.15);
+}
+.insight-knd-arena .zone.is-disabled {
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+/* ── CENTER NEXUS ── */
+.insight-knd-arena .nexus {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  pointer-events: none;
+}
+.insight-knd-arena .nexus-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 232, 255, 0.12);
+  animation: insightRingBreath 4s ease-in-out infinite;
+}
+.insight-knd-arena .nexus-ring.r1 {
+  width: 220px;
+  height: 220px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow:
+    0 0 40px rgba(0, 232, 255, 0.06),
+    inset 0 0 40px rgba(0, 232, 255, 0.03);
+}
+.insight-knd-arena .nexus-ring.r2 {
+  width: 180px;
+  height: 180px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-color: rgba(212, 79, 255, 0.1);
+  animation-delay: 0.6s;
+}
+.insight-knd-arena .nexus-ring.r3 {
+  width: 140px;
+  height: 140px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-color: rgba(255, 255, 255, 0.06);
+  animation-delay: 1.2s;
+}
+@keyframes insightRingBreath {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+.insight-knd-arena .dice-shell {
+  width: 120px;
+  height: 120px;
+  position: relative;
+  z-index: 5;
+  animation: insightDiceFloat 4s ease-in-out infinite;
+}
+@keyframes insightDiceFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+.insight-knd-arena .dice-face {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  background: rgba(4, 19, 28, 0.92);
+  border: 2px solid rgba(0, 232, 255, 0.25);
+  box-shadow:
+    0 0 30px rgba(0, 232, 255, 0.15),
+    inset 0 0 20px rgba(0, 232, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--FD);
+  font-size: 42px;
+  font-weight: 900;
+  color: var(--c);
+  text-shadow: 0 0 20px rgba(0, 232, 255, 0.5);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.insight-knd-arena .dice-face::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 4px,
+    rgba(0, 232, 255, 0.02) 4px,
+    rgba(0, 232, 255, 0.02) 5px
+  );
+  pointer-events: none;
+}
+.insight-knd-arena .dice-face::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  top: 14px;
+  left: 14px;
+  background: rgba(0, 232, 255, 0.2);
+  box-shadow:
+    76px 0 0 rgba(0, 232, 255, 0.2),
+    0 76px 0 rgba(0, 232, 255, 0.2),
+    76px 76px 0 rgba(0, 232, 255, 0.2);
+}
+.insight-knd-arena .dice-value {
+  position: relative;
+  z-index: 2;
+}
+.insight-knd-arena .dice-shell.rolling .dice-face {
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow:
+    0 0 50px rgba(0, 232, 255, 0.3),
+    0 0 80px rgba(212, 79, 255, 0.15);
+  animation: insightDiceRollShake 0.08s ease-in-out infinite;
+}
+.insight-knd-arena .dice-shell.rolling {
+  animation: none;
+}
+@keyframes insightDiceRollShake {
+  0% {
+    transform: rotate(-4deg) scale(1.03);
+  }
+  50% {
+    transform: rotate(4deg) scale(0.97);
+  }
+  100% {
+    transform: rotate(-4deg) scale(1.03);
+  }
+}
+.insight-knd-arena .dice-shell.result-under .dice-face {
+  border-color: var(--c);
+  box-shadow: 0 0 40px rgba(0, 232, 255, 0.35);
+  animation: insightResultPop 0.4s cubic-bezier(0.15, 1.2, 0.3, 1);
+}
+.insight-knd-arena .dice-shell.result-above .dice-face {
+  border-color: var(--m);
+  box-shadow: 0 0 40px rgba(212, 79, 255, 0.35);
+  animation: insightResultPop 0.4s cubic-bezier(0.15, 1.2, 0.3, 1);
+}
+.insight-knd-arena .dice-shell.result-above .dice-face .dice-value {
+  color: var(--m);
+  text-shadow: 0 0 20px rgba(212, 79, 255, 0.5);
+}
+@keyframes insightResultPop {
+  0% {
+    transform: scale(1.25);
+  }
+  60% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.insight-knd-arena .dice-shell.result-critical .dice-face .dice-value {
+  color: var(--red);
+  text-shadow: 0 0 20px rgba(255, 34, 85, 0.6);
+}
+.insight-knd-arena .dice-status {
+  font-family: var(--FM);
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--t3);
+  text-transform: uppercase;
+  position: relative;
+  z-index: 5;
+}
+
+/* ── ENTRY SELECTOR ── */
+.insight-knd-arena .entry-bar {
+  position: absolute;
+  left: 50%;
+  bottom: calc(50% - 130px);
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 10px;
+  max-width: calc(100% - 24px);
+  pointer-events: all;
+  background: rgba(4, 19, 28, 0.9);
+  border: 1px solid rgba(0, 232, 255, 0.12);
+  backdrop-filter: blur(16px);
+  padding: 8px 14px 8px 36px;
+  border-radius: 20px;
+}
+.insight-knd-arena .entry-label {
+  font-family: var(--FM);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--t3);
+  text-transform: uppercase;
+}
+.insight-knd-arena .entry-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  justify-content: center;
+  max-width: 320px;
+}
+.insight-knd-arena .entry-chip {
+  font-family: var(--FM);
+  font-size: 11px;
+  padding: 3px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--t2);
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+  border-radius: 12px;
+}
+.insight-knd-arena .entry-chip:hover {
+  border-color: rgba(0, 232, 255, 0.25);
+  color: var(--c);
+}
+.insight-knd-arena .entry-chip.active {
+  border-color: var(--c);
+  color: var(--c);
+  background: rgba(0, 232, 255, 0.08);
+  box-shadow: 0 0 10px rgba(0, 232, 255, 0.15);
+}
+.insight-knd-arena .entry-chip:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.insight-knd-arena .entry-payout {
+  font-family: var(--FM);
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 1px;
+  width: 100%;
+  text-align: center;
+}
+
+/* ── END-GAME OVERLAY (Mind Wars arena style — KP-only rewards) ── */
+#insight-endgame {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s;
+  --egmw-c: #00f0ff;
+  --egmw-m: #d400ff;
+}
+#insight-endgame.show {
+  opacity: 1;
+  pointer-events: all;
+}
+#insight-endgame-bg {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(22px) saturate(1.5) brightness(0.7);
+  transition: background 0.6s;
+}
+#insight-endgame.win #insight-endgame-bg {
+  background: radial-gradient(ellipse at 50% 40%, rgba(0, 40, 60, 0.85), rgba(0, 5, 12, 0.95));
+}
+#insight-endgame.lose #insight-endgame-bg {
+  background: radial-gradient(ellipse at 50% 40%, rgba(40, 0, 20, 0.85), rgba(8, 0, 5, 0.95));
+}
+#insight-endgame-confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+#insight-endgame .confetti-p {
+  position: absolute;
+  width: 6px;
+  height: 10px;
+  opacity: 0;
+  animation: insightMwEgConfetti var(--dur, 3s) ease-in var(--delay, 0s) forwards;
+}
+@keyframes insightMwEgConfetti {
+  0% {
+    opacity: 1;
+    transform: translateY(-20px) rotate(0deg) scale(1);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100vh) rotate(var(--rot, 720deg)) scale(0.3);
+  }
+}
+#insight-endgame-panel {
+  position: relative;
+  z-index: 2;
+  width: min(94vw, 580px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+}
+#insight-endgame {
+  --egc: var(--egmw-c);
+}
+#insight-endgame .eg-tl {
+  width: 100%;
+  height: 3px;
+  background: var(--egc, var(--c));
+  box-shadow:
+    0 0 30px var(--egc, var(--c)),
+    0 0 60px var(--egc, var(--c));
+  transform: scaleX(0);
+}
+#insight-endgame .eg-tl.anim {
+  animation: insightMwEgLine 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+@keyframes insightMwEgLine {
+  to {
+    transform: scaleX(1);
+  }
+}
+#insight-endgame .eg-box {
+  width: 100%;
+  background: linear-gradient(180deg, rgba(5, 17, 26, 0.95), rgba(3, 10, 18, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: none;
+  border-bottom: none;
+  padding: 32px 36px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  position: relative;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px));
+}
+#insight-endgame.win .eg-box {
+  border-color: rgba(0, 240, 255, 0.12);
+}
+#insight-endgame.lose .eg-box {
+  border-color: rgba(212, 0, 255, 0.12);
+}
+#insight-endgame .eg-res {
+  font-family: var(--FD);
+  font-weight: 900;
+  letter-spacing: 8px;
+  line-height: 1;
+  color: var(--egc, var(--c));
+  margin-top: 4px;
+  text-transform: uppercase;
+  text-shadow:
+    0 0 30px var(--egc, var(--c)),
+    0 0 80px var(--egc, var(--c));
+  font-size: clamp(36px, 7vw, 56px);
+  opacity: 0;
+  transform: translateY(24px) scaleX(0.7);
+}
+#insight-endgame .eg-res.anim {
+  animation: insightMwEgTitleSlam 0.5s cubic-bezier(0.15, 1, 0.3, 1) forwards;
+}
+@keyframes insightMwEgTitleSlam {
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleX(1);
+  }
+}
+#insight-endgame .eg-sub {
+  font-family: var(--FM);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--t2);
+  margin-top: 8px;
+  opacity: 0;
+  transform: translateY(8px);
+}
+#insight-endgame .eg-sub.anim {
+  animation: insightMwEgFade 0.4s ease forwards;
+}
+@keyframes insightMwEgFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+#insight-endgame .eg-div {
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  margin: 18px 0;
+  opacity: 0;
+}
+#insight-endgame .eg-div.anim {
+  animation: insightMwEgFade 0.3s ease forwards;
+}
+#insight-endgame .eg-sr {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  width: 100%;
+  margin-top: 4px;
+}
+#insight-endgame .eg-si {
+  text-align: center;
+  opacity: 0;
+  transform: translateY(12px);
+}
+#insight-endgame .eg-si.anim {
+  animation: insightMwEgStatPop 0.5s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+}
+@keyframes insightMwEgStatPop {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+#insight-endgame .eg-sv {
+  font-family: var(--FD);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--egc, var(--c));
+  text-shadow: 0 0 14px var(--egc, var(--c));
+}
+#insight-endgame .eg-sv.eg-text-sm {
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+}
+#insight-endgame .eg-sl {
+  font-family: var(--FM);
+  font-size: 7px;
+  letter-spacing: 2.5px;
+  color: var(--t3);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+#insight-endgame .eg-rw {
+  display: flex;
+  gap: 18px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+#insight-endgame .eg-ri {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--FM);
+  font-size: 13px;
+  opacity: 0;
+  transform: scale(0.5) translateY(10px);
+}
+#insight-endgame .eg-ri.anim {
+  animation: insightMwEgRewardPop 0.5s cubic-bezier(0.15, 1.2, 0.3, 1) forwards;
+}
+@keyframes insightMwEgRewardPop {
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+#insight-endgame .eg-rv {
+  font-weight: 700;
+  font-family: var(--FD);
+  font-size: 18px;
+}
+#insight-endgame .eg-rv.kp {
+  color: var(--gold);
+  text-shadow: 0 0 14px rgba(255, 204, 0, 0.35);
+}
+#insight-endgame .eg-rv.kp.lose {
+  color: var(--red);
+  text-shadow: 0 0 14px rgba(255, 34, 85, 0.4);
+}
+#insight-endgame .eg-ri-lbl {
+  font-family: var(--FM);
+  font-size: 7px;
+  letter-spacing: 2px;
+  color: var(--t3);
+  text-transform: uppercase;
+}
+#insight-endgame .eg-q {
+  font-family: var(--FB);
+  font-size: 14px;
+  font-style: italic;
+  color: var(--t2);
+  line-height: 1.6;
+  max-width: 380px;
+  margin-top: 18px;
+  min-height: 22px;
+  opacity: 0;
+}
+#insight-endgame .eg-q.anim {
+  animation: insightMwEgFade 0.3s ease forwards;
+}
+#insight-endgame .eg-btns {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(10px);
+}
+#insight-endgame .eg-btns.anim {
+  animation: insightMwEgFade 0.4s ease forwards;
+}
+#insight-endgame .eg-btn {
+  background: transparent;
+  border: 1px solid var(--egc, var(--c));
+  color: var(--egc, var(--c));
+  font-family: var(--FD);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  padding: 12px 28px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+  clip-path: polygon(6px 0%, 100% 0%, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+}
+#insight-endgame .eg-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--egc, var(--c));
+  opacity: 0;
+  transition: opacity 0.22s;
+}
+#insight-endgame .eg-btn:hover::before {
+  opacity: 0.12;
+}
+#insight-endgame .eg-btn:hover {
+  box-shadow: 0 0 28px var(--egc, var(--c));
+  letter-spacing: 4px;
+}
+#insight-endgame .eg-btn.sec {
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--t2);
+}
+#insight-endgame .eg-btn.sec:hover {
+  border-color: var(--t2);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+}
+#insight-endgame .eg-bl {
+  width: 100%;
+  height: 3px;
+  background: var(--egc, var(--c));
+  box-shadow:
+    0 0 30px var(--egc, var(--c)),
+    0 0 60px var(--egc, var(--c));
+  transform: scaleX(0);
+}
+#insight-endgame .eg-bl.anim {
+  animation: insightMwEgLine 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+#insight-endgame.insight-eg-error .eg-sr,
+#insight-endgame.insight-eg-error .eg-rw,
+#insight-endgame.insight-eg-error #insight-egd1,
+#insight-endgame.insight-eg-error #insight-egd2 {
+  display: none !important;
+}
+
+/* ── BOTTOM BAR ── */
+.insight-knd-arena .bottombar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 20px;
+  background: rgba(2, 12, 20, 0.9);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  z-index: 10;
+  gap: 12px;
+}
+.insight-knd-arena .history-label {
+  font-family: var(--FD);
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: var(--t3);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.insight-knd-arena .history-strip {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  flex: 1;
+  padding: 2px 0;
+}
+.insight-knd-arena .history-strip::-webkit-scrollbar {
+  height: 0;
+}
+.insight-knd-arena .history-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--FD);
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+  cursor: default;
+  position: relative;
+}
+.insight-knd-arena .history-dot:hover {
+  transform: scale(1.15);
+}
+.insight-knd-arena .history-dot.win {
+  background: rgba(0, 255, 153, 0.1);
+  border: 1px solid rgba(0, 255, 153, 0.25);
+  color: var(--green);
+}
+.insight-knd-arena .history-dot.lose {
+  background: rgba(255, 34, 85, 0.08);
+  border: 1px solid rgba(255, 34, 85, 0.2);
+  color: var(--red);
+}
+.insight-knd-arena .history-dot .hd-choice {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  font-size: 6px;
+  font-family: var(--FM);
+  letter-spacing: 1px;
+  color: var(--t3);
+}
+.insight-knd-arena .bb-stats {
+  display: flex;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.insight-knd-arena .bb-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.insight-knd-arena .bb-sv {
+  font-family: var(--FD);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.insight-knd-arena .bb-sv.win-rate {
+  color: var(--c);
+}
+.insight-knd-arena .bb-sv.profit {
+  color: var(--green);
+}
+.insight-knd-arena .bb-sv.profit.neg {
+  color: var(--red);
+}
+.insight-knd-arena .bb-sl {
+  font-family: var(--FM);
+  font-size: 7px;
+  letter-spacing: 2px;
+  color: var(--t3);
+  text-transform: uppercase;
+}
+
+/* ── STREAK BANNER ── */
+.insight-knd-arena .streak-banner {
+  position: absolute;
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  font-family: var(--FD);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  padding: 4px 18px;
+  border-radius: 20px;
+  opacity: 0;
+  transition: all 0.4s;
+  pointer-events: none;
+  text-align: center;
+  max-width: 92%;
+}
+.insight-knd-arena .streak-banner.show {
+  opacity: 1;
+}
+.insight-knd-arena .streak-banner.hot {
+  color: var(--green);
+  border: 1px solid rgba(0, 255, 153, 0.3);
+  background: rgba(0, 255, 153, 0.06);
+  box-shadow: 0 0 20px rgba(0, 255, 153, 0.1);
+  text-shadow: 0 0 10px rgba(0, 255, 153, 0.5);
+}
+.insight-knd-arena .streak-banner.cold {
+  color: var(--red);
+  border: 1px solid rgba(255, 34, 85, 0.3);
+  background: rgba(255, 34, 85, 0.06);
+  box-shadow: 0 0 20px rgba(255, 34, 85, 0.1);
+  text-shadow: 0 0 10px rgba(255, 34, 85, 0.5);
+}
+
+@media (max-width: 768px) {
+  .insight-knd-arena .arena {
+    flex-direction: column;
+  }
+  .insight-knd-arena .zone {
+    flex: none;
+    height: 50%;
+  }
+  .insight-knd-arena .zone-under {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  .insight-knd-arena .zone-above {
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+  }
+  .insight-knd-arena .bg-divider {
+    top: 50%;
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 5%,
+      rgba(255, 255, 255, 0.1) 30%,
+      rgba(255, 255, 255, 0.12) 50%,
+      rgba(255, 255, 255, 0.1) 70%,
+      transparent 95%
+    );
+  }
+  .insight-knd-arena .nexus-ring {
+    display: none;
+  }
+  .insight-knd-arena .entry-bar {
+    bottom: auto;
+    top: calc(50% + 80px);
+  }
+}

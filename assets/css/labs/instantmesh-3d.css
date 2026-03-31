@@ -1,0 +1,355 @@
+.instantmesh-page {
+    --im-border: rgba(103, 213, 255, 0.18);
+    --im-soft: rgba(8, 16, 28, 0.7);
+}
+
+.instantmesh-hero {
+    border: 1px solid var(--im-border);
+    border-radius: 18px;
+    padding: 1.5rem;
+    background: radial-gradient(circle at top right, rgba(53, 194, 255, 0.12), transparent 42%), linear-gradient(145deg, rgba(8, 16, 28, 0.95), rgba(10, 24, 38, 0.86));
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    box-shadow: 0 22px 50px rgba(3, 8, 16, 0.45);
+}
+
+.instantmesh-hero__content {
+    min-width: 0;
+}
+
+.instantmesh-hero__badge {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid rgba(53, 194, 255, 0.45);
+    color: var(--knd-accent-soft);
+    font-size: 0.74rem;
+    margin-bottom: 0.9rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.instantmesh-hero__title {
+    margin: 0;
+    font-size: clamp(1.7rem, 3vw, 2.45rem);
+    line-height: 1.1;
+}
+
+.instantmesh-hero__subtitle {
+    color: var(--knd-text-alt);
+    margin-top: 0.65rem;
+    margin-bottom: 1rem;
+    max-width: 62ch;
+}
+
+.instantmesh-chips {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.instantmesh-hero .knd-chip {
+    background: rgba(53, 194, 255, 0.11);
+    border: 1px solid rgba(53, 194, 255, 0.25);
+    color: rgba(220, 246, 255, 0.92);
+}
+
+.instantmesh-hero__stats {
+    display: grid;
+    gap: 0.55rem;
+    padding: 0.8rem;
+    border-radius: 14px;
+    border: 1px solid rgba(103, 213, 255, 0.16);
+    background: rgba(6, 14, 25, 0.6);
+}
+
+.instantmesh-stat-card {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 0.62rem 0.72rem;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.instantmesh-stat-card__label {
+    display: block;
+    color: rgba(220, 246, 255, 0.62);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.14rem;
+}
+
+.instantmesh-stat-card__value {
+    color: #e8f6ff;
+    font-size: 0.9rem;
+}
+
+.instantmesh-layout {
+    display: grid;
+    grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+    gap: 1.1rem;
+}
+
+.instantmesh-input-panel,
+.instantmesh-output-panel {
+    min-height: 480px;
+    border: 1px solid rgba(103, 213, 255, 0.15);
+    box-shadow: 0 14px 36px rgba(3, 8, 16, 0.34);
+}
+
+.instantmesh-panel-tag {
+    font-size: 0.72rem;
+    color: rgba(220, 246, 255, 0.8);
+    border: 1px solid rgba(53, 194, 255, 0.25);
+    border-radius: 999px;
+    padding: 0.2rem 0.55rem;
+    background: rgba(53, 194, 255, 0.08);
+}
+
+.instantmesh-dropzone {
+    border: 1px dashed var(--im-border);
+    border-radius: 14px;
+    background: var(--im-soft);
+    min-height: 245px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.instantmesh-dropzone.is-dragover {
+    border-color: rgba(53, 194, 255, 0.5);
+    box-shadow: 0 0 0 1px rgba(53, 194, 255, 0.18) inset;
+}
+
+.instantmesh-dropzone__content i {
+    font-size: 2.5rem;
+    margin-bottom: 0.7rem;
+    color: var(--knd-accent-soft);
+}
+
+.instantmesh-dropzone__content p,
+.instantmesh-dropzone__content small {
+    color: var(--knd-text-alt);
+}
+
+.instantmesh-preview-wrap {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.instantmesh-preview-wrap img {
+    width: 100%;
+    height: 245px;
+    object-fit: cover;
+}
+
+.instantmesh-preview-remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+.instantmesh-status__label {
+    color: rgba(230, 244, 255, 0.95);
+    font-weight: 600;
+}
+
+.instantmesh-progress {
+    height: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(53, 194, 255, 0.22);
+    border-radius: 999px;
+}
+
+.instantmesh-progress .progress-bar {
+    background: linear-gradient(90deg, #35c2ff, #8b5cff);
+    box-shadow: 0 0 16px rgba(53, 194, 255, 0.4);
+}
+
+.instantmesh-viewer {
+    background: var(--im-soft);
+    border: 1px solid var(--im-border);
+    border-radius: 14px;
+    min-height: 380px;
+    position: relative;
+    overflow: hidden;
+}
+
+#instantmesh-model-viewer {
+    width: 100%;
+    height: 380px;
+    background: transparent;
+}
+
+.instantmesh-viewer-empty {
+    height: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 1rem 1.2rem;
+    color: var(--knd-text-alt);
+    background: radial-gradient(circle at 50% 10%, rgba(53, 194, 255, 0.08), transparent 55%);
+}
+
+.instantmesh-viewer-empty__icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 1px solid rgba(53, 194, 255, 0.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 0.8rem;
+    color: rgba(103, 213, 255, 0.9);
+    background: rgba(53, 194, 255, 0.08);
+}
+
+.instantmesh-viewer-empty h4 {
+    margin-bottom: 0.35rem;
+    color: #e8f6ff;
+}
+
+.instantmesh-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.6rem;
+}
+
+.instantmesh-meta-item {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+    padding: 0.55rem 0.62rem;
+    min-height: 70px;
+}
+
+.instantmesh-meta-item span {
+    display: block;
+    color: rgba(220, 246, 255, 0.62);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.14rem;
+}
+
+.instantmesh-meta-item strong {
+    color: #e8f6ff;
+    font-size: 0.92rem;
+}
+
+.instantmesh-history-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.instantmesh-history-card {
+    border: 1px solid var(--im-border);
+    border-radius: 14px;
+    background: linear-gradient(155deg, rgba(8, 16, 28, 0.92), rgba(11, 22, 38, 0.76));
+    overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.instantmesh-history-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(103, 213, 255, 0.32);
+    box-shadow: 0 10px 24px rgba(3, 8, 16, 0.4);
+}
+
+.instantmesh-history-thumb {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.instantmesh-history-body {
+    padding: 0.9rem;
+}
+
+.instantmesh-history-date {
+    color: rgba(220, 246, 255, 0.62);
+    font-size: 0.74rem;
+}
+
+.instantmesh-history-cta {
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.instantmesh-faq-accordion {
+    display: grid;
+    gap: 0.7rem;
+}
+
+.instantmesh-faq-item {
+    border: 1px solid rgba(103, 213, 255, 0.16) !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+    background: rgba(8, 16, 28, 0.75);
+}
+
+.instantmesh-faq-item .accordion-button {
+    background: rgba(8, 16, 28, 0.78);
+    color: #e8f6ff;
+    font-weight: 600;
+    box-shadow: none;
+}
+
+.instantmesh-faq-item .accordion-button:not(.collapsed) {
+    color: #e8f6ff;
+    background: rgba(53, 194, 255, 0.1);
+}
+
+.instantmesh-faq-item .accordion-button::after {
+    filter: brightness(1.2);
+}
+
+.instantmesh-faq-item .accordion-body {
+    color: rgba(220, 246, 255, 0.84);
+    background: rgba(6, 13, 23, 0.8);
+}
+
+.instantmesh-input-foot {
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 991px) {
+    .instantmesh-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .instantmesh-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .instantmesh-meta-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 575px) {
+    .instantmesh-hero {
+        padding: 1rem;
+    }
+
+    .instantmesh-meta-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .instantmesh-history-grid {
+        grid-template-columns: 1fr;
+    }
+}

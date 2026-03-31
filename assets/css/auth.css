@@ -1,0 +1,959 @@
+/* KND Access — layout from knd-access-concept.html (scoped to .auth-page) */
+
+body.auth-page {
+  --ka-void: #010508;
+  --ka-deep: #020a10;
+  --ka-surface: #04131c;
+  --ka-c: #00e8ff;
+  --ka-c2: #00a8bb;
+  --ka-cg: rgba(0, 232, 255, 0.12);
+  --ka-cb: rgba(0, 232, 255, 0.22);
+  --ka-m: #d44fff;
+  --ka-m2: #9b30ff;
+  --ka-gold: #ffcc00;
+  --ka-green: #00ff99;
+  --ka-red: #ff2255;
+  --ka-t1: rgba(220, 248, 255, 0.95);
+  --ka-t2: rgba(155, 215, 235, 0.62);
+  --ka-t3: rgba(90, 165, 190, 0.38);
+  --ka-t4: rgba(60, 120, 145, 0.2);
+  --ka-fd: 'Orbitron', monospace;
+  --ka-fb: 'Rajdhani', sans-serif;
+  --ka-fm: 'Share Tech Mono', monospace;
+
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  position: relative;
+  background: var(--ka-void);
+  color: var(--ka-t1);
+  font-family: var(--ka-fb);
+  cursor: default;
+}
+
+body.auth-page:not(.arena-embed) {
+  height: 100%;
+  overflow: hidden;
+}
+
+body.auth-page.arena-embed {
+  overflow: auto;
+  min-height: 100%;
+}
+
+body.auth-page::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.035) 2px,
+    rgba(0, 0, 0, 0.035) 3px
+  );
+}
+
+/* Hide site chrome on full auth page */
+body.auth-page #site-header {
+  display: none !important;
+}
+
+body.auth-page footer.footer {
+  display: none !important;
+}
+
+body.auth-page .knd-global-video-bg,
+body.auth-page .knd-global-video-overlay {
+  display: none !important;
+}
+
+/* Background layers */
+#knd-access-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+#knd-access-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 30% 40%, rgba(0, 80, 180, 0.14), transparent 55%),
+    radial-gradient(ellipse 50% 50% at 80% 60%, rgba(150, 30, 200, 0.1), transparent 50%),
+    radial-gradient(ellipse 60% 30% at 50% 110%, rgba(0, 40, 80, 0.2), transparent 50%),
+    var(--ka-void);
+}
+
+#knd-access-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 232, 255, 0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 232, 255, 0.012) 1px, transparent 1px);
+  background-size: 52px 52px;
+}
+
+.knd-access-bg-horizon {
+  position: absolute;
+  top: 45%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 5%,
+    var(--ka-cb) 25%,
+    rgba(212, 79, 255, 0.25) 50%,
+    var(--ka-cb) 75%,
+    transparent 95%
+  );
+  box-shadow: 0 0 40px rgba(0, 232, 255, 0.08);
+}
+
+.knd-access-bg-floor {
+  position: absolute;
+  bottom: 0;
+  left: -30%;
+  width: 160%;
+  height: 35%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent calc(5.5% - 1px),
+      rgba(0, 232, 255, 0.02) calc(5.5%)
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent calc(12% - 1px),
+      rgba(0, 232, 255, 0.015) calc(12%)
+    );
+  transform: perspective(400px) rotateX(62deg);
+  transform-origin: bottom center;
+}
+
+#knd-access-stars {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.knd-access-star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(200, 220, 255, 0.5);
+  animation: kndAccessTwinkle var(--d, 3s) ease-in-out infinite var(--dl, 0s);
+}
+
+@keyframes kndAccessTwinkle {
+  0%,
+  100% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: var(--p, 0.7);
+  }
+}
+
+/* Main layout */
+.knd-access-shell {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+body.auth-page:not(.arena-embed) .knd-access-shell {
+  height: 100vh;
+}
+
+.knd-access-container {
+  display: flex;
+  width: min(95vw, 860px);
+  max-height: 90vh;
+  position: relative;
+}
+
+/* Brand column */
+.knd-access-brand {
+  width: 280px;
+  flex-shrink: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 232, 255, 0.04),
+    rgba(212, 79, 255, 0.03),
+    rgba(0, 232, 255, 0.02)
+  );
+  border: 1px solid rgba(0, 232, 255, 0.1);
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 40px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.knd-access-brand::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 232, 255, 0.3), transparent);
+}
+
+.knd-access-brand::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 79, 255, 0.2), transparent);
+}
+
+.knd-access-brand-hex {
+  width: 80px;
+  height: 80px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: kndAccessHexFloat 4s ease-in-out infinite;
+}
+
+@keyframes kndAccessHexFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.knd-access-brand-hex svg {
+  width: 80px;
+  height: 80px;
+  filter: drop-shadow(0 0 20px rgba(0, 232, 255, 0.4));
+}
+
+.knd-access-brand-hex-inner {
+  position: absolute;
+  font-family: var(--ka-fd);
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--ka-c);
+  text-shadow: 0 0 16px rgba(0, 232, 255, 0.5);
+}
+
+.knd-access-brand-title {
+  font-family: var(--ka-fd);
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: var(--ka-c);
+  text-shadow: 0 0 20px rgba(0, 232, 255, 0.4);
+  text-align: center;
+}
+
+.knd-access-brand-tagline {
+  font-family: var(--ka-fb);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--ka-t2);
+  text-align: center;
+  line-height: 1.5;
+  max-width: 200px;
+}
+
+.knd-access-brand-sub {
+  font-family: var(--ka-fm);
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--ka-t3);
+  text-align: center;
+  max-width: 200px;
+  line-height: 1.6;
+}
+
+.knd-access-brand-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.knd-access-brand-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  animation: kndAccessDotPulse 2.5s ease-in-out infinite;
+}
+
+.knd-access-brand-dot:nth-child(1) {
+  background: var(--ka-c);
+  animation-delay: 0s;
+}
+
+.knd-access-brand-dot:nth-child(2) {
+  background: var(--ka-m);
+  animation-delay: 0.3s;
+}
+
+.knd-access-brand-dot:nth-child(3) {
+  background: var(--ka-gold);
+  animation-delay: 0.6s;
+}
+
+@keyframes kndAccessDotPulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.knd-access-brand-foot {
+  font-family: var(--ka-fm);
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--ka-t4);
+  margin: auto 0 0;
+  text-align: center;
+}
+
+/* Form panel */
+.knd-access-form-panel {
+  flex: 1;
+  background: rgba(4, 16, 24, 0.92);
+  border: 1px solid rgba(0, 232, 255, 0.08);
+  border-radius: 0 4px 4px 0;
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  padding: 36px 40px;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.knd-access-form-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(0, 232, 255, 0.15), transparent);
+}
+
+#auth-main-stack {
+  display: block;
+  position: relative;
+}
+
+/* Tab radios (must precede .knd-access-tab-switch and panels for ~ selectors) */
+.knd-access-tab-radio {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
+  border: 0;
+  pointer-events: none;
+}
+
+/* Tabs — labels act as hit targets (no JS required) */
+.knd-access-tab-switch {
+  display: flex;
+  gap: 0;
+  border: 1px solid rgba(0, 232, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 28px;
+  position: relative;
+  z-index: 5;
+}
+
+.knd-access-tab-btn {
+  flex: 1;
+  padding: 10px;
+  font-family: var(--ka-fd);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background: transparent;
+  border: none;
+  color: var(--ka-t3);
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  user-select: none;
+  -webkit-user-select: none;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.knd-access-tab-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: var(--ka-c);
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+
+/* Active tab from checked radio (sibling combinator) */
+#knd-auth-tab-login:checked ~ .knd-access-tab-switch label[for='knd-auth-tab-login'],
+#knd-auth-tab-register:checked ~ .knd-access-tab-switch label[for='knd-auth-tab-register'] {
+  color: var(--ka-c);
+  background: rgba(0, 232, 255, 0.04);
+}
+
+#knd-auth-tab-login:checked ~ .knd-access-tab-switch label[for='knd-auth-tab-login']::after,
+#knd-auth-tab-register:checked ~ .knd-access-tab-switch label[for='knd-auth-tab-register']::after {
+  transform: scaleX(1);
+}
+
+.knd-access-tab-btn:hover {
+  color: var(--ka-t2);
+  background: rgba(0, 232, 255, 0.02);
+}
+
+/* Panels — show/hide via radio:checked ~ (no JS) */
+#auth-main-stack > .knd-access-auth-panel {
+  display: none !important;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Show active panel (only one radio checked at a time) */
+#knd-auth-tab-login:checked ~ #panel-login {
+  display: flex !important;
+  animation: kndAccessPanelIn 0.4s ease;
+}
+
+#knd-auth-tab-register:checked ~ #panel-register {
+  display: flex !important;
+  animation: kndAccessPanelIn 0.4s ease;
+}
+
+/*
+ * Both radios are siblings before the panels, so e.g. #knd-auth-tab-login:checked ~ #panel-register
+ * still matches when Login is selected. Force-hide the inactive panel.
+ */
+#knd-auth-tab-login:checked ~ #panel-register {
+  display: none !important;
+}
+
+#knd-auth-tab-register:checked ~ #panel-login {
+  display: none !important;
+}
+
+@keyframes kndAccessPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.knd-access-form-heading {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.knd-access-form-heading h2 {
+  font-family: var(--ka-fd);
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: var(--ka-c);
+  text-shadow: 0 0 14px rgba(0, 232, 255, 0.3);
+  margin: 0 0 6px;
+}
+
+.knd-access-form-heading p {
+  font-family: var(--ka-fm);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--ka-t3);
+  margin: 0;
+}
+
+/* Fields */
+.knd-access-field {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+.knd-access-input {
+  width: 100%;
+  padding: 12px 14px 12px 40px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 232, 255, 0.1);
+  color: var(--ka-t1);
+  font-family: var(--ka-fm);
+  font-size: 13px;
+  letter-spacing: 1px;
+  outline: none;
+  transition: all 0.3s;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+
+.knd-access-input:focus {
+  border-color: var(--ka-c);
+  box-shadow: 0 0 12px rgba(0, 232, 255, 0.12);
+  background: rgba(0, 10, 20, 0.5);
+}
+
+.knd-access-input::placeholder {
+  color: var(--ka-t4);
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+.knd-access-field--password .knd-access-input {
+  padding-right: 44px;
+}
+
+.knd-access-input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--ka-t3);
+  font-size: 14px;
+  transition: color 0.3s;
+  pointer-events: none;
+}
+
+.knd-access-field--password .knd-access-input-icon {
+  top: 50%;
+}
+
+.knd-access-field:has(.knd-access-pwd-strength) .knd-access-input-icon {
+  top: 22px;
+  transform: translateY(-50%);
+}
+
+.knd-access-input:focus ~ .knd-access-input-icon {
+  color: var(--ka-c);
+}
+
+.knd-access-input-hint {
+  font-family: var(--ka-fm);
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  color: var(--ka-t4);
+  margin-top: 4px;
+}
+
+.knd-access-input-hint--below-strength {
+  margin-top: 28px;
+}
+
+.knd-access-pwd-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--ka-t3);
+  cursor: pointer;
+  font-size: 13px;
+  transition: color 0.2s;
+  padding: 4px;
+  line-height: 1;
+}
+
+.knd-access-field:has(.knd-access-pwd-strength) .knd-access-pwd-toggle {
+  top: 22px;
+  transform: translateY(-50%);
+}
+
+.knd-access-pwd-toggle:hover {
+  color: var(--ka-c);
+}
+
+.knd-access-pwd-strength {
+  display: flex;
+  gap: 3px;
+  margin-top: 8px;
+  height: 3px;
+}
+
+.knd-access-pwd-str-seg {
+  flex: 1;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 1px;
+  transition: background 0.3s;
+}
+
+.knd-access-pwd-str-seg.weak {
+  background: var(--ka-red);
+}
+
+.knd-access-pwd-str-seg.medium {
+  background: var(--ka-gold);
+}
+
+.knd-access-pwd-str-seg.strong {
+  background: var(--ka-green);
+}
+
+.knd-access-pwd-str-label {
+  font-family: var(--ka-fm);
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  margin-top: 3px;
+  min-height: 1em;
+}
+
+/* Checkbox row */
+.knd-access-check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  cursor: pointer;
+}
+
+.knd-access-check-sr {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.knd-access-check-box {
+  width: 16px;
+  height: 16px;
+  border: 1px solid rgba(0, 232, 255, 0.2);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  border-radius: 2px;
+}
+
+.knd-access-check-sr:checked + .knd-access-check-box {
+  border-color: var(--ka-c);
+  background: rgba(0, 232, 255, 0.1);
+}
+
+.knd-access-check-sr:checked + .knd-access-check-box::after {
+  content: '✓';
+  color: var(--ka-c);
+  font-size: 10px;
+}
+
+.knd-access-check-label {
+  font-family: var(--ka-fm);
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--ka-t3);
+}
+
+/* Buttons */
+.knd-access-btn {
+  width: 100%;
+  padding: 13px;
+  font-family: var(--ka-fd);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+  margin-bottom: 12px;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  box-sizing: border-box;
+}
+
+.knd-access-btn-primary {
+  background: linear-gradient(90deg, rgba(0, 232, 255, 0.12), rgba(0, 232, 255, 0.06));
+  border: 1px solid var(--ka-c);
+  color: var(--ka-c);
+}
+
+.knd-access-btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(0, 232, 255, 0.08), transparent);
+  animation: kndAccessBtnSweep 3s ease infinite;
+  pointer-events: none;
+}
+
+@keyframes kndAccessBtnSweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.knd-access-btn-primary:hover:not(:disabled) {
+  box-shadow: 0 0 24px rgba(0, 232, 255, 0.2);
+  background: rgba(0, 232, 255, 0.1);
+}
+
+.knd-access-btn-outline {
+  background: transparent;
+  border: 1px solid rgba(212, 79, 255, 0.25);
+  color: var(--ka-m);
+}
+
+.knd-access-btn-outline:hover:not(:disabled) {
+  border-color: var(--ka-m);
+  box-shadow: 0 0 18px rgba(212, 79, 255, 0.15);
+  background: rgba(212, 79, 255, 0.04);
+}
+
+.knd-access-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Button loading (class applied by kndAuthSetButtonLoading) */
+.knd-access-btn.auth-btn--loading {
+  pointer-events: none;
+}
+
+.knd-access-btn.auth-btn--loading .auth-btn-text {
+  visibility: hidden;
+}
+
+.knd-access-btn.auth-btn--loading::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -0.625rem;
+  margin-top: -0.625rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: kndAccessSpinner 0.7s linear infinite;
+  z-index: 2;
+}
+
+@keyframes kndAccessSpinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Links */
+.knd-access-auth-links {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.knd-access-auth-link {
+  font-family: var(--ka-fm);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--ka-t3);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s;
+  display: block;
+  margin: 6px 0;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: center;
+  padding: 0;
+}
+
+.knd-access-auth-link:hover {
+  color: var(--ka-c);
+}
+
+.knd-access-auth-link--btn {
+  font: inherit;
+  font-family: var(--ka-fm);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+}
+
+.knd-access-resend-cooldown {
+  font-family: var(--ka-fm);
+  font-size: 8px;
+  color: var(--ka-t3);
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+/* Alerts */
+.knd-access-alert {
+  margin-top: 16px;
+  padding: 10px 14px;
+  border-radius: 2px;
+  font-family: var(--ka-fm);
+  font-size: 11px;
+  letter-spacing: 1px;
+  display: none;
+}
+
+.knd-access-alert.success {
+  background: rgba(0, 255, 153, 0.06);
+  border: 1px solid rgba(0, 255, 153, 0.2);
+  color: var(--ka-green);
+}
+
+.knd-access-alert.error {
+  background: rgba(255, 34, 85, 0.06);
+  border: 1px solid rgba(255, 34, 85, 0.2);
+  color: var(--ka-red);
+}
+
+.knd-access-alert.show {
+  display: block;
+  animation: kndAccessAlertIn 0.3s ease;
+}
+
+@keyframes kndAccessAlertIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Aux panels (forgot / verify) */
+.knd-access-aux-panel {
+  display: none;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+}
+
+.knd-access-code-label {
+  font-family: var(--ka-fm);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--ka-t3);
+  text-align: center;
+  margin: 0 0 4px;
+}
+
+.knd-access-code-wrap {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 8px 0;
+  flex-wrap: wrap;
+}
+
+.knd-access-code-digit {
+  width: 42px;
+  height: 50px;
+  text-align: center;
+  font-family: var(--ka-fd);
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--ka-c);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 232, 255, 0.15);
+  outline: none;
+  transition: all 0.3s;
+  border-radius: 2px;
+  letter-spacing: 0;
+  box-sizing: border-box;
+}
+
+.knd-access-code-digit:focus {
+  border-color: var(--ka-c);
+  box-shadow: 0 0 14px rgba(0, 232, 255, 0.2);
+  background: rgba(0, 10, 20, 0.6);
+}
+
+.knd-access-code-digit:not(:placeholder-shown) {
+  border-color: rgba(0, 232, 255, 0.3);
+}
+
+/* Embed: fit iframe */
+body.auth-page.arena-embed .knd-access-shell {
+  min-height: 0;
+  padding: 12px;
+}
+
+body.auth-page.arena-embed .knd-access-container {
+  max-height: none;
+}
+
+@media (max-width: 768px) {
+  .knd-access-brand {
+    display: none;
+  }
+
+  .knd-access-form-panel {
+    border-radius: 4px;
+  }
+
+  .knd-access-container {
+    width: min(95vw, 420px);
+  }
+
+  .knd-access-code-digit {
+    width: 36px;
+    height: 44px;
+    font-size: 18px;
+  }
+}

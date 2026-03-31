@@ -1,0 +1,537 @@
+/**
+ * KND Drop Chamber - Premium Experience
+ * Estética: Hearthstone/Axie/Pokémon level reveal
+ */
+
+/* === Variables === */
+:root {
+  --drop-capsule-size: 100px;
+  --drop-capsule-size-sm: 88px;
+  --drop-common: #a0aec0;
+  --drop-special: #8b5cf6;
+  --drop-rare: #4299e1;
+  --drop-epic: #9f7aea;
+  --drop-legendary: #ecc94b;
+}
+
+/* === Premium Capsules (96-120px, glassmorphism) === */
+.drop-capsule {
+  width: var(--drop-capsule-size);
+  height: var(--drop-capsule-size);
+  min-width: var(--drop-capsule-size);
+  min-height: var(--drop-capsule-size);
+  border-radius: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Glassmorphism 3D */
+  background: linear-gradient(145deg,
+    rgba(0, 212, 255, 0.08) 0%,
+    rgba(12, 15, 22, 0.9) 40%,
+    rgba(6, 10, 18, 0.95) 100%);
+  border: 2px solid rgba(0, 212, 255, 0.25);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+    0 0 20px rgba(0, 212, 255, 0.1);
+}
+
+.drop-capsule::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.2) 100%);
+  pointer-events: none;
+}
+
+.drop-capsule:hover {
+  border-color: rgba(0, 212, 255, 0.6);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(0, 212, 255, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  transform: translateY(-6px) scale(1.02);
+}
+
+.drop-capsule:hover .drop-capsule-hint {
+  opacity: 1;
+}
+
+.drop-capsule:active {
+  transform: scale(0.95);
+}
+
+.drop-capsule.disabled {
+  pointer-events: none;
+  opacity: 0.4;
+  filter: grayscale(0.5);
+}
+
+.drop-capsule.active {
+  border-color: #00d4ff;
+  box-shadow: 0 0 40px rgba(0, 212, 255, 0.5);
+  transform: scale(1.1);
+  z-index: 2;
+}
+
+.drop-capsule-inner {
+  font-size: 2rem;
+  color: rgba(0, 212, 255, 0.5);
+  transition: all 0.3s;
+  position: relative;
+  z-index: 1;
+}
+
+.drop-capsule:hover .drop-capsule-inner {
+  color: #00d4ff;
+}
+
+.drop-capsule.active .drop-capsule-inner {
+  color: #fff;
+}
+
+.drop-capsule-hint {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #fb923c;
+  opacity: 0;
+  transition: opacity 0.25s;
+  z-index: 2;
+}
+
+/* Rarity glow on capsule after reveal */
+.drop-rarity-common { border-color: rgba(160, 174, 192, 0.6) !important; box-shadow: 0 0 24px rgba(160, 174, 192, 0.35) !important; }
+.drop-rarity-special { border-color: rgba(139, 92, 246, 0.6) !important; box-shadow: 0 0 24px rgba(139, 92, 246, 0.35) !important; }
+.drop-rarity-rare { border-color: rgba(66, 153, 225, 0.6) !important; box-shadow: 0 0 24px rgba(66, 153, 225, 0.35) !important; }
+.drop-rarity-epic { border-color: rgba(159, 122, 234, 0.7) !important; box-shadow: 0 0 30px rgba(159, 122, 234, 0.45) !important; }
+.drop-rarity-legendary { border-color: rgba(236, 201, 75, 0.8) !important; box-shadow: 0 0 45px rgba(236, 201, 75, 0.55) !important; }
+
+/* === Reveal Modal (full-screen overlay) === */
+.drop-reveal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  background: radial-gradient(ellipse at center,
+    rgba(6, 10, 24, 0.98) 0%,
+    rgba(2, 4, 12, 0.99) 70%,
+    #000 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s;
+}
+
+.drop-reveal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.drop-reveal-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 30%, rgba(0, 0, 0, 0.6) 100%);
+  pointer-events: none;
+}
+
+.drop-reveal-stage {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 800px;
+}
+
+.drop-reveal-capsule {
+  width: 160px;
+  height: 160px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg,
+    rgba(0, 212, 255, 0.15) 0%,
+    rgba(12, 15, 22, 0.95) 50%,
+    rgba(6, 10, 18, 0.98) 100%);
+  border: 3px solid rgba(0, 212, 255, 0.4);
+  box-shadow: 0 0 60px rgba(0, 212, 255, 0.3);
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.drop-reveal-capsule.crack {
+  animation: dropCrack 0.4s ease-out forwards;
+}
+
+@keyframes dropCrack {
+  0% { transform: scale(1); opacity: 1; }
+  30% { transform: scale(1.15); box-shadow: 0 0 80px rgba(255, 255, 255, 0.8); }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+.drop-reveal-item {
+  position: absolute;
+  width: 200px;
+  max-height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transform: scale(0.5);
+  pointer-events: none;
+}
+
+.drop-reveal-item.visible {
+  pointer-events: auto;
+}
+
+.drop-reveal-item.reveal-common {
+  animation: dropRevealCommon 0.6s ease-out forwards;
+}
+
+.drop-reveal-item.reveal-special,
+.drop-reveal-item.reveal-rare {
+  animation: dropRevealRare 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.drop-reveal-item.reveal-epic {
+  animation: dropRevealEpic 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.drop-reveal-item.reveal-legendary {
+  animation: dropRevealLegendary 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes dropRevealCommon {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes dropRevealRare {
+  0% { opacity: 0; transform: scale(0.5); }
+  50% { transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes dropRevealEpic {
+  0% { opacity: 0; transform: scale(0.5); }
+  40% { transform: scale(1.12); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes dropRevealLegendary {
+  0% { opacity: 0; transform: scale(0.5); }
+  30% { transform: scale(1.15); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Epic radial rays */
+.drop-reveal-rays {
+  position: absolute;
+  inset: -50%;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.drop-reveal-item.reveal-epic .drop-reveal-rays,
+.drop-reveal-item.reveal-legendary .drop-reveal-rays {
+  opacity: 1;
+  animation: dropRaysPulse 1.5s ease-out;
+}
+
+@keyframes dropRaysPulse {
+  0% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0.6; transform: scale(1); }
+}
+
+.drop-reveal-rays svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Legendary screen shake */
+.drop-reveal-overlay.legendary-shake {
+  animation: dropLegendaryShake 0.5s ease-out;
+}
+
+@keyframes dropLegendaryShake {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-8px, -4px); }
+  20% { transform: translate(8px, 4px); }
+  30% { transform: translate(-6px, 2px); }
+  40% { transform: translate(6px, -2px); }
+  50% { transform: translate(-4px, 0); }
+  60% { transform: translate(4px, 0); }
+  70% { transform: translate(-2px, 0); }
+  80% { transform: translate(2px, 0); }
+  90% { transform: translate(-1px, 0); }
+}
+
+/* Result card (Hearthstone style) */
+.drop-reveal-card {
+  background: rgba(12, 15, 22, 0.95);
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  text-align: center;
+  border: 2px solid;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.drop-reveal-card-img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.drop-reveal-card-name {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.drop-reveal-card-slot {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+  margin-bottom: 0.5rem;
+}
+
+.drop-reveal-pity {
+  font-size: 0.75rem;
+  color: #a78bfa;
+  margin-top: 0.5rem;
+}
+
+/* Close button */
+.drop-reveal-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.25s;
+  z-index: 10;
+}
+
+.drop-reveal-close:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* === Onboarding Modal === */
+.drop-intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9980;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s, visibility 0.35s;
+}
+
+.drop-intro-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.drop-intro-modal {
+  max-width: 420px;
+  background: linear-gradient(145deg, rgba(12, 15, 22, 0.98), rgba(6, 10, 18, 0.99));
+  border: 1px solid rgba(0, 212, 255, 0.25);
+  border-radius: 20px;
+  padding: 1.75rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 212, 255, 0.1);
+}
+
+.drop-intro-modal h3 {
+  font-size: 1.35rem;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.drop-intro-modal p {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.drop-intro-modal .drop-intro-cta {
+  margin-top: 1.25rem;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  font-weight: 700;
+}
+
+/* === Economy links === */
+.drop-economy-links {
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.drop-economy-links a {
+  color: var(--knd-neon-blue, #00d4ff);
+  text-decoration: none;
+}
+
+.drop-economy-links a:hover {
+  text-decoration: underline;
+}
+
+/* === Reward table mini-cards === */
+.drop-reward-mini {
+  padding: 0.6rem 0.5rem;
+  border-radius: 12px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.drop-reward-mini:hover {
+  transform: translateY(-2px);
+}
+
+.drop-reward-mini[data-tooltip] {
+  position: relative;
+}
+
+.drop-reward-mini[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  padding: 0.4rem 0.6rem;
+  font-size: 0.7rem;
+  background: rgba(0, 0, 0, 0.9);
+  color: #fff;
+  border-radius: 8px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  pointer-events: none;
+}
+
+.drop-reward-mini[data-tooltip]:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* === Balance strip shake (insufficient KP) === */
+.drop-balance-strip.shake {
+  animation: dropBalanceShake 0.5s ease-out;
+}
+
+@keyframes dropBalanceShake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-8px); }
+  30% { transform: translateX(8px); }
+  45% { transform: translateX(-6px); }
+  60% { transform: translateX(6px); }
+  75% { transform: translateX(-3px); }
+}
+
+/* === Season progress bar === */
+.drop-season-progress {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.drop-season-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #00d4ff, #fb923c);
+  border-radius: inherit;
+  transition: width 0.3s;
+}
+
+/* === History cards (Phase 2) === */
+.drop-history-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.drop-history-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.drop-history-card-thumb {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  object-fit: contain;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.drop-history-card-thumb:not(img) {
+  font-size: 1rem;
+}
+
+.drop-history-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.drop-history-card-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drop-history-card-meta {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  :root {
+    --drop-capsule-size: 88px;
+  }
+}

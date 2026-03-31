@@ -1,0 +1,45 @@
+/* KND AI Asset Creator */
+
+.ai-hero {
+    background: linear-gradient(135deg, rgba(37, 156, 174, 0.08) 0%, rgba(174, 37, 101, 0.08) 50%, rgba(0, 212, 255, 0.06) 100%);
+}
+
+.ai-balance-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: rgba(37, 156, 174, 0.15);
+    border: 1px solid rgba(37, 156, 174, 0.4);
+    border-radius: 50px;
+    color: var(--knd-neon-blue, #00d4ff);
+    font-size: 1rem;
+}
+
+.ai-tool-card {
+    border: 1px solid rgba(37, 156, 174, 0.2);
+    box-shadow: 0 0 30px rgba(37, 156, 174, 0.08);
+}
+
+.ai-dropzone {
+    border: 2px dashed rgba(37, 156, 174, 0.4);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.ai-dropzone:hover {
+    border-color: var(--knd-neon-blue, #00d4ff);
+    background: rgba(37, 156, 174, 0.08);
+}
+
+.ai-status-card {
+    border: 1px solid rgba(37, 156, 174, 0.2);
+}
+
+.ai-spinner {
+    font-size: 1.5rem;
+    color: var(--knd-neon-blue, #00d4ff);
+}

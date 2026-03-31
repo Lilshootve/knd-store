@@ -1,0 +1,631 @@
+/* KND Store - Mobile Optimization CSS */
+
+/* ===== OPTIMIZACIONES MÓVILES PRINCIPALES ===== */
+
+/* Viewport y meta tags optimizados */
+@media screen and (max-width: 768px) {
+    /* Ajustes de tipografía para móviles */
+    body {
+        font-size: 16px; /* Previene zoom automático en iOS */
+        line-height: 1.5;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+    }
+    
+    /* Títulos responsivos */
+    h1 {
+        font-size: 2rem !important;
+        line-height: 1.2;
+    }
+    
+    h2 {
+        font-size: 1.5rem !important;
+        line-height: 1.3;
+    }
+    
+    h3 {
+        font-size: 1.25rem !important;
+        line-height: 1.4;
+    }
+    
+    /* Hero section optimizado para móviles */
+    .hero-section {
+        min-height: 60vh !important;
+        padding: 1rem !important;
+        padding-top: 100px !important;
+    }
+    
+    .hero-title {
+        font-size: 2rem !important;
+        text-align: center !important;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem !important;
+        text-align: center !important;
+        margin-bottom: 1.5rem;
+    }
+    
+    .hero-buttons {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 1rem !important;
+    }
+    
+    .hero-buttons .btn {
+        width: 100% !important;
+        max-width: 280px !important;
+        padding: 0.75rem 1.5rem !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .hero-logo {
+        max-width: 200px !important;
+        margin: 0 auto !important;
+    }
+    
+    /* Navbar optimizado para móviles */
+    .navbar {
+        height: 80px !important;
+        padding: 0.5rem 1rem !important;
+    }
+    
+    .navbar-brand img {
+        height: 40px !important;
+    }
+    
+    .navbar-toggler {
+        border: 1px solid var(--knd-neon-blue) !important;
+        padding: 0.25rem 0.5rem !important;
+    }
+    
+    .navbar-toggler:focus {
+        box-shadow: 0 0 0 0.2rem rgba(37, 156, 174, 0.25) !important;
+    }
+    
+    .navbar-collapse {
+        background: rgba(0, 0, 0, 0.95) !important;
+        backdrop-filter: blur(10px) !important;
+        border-radius: 10px !important;
+        margin-top: 1rem !important;
+        padding: 1rem !important;
+        border: 1px solid var(--knd-neon-blue) !important;
+    }
+    
+    .navbar-nav {
+        text-align: center !important;
+    }
+    
+    .nav-link {
+        padding: 0.75rem 1rem !important;
+        border-radius: 8px !important;
+        margin: 0.25rem 0 !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .nav-link:hover {
+        background: rgba(37, 156, 174, 0.1) !important;
+        transform: translateX(5px) !important;
+    }
+    
+    /* Cards optimizadas para móviles */
+    .product-card {
+        margin-bottom: 1.5rem !important;
+        border-radius: 15px !important;
+    }
+    
+    .product-image {
+        height: 180px !important;
+    }
+    
+    .product-image img {
+        height: 180px !important;
+    }
+    
+    .product-info {
+        padding: 1rem !important;
+    }
+    
+    .product-info h3 {
+        font-size: 1.1rem !important;
+        line-height: 1.3 !important;
+    }
+    
+    .product-info p {
+        font-size: 0.9rem !important;
+        line-height: 1.4 !important;
+    }
+    
+    .product-price {
+        font-size: 1.3rem !important;
+    }
+    
+    /* Botones optimizados para touch */
+    .btn {
+        min-height: 44px !important; /* Tamaño mínimo para touch */
+        padding: 0.75rem 1.5rem !important;
+        font-size: 0.9rem !important;
+        border-radius: 10px !important;
+        touch-action: manipulation !important;
+    }
+    
+    .product-actions {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+    
+    .product-actions .btn {
+        width: 100% !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Formularios optimizados para móviles */
+    .form-control {
+        min-height: 44px !important;
+        font-size: 16px !important; /* Previene zoom en iOS */
+        padding: 0.75rem 1rem !important;
+        border-radius: 8px !important;
+    }
+    
+    .form-select {
+        min-height: 44px !important;
+        font-size: 16px !important;
+        padding: 0.75rem 1rem !important;
+    }
+    
+    /* Footer optimizado */
+    .footer {
+        padding: 2rem 1rem !important;
+        text-align: center !important;
+    }
+    
+    .footer .col-md-4 {
+        margin-bottom: 2rem !important;
+    }
+    
+    /* Botón flotante de Discord optimizado */
+    .discord-float-btn {
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 24px !important;
+        bottom: 20px !important;
+        right: 20px !important;
+    }
+    
+    /* Panel de colores optimizado */
+    .color-panel-toggle {
+        width: 45px !important;
+        height: 45px !important;
+        font-size: 18px !important;
+        left: 15px !important;
+    }
+    
+    .color-panel-sidebar {
+        width: 100vw !important;
+        right: -100vw !important;
+    }
+    
+    .color-panel-sidebar.open {
+        right: 0 !important;
+    }
+}
+
+/* ===== OPTIMIZACIONES PARA PANTALLAS MUY PEQUEÑAS ===== */
+@media screen and (max-width: 576px) {
+    .hero-title {
+        font-size: 1.75rem !important;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.9rem !important;
+    }
+    
+    .section-title {
+        font-size: 1.5rem !important;
+    }
+    
+    .product-card {
+        margin-bottom: 1rem !important;
+    }
+    
+    .product-image {
+        height: 160px !important;
+    }
+    
+    .product-image img {
+        height: 160px !important;
+    }
+    
+    .product-info {
+        padding: 0.75rem !important;
+    }
+    
+    .product-info h3 {
+        font-size: 1rem !important;
+    }
+    
+    .product-info p {
+        font-size: 0.85rem !important;
+    }
+    
+    .product-price {
+        font-size: 1.2rem !important;
+    }
+    
+    /* Contenedores más compactos */
+    .container {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+    
+    /* Cards más compactas */
+    .feature-card,
+    .contact-card,
+    .hours-card {
+        padding: 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    /* Formularios más compactos */
+    .contact-form-container {
+        padding: 1.5rem !important;
+        margin: 0 0.5rem !important;
+    }
+    
+    .hours-container {
+        padding: 1.5rem !important;
+        margin: 0 0.5rem !important;
+    }
+}
+
+/* ===== OPTIMIZACIONES PARA PANTALLAS EXTRA PEQUEÑAS ===== */
+@media screen and (max-width: 480px) {
+    .hero-title {
+        font-size: 1.5rem !important;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.85rem !important;
+    }
+    
+    .btn {
+        padding: 0.6rem 1.2rem !important;
+        font-size: 0.85rem !important;
+    }
+    
+    .product-image {
+        height: 140px !important;
+    }
+    
+    .product-image img {
+        height: 140px !important;
+    }
+    
+    .navbar-brand img {
+        height: 35px !important;
+    }
+    
+    .discord-float-btn {
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 20px !important;
+        bottom: 15px !important;
+        right: 15px !important;
+    }
+}
+
+/* ===== OPTIMIZACIONES DE RENDIMIENTO MÓVIL ===== */
+
+/* Reducir animaciones en dispositivos que prefieren menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Optimizar para dispositivos con pantallas de alta densidad */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .hero-logo,
+    .navbar-brand img {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* ===== OPTIMIZACIONES DE TOUCH ===== */
+
+/* Mejorar la experiencia táctil */
+.btn,
+.nav-link,
+.product-card,
+.category-card {
+    -webkit-tap-highlight-color: rgba(37, 156, 174, 0.3) !important;
+    touch-action: manipulation !important;
+}
+
+/* Áreas de toque más grandes para elementos interactivos */
+.navbar-toggler {
+    min-width: 44px !important;
+    min-height: 44px !important;
+}
+
+/* ===== OPTIMIZACIONES DE ACCESIBILIDAD MÓVIL ===== */
+
+/* Mejorar contraste en dispositivos móviles */
+@media screen and (max-width: 768px) {
+    .product-info h3,
+    .product-price,
+    .section-title {
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+    }
+    
+    .btn {
+        font-weight: 600 !important;
+        letter-spacing: 0.5px !important;
+    }
+}
+
+/* ===== OPTIMIZACIONES DE NAVEGACIÓN MÓVIL ===== */
+
+/* Mejorar la navegación con gestos */
+@media screen and (max-width: 768px) {
+    .navbar-collapse {
+        max-height: 70vh !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    /* Indicador de scroll para navegación */
+    .navbar-collapse::-webkit-scrollbar {
+        width: 4px !important;
+    }
+    
+    .navbar-collapse::-webkit-scrollbar-track {
+        background: rgba(37, 156, 174, 0.1) !important;
+        border-radius: 2px !important;
+    }
+    
+    .navbar-collapse::-webkit-scrollbar-thumb {
+        background: var(--knd-neon-blue) !important;
+        border-radius: 2px !important;
+    }
+}
+
+/* ===== OPTIMIZACIONES DE CARGA MÓVIL ===== */
+
+/* Lazy loading para imágenes en móviles */
+.product-image img {
+    loading: lazy !important;
+}
+
+/* Optimizar partículas para móviles */
+@media screen and (max-width: 768px) {
+    #particles-bg {
+        opacity: 0.3 !important;
+    }
+}
+
+/* ===== OPTIMIZACIONES DE FORMULARIOS MÓVILES ===== */
+
+/* Mejorar la experiencia de formularios en móviles */
+@media screen and (max-width: 768px) {
+    .form-label {
+        font-size: 0.9rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .galactic-input,
+    .galactic-textarea {
+        font-size: 16px !important; /* Previene zoom en iOS */
+        padding: 0.75rem 1rem !important;
+        border-radius: 8px !important;
+    }
+    
+    .galactic-btn {
+        min-height: 48px !important;
+        font-size: 0.9rem !important;
+        padding: 0.75rem 1.5rem !important;
+    }
+    
+    /* Mejorar feedback visual en formularios */
+    .form-control:focus,
+    .galactic-input:focus,
+    .galactic-textarea:focus {
+        transform: scale(1.02) !important;
+        transition: transform 0.2s ease !important;
+    }
+}
+
+/* ===== OPTIMIZACIONES DE CONTENIDO MÓVIL ===== */
+
+/* Mejorar legibilidad en móviles */
+@media screen and (max-width: 768px) {
+    .about-text,
+    .product-description,
+    .contact-card p {
+        font-size: 0.95rem !important;
+        line-height: 1.6 !important;
+    }
+    
+    /* Espaciado optimizado */
+    .py-5 {
+        padding-top: 3rem !important;
+        padding-bottom: 3rem !important;
+    }
+    
+    .my-4 {
+        margin-top: 2rem !important;
+        margin-bottom: 2rem !important;
+    }
+}
+
+/* ===== OPTIMIZACIONES DE INTERACCIÓN MÓVIL ===== */
+
+/* Mejorar feedback táctil */
+@media screen and (max-width: 768px) {
+    .product-card:active,
+    .category-card:active,
+    .btn:active {
+        transform: scale(0.98) !important;
+        transition: transform 0.1s ease !important;
+    }
+    
+    /* Mejorar hover en dispositivos táctiles */
+    .product-card:hover,
+    .category-card:hover,
+    .btn:hover {
+        transform: none !important;
+    }
+}
+
+/* ===== OPTIMIZACIONES DE RENDIMIENTO ===== */
+
+/* Reducir efectos visuales en dispositivos de bajo rendimiento */
+@media screen and (max-width: 768px) {
+    .bg-dark-epic::before,
+    .bg-dark-epic::after {
+        opacity: 0.3 !important;
+    }
+    
+    .feature-card:hover,
+    .product-card:hover,
+    .contact-card:hover {
+        transform: translateY(-5px) !important;
+    }
+}
+
+/* ===== OPTIMIZACIONES ESPECÍFICAS PARA TABLETS ===== */
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .hero-title {
+        font-size: 2.5rem !important;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem !important;
+    }
+    
+    .product-card {
+        margin-bottom: 2rem !important;
+    }
+    
+    .product-image {
+        height: 220px !important;
+    }
+    
+    .product-image img {
+        height: 220px !important;
+    }
+    
+    .btn {
+        padding: 0.8rem 1.8rem !important;
+        font-size: 0.95rem !important;
+    }
+}
+
+/* ===== OPTIMIZACIONES DE ORIENTACIÓN ===== */
+
+/* Optimizaciones para orientación landscape en móviles */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    .hero-section {
+        min-height: 40vh !important;
+        padding-top: 80px !important;
+    }
+    
+    .hero-title {
+        font-size: 1.5rem !important;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.9rem !important;
+    }
+    
+    .navbar {
+        height: 70px !important;
+    }
+    
+    .navbar-brand img {
+        height: 35px !important;
+    }
+}
+
+/* ===== OPTIMIZACIONES DE ACCESIBILIDAD ===== */
+
+/* Mejorar contraste y legibilidad */
+@media screen and (max-width: 768px) {
+    .text-muted {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    
+    .product-info p {
+        color: rgba(255, 255, 255, 0.85) !important;
+    }
+    
+    /* Mejorar focus visible */
+    .btn:focus,
+    .nav-link:focus,
+    .form-control:focus {
+        outline: 2px solid var(--knd-neon-blue) !important;
+        outline-offset: 2px !important;
+    }
+}
+
+/* ===== OPTIMIZACIONES DE CARGA Y RENDIMIENTO ===== */
+
+/* Optimizar animaciones para dispositivos móviles */
+@media screen and (max-width: 768px) {
+    .hero-title {
+        animation: none !important;
+    }
+    
+    .hero-subtitle {
+        animation: none !important;
+    }
+    
+    .logo-container:hover .navbar-logo {
+        transform: scale(1.05) !important;
+    }
+    
+    /* Reducir efectos de partículas */
+    #particles-bg {
+        opacity: 0.2 !important;
+    }
+}
+
+/* ===== OPTIMIZACIONES FINALES ===== */
+
+/* Asegurar que el contenido sea accesible en todos los dispositivos */
+@media screen and (max-width: 768px) {
+    /* Mejorar espaciado general */
+    .container {
+        max-width: 100% !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+    
+    /* Optimizar grid para móviles */
+    .row {
+        margin-left: -0.5rem !important;
+        margin-right: -0.5rem !important;
+    }
+    
+    .col,
+    .col-* {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+    
+    /* Mejorar legibilidad de texto */
+    p, li {
+        text-align: justify !important;
+        hyphens: auto !important;
+        -webkit-hyphens: auto !important;
+        -ms-hyphens: auto !important;
+    }
+} 
