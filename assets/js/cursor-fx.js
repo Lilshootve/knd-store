@@ -72,7 +72,7 @@
     var disp = document.createElementNS(ns, 'feDisplacementMap');
     disp.setAttribute('in', 'SourceGraphic');
     disp.setAttribute('in2', 'smooth');
-    disp.setAttribute('scale', '7');
+    disp.setAttribute('scale', '5');
     disp.setAttribute('xChannelSelector', 'R');
     disp.setAttribute('yChannelSelector', 'G');
 
