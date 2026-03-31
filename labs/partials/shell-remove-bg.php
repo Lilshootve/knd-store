@@ -37,7 +37,7 @@ $balance = isset($balance) ? (int) $balance : 0;
             <?php require __DIR__ . '/studio_canvas_deco.php'; ?>
             <?php
             $labsStudioPhTitle = t('labs.studio.remove_bg_empty_title', 'Remove background');
-            $labsStudioPhSub = t('labs.studio.remove_bg_empty_sub', 'PNG transparente en un clic');
+            $labsStudioPhSub = t('labs.studio.remove_bg_empty_sub', 'Transparent PNG in one click.');
             $labsStudioTipsIcon = 'fa-eraser';
             $labsStudioTipsLine1 = t('labs.studio.remove_bg_tip', 'Upload an image and remove the background in one click.');
             $labsStudioTipsLine2 = null;
@@ -50,7 +50,7 @@ $balance = isset($balance) ? (int) $balance : 0;
             require __DIR__ . '/studio_canvas_placeholder_inner.php';
             $kndLabsPlaceholderTmplHtml = ob_get_clean();
             ?>
-            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview" style="min-height:380px;"><?php echo $kndLabsPlaceholderHtml; ?></div>
+            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview"><?php echo $kndLabsPlaceholderHtml; ?></div>
             <template id="knd-labs-studio-placeholder-tmpl"><?php echo $kndLabsPlaceholderTmplHtml; ?></template>
           </div>
           <div class="ln-t2i-gen-area">

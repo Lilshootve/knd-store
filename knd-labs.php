@@ -147,7 +147,7 @@ $labsStudioNav = [
     ['tool' => 'consistency', 'icon' => 'fa-lock', 'label' => 'Lock'],
     ['tool' => 'remove-bg', 'icon' => 'fa-eraser', 'label' => 'Rem BG'],
     ['tool' => 'texture', 'icon' => 'fa-border-all', 'label' => 'Texture'],
-    ['tool' => '3d_vertex', 'icon' => 'fa-cube', 'label' => '3D'],
+    ['tool' => '3d_vertex', 'icon' => 'fa-cube', 'label' => '3D Studio'],
     ['tool' => 'model_viewer', 'icon' => 'fa-eye', 'label' => 'Viewer'],
 ];
 ?>
@@ -196,12 +196,12 @@ $labsStudioNav = [
       <footer class="knd-labs-status-bar status-bar" role="contentinfo" aria-label="<?php echo htmlspecialchars(t('labs.studio.status_bar_aria', 'Labs status'), ENT_QUOTES, 'UTF-8'); ?>">
         <div class="status-item">
           <span class="status-dot ready" aria-hidden="true"></span>
-          <?php echo htmlspecialchars(t('labs.studio.status_ready', 'Sistema listo'), ENT_QUOTES, 'UTF-8'); ?>
+          <?php echo htmlspecialchars(t('labs.studio.status_ready', 'System ready'), ENT_QUOTES, 'UTF-8'); ?>
         </div>
         <span class="knd-labs-status-sep" aria-hidden="true">·</span>
-        <div class="status-item"><?php echo htmlspecialchars(t('labs.studio.status_gpu', 'GPU: Disponible'), ENT_QUOTES, 'UTF-8'); ?></div>
+        <div class="status-item"><?php echo htmlspecialchars(t('labs.studio.status_gpu', 'GPU: Available'), ENT_QUOTES, 'UTF-8'); ?></div>
         <span class="knd-labs-status-sep" aria-hidden="true">·</span>
-        <div class="status-item" id="knd-labs-status-queue"><?php echo htmlspecialchars(sprintf(t('labs.studio.status_queue', 'Cola: %d trabajos'), $labsActiveJobCount), ENT_QUOTES, 'UTF-8'); ?></div>
+        <div class="status-item" id="knd-labs-status-queue"><?php echo htmlspecialchars(sprintf(t('labs.studio.status_queue', 'Queue: %d jobs'), $labsActiveJobCount), ENT_QUOTES, 'UTF-8'); ?></div>
         <div class="status-item knd-labs-status-build">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
           <?php echo htmlspecialchars(t('labs.studio.build_version', 'v3.1-ultra'), ENT_QUOTES, 'UTF-8'); ?>
@@ -218,7 +218,7 @@ $labsStudioNav = [
 
     <aside class="recent-panel" aria-label="Recent jobs">
       <div class="recent-header">
-        <span class="recent-title"><?php echo htmlspecialchars(t('labs.recent.title', 'Recent'), ENT_QUOTES, 'UTF-8'); ?></span>
+        <span class="recent-title"><?php echo htmlspecialchars(t('labs.recent.title', 'History'), ENT_QUOTES, 'UTF-8'); ?></span>
         <div class="knd-labs-recent-prefs">
           <label>
             <input type="checkbox" id="labs-recent-private" <?php echo $labsRecentPrivate ? 'checked' : ''; ?>>

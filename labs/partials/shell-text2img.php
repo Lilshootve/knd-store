@@ -22,8 +22,8 @@ $providerFilter = isset($providerFilter) ? $providerFilter : '';
           <div class="knd-canvas knd-panel-soft ln-t2i-preview-wrap knd-labs-preview-with-deco" id="labs-result-wrapper">
             <?php require __DIR__ . '/studio_canvas_deco.php'; ?>
             <?php
-            $labsStudioPhTitle = t('labs.studio.canvas_empty_title', '¿Listo para crear?');
-            $labsStudioPhSub = t('labs.studio.canvas_empty_sub', 'Describe tu imagen y pulsa Generar');
+            $labsStudioPhTitle = t('labs.studio.canvas_empty_title', 'Ready to create?');
+            $labsStudioPhSub = t('labs.studio.canvas_empty_sub', 'Describe your image and hit Generate.');
             $labsStudioTipsIcon = 'fa-wand-magic-sparkles';
             $labsStudioTipsLine1 = t('labs.tip_prompt', 'Use 1 subject + 1 style + 1 lighting');
             $labsStudioTipsLine2 = t('labs.tip_example', 'e.g. "Warrior, oil painting, golden hour"');
@@ -36,7 +36,7 @@ $providerFilter = isset($providerFilter) ? $providerFilter : '';
             require __DIR__ . '/studio_canvas_placeholder_inner.php';
             $kndLabsPlaceholderTmplHtml = ob_get_clean();
             ?>
-            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview" style="min-height:380px;"><?php echo $kndLabsPlaceholderHtml; ?></div>
+            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview"><?php echo $kndLabsPlaceholderHtml; ?></div>
             <template id="knd-labs-studio-placeholder-tmpl"><?php echo $kndLabsPlaceholderTmplHtml; ?></template>
           </div>
           <div class="ln-t2i-gen-area">

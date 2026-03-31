@@ -61,7 +61,7 @@ $texturePresets = [
             <?php require __DIR__ . '/studio_canvas_deco.php'; ?>
             <?php
             $labsStudioPhTitle = t('labs.studio.texture_empty_title', 'Texture Lab');
-            $labsStudioPhSub = t('labs.studio.texture_empty_sub', 'Texturas seamless para 3D y juegos');
+            $labsStudioPhSub = t('labs.studio.texture_empty_sub', 'Seamless textures for 3D and games.');
             $labsStudioTipsIcon = 'fa-border-all';
             $labsStudioTipsLine1 = t('labs.no_result_yet', 'Submit to generate');
             $labsStudioTipsLine2 = null;
@@ -74,7 +74,7 @@ $texturePresets = [
             require __DIR__ . '/studio_canvas_placeholder_inner.php';
             $kndLabsPlaceholderTmplHtml = ob_get_clean();
             ?>
-            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview" style="min-height:380px;"><?php echo $kndLabsPlaceholderHtml; ?></div>
+            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview"><?php echo $kndLabsPlaceholderHtml; ?></div>
             <template id="knd-labs-studio-placeholder-tmpl"><?php echo $kndLabsPlaceholderTmplHtml; ?></template>
           </div>
           <div class="ln-t2i-gen-area">

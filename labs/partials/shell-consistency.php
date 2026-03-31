@@ -35,7 +35,7 @@ $balance = isset($balance) ? (int) $balance : 0;
             <?php require __DIR__ . '/studio_canvas_deco.php'; ?>
             <?php
             $labsStudioPhTitle = t('labs.studio.consistency_empty_title', 'Consistency');
-            $labsStudioPhSub = t('labs.studio.consistency_empty_sub', 'Mantén estilo o personaje entre generaciones');
+            $labsStudioPhSub = t('labs.studio.consistency_empty_sub', 'Keep style or character across generations.');
             $labsStudioTipsIcon = 'fa-lock';
             $labsStudioTipsLine1 = t('labs.consistency.tip1', 'Use a reference image from Canvas or Upload.');
             $labsStudioTipsLine2 = t('labs.consistency.tip2', 'Base prompt = persistent style/identity, Scene prompt = variation.');
@@ -48,7 +48,7 @@ $balance = isset($balance) ? (int) $balance : 0;
             require __DIR__ . '/studio_canvas_placeholder_inner.php';
             $kndLabsPlaceholderTmplHtml = ob_get_clean();
             ?>
-            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview" style="min-height:380px;"><?php echo $kndLabsPlaceholderHtml; ?></div>
+            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview"><?php echo $kndLabsPlaceholderHtml; ?></div>
             <template id="knd-labs-studio-placeholder-tmpl"><?php echo $kndLabsPlaceholderTmplHtml; ?></template>
           </div>
           <div class="ln-t2i-gen-area">
