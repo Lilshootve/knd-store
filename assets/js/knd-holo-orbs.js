@@ -135,6 +135,17 @@
     return String(n);
   }
 
+  function hudMountEl() {
+    var el = document.getElementById("knd-holo-yield-mount");
+    if (!el) return null;
+    try {
+      if (el.getClientRects().length === 0) return null;
+    } catch (e) {
+      return null;
+    }
+    return el;
+  }
+
   function ensureHud() {
     if (hudEl) return hudEl;
     ensureRoot();
@@ -166,7 +177,14 @@
       "</div>" +
       '<div class="knd-holo-hud__last" data-knd-hud-last></div>' +
       "</div>";
-    root.appendChild(hudEl);
+    var mount = hudMountEl();
+    if (mount) {
+      mount.appendChild(hudEl);
+      hudEl.classList.add("knd-holo-hud--docked");
+    } else {
+      root.appendChild(hudEl);
+      hudEl.classList.add("knd-holo-hud--floating");
+    }
     return hudEl;
   }
 

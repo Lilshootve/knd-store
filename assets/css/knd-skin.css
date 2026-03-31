@@ -272,6 +272,21 @@ body.admin-page #bg {
   margin-left: auto;
 }
 
+/* Holo yield — docked in store topbar (script targets #knd-holo-yield-mount) */
+.topbar.site-header .tb-holo-yield-mount {
+  display: none;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 1;
+  min-width: 0;
+  max-width: 200px;
+}
+@media (min-width: 992px) {
+  .topbar.site-header .tb-holo-yield-mount {
+    display: flex;
+  }
+}
+
 .tb-burger {
   display: flex;
   align-items: center;

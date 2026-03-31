@@ -167,6 +167,9 @@ function generateNavigation() {
     $nav .= '    </nav>' . "\n";
 
     $nav .= '    <div class="tb-end">' . "\n";
+    if ($drLoggedIn) {
+        $nav .= '      <div id="knd-holo-yield-mount" class="tb-holo-yield-mount tb-holo-yield-mount--store" aria-hidden="true"></div>' . "\n";
+    }
     if ($levelBadgeHtml || $creditsBadgeHtml) {
         $nav .= '      <div class="knd-user-badges d-none d-lg-flex">' . $levelBadgeHtml . $creditsBadgeHtml . '</div>' . "\n";
     }

@@ -231,6 +231,12 @@ body{background:var(--void);color:var(--t1);font-family:var(--FR);font-size:18.4
 }
 .tb-xpfill::after{content:'';position:absolute;right:0;top:0;bottom:0;width:3px;background:rgba(255,255,255,.7);border-radius:1px}
 
+/* Holo yield HUD mount (filled by knd-holo-orbs.js) */
+.tb-holo-yield-mount{
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:1;min-width:0;max-width:210px;
+}
+
 /* currency strip */
 .tb-currency{
   display:flex;align-items:center;gap:6px;flex-shrink:0;

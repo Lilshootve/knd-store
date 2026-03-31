@@ -61,6 +61,8 @@ $rankLabel = $pos !== null ? '#' . (int) $pos : '—';
     </div>
   </div>
 
+  <div id="knd-holo-yield-mount" class="tb-holo-yield-mount" aria-hidden="true"></div>
+
   <div class="tb-controls">
     <div class="tb-icon-btn" id="notif-btn" title="Notifications">🔔
       <div class="notif-badge hidden" id="notif-badge">0</div>
