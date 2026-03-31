@@ -205,6 +205,15 @@
     0 0 20px rgba(0, 120, 180, 0.08);
 }
 
+/* Arena / game shell topbar: more air around the card (store uses .site-header + knd-skin) */
+.lobby-shell header.topbar .knd-holo-hud--docked {
+  margin: 2px 4px;
+}
+
+.lobby-shell header.topbar .knd-holo-hud--docked .knd-holo-hud__inner {
+  margin: 4px;
+}
+
 .knd-holo-hud--docked .knd-holo-hud__ring {
   opacity: 0.45;
   border-radius: 12px;

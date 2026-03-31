@@ -157,7 +157,7 @@ body{background:var(--void);color:var(--t1);font-family:var(--FR);font-size:18.4
 .lobby-shell{
   position:relative;z-index:1;
   display:grid;
-  grid-template-rows:64px 1fr;
+  grid-template-rows:minmax(64px, auto) 1fr;
   height:100vh;
   overflow:hidden;
 }
@@ -167,7 +167,8 @@ body{background:var(--void);color:var(--t1);font-family:var(--FR);font-size:18.4
 ═══════════════════════════════════════════════════════════ */
 .topbar{
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;
+  padding:8px 20px;
+  box-sizing:border-box;
   background:rgba(4,6,16,0.85);
   border-bottom:1px solid var(--border);
   backdrop-filter:blur(24px);
@@ -235,9 +236,10 @@ body{background:var(--void);color:var(--t1);font-family:var(--FR);font-size:18.4
 .tb-holo-yield-mount{
   display:flex;align-items:center;justify-content:center;
   flex-shrink:1;min-width:0;max-width:210px;
-  margin:6px 10px;
-  padding:2px 0;
+  margin:10px 14px;
+  padding:4px 4px;
   box-sizing:border-box;
+  align-self:center;
 }
 
 /* currency strip */
@@ -1624,10 +1626,14 @@ a.bnav-item{text-decoration:none;color:inherit}
   .topbar{
     flex-wrap:wrap;
     row-gap:6px;
-    padding-top:max(0px, env(safe-area-inset-top, 0px));
+    padding-top:max(8px, env(safe-area-inset-top, 0px));
     padding-right:max(12px, env(safe-area-inset-right, 0px));
-    padding-bottom:6px;
+    padding-bottom:max(10px, env(safe-area-inset-bottom, 0px));
     padding-left:max(12px, env(safe-area-inset-left, 0px));
+  }
+  .tb-holo-yield-mount{
+    margin:8px 12px;
+    padding:4px 2px;
   }
 }
 @media(max-width:480px){
