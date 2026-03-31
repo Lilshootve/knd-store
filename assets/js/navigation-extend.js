@@ -89,11 +89,13 @@
         if (isToggleTarget && (Date.now() - lastTouchToggleAt) < 700) {
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();
             return;
         }
         if (isToggleTarget) {
             e.preventDefault();
             e.stopPropagation();
+            e.stopImmediatePropagation();
             if (isOpen()) closeDropdown();
             else openDropdown();
             return;
@@ -130,6 +132,7 @@
         lastTouchToggleAt = Date.now();
         e.preventDefault();
         e.stopPropagation();
+        e.stopImmediatePropagation();
         if (isOpen()) closeDropdown();
         else openDropdown();
     }, { passive: false });

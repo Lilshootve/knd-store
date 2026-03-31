@@ -164,7 +164,6 @@ setCacheHeaders('html');
 include __DIR__ . '/sections/knd_home_concept.php';
 ?>
 
-<script src="/assets/js/navigation-extend.js" defer></script>
 <?php
 echo generateFooter();
 echo generateScripts();
