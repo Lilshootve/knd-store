@@ -60,6 +60,8 @@ if (is_file($cfxCss)) { ?>
 
 <div id="bg-layer">
   <canvas id="star-canvas"></canvas>
+  <canvas id="grid-canvas" aria-hidden="true"></canvas>
+  <canvas id="particle-canvas" aria-hidden="true"></canvas>
   <div class="horizon"></div>
   <div class="persp-floor"></div>
 </div>

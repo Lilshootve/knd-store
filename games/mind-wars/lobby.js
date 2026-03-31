@@ -189,6 +189,7 @@
     if (imgUrl) {
       const im = document.createElement('img');
       im.id = 'hero-avatar-img';
+      im.className = 'hero-img';
       im.alt = '';
       im.src = imgUrl.indexOf('%') !== -1 || /^https?:/i.test(imgUrl) ? imgUrl : encodeURI(imgUrl).replace(/'/g, '%27');
       wrap.appendChild(im);
@@ -367,9 +368,7 @@
     const filled = Math.min(10, Math.round((ke / req) * 10));
     for (let i = 0; i < 10; i++) {
       const o = document.createElement('div');
-      o.style.cssText = 'width:14px;height:14px;border-radius:50%;' + (i < filled
-        ? 'background:radial-gradient(circle at 35% 35%,rgba(0,232,255,.85),rgba(0,120,180,.75));border:1px solid var(--c);box-shadow:0 0 6px rgba(0,232,255,.4)'
-        : 'background:rgba(0,232,255,.06);border:1px solid rgba(0,232,255,.15)');
+      o.className = 'orb' + (i < filled ? '' : ' empty');
       wrap.appendChild(o);
     }
     if (lbl) lbl.textContent = toNext > 0 ? toNext + ' KE to next level' : 'MAX';
@@ -1128,6 +1127,162 @@
     }
   }
 
+  /** MW3000: perspective grid, rising particles, hero float + parallax (no overlap with game logic). */
+  var MW3000 = {
+    _heroRaf: null,
+    _mouse: { x: 0, y: 0 },
+    particles: [],
+    initBackground: function () {
+      var grid = document.getElementById('grid-canvas');
+      var pCan = document.getElementById('particle-canvas');
+      if (grid && grid.getContext) {
+        this._initGrid(grid);
+      }
+      if (pCan && pCan.getContext) {
+        this._initParticles(pCan);
+      }
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduce) {
+        this._initHeroMotion();
+      }
+    },
+    _initGrid: function (canvas) {
+      var ctx = canvas.getContext('2d');
+      var self = this;
+      function draw() {
+        var w = canvas.width;
+        var h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+        var gridSize = 50;
+        var vanishY = h * 0.55;
+        var cx = w / 2;
+        ctx.strokeStyle = 'rgba(0, 232, 255, 0.12)';
+        ctx.lineWidth = 0.5;
+        var i;
+        for (i = 0; i <= 18; i++) {
+          var t = i / 18;
+          var y = vanishY + (h - vanishY) * (t * t);
+          var spread = 0.3 + t * 0.7;
+          ctx.beginPath();
+          ctx.moveTo(cx - w * spread, y);
+          ctx.lineTo(cx + w * spread, y);
+          ctx.globalAlpha = t * 0.6;
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+        for (i = -12; i <= 12; i++) {
+          var xBase = cx + i * gridSize;
+          ctx.beginPath();
+          ctx.moveTo(xBase, h);
+          ctx.lineTo(cx + i * (gridSize * 0.05), vanishY);
+          ctx.globalAlpha = (1 - Math.abs(i) / 13) * 0.25;
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 0.06;
+        ctx.strokeStyle = 'rgba(155, 48, 255, 0.5)';
+        var topGrid = 40;
+        for (var x = 0; x < w; x += topGrid) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, vanishY);
+          ctx.stroke();
+        }
+        for (var yy = 0; yy < vanishY; yy += topGrid) {
+          ctx.beginPath();
+          ctx.moveTo(0, yy);
+          ctx.lineTo(w, yy);
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+      }
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        draw();
+      }
+      window.addEventListener('resize', resize);
+      resize();
+    },
+    _spawnParticle: function (canvas) {
+      var colors = ['rgba(0,232,255', 'rgba(155,48,255', 'rgba(255,204,0'];
+      var c = colors[Math.floor(Math.random() * colors.length)];
+      return {
+        x: Math.random() * canvas.width,
+        y: canvas.height * 0.5 + Math.random() * canvas.height * 0.5,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: -Math.random() * 0.8 - 0.2,
+        r: Math.random() * 2.5 + 1,
+        alpha: Math.random() * 0.5 + 0.2,
+        color: c,
+        life: 0,
+        maxLife: 200 + Math.random() * 300
+      };
+    },
+    _initParticles: function (canvas) {
+      var ctx = canvas.getContext('2d');
+      var self = this;
+      var parts = [];
+      var i;
+      for (i = 0; i < 30; i++) {
+        parts.push(self._spawnParticle(canvas));
+      }
+      self.particles = parts;
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      function frame() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        parts = parts.filter(function (p) { return p.life < p.maxLife; });
+        while (parts.length < 30) {
+          parts.push(self._spawnParticle(canvas));
+        }
+        self.particles = parts;
+        parts.forEach(function (p) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life++;
+          var t = p.life / p.maxLife;
+          var a = p.alpha * (t < 0.1 ? t / 0.1 : t > 0.8 ? (1 - t) / 0.2 : 1);
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = p.color + ',' + a + ')';
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * 2, 0, Math.PI * 2);
+          ctx.fillStyle = p.color + ',' + a * 0.15 + ')';
+          ctx.fill();
+        });
+        requestAnimationFrame(frame);
+      }
+      window.addEventListener('resize', resize);
+      resize();
+      frame();
+    },
+    _initHeroMotion: function () {
+      var wrap = document.getElementById('hero-avatar-wrap');
+      if (!wrap) return;
+      document.addEventListener('mousemove', function (e) {
+        MW3000._mouse.x = e.clientX;
+        MW3000._mouse.y = e.clientY;
+      });
+      function tick() {
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+        var cx = w / 2;
+        var cy = h / 2;
+        var dx = (MW3000._mouse.x - cx) / Math.max(cx, 1);
+        var dy = (MW3000._mouse.y - cy) / Math.max(cy, 1);
+        var t = Date.now() / 1000;
+        var floatY = Math.sin(t) * -10;
+        wrap.style.transform =
+          'translate(' + (dx * 6) + 'px,' + (floatY + dy * 4) + 'px)';
+        MW3000._heroRaf = requestAnimationFrame(tick);
+      }
+      MW3000._heroRaf = requestAnimationFrame(tick);
+    }
+  };
+
   function initStars() {
     const c = document.getElementById('star-canvas');
     if (!c || !c.getContext) return;
@@ -1191,7 +1346,11 @@
     setTimeout(function () {
       if (ls) ls.classList.add('hide');
       setTimeout(function () { if (ls) ls.remove(); }, 600);
-      initStars();
+      if (document.getElementById('grid-canvas') && document.getElementById('particle-canvas')) {
+        MW3000.initBackground();
+      } else {
+        initStars();
+      }
       initLivePreview();
       var st = 0;
       setInterval(function () {

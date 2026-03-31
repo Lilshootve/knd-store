@@ -10,11 +10,11 @@ $m = intdiv($secRem % 3600, 60);
 $timerStr = $secRem > 0 ? sprintf('Ends in %dd %dh %dm', $d, $h, $m) : 'Season ended';
 $online = (int) ($L['online_hint'] ?? 0);
 ?>
-<div class="right-col">
+<div class="right-col col">
   <div class="panel">
-    <div class="panel-hdr">
-      <div class="panel-title"><div class="pdot" style="background:var(--gold);box-shadow:0 0 6px var(--gold)"></div> EVENTS</div>
-      <button type="button" class="panel-action" id="events-all-btn">ALL →</button>
+    <div class="panel-hdr ph">
+      <div class="panel-title ph-title"><div class="pdot pdot-gold"></div> EVENTS</div>
+      <button type="button" class="panel-action ph-action" id="events-all-btn">ALL →</button>
     </div>
     <div class="panel-body">
       <div id="event-banner-wrap" style="position:relative">
@@ -37,7 +37,7 @@ $online = (int) ($L['online_hint'] ?? 0);
           </div>
           <div class="mc-badge hot">RANKED</div>
         </div>
-        <div class="mode-card" style="--mc:#9b30ff" data-open-mm="pve">
+        <div class="mode-card" style="--mc:#9b30ff;--mc-rgb:155,48,255" data-open-mm="pve">
           <div class="mc-ico">🤖</div>
           <div class="mc-info">
             <div class="mc-mname">PvE</div>
@@ -45,7 +45,7 @@ $online = (int) ($L['online_hint'] ?? 0);
           </div>
           <div class="mc-badge new">CASUAL</div>
         </div>
-        <div class="mode-card" style="--mc:#ffcc00" data-open-mm="ranked">
+        <div class="mode-card" style="--mc:#ffcc00;--mc-rgb:255,204,0" data-open-mm="ranked">
           <div class="mc-ico">🏆</div>
           <div class="mc-info">
             <div class="mc-mname">Season ladder</div>
@@ -58,9 +58,9 @@ $online = (int) ($L['online_hint'] ?? 0);
   </div>
 
   <div class="panel">
-    <div class="panel-hdr">
-      <div class="panel-title"><div class="pdot"></div> AVATAR</div>
-      <button type="button" class="panel-action" id="av-panel-change">CHANGE →</button>
+    <div class="panel-hdr ph">
+      <div class="panel-title ph-title"><div class="pdot" style="background:var(--m);box-shadow:0 0 6px var(--m)"></div> AVATAR</div>
+      <button type="button" class="panel-action ph-action" id="av-panel-change">CHANGE →</button>
     </div>
     <div class="panel-body">
       <div class="av-preview">
@@ -68,16 +68,16 @@ $online = (int) ($L['online_hint'] ?? 0);
         <div class="avp-row" id="avp-slots-row"></div>
         <button type="button" class="avp-btn" id="avp-inspect">⬡ INSPECT AVATAR</button>
       </div>
-      <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
-        <div style="font-family:var(--FD);font-size:9.2px;letter-spacing:3px;color:var(--t3);text-transform:uppercase;margin-bottom:2px">KNOWLEDGE</div>
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <div style="display:flex;gap:5px" id="energy-orbs-display"></div>
-          <span style="font-family:var(--FM);font-size:10.35px;color:var(--green)" id="knowledge-next-label">—</span>
+      <div class="knowledge-row" style="margin-top:8px">
+        <span class="knowledge-label">KNOWLEDGE</span>
+        <div style="display:flex;align-items:center;gap:10px;flex:1;justify-content:flex-end;min-width:0">
+          <div class="orbs" id="energy-orbs-display"></div>
+          <span style="font-family:var(--FM);font-size:10px;color:var(--green);flex-shrink:0" id="knowledge-next-label">—</span>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;height:252px">
         <div style="font-family:var(--FD);font-size:9.2px;letter-spacing:3px;color:var(--t3);text-transform:uppercase;margin-bottom:2px">OTHER GAMES</div>
-        <a href="/games/knowledge-duel.php" class="mode-card mode-card--link<?php echo $mwShellGame === 'knowledge-duel' ? ' mode-card--active' : ''; ?>" style="--mc:#06b6d4">
+        <a href="/games/knowledge-duel.php" class="mode-card mode-card--link<?php echo $mwShellGame === 'knowledge-duel' ? ' mode-card--active' : ''; ?>" style="--mc:#06b6d4;--mc-rgb:6,182,212">
           <div class="mc-ico">🧠</div>
           <div class="mc-info">
             <div class="mc-mname">Knowledge Duel</div>
@@ -85,7 +85,7 @@ $online = (int) ($L['online_hint'] ?? 0);
           </div>
           <div class="mc-badge new">DUEL</div>
         </a>
-        <a href="/death-roll-lobby.php" class="mode-card mode-card--link<?php echo ($mwShellGame ?? '') === 'lastroll' ? ' mode-card--active' : ''; ?>" style="--mc:#f97316">
+        <a href="/death-roll-lobby.php" class="mode-card mode-card--link<?php echo ($mwShellGame ?? '') === 'lastroll' ? ' mode-card--active' : ''; ?>" style="--mc:#f97316;--mc-rgb:249,115,22">
           <div class="mc-ico">🎲</div>
           <div class="mc-info">
             <div class="mc-mname">KND LastRoll</div>
@@ -93,7 +93,7 @@ $online = (int) ($L['online_hint'] ?? 0);
           </div>
           <div class="mc-badge hot">1V1</div>
         </a>
-        <a href="/above-under.php" class="mode-card mode-card--link<?php echo ($mwShellGame ?? '') === 'insight' ? ' mode-card--active' : ''; ?>" style="--mc:#d946ef">
+        <a href="/above-under.php" class="mode-card mode-card--link<?php echo ($mwShellGame ?? '') === 'insight' ? ' mode-card--active' : ''; ?>" style="--mc:#d946ef;--mc-rgb:217,70,239">
           <div class="mc-ico">👁</div>
           <div class="mc-info">
             <div class="mc-mname">KND Insight</div>
@@ -101,7 +101,7 @@ $online = (int) ($L['online_hint'] ?? 0);
           </div>
           <div class="mc-badge ranked">PREDICT</div>
         </a>
-        <a href="/squad-arena-v2/squad-selector.php" class="mode-card mode-card--link" style="--mc:#7c3aed">
+        <a href="/squad-arena-v2/squad-selector.php" class="mode-card mode-card--link" style="--mc:#7c3aed;--mc-rgb:124,58,237">
           <div class="mc-ico">👥</div>
           <div class="mc-info">
             <div class="mc-mname">Mind Wars Squad (3v3)</div>

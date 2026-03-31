@@ -10,7 +10,7 @@ $pos = $ranking['estimated_position'] ?? null;
 $posStr = $pos !== null ? '#' . (int) $pos : '—';
 $seasonName = (string) ($season['name'] ?? 'Season');
 ?>
-<div class="left-col">
+<div class="left-col col">
   <div class="rank-widget">
     <div class="rw-top">
       <div>
@@ -30,17 +30,17 @@ $seasonName = (string) ($season['name'] ?? 'Season');
   </div>
 
   <div class="panel" style="flex:1">
-    <div class="panel-hdr">
-      <div class="panel-title"><div class="pdot"></div> MISSIONS</div>
-      <button type="button" class="panel-action" id="missions-all-btn">ALL →</button>
+    <div class="panel-hdr ph">
+      <div class="panel-title ph-title"><div class="pdot"></div> MISSIONS</div>
+      <button type="button" class="panel-action ph-action" id="missions-all-btn">ALL →</button>
     </div>
     <div class="panel-body" id="missions-body"></div>
   </div>
 
   <div class="panel">
-    <div class="panel-hdr">
-      <div class="panel-title"><div class="pdot" style="background:var(--gold);box-shadow:0 0 6px var(--gold)"></div> TOP PLAYERS</div>
-      <button type="button" class="panel-action" id="lb-mini-viewall">VIEW ALL →</button>
+    <div class="panel-hdr ph">
+      <div class="panel-title ph-title"><div class="pdot pdot-gold"></div> TOP PLAYERS</div>
+      <button type="button" class="panel-action ph-action" id="lb-mini-viewall">VIEW ALL →</button>
     </div>
     <div class="panel-body" id="lb-mini-body"></div>
   </div>

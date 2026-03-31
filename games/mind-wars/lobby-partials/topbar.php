@@ -11,10 +11,25 @@ $rankLabel = $pos !== null ? '#' . (int) $pos : '—';
 ?>
 <header class="topbar">
   <a class="tb-logo" href="/index.php" title="KND Store — Inicio">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-      <polygon points="12,2 22,7 22,17 12,22 2,17 2,7"/>
-    </svg>
-    KND <span style="font-size:10.35px;letter-spacing:2px;color:var(--t3);font-weight:600">GAMES</span>
+    <div class="logo-hex" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none" width="32" height="32">
+        <polygon points="16,2 28,9 28,23 16,30 4,23 4,9"
+          stroke="url(#mw-lobby-hexg)" stroke-width="1.5" fill="rgba(0,232,255,0.06)"/>
+        <polygon points="16,8 23,12 23,20 16,24 9,20 9,12"
+          stroke="url(#mw-lobby-hexg2)" stroke-width="1" fill="rgba(0,232,255,0.04)" opacity="0.6"/>
+        <defs>
+          <linearGradient id="mw-lobby-hexg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00e8ff"/>
+            <stop offset="100%" stop-color="#9b30ff"/>
+          </linearGradient>
+          <linearGradient id="mw-lobby-hexg2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#9b30ff"/>
+            <stop offset="100%" stop-color="#00e8ff"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <span class="tb-brand">KND <em style="font-style:normal;font-weight:400;font-size:9px;letter-spacing:3px;color:var(--t3);margin-left:2px">GAMES</em></span>
   </a>
 
   <div class="tb-identity">
