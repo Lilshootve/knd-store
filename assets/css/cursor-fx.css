@@ -5,8 +5,8 @@
  */
 
 :root {
-  /* Minimal lens — tight to pointer */
-  --knd-cfx-disc: 76px;
+  /* Tiny lens — hugging the pointer */
+  --knd-cfx-disc: 52px;
   --knd-cfx-cyan: rgb(62, 239, 255);
   --knd-cfx-violet: rgb(196, 92, 255);
   --knd-cfx-ember: rgb(255, 160, 72);
@@ -116,7 +116,7 @@ html.knd-cursor-fx--disabled #knd-cursor-fx-root {
     rgba(255, 100, 60, 0.04) 48%,
     transparent 68%
   );
-  filter: blur(11px);
+  filter: blur(7px);
   opacity: 0.75;
   mix-blend-mode: screen;
   pointer-events: none;
@@ -175,10 +175,10 @@ html.knd-cursor-fx--disabled #knd-cursor-fx-root {
   margin: calc(var(--knd-cfx-disc) / -2) 0 0 calc(var(--knd-cfx-disc) / -2);
   border-radius: 50%;
   box-shadow:
-    0 0 0 0.5px rgba(62, 239, 255, 0.45),
-    0 0 6px rgba(62, 239, 255, 0.22),
-    0 0 14px rgba(196, 92, 255, 0.12),
-    inset 0 0 8px rgba(0, 0, 0, 0.35);
+    0 0 0 0.5px rgba(62, 239, 255, 0.42),
+    0 0 4px rgba(62, 239, 255, 0.24),
+    0 0 9px rgba(196, 92, 255, 0.1),
+    inset 0 0 5px rgba(0, 0, 0, 0.32);
   pointer-events: none;
   opacity: 0.9;
 }
@@ -270,9 +270,9 @@ html.knd-cursor-fx--disabled #knd-cursor-fx-root {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 3px;
-  height: 3px;
-  margin: -1.5px 0 0 -1.5px;
+  width: 2px;
+  height: 2px;
+  margin: -1px 0 0 -1px;
   border-radius: 50%;
   background: radial-gradient(
     circle at 35% 35%,

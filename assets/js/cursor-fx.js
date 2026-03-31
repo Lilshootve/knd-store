@@ -66,13 +66,13 @@
 
     var blur = document.createElementNS(ns, 'feGaussianBlur');
     blur.setAttribute('in', 'raw');
-    blur.setAttribute('stdDeviation', '1.1');
+    blur.setAttribute('stdDeviation', '0.85');
     blur.setAttribute('result', 'smooth');
 
     var disp = document.createElementNS(ns, 'feDisplacementMap');
     disp.setAttribute('in', 'SourceGraphic');
     disp.setAttribute('in2', 'smooth');
-    disp.setAttribute('scale', '5');
+    disp.setAttribute('scale', '3.5');
     disp.setAttribute('xChannelSelector', 'R');
     disp.setAttribute('yChannelSelector', 'G');
 
