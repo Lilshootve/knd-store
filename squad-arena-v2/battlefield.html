@@ -176,13 +176,20 @@ header.topbar{flex-shrink:0}
 
 /* BG — decor layers sit behind #canvas-container (z-index 0) */
 #abg{position:absolute;inset:0;z-index:0;pointer-events:none}
-.abg-sky{position:absolute;inset:0;background:linear-gradient(180deg,
-  #03060f 0%,#060d1e 20%,#0a1428 40%,#0d1235 58%,#100e2e 72%,#130826 88%,#160630 100%)}
-.abg-nebula{position:absolute;inset:0;pointer-events:none;
+.abg-sky{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,
+    #03060f 0%,#060d1e 20%,
+    #0a1428 40%,#0d1235 58%,
+    #100e2e 72%,#130826 88%,#160630 100%);
+}
+.abg-nebula{
+  position:absolute;inset:0;pointer-events:none;
   background:
-    radial-gradient(ellipse 55% 35% at 20% 40%,rgba(155,48,255,.06) 0%,transparent 65%),
-    radial-gradient(ellipse 42% 30% at 78% 28%,rgba(0,232,255,.04) 0%,transparent 58%),
-    radial-gradient(ellipse 32% 22% at 50% 62%,rgba(155,48,255,.045) 0%,transparent 55%)}
+    radial-gradient(ellipse 55% 35% at 18% 42%,rgba(155,48,255,.065) 0%,transparent 62%),
+    radial-gradient(ellipse 40% 28% at 82% 28%,rgba(0,232,255,.05) 0%,transparent 58%),
+    radial-gradient(ellipse 32% 22% at 50% 62%,rgba(0,200,255,.03) 0%,transparent 52%);
+}
 .abg-stars{position:absolute;inset:0}.abg-hz{position:absolute;top:24%;left:0;right:0;height:26%;
   background:linear-gradient(180deg,rgba(160,90,40,.06),rgba(0,180,255,.025),transparent)}
 .star{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d,3s) ease-in-out infinite var(--dl,0s)}
@@ -193,17 +200,24 @@ header.topbar{flex-shrink:0}
 #afp{width:100%;height:100%;transform:rotateX(55deg);transform-origin:bottom center;position:relative}
 #afg{position:absolute;inset:0;
   background-image:
-    linear-gradient(rgba(0,232,255,.055) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,232,255,.055) 1px,transparent 1px),
+    linear-gradient(rgba(0,232,255,.052) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,232,255,.052) 1px,transparent 1px),
     linear-gradient(45deg,rgba(155,48,255,.018) 1px,transparent 1px);
-  background-size:52px 52px,52px 52px,36px 36px;mask-image:radial-gradient(ellipse 62% 82% at 50% 55%,black 12%,transparent 72%)}
+  background-size:52px 52px,52px 52px,104px 104px;mask-image:radial-gradient(ellipse 62% 82% at 50% 55%,black 12%,transparent 72%)}
 #afglow{position:absolute;inset:0;background:radial-gradient(ellipse 42% 50% at 50% 48%,rgba(0,240,255,.045),transparent 60%)}
 
 /* Ring */
 #aring{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:80%;height:0;padding-bottom:30%;z-index:0;pointer-events:none}
-#aring::before{content:'';position:absolute;inset:0;border:1px solid rgba(0,240,255,.1);border-radius:50%;
-  box-shadow:0 0 22px rgba(0,240,255,.04),inset 0 0 22px rgba(0,240,255,.02);animation:rpl 4s ease-in-out infinite}
-#aring::after{content:'';position:absolute;inset:10px;border:1px dashed rgba(155,48,255,.08);border-radius:50%;pointer-events:none}
+#aring::before{
+  content:'';position:absolute;inset:0;
+  border:1px solid rgba(0,232,255,.12);border-radius:50%;
+  box-shadow:0 0 30px rgba(0,232,255,.04),inset 0 0 30px rgba(0,232,255,.02);
+  animation:rpl 4.5s ease-in-out infinite;
+}
+#aring::after{
+  content:'';position:absolute;inset:12px;
+  border:1px dashed rgba(155,48,255,.07);border-radius:50%;pointer-events:none;
+}
 @keyframes rpl{0%,100%{opacity:.35}50%{opacity:.8}}
 
 /* Command frame */
@@ -309,7 +323,7 @@ header.topbar{flex-shrink:0}
 @keyframes fUpCrit{0%{opacity:1;transform:translateX(-50%) translateY(0) scale(1) rotate(-3deg)}10%{transform:translateX(-50%) translateY(-10px) scale(1.35) rotate(2deg)}25%{transform:translateX(-50%) translateY(-22px) scale(1.45) rotate(-1deg)}100%{opacity:0;transform:translateX(-50%) translateY(-90px) scale(.6) rotate(0)}}
 
 /* Screen flash from arena — base tint; fuertes vía mw-flash / VFX en JS */
-#sf{position:fixed;inset:0;z-index:500;pointer-events:none;opacity:0;background:rgba(0,232,255,.08);transition:opacity .06s}
+#sf{position:fixed;inset:0;z-index:500;pointer-events:none;opacity:0;background:rgba(0,232,255,.07);transition:opacity .06s}
 #sf.pop{opacity:1;transition:none}
 
 /*══════════════════════════════════════════════════════════════════
@@ -329,9 +343,9 @@ header.topbar{flex-shrink:0}
 .cle .dt{color:var(--red);font-weight:700}.cle .ht{color:var(--green);font-weight:700}
 .cle .ct{color:var(--gold);font-family:var(--FD);font-size:9px}
 .cle.sys{color:var(--t3);font-style:italic;border-left-color:rgba(155,48,255,.35)}
-.cle.pa::before{content:'⚔';color:var(--c);font-size:9px;flex-shrink:0;line-height:1}
-.cle.ea::before{content:'⬡';color:var(--m);font-size:9px;flex-shrink:0;line-height:1}
-.cle.sys::before{content:'◈';color:var(--gold);font-size:9px;flex-shrink:0;line-height:1}
+.cle.pa::before{content:'⚔ ';color:var(--c);font-size:9px;margin-right:2px;flex-shrink:0;line-height:1}
+.cle.ea::before{content:'⬡ ';color:var(--m);font-size:9px;margin-right:2px;flex-shrink:0;line-height:1}
+.cle.sys::before{content:'◈ ';color:var(--gold);font-size:9px;margin-right:2px;flex-shrink:0;line-height:1}
 
 /*══════════════════════════════════════════════════════════════════
   BOTTOM — tools/cards .avatar-card (row-span 2) + 2×2 skill tiles
@@ -610,13 +624,97 @@ header.topbar{flex-shrink:0}
   #mw-ability-caption{bottom:max(36px, calc(env(safe-area-inset-bottom, 0px) + 20px))}
   #mw-ability-name{font-size:11px}
 }
+
+/* ═══ FASE 4 — VS INTRO SCREEN ═══ */
+#vs-intro{
+  position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;
+  opacity:1;transition:opacity .6s;
+  background:
+    radial-gradient(ellipse 55% 45% at 20% 60%, rgba(0,232,255,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 40% at 80% 35%, rgba(155,48,255,.06) 0%, transparent 55%),
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,8,22,1) 0%, rgba(1,4,8,1) 100%);
+}
+#vs-stars-canvas{position:absolute;inset:0;pointer-events:none;z-index:0}
+#vs-intro::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,232,255,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,232,255,.04) 1px, transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 70% 70% at 50% 50%, black 20%, transparent 75%);
+}
+#vs-intro > div{position:relative;z-index:1}
+#vs-left > div:first-child{
+  font-family:var(--FD);
+  font-size:9px !important;
+  letter-spacing:.3em;
+  color:var(--c);
+  text-transform:uppercase;
+  margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+#vs-left > div:first-child::before,
+#vs-left > div:first-child::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg, transparent, rgba(0,232,255,.35));
+}
+#vs-left > div:first-child::after{
+  background:linear-gradient(270deg, transparent, rgba(0,232,255,.35));
+}
+#vs-right > div:first-child{
+  font-family:var(--FD);
+  font-size:9px !important;
+  letter-spacing:.3em;
+  color:var(--m);
+  text-transform:uppercase;
+  margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+#vs-right > div:first-child::before,
+#vs-right > div:first-child::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg, transparent, rgba(155,48,255,.35));
+}
+#vs-right > div:first-child::after{
+  background:linear-gradient(270deg, transparent, rgba(155,48,255,.35));
+}
+#vs-badge > div:first-child{
+  font-size:56px !important;
+  background:linear-gradient(135deg, var(--c), var(--m));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  text-shadow:none !important;
+  filter:drop-shadow(0 0 30px rgba(0,232,255,.4)) drop-shadow(0 0 60px rgba(155,48,255,.3));
+}
+#vs-allies > div:nth-child(odd),
+#vs-enemies > div:nth-child(odd){
+  position:relative;
+  padding:8px 20px;
+  background:rgba(0,0,0,.3);
+  border-radius:3px;
+  border-left:2px solid var(--c);
+}
+#vs-enemies > div:nth-child(odd){
+  border-left:none;
+  border-right:2px solid var(--m);
+}
+#vs-allies > div:nth-child(even),
+#vs-enemies > div:nth-child(even){
+  font-size:8px;
+  letter-spacing:.12em;
+  opacity:.6;
+  margin-top:-4px;
+  margin-bottom:4px;
+}
 </style>
 </head>
 <body>
 <div id="sf"></div>
 
 <!-- ═══ VS INTRO SCREEN ═══ -->
-<div id="vs-intro" style="position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;background:#010408;opacity:1;transition:opacity 0.6s;">
+<div id="vs-intro">
+  <canvas id="vs-stars-canvas"></canvas>
   <div style="display:flex;align-items:center;gap:40px;width:90%;max-width:900px;">
     <div id="vs-left" style="flex:1;text-align:center;transform:translateX(-80px);opacity:0;transition:all 0.6s cubic-bezier(.2,.8,.2,1);">
       <div style="font-family:var(--FD);font-size:11px;letter-spacing:4px;color:var(--c);margin-bottom:8px;">YOUR SQUAD</div>
@@ -1606,6 +1704,49 @@ function sl(ms){return new Promise(r=>setTimeout(r,ms))}
 function goLobby(){window.location.href='/squad-arena-v2/squad-selector.php'}
 
 init();
+
+(function initVsStars(){
+  var c=document.getElementById('vs-stars-canvas');
+  if(!c)return;
+  var ctx=c.getContext('2d');
+  var stars=[];
+  function resize(){
+    c.width=window.innerWidth;
+    c.height=window.innerHeight;
+  }
+  function spawn(){
+    return{
+      x:Math.random()*c.width,
+      y:Math.random()*c.height*0.7,
+      r:Math.random()*1.4+0.4,
+      a:Math.random()*0.5+0.1,
+      speed:Math.random()*0.008+0.004,
+      phase:Math.random()*Math.PI*2
+    };
+  }
+  resize();
+  window.addEventListener('resize',resize);
+  for(var i=0;i<70;i++)stars.push(spawn());
+  var frame;
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    var t=Date.now()/1000;
+    stars.forEach(function(s){
+      var alpha=s.a*(0.4+0.6*Math.sin(t*s.speed*20+s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(200,240,255,'+alpha+')';
+      ctx.fill();
+    });
+    var vsEl=document.getElementById('vs-intro');
+    if(vsEl&&vsEl.style.display!=='none'){
+      frame=requestAnimationFrame(draw);
+    }else{
+      if(frame)cancelAnimationFrame(frame);
+    }
+  }
+  draw();
+})();
 </script>
 </body>
 </html>
