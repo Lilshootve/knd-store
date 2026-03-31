@@ -280,6 +280,9 @@ body.admin-page #bg {
   flex-shrink: 1;
   min-width: 0;
   max-width: 200px;
+  margin: 5px 8px;
+  padding: 2px 0;
+  box-sizing: border-box;
 }
 @media (min-width: 992px) {
   .topbar.site-header .tb-holo-yield-mount {
