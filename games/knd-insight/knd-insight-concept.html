@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KND INSIGHT — Holographic Prediction Arena</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   KND INSIGHT — HOLOGRAPHIC PREDICTION ARENA
+   Concept: Split-zone UI. Left=UNDER (cold blue). Right=ABOVE (hot magenta).
+   The arena breathes. The dice floats in the center nexus.
+═══════════════════════════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --void:#010508;--deep:#020c14;--surface:#04131c;
+  --c:#00e8ff;--c2:#00a8bb;--cg:rgba(0,232,255,.12);
+  --m:#d44fff;--m2:#9b30ff;--mg:rgba(212,79,255,.12);
+  --gold:#ffcc00;--green:#00ff99;--red:#ff2255;
+  --t1:rgba(220,248,255,.95);--t2:rgba(155,215,235,.62);--t3:rgba(90,165,190,.38);
+  --FD:'Orbitron',monospace;--FB:'Rajdhani',sans-serif;--FM:'Share Tech Mono',monospace;
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--void);color:var(--t1);font-family:var(--FB);cursor:default;user-select:none}
+
+/* Scanlines */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 3px)}
+
+/* ── BACKGROUND ── */
+#bg{position:fixed;inset:0;z-index:0;overflow:hidden}
+#bg::before{content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 50% 60% at 25% 50%,rgba(0,100,180,.12),transparent 60%),
+    radial-gradient(ellipse 50% 60% at 75% 50%,rgba(160,40,200,.1),transparent 60%),
+    radial-gradient(ellipse 80% 40% at 50% 110%,rgba(0,40,80,.2),transparent 50%),
+    var(--void)}
+/* Grid */
+#bg::after{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,232,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(0,232,255,.012) 1px,transparent 1px);
+  background-size:48px 48px}
+/* Center divider glow */
+.bg-divider{position:absolute;top:0;bottom:0;left:50%;width:2px;
+  background:linear-gradient(180deg,transparent 5%,rgba(255,255,255,.08) 30%,rgba(255,255,255,.12) 50%,rgba(255,255,255,.08) 70%,transparent 95%);
+  box-shadow:0 0 30px rgba(255,255,255,.04);z-index:1}
+
+/* ── LAYOUT ── */
+.app{position:relative;z-index:1;height:100vh;display:grid;grid-template-rows:auto 1fr auto;overflow:hidden}
+
+/* ── TOP BAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;
+  background:rgba(2,12,20,.88);border-bottom:1px solid rgba(255,255,255,.06);backdrop-filter:blur(20px);z-index:10}
+.tb-brand{font-family:var(--FD);font-size:14px;font-weight:900;letter-spacing:4px;color:var(--c);
+  text-shadow:0 0 18px rgba(0,232,255,.4);display:flex;align-items:center;gap:8px}
+.tb-brand .eye{font-size:20px;filter:drop-shadow(0 0 8px var(--c));animation:eyePulse 3s ease-in-out infinite}
+@keyframes eyePulse{0%,100%{opacity:.7;filter:drop-shadow(0 0 6px var(--c))}50%{opacity:1;filter:drop-shadow(0 0 14px var(--m))}}
+.tb-balance{display:flex;align-items:center;gap:6px;font-family:var(--FM);font-size:13px;color:var(--gold);
+  padding:4px 12px;border:1px solid rgba(255,204,0,.2);background:rgba(255,204,0,.04);border-radius:20px}
+.tb-streak{display:flex;align-items:center;gap:5px;font-family:var(--FD);font-size:11px;letter-spacing:2px;
+  color:var(--green);text-shadow:0 0 8px rgba(0,255,153,.4)}
+.tb-streak.cold{color:var(--red);text-shadow:0 0 8px rgba(255,34,85,.4)}
+
+/* ── MAIN ARENA ── */
+.arena{display:flex;align-items:stretch;position:relative;overflow:hidden}
+
+/* Split zones */
+.zone{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;cursor:pointer;transition:all .4s cubic-bezier(.2,.8,.2,1);overflow:hidden;gap:10px;padding:20px}
+.zone::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .4s}
+.zone:hover::before{opacity:1}
+.zone:active{transform:scale(.98)}
+
+/* UNDER zone — cold blue */
+.zone-under::before{background:radial-gradient(ellipse at 50% 60%,rgba(0,120,200,.15),transparent 65%)}
+.zone-under:hover{background:rgba(0,120,200,.04)}
+.zone-under .zone-arrow{color:var(--c);text-shadow:0 0 20px rgba(0,232,255,.5)}
+
+/* ABOVE zone — hot magenta */
+.zone-above::before{background:radial-gradient(ellipse at 50% 40%,rgba(180,40,220,.12),transparent 65%)}
+.zone-above:hover{background:rgba(180,40,220,.04)}
+.zone-above .zone-arrow{color:var(--m);text-shadow:0 0 20px rgba(212,79,255,.5)}
+
+.zone-arrow{font-size:clamp(48px,8vw,72px);transition:transform .3s}
+.zone:hover .zone-arrow{transform:scale(1.15)}
+.zone-label{font-family:var(--FD);font-size:clamp(20px,4vw,32px);font-weight:900;letter-spacing:6px}
+.zone-range{font-family:var(--FM);font-size:13px;letter-spacing:3px;color:var(--t3)}
+.zone-odds{font-family:var(--FM);font-size:10px;letter-spacing:2px;color:var(--t3);margin-top:4px}
+
+/* Hover glow border */
+.zone-under:hover{border-right:1px solid rgba(0,232,255,.15)}
+.zone-above:hover{border-left:1px solid rgba(212,79,255,.15)}
+
+/* ── CENTER NEXUS — dice floats here ── */
+.nexus{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10;
+  display:flex;flex-direction:column;align-items:center;gap:12px;pointer-events:none}
+
+/* Outer rings */
+.nexus-ring{position:absolute;border-radius:50%;border:1px solid rgba(0,232,255,.12);
+  animation:ringBreath 4s ease-in-out infinite}
+.nexus-ring.r1{width:220px;height:220px;top:50%;left:50%;transform:translate(-50%,-50%);
+  box-shadow:0 0 40px rgba(0,232,255,.06),inset 0 0 40px rgba(0,232,255,.03)}
+.nexus-ring.r2{width:180px;height:180px;top:50%;left:50%;transform:translate(-50%,-50%);
+  border-color:rgba(212,79,255,.1);animation-delay:.6s}
+.nexus-ring.r3{width:140px;height:140px;top:50%;left:50%;transform:translate(-50%,-50%);
+  border-color:rgba(255,255,255,.06);animation-delay:1.2s}
+@keyframes ringBreath{0%,100%{opacity:.4;transform:translate(-50%,-50%) scale(1)}50%{opacity:.8;transform:translate(-50%,-50%) scale(1.05)}}
+
+/* Dice container */
+.dice-shell{width:120px;height:120px;position:relative;z-index:5;animation:diceFloat 4s ease-in-out infinite}
+@keyframes diceFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+.dice-face{width:100%;height:100%;border-radius:20px;
+  background:rgba(4,19,28,.92);
+  border:2px solid rgba(0,232,255,.25);
+  box-shadow:0 0 30px rgba(0,232,255,.15),inset 0 0 20px rgba(0,232,255,.05);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--FD);font-size:42px;font-weight:900;color:var(--c);
+  text-shadow:0 0 20px rgba(0,232,255,.5);
+  transition:all .3s;position:relative;overflow:hidden}
+
+/* Dice scanline overlay */
+.dice-face::before{content:'';position:absolute;inset:0;border-radius:18px;
+  background:repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(0,232,255,.02) 4px,rgba(0,232,255,.02) 5px);
+  pointer-events:none}
+
+/* Corner pips */
+.dice-face::after{content:'';position:absolute;width:6px;height:6px;border-radius:50%;
+  top:14px;left:14px;background:rgba(0,232,255,.2);
+  box-shadow:76px 0 0 rgba(0,232,255,.2),0 76px 0 rgba(0,232,255,.2),76px 76px 0 rgba(0,232,255,.2)}
+
+.dice-value{position:relative;z-index:2}
+
+/* Rolling state */
+.dice-shell.rolling .dice-face{border-color:rgba(255,255,255,.4);
+  box-shadow:0 0 50px rgba(0,232,255,.3),0 0 80px rgba(212,79,255,.15);
+  animation:diceRollShake .08s ease-in-out infinite}
+.dice-shell.rolling{animation:none}
+@keyframes diceRollShake{0%{transform:rotate(-4deg) scale(1.03)}50%{transform:rotate(4deg) scale(.97)}100%{transform:rotate(-4deg) scale(1.03)}}
+
+/* Result states */
+.dice-shell.result-under .dice-face{border-color:var(--c);box-shadow:0 0 40px rgba(0,232,255,.35);
+  animation:resultPop .4s cubic-bezier(.15,1.2,.3,1)}
+.dice-shell.result-above .dice-face{border-color:var(--m);box-shadow:0 0 40px rgba(212,79,255,.35);
+  animation:resultPop .4s cubic-bezier(.15,1.2,.3,1)}
+.dice-shell.result-above .dice-face .dice-value{color:var(--m);text-shadow:0 0 20px rgba(212,79,255,.5)}
+@keyframes resultPop{0%{transform:scale(1.25)}60%{transform:scale(.95)}100%{transform:scale(1)}}
+
+/* Status text below dice */
+.dice-status{font-family:var(--FM);font-size:10px;letter-spacing:3px;color:var(--t3);text-transform:uppercase;
+  position:relative;z-index:5}
+
+/* ── ENTRY SELECTOR (floating below nexus) ── */
+.entry-bar{position:absolute;left:50%;bottom:calc(50% - 130px);transform:translateX(-50%);z-index:10;
+  display:flex;align-items:center;gap:10px;pointer-events:all;
+  background:rgba(4,19,28,.9);border:1px solid rgba(0,232,255,.12);backdrop-filter:blur(16px);
+  padding:6px 16px;border-radius:20px}
+.entry-label{font-family:var(--FM);font-size:9px;letter-spacing:2px;color:var(--t3);text-transform:uppercase}
+.entry-chips{display:flex;gap:4px}
+.entry-chip{font-family:var(--FM);font-size:11px;padding:3px 10px;border:1px solid rgba(255,255,255,.08);
+  color:var(--t2);cursor:pointer;transition:all .2s;background:transparent;border-radius:12px}
+.entry-chip:hover{border-color:rgba(0,232,255,.25);color:var(--c)}
+.entry-chip.active{border-color:var(--c);color:var(--c);background:rgba(0,232,255,.08);
+  box-shadow:0 0 10px rgba(0,232,255,.15)}
+.entry-payout{font-family:var(--FM);font-size:10px;color:var(--gold);letter-spacing:1px}
+
+/* ── RESULT FLASH OVERLAY ── */
+.result-overlay{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s}
+.result-overlay.show{opacity:1;pointer-events:all}
+.result-overlay.win{background:radial-gradient(ellipse at 50% 50%,rgba(0,255,153,.08),rgba(0,40,30,.85) 70%)}
+.result-overlay.lose{background:radial-gradient(ellipse at 50% 50%,rgba(255,34,85,.06),rgba(30,0,10,.85) 70%)}
+.result-card{display:flex;flex-direction:column;align-items:center;gap:12px;transform:scale(.8);opacity:0;
+  transition:all .4s cubic-bezier(.15,1.2,.3,1)}
+.result-overlay.show .result-card{transform:scale(1);opacity:1}
+.result-icon{font-size:56px;filter:drop-shadow(0 0 24px currentColor)}
+.result-text{font-family:var(--FD);font-size:clamp(36px,7vw,56px);font-weight:900;letter-spacing:8px}
+.result-text.win{color:var(--green);text-shadow:0 0 30px rgba(0,255,153,.5)}
+.result-text.lose{color:var(--red);text-shadow:0 0 30px rgba(255,34,85,.5)}
+.result-detail{font-family:var(--FM);font-size:14px;letter-spacing:2px;color:var(--t2)}
+.result-kp{font-family:var(--FD);font-size:22px;font-weight:700;letter-spacing:2px;margin-top:4px}
+.result-kp.win{color:var(--green)}
+.result-kp.lose{color:var(--red)}
+
+/* ── BOTTOM BAR — history strip ── */
+.bottombar{display:flex;align-items:center;justify-content:space-between;padding:8px 20px;
+  background:rgba(2,12,20,.9);border-top:1px solid rgba(255,255,255,.05);backdrop-filter:blur(16px);z-index:10;gap:12px}
+.history-label{font-family:var(--FD);font-size:8px;letter-spacing:3px;color:var(--t3);text-transform:uppercase;flex-shrink:0}
+.history-strip{display:flex;gap:6px;overflow-x:auto;flex:1;padding:2px 0}
+.history-strip::-webkit-scrollbar{height:0}
+.history-dot{width:32px;height:32px;border-radius:4px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--FD);font-size:11px;font-weight:700;flex-shrink:0;transition:transform .2s;cursor:default;
+  position:relative}
+.history-dot:hover{transform:scale(1.15)}
+.history-dot.win{background:rgba(0,255,153,.1);border:1px solid rgba(0,255,153,.25);color:var(--green)}
+.history-dot.lose{background:rgba(255,34,85,.08);border:1px solid rgba(255,34,85,.2);color:var(--red)}
+.history-dot .hd-choice{position:absolute;bottom:-1px;right:-1px;font-size:6px;font-family:var(--FM);
+  letter-spacing:1px;color:var(--t3)}
+.bb-stats{display:flex;gap:16px;flex-shrink:0}
+.bb-stat{display:flex;flex-direction:column;align-items:center;gap:1px}
+.bb-sv{font-family:var(--FD);font-size:13px;font-weight:700;letter-spacing:1px}
+.bb-sv.win-rate{color:var(--c)}
+.bb-sv.profit{color:var(--green)}
+.bb-sv.profit.neg{color:var(--red)}
+.bb-sl{font-family:var(--FM);font-size:7px;letter-spacing:2px;color:var(--t3);text-transform:uppercase}
+
+/* ── STREAK MULTIPLIER BANNER ── */
+.streak-banner{position:absolute;top:80px;left:50%;transform:translateX(-50%);z-index:20;
+  font-family:var(--FD);font-size:12px;font-weight:700;letter-spacing:3px;
+  padding:4px 18px;border-radius:20px;opacity:0;transition:all .4s;pointer-events:none}
+.streak-banner.show{opacity:1}
+.streak-banner.hot{color:var(--green);border:1px solid rgba(0,255,153,.3);background:rgba(0,255,153,.06);
+  box-shadow:0 0 20px rgba(0,255,153,.1);text-shadow:0 0 10px rgba(0,255,153,.5)}
+.streak-banner.cold{color:var(--red);border:1px solid rgba(255,34,85,.3);background:rgba(255,34,85,.06);
+  box-shadow:0 0 20px rgba(255,34,85,.1);text-shadow:0 0 10px rgba(255,34,85,.5)}
+
+/* ── CONFETTI ── */
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:200;overflow:hidden}
+.conf-p{position:absolute;opacity:0;animation:confFall var(--dur,3s) ease-in var(--del,0s) forwards}
+@keyframes confFall{0%{opacity:.9;transform:translateY(-20px) rotate(0)}50%{opacity:.7}100%{opacity:0;transform:translateY(100vh) rotate(var(--rot,600deg))}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .arena{flex-direction:column}
+  .zone{flex:none;height:50%}
+  .zone-under{border-bottom:1px solid rgba(255,255,255,.04)}
+  .zone-above{border-top:1px solid rgba(255,255,255,.04)}
+  .bg-divider{top:50%;bottom:auto;left:0;right:0;width:100%;height:1px;
+    background:linear-gradient(90deg,transparent 5%,rgba(255,255,255,.1) 30%,rgba(255,255,255,.12) 50%,rgba(255,255,255,.1) 70%,transparent 95%)}
+  .nexus-ring{display:none}
+  .entry-bar{bottom:auto;top:calc(50% + 80px)}
+}
+</style>
+</head>
+<body>
+
+<div id="bg"><div class="bg-divider"></div></div>
+
+<!-- Streak multiplier -->
+<div class="streak-banner hot show" id="streak-banner">🔥 3x STREAK — 1.2x MULTIPLIER</div>
+
+<!-- Result overlay (shown after roll) -->
+<div class="result-overlay win show" id="result-overlay" onclick="this.classList.remove('show')">
+  <div class="result-card">
+    <div class="result-icon">🏆</div>
+    <div class="result-text win">YOU WIN</div>
+    <div class="result-detail">Rolled 3 · You chose UNDER</div>
+    <div class="result-kp win">+ 340 KP</div>
+    <div style="font-family:var(--FM);font-size:10px;color:var(--t3);letter-spacing:2px;margin-top:8px;">TAP TO CONTINUE</div>
+  </div>
+</div>
+
+<!-- Confetti (win only) -->
+<div class="confetti" id="confetti"></div>
+
+<div class="app">
+  <!-- ═══ TOP BAR ═══ -->
+  <div class="topbar">
+    <div class="tb-brand">
+      <span class="eye">👁</span>
+      KND INSIGHT
+    </div>
+    <div class="tb-streak" id="tb-streak">🔥 STREAK: 3</div>
+    <div class="tb-balance">💰 12,450 KP</div>
+  </div>
+
+  <!-- ═══ MAIN ARENA — split zones ═══ -->
+  <div class="arena" id="arena">
+
+    <!-- LEFT: UNDER -->
+    <div class="zone zone-under" id="zone-under">
+      <div class="zone-arrow">⬇</div>
+      <div class="zone-label" style="color:var(--c);">UNDER</div>
+      <div class="zone-range">1 — 5</div>
+      <div class="zone-odds">50% · 1.7x</div>
+    </div>
+
+    <!-- CENTER NEXUS -->
+    <div class="nexus">
+      <div class="nexus-ring r1"></div>
+      <div class="nexus-ring r2"></div>
+      <div class="nexus-ring r3"></div>
+
+      <div class="dice-shell result-under" id="dice-shell">
+        <div class="dice-face">
+          <span class="dice-value" id="dice-value">3</span>
+        </div>
+      </div>
+      <div class="dice-status" id="dice-status">ROLLED: 3</div>
+    </div>
+
+    <!-- Entry selector -->
+    <div class="entry-bar">
+      <span class="entry-label">BET</span>
+      <div class="entry-chips">
+        <button class="entry-chip">50</button>
+        <button class="entry-chip">100</button>
+        <button class="entry-chip active">200</button>
+        <button class="entry-chip">500</button>
+        <button class="entry-chip">1K</button>
+      </div>
+      <span class="entry-payout">WIN: 340 KP</span>
+    </div>
+
+    <!-- RIGHT: ABOVE -->
+    <div class="zone zone-above" id="zone-above">
+      <div class="zone-arrow">⬆</div>
+      <div class="zone-label" style="color:var(--m);">ABOVE</div>
+      <div class="zone-range">6 — 10</div>
+      <div class="zone-odds">50% · 1.7x</div>
+    </div>
+
+  </div>
+
+  <!-- ═══ BOTTOM BAR — history + stats ═══ -->
+  <div class="bottombar">
+    <span class="history-label">HISTORY</span>
+    <div class="history-strip">
+      <div class="history-dot win">3<span class="hd-choice">U</span></div>
+      <div class="history-dot lose">8<span class="hd-choice">U</span></div>
+      <div class="history-dot win">2<span class="hd-choice">U</span></div>
+      <div class="history-dot win">9<span class="hd-choice">A</span></div>
+      <div class="history-dot lose">1<span class="hd-choice">A</span></div>
+      <div class="history-dot win">7<span class="hd-choice">A</span></div>
+      <div class="history-dot win">4<span class="hd-choice">U</span></div>
+      <div class="history-dot lose">6<span class="hd-choice">U</span></div>
+      <div class="history-dot win">10<span class="hd-choice">A</span></div>
+      <div class="history-dot win">1<span class="hd-choice">U</span></div>
+    </div>
+    <div class="bb-stats">
+      <div class="bb-stat"><span class="bb-sv win-rate">67%</span><span class="bb-sl">WIN RATE</span></div>
+      <div class="bb-stat"><span class="bb-sv profit">+2,140</span><span class="bb-sl">NET KP</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── DEMO INTERACTIONS (visual only) ── */
+var diceShell = document.getElementById('dice-shell');
+var diceValue = document.getElementById('dice-value');
+var diceStatus = document.getElementById('dice-status');
+var resultOverlay = document.getElementById('result-overlay');
+var confettiEl = document.getElementById('confetti');
+var streakBanner = document.getElementById('streak-banner');
+
+// Hide result overlay after 2s for demo
+setTimeout(function(){ resultOverlay.classList.remove('show'); }, 2500);
+
+// Entry chip selection
+document.querySelectorAll('.entry-chip').forEach(function(chip){
+  chip.addEventListener('click', function(){
+    document.querySelectorAll('.entry-chip').forEach(function(c){ c.classList.remove('active'); });
+    chip.classList.add('active');
+  });
+});
+
+// Zone click → demo roll
+function demoRoll(choice) {
+  if (diceShell.classList.contains('rolling')) return;
+  
+  diceShell.className = 'dice-shell rolling';
+  diceStatus.textContent = 'ROLLING…';
+  streakBanner.classList.remove('show');
+  
+  var tickCount = 0;
+  var ticker = setInterval(function(){
+    diceValue.textContent = Math.floor(Math.random() * 10) + 1;
+    tickCount++;
+    if (tickCount > 30) { clearInterval(ticker); }
+  }, 50);
+  
+  setTimeout(function(){
+    clearInterval(ticker);
+    var result = Math.floor(Math.random() * 10) + 1;
+    var isUnder = result <= 5;
+    var won = (choice === 'under' && isUnder) || (choice === 'above' && !isUnder);
+    
+    diceValue.textContent = result;
+    diceShell.className = 'dice-shell ' + (isUnder ? 'result-under' : 'result-above');
+    diceStatus.textContent = 'ROLLED: ' + result;
+    
+    // Show result overlay
+    setTimeout(function(){
+      var overlay = document.getElementById('result-overlay');
+      overlay.className = 'result-overlay ' + (won ? 'win' : 'lose') + ' show';
+      overlay.innerHTML = '<div class="result-card">' +
+        '<div class="result-icon">' + (won ? '🏆' : '💀') + '</div>' +
+        '<div class="result-text ' + (won ? 'win' : 'lose') + '">' + (won ? 'YOU WIN' : 'YOU LOSE') + '</div>' +
+        '<div class="result-detail">Rolled ' + result + ' · You chose ' + choice.toUpperCase() + '</div>' +
+        '<div class="result-kp ' + (won ? 'win' : 'lose') + '">' + (won ? '+ 340 KP' : '− 200 KP') + '</div>' +
+        '<div style="font-family:var(--FM);font-size:10px;color:var(--t3);letter-spacing:2px;margin-top:8px;">TAP TO CONTINUE</div>' +
+        '</div>';
+      overlay.onclick = function(){ overlay.classList.remove('show'); };
+      
+      if (won) spawnConfetti();
+    }, 300);
+    
+  }, 1800);
+}
+
+document.getElementById('zone-under').addEventListener('click', function(){ demoRoll('under'); });
+document.getElementById('zone-above').addEventListener('click', function(){ demoRoll('above'); });
+
+function spawnConfetti(){
+  confettiEl.innerHTML = '';
+  var colors = ['#00e8ff','#d44fff','#ffcc00','#00ff99','#ff2255','#fff'];
+  for(var i = 0; i < 50; i++){
+    var p = document.createElement('div');
+    p.className = 'conf-p';
+    p.style.cssText = 'left:' + (Math.random()*100) + '%;top:-10px;width:' + (4+Math.random()*5) + 'px;height:' + (6+Math.random()*8) + 'px;background:' + colors[~~(Math.random()*colors.length)] + ';border-radius:' + (Math.random()>.5?'50%':'1px') + ';--dur:' + (2+Math.random()*2.5) + 's;--del:' + (Math.random()*1) + 's;--rot:' + (360+Math.random()*720) + 'deg;';
+    confettiEl.appendChild(p);
+  }
+  setTimeout(function(){ confettiEl.innerHTML = ''; }, 5000);
+}
+</script>
+</body>
+</html>

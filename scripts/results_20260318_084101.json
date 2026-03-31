@@ -1,0 +1,4619 @@
+{
+    "seed": 502537,
+    "timestamp": "2026-03-18 08:41:01",
+    "battles": 200,
+    "results": [
+        {
+            "winner": "B",
+            "turns": 9,
+            "team_a": [
+                "Rapunzel",
+                "Knd Cadet Delta"
+            ],
+            "team_b": [
+                "Wukong",
+                "Knd Specialist Omicron"
+            ],
+            "damage_by_char": {
+                "Wukong": 1755,
+                "Rapunzel": 741
+            },
+            "effects_count": 1,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 19,
+            "team_a": [
+                "Little Red Riding Hood",
+                "Knd Vanguard Sigma",
+                "Knd Specialist Eta"
+            ],
+            "team_b": [
+                "Pinocchio",
+                "Loki",
+                "Knd Cadet Alpha"
+            ],
+            "damage_by_char": {
+                "Little Red Riding Hood": 804,
+                "Pinocchio": 1118,
+                "Knd Vanguard Sigma": 132,
+                "Loki": 1942,
+                "Knd Specialist Eta": 588
+            },
+            "effects_count": 24,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 10,
+            "team_a": [
+                "Julio César",
+                "Knd Vanguard Delta"
+            ],
+            "team_b": [
+                "Knd Vanguard Prime",
+                "Knd Specialist Lambda"
+            ],
+            "damage_by_char": {
+                "Julio César": 1881,
+                "Knd Vanguard Prime": 186,
+                "Knd Specialist Lambda": 594
+            },
+            "effects_count": 13,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 20,
+            "team_a": [
+                "Knd Cadet Delta",
+                "Medusa",
+                "Knd Cadet Eta"
+            ],
+            "team_b": [
+                "Queen Grimhilde",
+                "Knd Cadet Omicron",
+                "Knd Specialist Tau"
+            ],
+            "damage_by_char": {
+                "Queen Grimhilde": 1492,
+                "Medusa": 2901,
+                "Knd Cadet Omicron": 66,
+                "Knd Specialist Tau": 253
+            },
+            "effects_count": 19,
+            "cc_count": 18
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Medusa",
+                "Knd Specialist Lambda"
+            ],
+            "team_b": [
+                "Knd Vanguard Gamma",
+                "Alice"
+            ],
+            "damage_by_char": {
+                "Medusa": 1554,
+                "Knd Vanguard Gamma": 417,
+                "Alice": 871,
+                "Knd Specialist Lambda": 229
+            },
+            "effects_count": 26,
+            "cc_count": 6
+        },
+        {
+            "winner": "B",
+            "turns": 13,
+            "team_a": [
+                "Knd Vanguard Chi",
+                "Knd Specialist Lambda"
+            ],
+            "team_b": [
+                "Knd Specialist Theta",
+                "Kraken"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Chi": 1010,
+                "Knd Specialist Theta": 378,
+                "Kraken": 1320,
+                "Knd Specialist Lambda": 24
+            },
+            "effects_count": 6,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 16,
+            "team_a": [
+                "George Washington",
+                "Knd Vanguard Phi",
+                "Arthur King"
+            ],
+            "team_b": [
+                "Loki",
+                "Julio César",
+                "Odin"
+            ],
+            "damage_by_char": {
+                "George Washington": 742,
+                "Loki": 1660,
+                "Arthur King": 1069,
+                "Julio César": 1855
+            },
+            "effects_count": 33,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 19,
+            "team_a": [
+                "Mad Hatter",
+                "Knd Cadet Sigma",
+                "Long John Silver"
+            ],
+            "team_b": [
+                "Knd Specialist Epsilon",
+                "Knd Cadet Theta",
+                "Kraken"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 1191,
+                "Knd Specialist Epsilon": 1126,
+                "Knd Cadet Theta": 1322,
+                "Knd Cadet Sigma": 364,
+                "Long John Silver": 519,
+                "Kraken": 1131
+            },
+            "effects_count": 12,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 12,
+            "team_a": [
+                "Knd Specialist Eta",
+                "Albert Einstein"
+            ],
+            "team_b": [
+                "Knd Vanguard Delta",
+                "Little Red Riding Hood"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Delta": 1234,
+                "Knd Specialist Eta": 1165,
+                "Little Red Riding Hood": 652,
+                "Albert Einstein": 485
+            },
+            "effects_count": 5,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "Sherlock Holmes",
+                "Knd Vanguard Tau",
+                "Alice"
+            ],
+            "team_b": [
+                "Alice",
+                "Knd Specialist Lambda",
+                "Corrupted Loki"
+            ],
+            "damage_by_char": {
+                "Alice": 3613,
+                "Sherlock Holmes": 1104
+            },
+            "effects_count": 47,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 8,
+            "team_a": [
+                "Knd Specialist Tau",
+                "Knd Cadet Theta"
+            ],
+            "team_b": [
+                "Aladdín",
+                "Jack Frost"
+            ],
+            "damage_by_char": {
+                "Aladdín": 1767,
+                "Knd Specialist Tau": 325,
+                "Knd Cadet Theta": 38
+            },
+            "effects_count": 6,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 12,
+            "team_a": [
+                "Napoleón Bonaparte",
+                "Odin"
+            ],
+            "team_b": [
+                "Knd Vanguard Gamma",
+                "Knd Cadet Mu"
+            ],
+            "damage_by_char": {
+                "Napoleón Bonaparte": 1270,
+                "Knd Vanguard Gamma": 547,
+                "Knd Cadet Mu": 300,
+                "Odin": 550
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 13,
+            "team_a": [
+                "Knd Specialist Xi",
+                "Knd Cadet Nu",
+                "Knd Specialist Nu"
+            ],
+            "team_b": [
+                "Loki",
+                "Knd Specialist Alpha",
+                "George Washington"
+            ],
+            "damage_by_char": {
+                "Loki": 2983,
+                "Knd Specialist Xi": 68,
+                "Knd Cadet Nu": 23,
+                "Knd Specialist Nu": 505
+            },
+            "effects_count": 13,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 9,
+            "team_a": [
+                "Kraken",
+                "Jack Frost",
+                "Knd Specialist Mu"
+            ],
+            "team_b": [
+                "Knd Specialist Eta",
+                "Corrupted Odin",
+                "Knd Specialist Alpha"
+            ],
+            "damage_by_char": {
+                "Kraken": 1993,
+                "Knd Specialist Eta": 94,
+                "Corrupted Odin": 269,
+                "Knd Specialist Alpha": 53
+            },
+            "effects_count": 2,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 15,
+            "team_a": [
+                "Knd Vanguard Psi",
+                "Knd Specialist Alpha"
+            ],
+            "team_b": [
+                "Knd Specialist Kappa",
+                "Knd Cadet Alpha"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Kappa": 1918,
+                "Knd Vanguard Psi": 1171,
+                "Knd Specialist Alpha": 1026,
+                "Knd Cadet Alpha": 328
+            },
+            "effects_count": 5,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 19,
+            "team_a": [
+                "Knd Cadet Iota",
+                "Julio César",
+                "Knd Vanguard Theta"
+            ],
+            "team_b": [
+                "Benjamin Franklin",
+                "Knd Specialist Theta",
+                "Morgana"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Iota": 88,
+                "Benjamin Franklin": 1399,
+                "Julio César": 955,
+                "Knd Vanguard Theta": 497,
+                "Knd Specialist Theta": 1211
+            },
+            "effects_count": 43,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 22,
+            "team_a": [
+                "Knd Vanguard Omega",
+                "Merlin",
+                "Queen Grimhilde"
+            ],
+            "team_b": [
+                "Knd Vanguard Eta",
+                "Knd Cadet Beta",
+                "Knd Vanguard Beta"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Eta": 1176,
+                "Knd Vanguard Omega": 1367,
+                "Knd Cadet Beta": 189,
+                "Merlin": 1408,
+                "Knd Vanguard Beta": 1024
+            },
+            "effects_count": 12,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 21,
+            "team_a": [
+                "Medusa",
+                "Knd Vanguard Chi"
+            ],
+            "team_b": [
+                "Wendigo",
+                "Knd Specialist Omega"
+            ],
+            "damage_by_char": {
+                "Wendigo": 1420,
+                "Medusa": 1100,
+                "Knd Specialist Omega": 2006,
+                "Knd Vanguard Chi": 2377
+            },
+            "effects_count": 46,
+            "cc_count": 7
+        },
+        {
+            "winner": "B",
+            "turns": 20,
+            "team_a": [
+                "Knd Vanguard Nu",
+                "Wendigo",
+                "Knd Specialist Xi"
+            ],
+            "team_b": [
+                "Knd Vanguard Gamma",
+                "Knd Specialist Beta",
+                "Morgana"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Nu": 1359,
+                "Knd Vanguard Gamma": 1364,
+                "Wendigo": 1248,
+                "Knd Specialist Beta": 186,
+                "Morgana": 1442,
+                "Knd Specialist Xi": 102
+            },
+            "effects_count": 28,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Knd Vanguard Lambda",
+                "Knd Specialist Alpha"
+            ],
+            "team_b": [
+                "Knd Cadet Delta",
+                "Knd Vanguard Alpha"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Lambda": 1545,
+                "Knd Cadet Delta": 726,
+                "Knd Vanguard Alpha": 502,
+                "Knd Specialist Alpha": 179
+            },
+            "effects_count": 0,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "Hercules",
+                "Knd Specialist Eta",
+                "Knd Vanguard Nu"
+            ],
+            "team_b": [
+                "Frankenstein",
+                "Thor",
+                "Knd Vanguard Delta"
+            ],
+            "damage_by_char": {
+                "Hercules": 848,
+                "Frankenstein": 889,
+                "Thor": 2662,
+                "Knd Specialist Eta": 681,
+                "Knd Vanguard Nu": 189
+            },
+            "effects_count": 18,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Corrupted Loki",
+                "Knd Vanguard Zeta"
+            ],
+            "team_b": [
+                "Queen Grimhilde",
+                "Knd Vanguard Mu"
+            ],
+            "damage_by_char": {
+                "Queen Grimhilde": 1940,
+                "Corrupted Loki": 1562,
+                "Knd Vanguard Zeta": 154,
+                "Knd Vanguard Mu": 413
+            },
+            "effects_count": 35,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 21,
+            "team_a": [
+                "Odin",
+                "Hercules",
+                "Knd Specialist Mu"
+            ],
+            "team_b": [
+                "Knd Specialist Nu",
+                "Knd Vanguard Eta",
+                "Albert Einstein"
+            ],
+            "damage_by_char": {
+                "Odin": 1298,
+                "Knd Specialist Nu": 418,
+                "Knd Vanguard Eta": 686,
+                "Hercules": 652,
+                "Albert Einstein": 2599,
+                "Knd Specialist Mu": 407
+            },
+            "effects_count": 13,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 16,
+            "team_a": [
+                "Knd Cadet Alpha",
+                "Knd Cadet Omicron"
+            ],
+            "team_b": [
+                "Knd Cadet Kappa",
+                "Knd Specialist Epsilon"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Kappa": 2122,
+                "Knd Cadet Alpha": 656,
+                "Knd Cadet Omicron": 341,
+                "Knd Specialist Epsilon": 411
+            },
+            "effects_count": 3,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 26,
+            "team_a": [
+                "Loki",
+                "Knd Vanguard Upsilon",
+                "Frankenstein"
+            ],
+            "team_b": [
+                "Hercules",
+                "Knd Specialist Omega",
+                "Corrupted Odin"
+            ],
+            "damage_by_char": {
+                "Hercules": 3424,
+                "Loki": 1397,
+                "Knd Vanguard Upsilon": 384,
+                "Frankenstein": 1682,
+                "Knd Specialist Omega": 96,
+                "Corrupted Odin": 861
+            },
+            "effects_count": 48,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "Mad Hatter",
+                "Knd Vanguard Omicron"
+            ],
+            "team_b": [
+                "Dorian Gray",
+                "Benjamin Franklin"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 1733,
+                "Dorian Gray": 1452,
+                "Knd Vanguard Omicron": 82,
+                "Benjamin Franklin": 239
+            },
+            "effects_count": 36,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 9,
+            "team_a": [
+                "Knd Specialist Sigma",
+                "Knd Vanguard Phi"
+            ],
+            "team_b": [
+                "Wukong",
+                "Knd Specialist Lambda"
+            ],
+            "damage_by_char": {
+                "Wukong": 1786,
+                "Knd Specialist Sigma": 198,
+                "Knd Vanguard Phi": 44
+            },
+            "effects_count": 0,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 13,
+            "team_a": [
+                "Knd Vanguard Kappa",
+                "Knd Cadet Epsilon",
+                "Knd Vanguard Lambda"
+            ],
+            "team_b": [
+                "Medusa",
+                "Mad Hatter",
+                "Hercules"
+            ],
+            "damage_by_char": {
+                "Medusa": 2451,
+                "Knd Vanguard Kappa": 25,
+                "Knd Cadet Epsilon": 9,
+                "Knd Vanguard Lambda": 40
+            },
+            "effects_count": 11,
+            "cc_count": 11
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "Knd Specialist Delta",
+                "Knd Specialist Epsilon"
+            ],
+            "team_b": [
+                "Knd Cadet Omicron",
+                "Loki"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Omicron": 378,
+                "Knd Specialist Delta": 889,
+                "Loki": 1161,
+                "Knd Specialist Epsilon": 112
+            },
+            "effects_count": 6,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 9,
+            "team_a": [
+                "Loki",
+                "Abraham Lincoln"
+            ],
+            "team_b": [
+                "Knd Cadet Mu",
+                "Hercules"
+            ],
+            "damage_by_char": {
+                "Loki": 1268,
+                "Knd Cadet Mu": 163,
+                "Hercules": 771,
+                "Abraham Lincoln": 95
+            },
+            "effects_count": 13,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 19,
+            "team_a": [
+                "Knd Cadet Sigma",
+                "Dorian Gray",
+                "Knd Specialist Delta"
+            ],
+            "team_b": [
+                "Knd Vanguard Theta",
+                "Knd Cadet Lambda",
+                "Albert Einstein"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Theta": 1503,
+                "Knd Cadet Sigma": 1138,
+                "Dorian Gray": 1149,
+                "Knd Cadet Lambda": 289,
+                "Albert Einstein": 1095,
+                "Knd Specialist Delta": 30
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 11,
+            "team_a": [
+                "Simon Bolivar",
+                "Knd Vanguard Psi"
+            ],
+            "team_b": [
+                "Knd Specialist Iota",
+                "Knd Specialist Mu"
+            ],
+            "damage_by_char": {
+                "Simon Bolivar": 1906,
+                "Knd Specialist Iota": 576,
+                "Knd Specialist Mu": 562,
+                "Knd Vanguard Psi": 81
+            },
+            "effects_count": 10,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 7,
+            "team_a": [
+                "Knd Vanguard Delta",
+                "Knd Cadet Xi"
+            ],
+            "team_b": [
+                "Sandman",
+                "Knd Specialist Tau"
+            ],
+            "damage_by_char": {
+                "Sandman": 1467,
+                "Knd Vanguard Delta": 120,
+                "Knd Cadet Xi": 74
+            },
+            "effects_count": 7,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Knd Specialist Tau",
+                "Sherlock Holmes",
+                "Knd Specialist Mu"
+            ],
+            "team_b": [
+                "Knd Vanguard Theta",
+                "Knd Cadet Alpha",
+                "Puss In Boots"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Theta": 1323,
+                "Knd Specialist Tau": 1332,
+                "Sherlock Holmes": 1229,
+                "Knd Cadet Alpha": 51,
+                "Puss In Boots": 104
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 16,
+            "team_a": [
+                "Knd Vanguard Nu",
+                "Corrupted Odin",
+                "Frankenstein"
+            ],
+            "team_b": [
+                "Kraken",
+                "Knd Vanguard Alpha",
+                "Fenrir"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Nu": 170,
+                "Kraken": 1755,
+                "Corrupted Odin": 1033,
+                "Frankenstein": 975,
+                "Knd Vanguard Alpha": 679
+            },
+            "effects_count": 14,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Knd Vanguard Epsilon",
+                "Knd Vanguard Nova"
+            ],
+            "team_b": [
+                "Dracula",
+                "Knd Cadet Kappa"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Epsilon": 890,
+                "Dracula": 1457,
+                "Knd Vanguard Nova": 544,
+                "Knd Cadet Kappa": 199
+            },
+            "effects_count": 20,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 20,
+            "team_a": [
+                "Anubis",
+                "Knd Vanguard Lambda",
+                "Ichabod Crane"
+            ],
+            "team_b": [
+                "Corrupted Odin",
+                "Odin",
+                "Frankenstein"
+            ],
+            "damage_by_char": {
+                "Anubis": 775,
+                "Corrupted Odin": 1392,
+                "Knd Vanguard Lambda": 194,
+                "Odin": 999,
+                "Ichabod Crane": 865,
+                "Frankenstein": 228
+            },
+            "effects_count": 34,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 21,
+            "team_a": [
+                "Knd Vanguard Upsilon",
+                "Simon Bolivar",
+                "Dorian Gray"
+            ],
+            "team_b": [
+                "Knd Vanguard Alpha",
+                "Knd Cadet Omicron",
+                "Thor"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Alpha": 611,
+                "Knd Vanguard Upsilon": 1825,
+                "Knd Cadet Omicron": 474,
+                "Simon Bolivar": 443,
+                "Thor": 1424,
+                "Dorian Gray": 327
+            },
+            "effects_count": 19,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 16,
+            "team_a": [
+                "Knd Specialist Sigma",
+                "Knd Cadet Zeta",
+                "Anubis"
+            ],
+            "team_b": [
+                "Little Red Riding Hood",
+                "Knd Cadet Sigma",
+                "Knd Cadet Nu"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Sigma": 315,
+                "Little Red Riding Hood": 3176,
+                "Knd Cadet Zeta": 263,
+                "Anubis": 396
+            },
+            "effects_count": 28,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 5,
+            "team_a": [
+                "Knd Specialist Alpha",
+                "Knd Vanguard Prime"
+            ],
+            "team_b": [
+                "Benjamin Franklin",
+                "Knd Specialist Gamma"
+            ],
+            "damage_by_char": {
+                "Benjamin Franklin": 1468,
+                "Knd Specialist Alpha": 45
+            },
+            "effects_count": 6,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 8,
+            "team_a": [
+                "Benjamin Franklin",
+                "Knd Cadet Delta",
+                "Knd Cadet Zeta"
+            ],
+            "team_b": [
+                "Knd Cadet Delta",
+                "Knd Vanguard Mu",
+                "Knd Specialist Theta"
+            ],
+            "damage_by_char": {
+                "Benjamin Franklin": 2288,
+                "Knd Cadet Delta": 92,
+                "Knd Vanguard Mu": 68,
+                "Knd Specialist Theta": 279
+            },
+            "effects_count": 9,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "Knd Cadet Beta",
+                "Knd Cadet Theta"
+            ],
+            "team_b": [
+                "Knd Specialist Xi",
+                "Odin"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Beta": 992,
+                "Knd Specialist Xi": 1674,
+                "Knd Cadet Theta": 131,
+                "Odin": 279
+            },
+            "effects_count": 4,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 16,
+            "team_a": [
+                "Knd Vanguard Eta",
+                "Knd Cadet Lambda",
+                "Knd Vanguard Chi"
+            ],
+            "team_b": [
+                "Puss In Boots",
+                "Knd Vanguard Beta",
+                "Fenrir"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Eta": 588,
+                "Puss In Boots": 3454,
+                "Knd Vanguard Chi": 281
+            },
+            "effects_count": 29,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "George Washington",
+                "Knd Vanguard Prime",
+                "Knd Vanguard Alpha"
+            ],
+            "team_b": [
+                "Knd Vanguard Prime",
+                "Benjamin Franklin",
+                "Headless Horseman"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Prime": 1013,
+                "George Washington": 631,
+                "Benjamin Franklin": 2296
+            },
+            "effects_count": 20,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 7,
+            "team_a": [
+                "Sandman",
+                "Sherlock Holmes"
+            ],
+            "team_b": [
+                "Knd Specialist Epsilon",
+                "Knd Cadet Sigma"
+            ],
+            "damage_by_char": {
+                "Sandman": 1669,
+                "Knd Specialist Epsilon": 357,
+                "Knd Cadet Sigma": 32
+            },
+            "effects_count": 7,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Wendigo",
+                "Albert Einstein",
+                "Julio César"
+            ],
+            "team_b": [
+                "Abraham Lincoln",
+                "Krampus",
+                "Knd Specialist Epsilon"
+            ],
+            "damage_by_char": {
+                "Wendigo": 1240,
+                "Abraham Lincoln": 1418,
+                "Krampus": 530,
+                "Albert Einstein": 1912,
+                "Knd Specialist Epsilon": 82
+            },
+            "effects_count": 29,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 13,
+            "team_a": [
+                "Knd Cadet Epsilon",
+                "Wendigo"
+            ],
+            "team_b": [
+                "Knd Specialist Alpha",
+                "Knd Specialist Beta"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Epsilon": 516,
+                "Knd Specialist Alpha": 1033,
+                "Wendigo": 1266,
+                "Knd Specialist Beta": 279
+            },
+            "effects_count": 13,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 20,
+            "team_a": [
+                "Knd Vanguard Eta",
+                "Knd Specialist Theta",
+                "Thor"
+            ],
+            "team_b": [
+                "Arthur King",
+                "Knd Vanguard Kappa",
+                "Thor"
+            ],
+            "damage_by_char": {
+                "Arthur King": 2062,
+                "Knd Vanguard Eta": 153,
+                "Knd Specialist Theta": 188,
+                "Thor": 2694,
+                "Knd Vanguard Kappa": 106
+            },
+            "effects_count": 21,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 20,
+            "team_a": [
+                "Knd Cadet Beta",
+                "Knd Specialist Omicron"
+            ],
+            "team_b": [
+                "Knd Vanguard Eta",
+                "Knd Cadet Gamma"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Beta": 559,
+                "Knd Vanguard Eta": 1876,
+                "Knd Specialist Omicron": 2058,
+                "Knd Cadet Gamma": 674
+            },
+            "effects_count": 0,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 15,
+            "team_a": [
+                "Knd Vanguard Eta",
+                "Medusa"
+            ],
+            "team_b": [
+                "Knd Specialist Delta",
+                "Genghis Khan"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Eta": 1743,
+                "Knd Specialist Delta": 1216,
+                "Genghis Khan": 464,
+                "Medusa": 1192
+            },
+            "effects_count": 24,
+            "cc_count": 5
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Knd Cadet Nu",
+                "Medusa"
+            ],
+            "team_b": [
+                "Knd Vanguard Mu",
+                "Corrupted Odin"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Mu": 1221,
+                "Knd Cadet Nu": 263,
+                "Medusa": 1250,
+                "Corrupted Odin": 152
+            },
+            "effects_count": 15,
+            "cc_count": 3
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "Knd Specialist Xi",
+                "Knd Cadet Nu"
+            ],
+            "team_b": [
+                "Knd Vanguard Tau",
+                "Knd Vanguard Omega"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Xi": 1006,
+                "Knd Vanguard Tau": 2383,
+                "Knd Cadet Nu": 146
+            },
+            "effects_count": 0,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 10,
+            "team_a": [
+                "Kraken",
+                "Rapunzel",
+                "George Washington"
+            ],
+            "team_b": [
+                "Knd Cadet Omicron",
+                "Knd Specialist Kappa",
+                "Knd Vanguard Psi"
+            ],
+            "damage_by_char": {
+                "Kraken": 2599,
+                "Knd Cadet Omicron": 7,
+                "Knd Specialist Kappa": 215,
+                "Knd Vanguard Psi": 125
+            },
+            "effects_count": 4,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 13,
+            "team_a": [
+                "Odin",
+                "Albert Einstein"
+            ],
+            "team_b": [
+                "Knd Specialist Iota",
+                "Sandman"
+            ],
+            "damage_by_char": {
+                "Odin": 1151,
+                "Knd Specialist Iota": 498,
+                "Sandman": 1265,
+                "Albert Einstein": 816
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 10,
+            "team_a": [
+                "Medusa",
+                "Fenrir",
+                "Knd Cadet Theta"
+            ],
+            "team_b": [
+                "Zeus",
+                "Knd Cadet Xi",
+                "Knd Vanguard Phi"
+            ],
+            "damage_by_char": {
+                "Zeus": 2437,
+                "Medusa": 250,
+                "Fenrir": 178
+            },
+            "effects_count": 4,
+            "cc_count": 2
+        },
+        {
+            "winner": "A",
+            "turns": 21,
+            "team_a": [
+                "Knd Specialist Alpha",
+                "Knd Cadet Theta",
+                "Wukong"
+            ],
+            "team_b": [
+                "Knd Cadet Gamma",
+                "Fenrir",
+                "Knd Specialist Eta"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Alpha": 1122,
+                "Knd Cadet Gamma": 481,
+                "Fenrir": 1150,
+                "Knd Cadet Theta": 89,
+                "Wukong": 1645,
+                "Knd Specialist Eta": 174
+            },
+            "effects_count": 13,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "Knd Vanguard Eta",
+                "Mad Hatter",
+                "Knd Specialist Sigma"
+            ],
+            "team_b": [
+                "Krampus",
+                "Queen Grimhilde",
+                "Hercules"
+            ],
+            "damage_by_char": {
+                "Krampus": 1207,
+                "Knd Vanguard Eta": 329,
+                "Mad Hatter": 882,
+                "Queen Grimhilde": 847,
+                "Knd Specialist Sigma": 225,
+                "Hercules": 316
+            },
+            "effects_count": 20,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 19,
+            "team_a": [
+                "Corrupted Loki",
+                "Loki",
+                "Knd Vanguard Nu"
+            ],
+            "team_b": [
+                "Thor",
+                "Knd Specialist Xi",
+                "Hercules"
+            ],
+            "damage_by_char": {
+                "Corrupted Loki": 1569,
+                "Thor": 1291,
+                "Loki": 1298,
+                "Knd Specialist Xi": 110,
+                "Hercules": 969,
+                "Knd Vanguard Nu": 289
+            },
+            "effects_count": 54,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 28,
+            "team_a": [
+                "Knd Cadet Epsilon",
+                "Kraken",
+                "Knd Cadet Gamma"
+            ],
+            "team_b": [
+                "Hercules",
+                "Knd Specialist Omicron",
+                "Arthur King"
+            ],
+            "damage_by_char": {
+                "Hercules": 1971,
+                "Knd Cadet Epsilon": 359,
+                "Kraken": 1720,
+                "Knd Specialist Omicron": 198,
+                "Arthur King": 1989,
+                "Knd Cadet Gamma": 547
+            },
+            "effects_count": 50,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 25,
+            "team_a": [
+                "Wendigo",
+                "Knd Specialist Xi",
+                "Knd Vanguard Nu"
+            ],
+            "team_b": [
+                "Knd Specialist Zeta",
+                "Anubis",
+                "Aladdín"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Zeta": 2127,
+                "Wendigo": 672,
+                "Knd Specialist Xi": 869,
+                "Anubis": 1185,
+                "Knd Vanguard Nu": 359,
+                "Aladdín": 369
+            },
+            "effects_count": 31,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 11,
+            "team_a": [
+                "Merlin",
+                "Knd Cadet Beta"
+            ],
+            "team_b": [
+                "Knd Specialist Lambda",
+                "Puss In Boots"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Lambda": 327,
+                "Merlin": 1391,
+                "Puss In Boots": 1352,
+                "Knd Cadet Beta": 84
+            },
+            "effects_count": 9,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 20,
+            "team_a": [
+                "Morgana",
+                "Arthur King",
+                "Knd Specialist Eta"
+            ],
+            "team_b": [
+                "Hydra",
+                "Knd Specialist Omega",
+                "Knd Vanguard Mu"
+            ],
+            "damage_by_char": {
+                "Hydra": 847,
+                "Morgana": 2672,
+                "Knd Specialist Omega": 450,
+                "Arthur King": 912,
+                "Knd Vanguard Mu": 553
+            },
+            "effects_count": 28,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 23,
+            "team_a": [
+                "Medusa",
+                "Fenrir",
+                "Knd Vanguard Tau"
+            ],
+            "team_b": [
+                "Sherlock Holmes",
+                "Pinocchio",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "Medusa": 620,
+                "Sherlock Holmes": 561,
+                "Fenrir": 1067,
+                "Pinocchio": 496,
+                "Wukong": 1828,
+                "Knd Vanguard Tau": 607
+            },
+            "effects_count": 40,
+            "cc_count": 6
+        },
+        {
+            "winner": "B",
+            "turns": 22,
+            "team_a": [
+                "Knd Cadet Gamma",
+                "Queen Grimhilde",
+                "Loki"
+            ],
+            "team_b": [
+                "Mad Hatter",
+                "Wendigo",
+                "Headless Horseman"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 2133,
+                "Knd Cadet Gamma": 90,
+                "Queen Grimhilde": 992,
+                "Wendigo": 507,
+                "Loki": 1697,
+                "Headless Horseman": 979
+            },
+            "effects_count": 36,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 23,
+            "team_a": [
+                "Knd Specialist Beta",
+                "Knd Specialist Lambda",
+                "Knd Vanguard Iota"
+            ],
+            "team_b": [
+                "Knd Cadet Epsilon",
+                "Julio César",
+                "Abraham Lincoln"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Beta": 1683,
+                "Knd Cadet Epsilon": 310,
+                "Julio César": 1282,
+                "Knd Specialist Lambda": 432,
+                "Abraham Lincoln": 1523,
+                "Knd Vanguard Iota": 235
+            },
+            "effects_count": 12,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 20,
+            "team_a": [
+                "Knd Specialist Kappa",
+                "Merlin",
+                "Knd Specialist Nu"
+            ],
+            "team_b": [
+                "Knd Specialist Omega",
+                "Knd Vanguard Eta",
+                "Frankenstein"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Omega": 1254,
+                "Knd Specialist Kappa": 557,
+                "Merlin": 1894,
+                "Knd Vanguard Eta": 180,
+                "Frankenstein": 540,
+                "Knd Specialist Nu": 203
+            },
+            "effects_count": 24,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 21,
+            "team_a": [
+                "George Washington",
+                "Knd Vanguard Tau",
+                "Knd Cadet Kappa"
+            ],
+            "team_b": [
+                "Knd Cadet Omicron",
+                "Knd Vanguard Nu",
+                "Simon Bolivar"
+            ],
+            "damage_by_char": {
+                "George Washington": 1489,
+                "Knd Cadet Omicron": 148,
+                "Knd Vanguard Nu": 263,
+                "Simon Bolivar": 2639,
+                "Knd Vanguard Tau": 470,
+                "Knd Cadet Kappa": 424
+            },
+            "effects_count": 20,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 22,
+            "team_a": [
+                "Knd Vanguard Omega",
+                "Knd Cadet Epsilon",
+                "Knd Vanguard Theta"
+            ],
+            "team_b": [
+                "Knd Specialist Beta",
+                "Knd Vanguard Gamma",
+                "Knd Vanguard Psi"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Omega": 1396,
+                "Knd Specialist Beta": 955,
+                "Knd Vanguard Gamma": 2108,
+                "Knd Cadet Epsilon": 60,
+                "Knd Vanguard Theta": 1139,
+                "Knd Vanguard Psi": 57
+            },
+            "effects_count": 7,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 15,
+            "team_a": [
+                "George Washington",
+                "Isaac Newton",
+                "Knd Cadet Zeta"
+            ],
+            "team_b": [
+                "Knd Specialist Mu",
+                "Knd Cadet Epsilon",
+                "Knd Specialist Sigma"
+            ],
+            "damage_by_char": {
+                "George Washington": 2573,
+                "Knd Specialist Mu": 374,
+                "Knd Cadet Epsilon": 264,
+                "Knd Specialist Sigma": 346,
+                "Isaac Newton": 59
+            },
+            "effects_count": 19,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 11,
+            "team_a": [
+                "Knd Cadet Theta",
+                "Aladdín"
+            ],
+            "team_b": [
+                "Knd Vanguard Eta",
+                "Albert Einstein"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Eta": 1114,
+                "Knd Cadet Theta": 114,
+                "Aladdín": 1210,
+                "Albert Einstein": 494
+            },
+            "effects_count": 9,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Knd Specialist Beta",
+                "Knd Vanguard Phi"
+            ],
+            "team_b": [
+                "Knd Vanguard Lambda",
+                "Zeus"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Lambda": 1210,
+                "Knd Specialist Beta": 610,
+                "Knd Vanguard Phi": 541,
+                "Zeus": 1566
+            },
+            "effects_count": 2,
+            "cc_count": 2
+        },
+        {
+            "winner": "B",
+            "turns": 23,
+            "team_a": [
+                "Knd Specialist Eta",
+                "Simon Bolivar",
+                "Knd Cadet Theta"
+            ],
+            "team_b": [
+                "Headless Horseman",
+                "Knd Cadet Alpha",
+                "Knd Vanguard Kappa"
+            ],
+            "damage_by_char": {
+                "Headless Horseman": 1620,
+                "Knd Specialist Eta": 631,
+                "Simon Bolivar": 1353,
+                "Knd Cadet Alpha": 309,
+                "Knd Vanguard Kappa": 1431,
+                "Knd Cadet Theta": 391
+            },
+            "effects_count": 17,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 13,
+            "team_a": [
+                "Thor",
+                "Knd Specialist Nu",
+                "Knd Specialist Theta"
+            ],
+            "team_b": [
+                "Knd Cadet Omicron",
+                "Knd Vanguard Beta",
+                "Knd Specialist Gamma"
+            ],
+            "damage_by_char": {
+                "Thor": 1497,
+                "Knd Cadet Omicron": 251,
+                "Knd Vanguard Beta": 224,
+                "Knd Specialist Gamma": 425,
+                "Knd Specialist Nu": 641
+            },
+            "effects_count": 9,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "Knd Cadet Kappa",
+                "Hydra"
+            ],
+            "team_b": [
+                "Knd Cadet Sigma",
+                "Wendigo"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Kappa": 1187,
+                "Knd Cadet Sigma": 1828,
+                "Hydra": 572,
+                "Wendigo": 555
+            },
+            "effects_count": 8,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 15,
+            "team_a": [
+                "Knd Cadet Zeta",
+                "Fenrir"
+            ],
+            "team_b": [
+                "Knd Vanguard Nu",
+                "Knd Vanguard Kappa"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Zeta": 934,
+                "Knd Vanguard Nu": 1181,
+                "Fenrir": 1217,
+                "Knd Vanguard Kappa": 209
+            },
+            "effects_count": 15,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 11,
+            "team_a": [
+                "Knd Cadet Theta",
+                "Knd Vanguard Delta"
+            ],
+            "team_b": [
+                "Knd Specialist Epsilon",
+                "Wendigo"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Epsilon": 1316,
+                "Knd Cadet Theta": 562,
+                "Knd Vanguard Delta": 356,
+                "Wendigo": 620
+            },
+            "effects_count": 3,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 8,
+            "team_a": [
+                "Abraham Lincoln",
+                "Julio César"
+            ],
+            "team_b": [
+                "Knd Specialist Xi",
+                "Knd Cadet Delta"
+            ],
+            "damage_by_char": {
+                "Abraham Lincoln": 1879,
+                "Knd Specialist Xi": 214,
+                "Knd Cadet Delta": 343
+            },
+            "effects_count": 5,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 22,
+            "team_a": [
+                "Knd Vanguard Delta",
+                "Knd Specialist Eta",
+                "Wukong"
+            ],
+            "team_b": [
+                "Anubis",
+                "Albert Einstein",
+                "Mad Hatter"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Delta": 1458,
+                "Anubis": 2388,
+                "Knd Specialist Eta": 87,
+                "Albert Einstein": 1116,
+                "Wukong": 1094
+            },
+            "effects_count": 55,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 25,
+            "team_a": [
+                "Knd Specialist Sigma",
+                "Knd Vanguard Kappa",
+                "Genghis Khan"
+            ],
+            "team_b": [
+                "Knd Specialist Omega",
+                "Queen Grimhilde",
+                "Julio César"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Omega": 2127,
+                "Knd Specialist Sigma": 1272,
+                "Knd Vanguard Kappa": 741,
+                "Queen Grimhilde": 2442,
+                "Genghis Khan": 279
+            },
+            "effects_count": 27,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 21,
+            "team_a": [
+                "Anubis",
+                "Knd Specialist Alpha",
+                "Knd Cadet Nu"
+            ],
+            "team_b": [
+                "Knd Vanguard Chi",
+                "Wendigo",
+                "Knd Vanguard Prime"
+            ],
+            "damage_by_char": {
+                "Anubis": 1400,
+                "Knd Vanguard Chi": 601,
+                "Wendigo": 238,
+                "Knd Specialist Alpha": 618,
+                "Knd Vanguard Prime": 1794,
+                "Knd Cadet Nu": 334
+            },
+            "effects_count": 17,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "Knd Specialist Xi",
+                "Napoleón Bonaparte",
+                "Abraham Lincoln"
+            ],
+            "team_b": [
+                "Knd Vanguard Psi",
+                "Knd Specialist Kappa",
+                "Merlin"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Psi": 1215,
+                "Knd Specialist Xi": 720,
+                "Napoleón Bonaparte": 970,
+                "Knd Specialist Kappa": 509,
+                "Merlin": 1278,
+                "Abraham Lincoln": 750
+            },
+            "effects_count": 10,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 13,
+            "team_a": [
+                "Knd Specialist Zeta",
+                "Knd Cadet Kappa"
+            ],
+            "team_b": [
+                "Knd Specialist Theta",
+                "Headless Horseman"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Zeta": 1255,
+                "Knd Specialist Theta": 445,
+                "Headless Horseman": 1303,
+                "Knd Cadet Kappa": 128
+            },
+            "effects_count": 8,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 25,
+            "team_a": [
+                "Knd Specialist Gamma",
+                "Knd Vanguard Gamma",
+                "Julio César"
+            ],
+            "team_b": [
+                "Abraham Lincoln",
+                "Aladdín",
+                "Knd Vanguard Psi"
+            ],
+            "damage_by_char": {
+                "Abraham Lincoln": 2114,
+                "Knd Specialist Gamma": 1864,
+                "Aladdín": 1050,
+                "Knd Vanguard Gamma": 63,
+                "Julio César": 991,
+                "Knd Vanguard Psi": 441
+            },
+            "effects_count": 47,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 18,
+            "team_a": [
+                "Knd Specialist Tau",
+                "Knd Specialist Omega"
+            ],
+            "team_b": [
+                "Knd Vanguard Chi",
+                "Jack Frost"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Tau": 1690,
+                "Knd Vanguard Chi": 906,
+                "Jack Frost": 1832,
+                "Knd Specialist Omega": 322
+            },
+            "effects_count": 28,
+            "cc_count": 7
+        },
+        {
+            "winner": "B",
+            "turns": 16,
+            "team_a": [
+                "Knd Cadet Omicron",
+                "Knd Cadet Iota"
+            ],
+            "team_b": [
+                "Knd Specialist Epsilon",
+                "Knd Vanguard Lambda"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Epsilon": 3242,
+                "Knd Cadet Omicron": 466,
+                "Knd Cadet Iota": 477
+            },
+            "effects_count": 13,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 9,
+            "team_a": [
+                "Fenrir",
+                "Benjamin Franklin"
+            ],
+            "team_b": [
+                "Knd Cadet Delta",
+                "Knd Cadet Nu"
+            ],
+            "damage_by_char": {
+                "Fenrir": 1628,
+                "Knd Cadet Delta": 222,
+                "Knd Cadet Nu": 96
+            },
+            "effects_count": 9,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 21,
+            "team_a": [
+                "Knd Specialist Delta",
+                "Abraham Lincoln",
+                "Loki"
+            ],
+            "team_b": [
+                "Knd Specialist Omicron",
+                "Knd Cadet Omicron",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Delta": 1333,
+                "Knd Specialist Omicron": 770,
+                "Knd Cadet Omicron": 87,
+                "Abraham Lincoln": 1691,
+                "Wukong": 868
+            },
+            "effects_count": 20,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 11,
+            "team_a": [
+                "Knd Specialist Lambda",
+                "Knd Cadet Delta",
+                "Knd Vanguard Nu"
+            ],
+            "team_b": [
+                "Fenrir",
+                "Knd Cadet Epsilon",
+                "Knd Specialist Delta"
+            ],
+            "damage_by_char": {
+                "Fenrir": 2681,
+                "Knd Specialist Lambda": 37,
+                "Knd Cadet Delta": 22,
+                "Knd Vanguard Nu": 514
+            },
+            "effects_count": 10,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 11,
+            "team_a": [
+                "Knd Specialist Tau",
+                "Knd Specialist Xi"
+            ],
+            "team_b": [
+                "Knd Specialist Zeta",
+                "Knd Specialist Sigma"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Tau": 1242,
+                "Knd Specialist Zeta": 767,
+                "Knd Specialist Sigma": 841,
+                "Knd Specialist Xi": 369
+            },
+            "effects_count": 0,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 13,
+            "team_a": [
+                "Knd Cadet Sigma",
+                "Abraham Lincoln"
+            ],
+            "team_b": [
+                "Genghis Khan",
+                "Frankenstein"
+            ],
+            "damage_by_char": {
+                "Genghis Khan": 1887,
+                "Abraham Lincoln": 1023,
+                "Frankenstein": 77
+            },
+            "effects_count": 18,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "Zeus",
+                "Corrupted Odin",
+                "Knd Cadet Delta"
+            ],
+            "team_b": [
+                "Arthur King",
+                "Knd Specialist Beta",
+                "Puss In Boots"
+            ],
+            "damage_by_char": {
+                "Zeus": 858,
+                "Arthur King": 764,
+                "Corrupted Odin": 1327,
+                "Knd Specialist Beta": 628,
+                "Puss In Boots": 1061,
+                "Knd Cadet Delta": 52
+            },
+            "effects_count": 10,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "Knd Specialist Zeta",
+                "Little Red Riding Hood",
+                "Knd Cadet Delta"
+            ],
+            "team_b": [
+                "Julio César",
+                "Knd Specialist Xi",
+                "Alice"
+            ],
+            "damage_by_char": {
+                "Julio César": 1514,
+                "Knd Specialist Zeta": 473,
+                "Little Red Riding Hood": 1074,
+                "Knd Specialist Xi": 337,
+                "Alice": 636,
+                "Knd Cadet Delta": 23
+            },
+            "effects_count": 15,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Dracula",
+                "Knd Specialist Lambda"
+            ],
+            "team_b": [
+                "Abraham Lincoln",
+                "Fenrir"
+            ],
+            "damage_by_char": {
+                "Dracula": 1180,
+                "Abraham Lincoln": 1666,
+                "Knd Specialist Lambda": 307,
+                "Fenrir": 703
+            },
+            "effects_count": 18,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 26,
+            "team_a": [
+                "Knd Specialist Tau",
+                "Knd Vanguard Psi",
+                "Knd Specialist Delta"
+            ],
+            "team_b": [
+                "Knd Cadet Alpha",
+                "Knd Specialist Omega",
+                "Knd Vanguard Xi"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Alpha": 1662,
+                "Knd Specialist Tau": 1797,
+                "Knd Vanguard Psi": 424,
+                "Knd Specialist Omega": 1276,
+                "Knd Specialist Delta": 796,
+                "Knd Vanguard Xi": 630
+            },
+            "effects_count": 3,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 6,
+            "team_a": [
+                "Knd Vanguard Kappa",
+                "Knd Vanguard Eta"
+            ],
+            "team_b": [
+                "Corrupted Odin",
+                "Knd Cadet Iota"
+            ],
+            "damage_by_char": {
+                "Corrupted Odin": 1312,
+                "Knd Vanguard Kappa": 170,
+                "Knd Vanguard Eta": 186
+            },
+            "effects_count": 6,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 11,
+            "team_a": [
+                "Knd Specialist Alpha",
+                "Knd Vanguard Nu"
+            ],
+            "team_b": [
+                "Anubis",
+                "Knd Specialist Tau"
+            ],
+            "damage_by_char": {
+                "Anubis": 2194,
+                "Knd Specialist Alpha": 716,
+                "Knd Vanguard Nu": 168
+            },
+            "effects_count": 15,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 11,
+            "team_a": [
+                "Knd Vanguard Xi",
+                "Little Red Riding Hood"
+            ],
+            "team_b": [
+                "Anubis",
+                "Knd Cadet Lambda"
+            ],
+            "damage_by_char": {
+                "Anubis": 751,
+                "Knd Vanguard Xi": 393,
+                "Little Red Riding Hood": 1194,
+                "Knd Cadet Lambda": 88
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 19,
+            "team_a": [
+                "Benjamin Franklin",
+                "Thor",
+                "Arthur King"
+            ],
+            "team_b": [
+                "Krampus",
+                "Knd Specialist Omega",
+                "Zeus"
+            ],
+            "damage_by_char": {
+                "Krampus": 689,
+                "Benjamin Franklin": 1490,
+                "Knd Specialist Omega": 194,
+                "Zeus": 1673,
+                "Thor": 121
+            },
+            "effects_count": 42,
+            "cc_count": 3
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Aladdín",
+                "Knd Cadet Gamma",
+                "Knd Cadet Beta"
+            ],
+            "team_b": [
+                "Knd Vanguard Alpha",
+                "Zeus",
+                "Knd Vanguard Eta"
+            ],
+            "damage_by_char": {
+                "Aladdín": 1147,
+                "Knd Vanguard Alpha": 198,
+                "Zeus": 1831,
+                "Knd Cadet Beta": 160
+            },
+            "effects_count": 16,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 10,
+            "team_a": [
+                "Knd Cadet Delta",
+                "Knd Vanguard Nu"
+            ],
+            "team_b": [
+                "Queen Grimhilde",
+                "Knd Specialist Sigma"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Delta": 191,
+                "Queen Grimhilde": 1869,
+                "Knd Vanguard Nu": 347
+            },
+            "effects_count": 15,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Wendigo",
+                "Anubis"
+            ],
+            "team_b": [
+                "Knd Specialist Alpha",
+                "Kraken"
+            ],
+            "damage_by_char": {
+                "Wendigo": 1378,
+                "Knd Specialist Alpha": 723,
+                "Kraken": 884,
+                "Anubis": 709
+            },
+            "effects_count": 27,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 22,
+            "team_a": [
+                "Knd Specialist Iota",
+                "Knd Specialist Beta"
+            ],
+            "team_b": [
+                "Knd Specialist Tau",
+                "Knd Specialist Epsilon"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Tau": 1367,
+                "Knd Specialist Iota": 1361,
+                "Knd Specialist Epsilon": 1446,
+                "Knd Specialist Beta": 1030
+            },
+            "effects_count": 10,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 19,
+            "team_a": [
+                "Knd Specialist Mu",
+                "Knd Vanguard Gamma"
+            ],
+            "team_b": [
+                "Knd Vanguard Kappa",
+                "Pinocchio"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Kappa": 1977,
+                "Knd Specialist Mu": 699,
+                "Knd Vanguard Gamma": 765,
+                "Pinocchio": 558
+            },
+            "effects_count": 31,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 6,
+            "team_a": [
+                "Knd Cadet Xi",
+                "Knd Cadet Kappa"
+            ],
+            "team_b": [
+                "Medusa",
+                "Knd Specialist Tau"
+            ],
+            "damage_by_char": {
+                "Medusa": 1328,
+                "Knd Cadet Xi": 42,
+                "Knd Cadet Kappa": 19
+            },
+            "effects_count": 2,
+            "cc_count": 5
+        },
+        {
+            "winner": "A",
+            "turns": 23,
+            "team_a": [
+                "Knd Vanguard Kappa",
+                "Rapunzel",
+                "Alice"
+            ],
+            "team_b": [
+                "Knd Vanguard Beta",
+                "Knd Vanguard Upsilon",
+                "Knd Specialist Tau"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Beta": 1202,
+                "Knd Vanguard Kappa": 76,
+                "Rapunzel": 2908,
+                "Knd Vanguard Upsilon": 507,
+                "Knd Specialist Tau": 342,
+                "Alice": 164
+            },
+            "effects_count": 25,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 7,
+            "team_a": [
+                "Knd Cadet Iota",
+                "Knd Vanguard Eta"
+            ],
+            "team_b": [
+                "Arthur King",
+                "Knd Cadet Epsilon"
+            ],
+            "damage_by_char": {
+                "Arthur King": 1655,
+                "Knd Cadet Iota": 17,
+                "Knd Vanguard Eta": 66
+            },
+            "effects_count": 7,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 24,
+            "team_a": [
+                "Knd Cadet Xi",
+                "Knd Vanguard Psi",
+                "Knd Vanguard Tau"
+            ],
+            "team_b": [
+                "Knd Cadet Zeta",
+                "Knd Vanguard Iota",
+                "Knd Cadet Nu"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Zeta": 1261,
+                "Knd Cadet Xi": 1735,
+                "Knd Vanguard Iota": 551,
+                "Knd Vanguard Psi": 1170,
+                "Knd Cadet Nu": 508,
+                "Knd Vanguard Tau": 55
+            },
+            "effects_count": 13,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "Knd Specialist Mu",
+                "Knd Vanguard Mu"
+            ],
+            "team_b": [
+                "Knd Vanguard Theta",
+                "Thor"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Mu": 1217,
+                "Knd Vanguard Theta": 1914,
+                "Knd Vanguard Mu": 334,
+                "Thor": 762
+            },
+            "effects_count": 14,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 7,
+            "team_a": [
+                "Knd Cadet Eta",
+                "Knd Specialist Iota",
+                "Pinocchio"
+            ],
+            "team_b": [
+                "Albert Einstein",
+                "Knd Vanguard Iota",
+                "Knd Vanguard Zeta"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Eta": 93,
+                "Albert Einstein": 2110,
+                "Pinocchio": 252
+            },
+            "effects_count": 1,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 18,
+            "team_a": [
+                "Knd Specialist Gamma",
+                "Arthur King",
+                "Knd Cadet Delta"
+            ],
+            "team_b": [
+                "Knd Specialist Mu",
+                "Knd Specialist Delta",
+                "Knd Vanguard Delta"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Mu": 1314,
+                "Knd Specialist Gamma": 1123,
+                "Arthur King": 1768,
+                "Knd Specialist Delta": 112,
+                "Knd Vanguard Delta": 105
+            },
+            "effects_count": 9,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "Knd Vanguard Omega",
+                "Isaac Newton"
+            ],
+            "team_b": [
+                "Little Red Riding Hood",
+                "Knd Specialist Xi"
+            ],
+            "damage_by_char": {
+                "Little Red Riding Hood": 1912,
+                "Knd Vanguard Omega": 785,
+                "Isaac Newton": 754,
+                "Knd Specialist Xi": 224
+            },
+            "effects_count": 22,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 13,
+            "team_a": [
+                "Knd Cadet Lambda",
+                "Benjamin Franklin"
+            ],
+            "team_b": [
+                "Knd Cadet Kappa",
+                "Knd Vanguard Sigma"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Lambda": 1678,
+                "Knd Cadet Kappa": 895,
+                "Knd Vanguard Sigma": 413,
+                "Benjamin Franklin": 516
+            },
+            "effects_count": 6,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 10,
+            "team_a": [
+                "Jack Frost",
+                "Knd Vanguard Phi",
+                "Knd Cadet Iota"
+            ],
+            "team_b": [
+                "Knd Cadet Alpha",
+                "Knd Specialist Theta",
+                "Knd Vanguard Omicron"
+            ],
+            "damage_by_char": {
+                "Jack Frost": 2227,
+                "Knd Cadet Alpha": 46,
+                "Knd Specialist Theta": 126,
+                "Knd Vanguard Omicron": 588
+            },
+            "effects_count": 15,
+            "cc_count": 3
+        },
+        {
+            "winner": "A",
+            "turns": 21,
+            "team_a": [
+                "Corrupted Odin",
+                "Corrupted Loki",
+                "Knd Vanguard Nu"
+            ],
+            "team_b": [
+                "Knd Cadet Beta",
+                "Knd Vanguard Mu",
+                "Corrupted Loki"
+            ],
+            "damage_by_char": {
+                "Corrupted Odin": 2360,
+                "Knd Cadet Beta": 214,
+                "Knd Vanguard Mu": 532,
+                "Corrupted Loki": 2805,
+                "Knd Vanguard Nu": 246
+            },
+            "effects_count": 22,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 25,
+            "team_a": [
+                "Odin",
+                "Knd Vanguard Gamma",
+                "Knd Cadet Zeta"
+            ],
+            "team_b": [
+                "Knd Cadet Theta",
+                "Knd Specialist Delta",
+                "Knd Vanguard Epsilon"
+            ],
+            "damage_by_char": {
+                "Odin": 2681,
+                "Knd Cadet Theta": 313,
+                "Knd Specialist Delta": 1310,
+                "Knd Vanguard Gamma": 435,
+                "Knd Vanguard Epsilon": 2004,
+                "Knd Cadet Zeta": 269
+            },
+            "effects_count": 18,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 12,
+            "team_a": [
+                "Napoleón Bonaparte",
+                "Albert Einstein"
+            ],
+            "team_b": [
+                "Knd Vanguard Phi",
+                "Knd Specialist Xi"
+            ],
+            "damage_by_char": {
+                "Napoleón Bonaparte": 1540,
+                "Knd Vanguard Phi": 353,
+                "Knd Specialist Xi": 378,
+                "Albert Einstein": 183
+            },
+            "effects_count": 20,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 11,
+            "team_a": [
+                "Dracula",
+                "Alice"
+            ],
+            "team_b": [
+                "Pinocchio",
+                "Kraken"
+            ],
+            "damage_by_char": {
+                "Pinocchio": 1637,
+                "Dracula": 441,
+                "Alice": 879,
+                "Kraken": 243
+            },
+            "effects_count": 10,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 22,
+            "team_a": [
+                "Knd Cadet Nu",
+                "Genghis Khan",
+                "Anubis"
+            ],
+            "team_b": [
+                "Knd Specialist Gamma",
+                "Knd Specialist Xi",
+                "Knd Cadet Epsilon"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Gamma": 3138,
+                "Knd Cadet Nu": 228,
+                "Genghis Khan": 1968,
+                "Knd Specialist Xi": 153,
+                "Anubis": 774,
+                "Knd Cadet Epsilon": 133
+            },
+            "effects_count": 24,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 18,
+            "team_a": [
+                "Thor",
+                "Knd Vanguard Prime",
+                "Knd Vanguard Xi"
+            ],
+            "team_b": [
+                "Knd Cadet Iota",
+                "Knd Cadet Epsilon",
+                "Headless Horseman"
+            ],
+            "damage_by_char": {
+                "Thor": 2005,
+                "Knd Cadet Iota": 126,
+                "Knd Cadet Epsilon": 76,
+                "Headless Horseman": 1795,
+                "Knd Vanguard Prime": 96
+            },
+            "effects_count": 22,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 27,
+            "team_a": [
+                "Knd Cadet Theta",
+                "Knd Vanguard Tau",
+                "Arthur King"
+            ],
+            "team_b": [
+                "Knd Vanguard Omicron",
+                "Knd Cadet Nu",
+                "Loki"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Theta": 1679,
+                "Knd Vanguard Omicron": 2037,
+                "Knd Vanguard Tau": 1197,
+                "Knd Cadet Nu": 495,
+                "Loki": 1752,
+                "Arthur King": 743
+            },
+            "effects_count": 22,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 19,
+            "team_a": [
+                "Knd Vanguard Omicron",
+                "Knd Vanguard Lambda",
+                "Pinocchio"
+            ],
+            "team_b": [
+                "Knd Cadet Zeta",
+                "Knd Cadet Sigma",
+                "Knd Cadet Mu"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Omicron": 1891,
+                "Knd Cadet Zeta": 337,
+                "Knd Cadet Sigma": 1202,
+                "Knd Vanguard Lambda": 1533,
+                "Knd Cadet Mu": 295
+            },
+            "effects_count": 5,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 16,
+            "team_a": [
+                "Knd Cadet Epsilon",
+                "Knd Specialist Omicron"
+            ],
+            "team_b": [
+                "Knd Specialist Eta",
+                "Knd Specialist Theta"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Epsilon": 508,
+                "Knd Specialist Eta": 1208,
+                "Knd Specialist Omicron": 657,
+                "Knd Specialist Theta": 645
+            },
+            "effects_count": 9,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 18,
+            "team_a": [
+                "Knd Cadet Beta",
+                "Knd Vanguard Gamma",
+                "Knd Specialist Alpha"
+            ],
+            "team_b": [
+                "Kraken",
+                "Knd Vanguard Zeta",
+                "Knd Cadet Gamma"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Beta": 26,
+                "Kraken": 3379,
+                "Knd Vanguard Gamma": 186,
+                "Knd Specialist Alpha": 315
+            },
+            "effects_count": 0,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Headless Horseman",
+                "Wukong",
+                "Jack Frost"
+            ],
+            "team_b": [
+                "Knd Cadet Nu",
+                "Knd Cadet Lambda",
+                "Knd Vanguard Nova"
+            ],
+            "damage_by_char": {
+                "Headless Horseman": 2789,
+                "Knd Cadet Nu": 48,
+                "Knd Cadet Lambda": 458,
+                "Knd Vanguard Nova": 303,
+                "Wukong": 252
+            },
+            "effects_count": 23,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 13,
+            "team_a": [
+                "Knd Specialist Alpha",
+                "Knd Vanguard Xi"
+            ],
+            "team_b": [
+                "Knd Specialist Omega",
+                "Knd Vanguard Psi"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Omega": 2324,
+                "Knd Specialist Alpha": 478,
+                "Knd Vanguard Xi": 301
+            },
+            "effects_count": 3,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 15,
+            "team_a": [
+                "Abraham Lincoln",
+                "Wukong",
+                "Knd Specialist Alpha"
+            ],
+            "team_b": [
+                "Ichabod Crane",
+                "Knd Vanguard Zeta",
+                "Knd Specialist Lambda"
+            ],
+            "damage_by_char": {
+                "Ichabod Crane": 1172,
+                "Abraham Lincoln": 734,
+                "Wukong": 1704,
+                "Knd Vanguard Zeta": 600,
+                "Knd Specialist Lambda": 83
+            },
+            "effects_count": 12,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 9,
+            "team_a": [
+                "Loki",
+                "Knd Vanguard Iota"
+            ],
+            "team_b": [
+                "Fenrir",
+                "Knd Specialist Theta"
+            ],
+            "damage_by_char": {
+                "Loki": 1917,
+                "Fenrir": 332,
+                "Knd Specialist Theta": 364
+            },
+            "effects_count": 22,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 13,
+            "team_a": [
+                "Knd Cadet Gamma",
+                "Knd Specialist Tau",
+                "Knd Vanguard Upsilon"
+            ],
+            "team_b": [
+                "Little Red Riding Hood",
+                "Pinocchio",
+                "Knd Vanguard Iota"
+            ],
+            "damage_by_char": {
+                "Little Red Riding Hood": 2074,
+                "Knd Cadet Gamma": 76,
+                "Knd Specialist Tau": 717,
+                "Knd Vanguard Upsilon": 62,
+                "Pinocchio": 92
+            },
+            "effects_count": 3,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 11,
+            "team_a": [
+                "Alice",
+                "Wukong",
+                "Long John Silver"
+            ],
+            "team_b": [
+                "Knd Specialist Nu",
+                "Abraham Lincoln",
+                "George Washington"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Nu": 261,
+                "Alice": 1362,
+                "Abraham Lincoln": 346,
+                "George Washington": 307,
+                "Wukong": 225
+            },
+            "effects_count": 19,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 16,
+            "team_a": [
+                "Knd Vanguard Gamma",
+                "Knd Cadet Iota",
+                "Knd Vanguard Nova"
+            ],
+            "team_b": [
+                "Long John Silver",
+                "Knd Specialist Omega",
+                "Knd Specialist Delta"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Gamma": 831,
+                "Long John Silver": 3325,
+                "Knd Cadet Iota": 102,
+                "Knd Vanguard Nova": 54
+            },
+            "effects_count": 36,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Knd Specialist Epsilon",
+                "Jack Frost",
+                "Knd Cadet Alpha"
+            ],
+            "team_b": [
+                "Knd Cadet Kappa",
+                "Knd Vanguard Chi",
+                "Knd Vanguard Gamma"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Kappa": 634,
+                "Knd Specialist Epsilon": 1270,
+                "Knd Vanguard Chi": 494,
+                "Jack Frost": 1265,
+                "Knd Vanguard Gamma": 189
+            },
+            "effects_count": 5,
+            "cc_count": 2
+        },
+        {
+            "winner": "A",
+            "turns": 16,
+            "team_a": [
+                "Dorian Gray",
+                "Krampus"
+            ],
+            "team_b": [
+                "Knd Cadet Lambda",
+                "Long John Silver"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Lambda": 270,
+                "Dorian Gray": 1347,
+                "Long John Silver": 1006,
+                "Krampus": 231
+            },
+            "effects_count": 32,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "Knd Vanguard Psi",
+                "Knd Vanguard Epsilon"
+            ],
+            "team_b": [
+                "Knd Vanguard Sigma",
+                "Long John Silver"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Sigma": 1404,
+                "Knd Vanguard Psi": 960,
+                "Knd Vanguard Epsilon": 203,
+                "Long John Silver": 583
+            },
+            "effects_count": 2,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 9,
+            "team_a": [
+                "Knd Vanguard Tau",
+                "Wendigo"
+            ],
+            "team_b": [
+                "Kraken",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "Kraken": 1987,
+                "Knd Vanguard Tau": 118,
+                "Wendigo": 561
+            },
+            "effects_count": 7,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "Knd Cadet Zeta",
+                "Corrupted Loki"
+            ],
+            "team_b": [
+                "Puss In Boots",
+                "Knd Vanguard Lambda"
+            ],
+            "damage_by_char": {
+                "Puss In Boots": 2223,
+                "Knd Cadet Zeta": 152,
+                "Corrupted Loki": 560
+            },
+            "effects_count": 22,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Little Red Riding Hood",
+                "Knd Vanguard Upsilon",
+                "Knd Vanguard Mu"
+            ],
+            "team_b": [
+                "Knd Cadet Omicron",
+                "Abraham Lincoln",
+                "Knd Cadet Sigma"
+            ],
+            "damage_by_char": {
+                "Little Red Riding Hood": 1983,
+                "Knd Cadet Omicron": 72,
+                "Abraham Lincoln": 744,
+                "Knd Cadet Sigma": 259,
+                "Knd Vanguard Upsilon": 246
+            },
+            "effects_count": 14,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 10,
+            "team_a": [
+                "Knd Specialist Omega",
+                "Knd Vanguard Omega"
+            ],
+            "team_b": [
+                "Fenrir",
+                "Albert Einstein"
+            ],
+            "damage_by_char": {
+                "Fenrir": 1822,
+                "Knd Specialist Omega": 83,
+                "Knd Vanguard Omega": 989
+            },
+            "effects_count": 13,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 22,
+            "team_a": [
+                "Knd Specialist Nu",
+                "Knd Vanguard Iota",
+                "Knd Specialist Iota"
+            ],
+            "team_b": [
+                "Dorian Gray",
+                "Knd Vanguard Tau",
+                "Isaac Newton"
+            ],
+            "damage_by_char": {
+                "Dorian Gray": 2644,
+                "Knd Specialist Nu": 110,
+                "Knd Vanguard Iota": 1035,
+                "Knd Specialist Iota": 1191,
+                "Knd Vanguard Tau": 668,
+                "Isaac Newton": 92
+            },
+            "effects_count": 19,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 20,
+            "team_a": [
+                "Jack Frost",
+                "Isaac Newton",
+                "Knd Cadet Xi"
+            ],
+            "team_b": [
+                "Knd Specialist Omega",
+                "Julio César",
+                "Long John Silver"
+            ],
+            "damage_by_char": {
+                "Jack Frost": 4614,
+                "Knd Specialist Omega": 327,
+                "Long John Silver": 1210
+            },
+            "effects_count": 51,
+            "cc_count": 24
+        },
+        {
+            "winner": "A",
+            "turns": 17,
+            "team_a": [
+                "Alice",
+                "Knd Specialist Delta",
+                "Knd Specialist Omega"
+            ],
+            "team_b": [
+                "Knd Specialist Eta",
+                "Frankenstein",
+                "Morgana"
+            ],
+            "damage_by_char": {
+                "Alice": 2624,
+                "Frankenstein": 524,
+                "Morgana": 987,
+                "Knd Specialist Delta": 48
+            },
+            "effects_count": 19,
+            "cc_count": 3
+        },
+        {
+            "winner": "B",
+            "turns": 16,
+            "team_a": [
+                "Corrupted Loki",
+                "Wendigo",
+                "Knd Vanguard Chi"
+            ],
+            "team_b": [
+                "Knd Specialist Delta",
+                "Benjamin Franklin",
+                "Dracula"
+            ],
+            "damage_by_char": {
+                "Corrupted Loki": 741,
+                "Knd Specialist Delta": 282,
+                "Benjamin Franklin": 1972,
+                "Wendigo": 529,
+                "Knd Vanguard Chi": 235,
+                "Dracula": 76
+            },
+            "effects_count": 37,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Corrupted Odin",
+                "Knd Specialist Gamma"
+            ],
+            "team_b": [
+                "Fenrir",
+                "Knd Cadet Omicron"
+            ],
+            "damage_by_char": {
+                "Corrupted Odin": 2279,
+                "Fenrir": 1349,
+                "Knd Cadet Omicron": 202,
+                "Knd Specialist Gamma": 136
+            },
+            "effects_count": 32,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 7,
+            "team_a": [
+                "Zeus",
+                "Napoleón Bonaparte"
+            ],
+            "team_b": [
+                "Knd Cadet Delta",
+                "Knd Vanguard Lambda"
+            ],
+            "damage_by_char": {
+                "Zeus": 1680,
+                "Knd Cadet Delta": 50,
+                "Knd Vanguard Lambda": 138
+            },
+            "effects_count": 9,
+            "cc_count": 6
+        },
+        {
+            "winner": "A",
+            "turns": 12,
+            "team_a": [
+                "Knd Vanguard Xi",
+                "Puss In Boots"
+            ],
+            "team_b": [
+                "Knd Cadet Beta",
+                "Knd Vanguard Delta"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Xi": 2630,
+                "Knd Cadet Beta": 160,
+                "Knd Vanguard Delta": 1132
+            },
+            "effects_count": 3,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 18,
+            "team_a": [
+                "Knd Vanguard Nova",
+                "Knd Specialist Xi"
+            ],
+            "team_b": [
+                "Knd Specialist Eta",
+                "Hydra"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Nova": 1284,
+                "Knd Specialist Eta": 758,
+                "Hydra": 1785,
+                "Knd Specialist Xi": 530
+            },
+            "effects_count": 18,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 20,
+            "team_a": [
+                "Aladdín",
+                "Long John Silver",
+                "Genghis Khan"
+            ],
+            "team_b": [
+                "Knd Specialist Eta",
+                "Knd Specialist Delta",
+                "Medusa"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Eta": 1440,
+                "Aladdín": 1213,
+                "Long John Silver": 1576,
+                "Knd Specialist Delta": 399,
+                "Medusa": 1260,
+                "Genghis Khan": 240
+            },
+            "effects_count": 29,
+            "cc_count": 3
+        },
+        {
+            "winner": "B",
+            "turns": 18,
+            "team_a": [
+                "Knd Specialist Beta",
+                "Ichabod Crane",
+                "Genghis Khan"
+            ],
+            "team_b": [
+                "Loki",
+                "Mad Hatter",
+                "Knd Cadet Beta"
+            ],
+            "damage_by_char": {
+                "Loki": 1454,
+                "Knd Specialist Beta": 379,
+                "Ichabod Crane": 548,
+                "Mad Hatter": 1473,
+                "Genghis Khan": 881
+            },
+            "effects_count": 43,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 7,
+            "team_a": [
+                "Knd Cadet Omicron",
+                "Knd Specialist Epsilon"
+            ],
+            "team_b": [
+                "Kraken",
+                "Knd Vanguard Delta"
+            ],
+            "damage_by_char": {
+                "Kraken": 1754,
+                "Knd Cadet Omicron": 9
+            },
+            "effects_count": 0,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 12,
+            "team_a": [
+                "Fenrir",
+                "Morgana",
+                "Knd Vanguard Psi"
+            ],
+            "team_b": [
+                "Knd Specialist Sigma",
+                "Knd Cadet Lambda",
+                "Knd Specialist Kappa"
+            ],
+            "damage_by_char": {
+                "Fenrir": 2652,
+                "Knd Specialist Sigma": 74,
+                "Knd Cadet Lambda": 58,
+                "Knd Specialist Kappa": 338
+            },
+            "effects_count": 18,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 11,
+            "team_a": [
+                "Knd Vanguard Beta",
+                "Corrupted Loki"
+            ],
+            "team_b": [
+                "Knd Vanguard Iota",
+                "Knd Cadet Nu"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Beta": 1534,
+                "Knd Vanguard Iota": 1121,
+                "Corrupted Loki": 782,
+                "Knd Cadet Nu": 42
+            },
+            "effects_count": 6,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 21,
+            "team_a": [
+                "Wukong",
+                "Knd Vanguard Nu",
+                "Knd Cadet Iota"
+            ],
+            "team_b": [
+                "George Washington",
+                "Knd Specialist Mu",
+                "Mad Hatter"
+            ],
+            "damage_by_char": {
+                "Wukong": 1867,
+                "George Washington": 348,
+                "Knd Specialist Mu": 679,
+                "Mad Hatter": 2332,
+                "Knd Vanguard Nu": 376
+            },
+            "effects_count": 14,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 13,
+            "team_a": [
+                "Knd Specialist Xi",
+                "Knd Vanguard Zeta"
+            ],
+            "team_b": [
+                "Knd Specialist Beta",
+                "Knd Vanguard Theta"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Xi": 738,
+                "Knd Specialist Beta": 2343,
+                "Knd Vanguard Zeta": 321,
+                "Knd Vanguard Theta": 62
+            },
+            "effects_count": 0,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 13,
+            "team_a": [
+                "Dorian Gray",
+                "Alice"
+            ],
+            "team_b": [
+                "Abraham Lincoln",
+                "Odin"
+            ],
+            "damage_by_char": {
+                "Dorian Gray": 1408,
+                "Abraham Lincoln": 731,
+                "Odin": 724,
+                "Alice": 395
+            },
+            "effects_count": 27,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 11,
+            "team_a": [
+                "Knd Vanguard Lambda",
+                "Knd Specialist Theta"
+            ],
+            "team_b": [
+                "Knd Vanguard Xi",
+                "Knd Cadet Xi"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Lambda": 1942,
+                "Knd Vanguard Xi": 604,
+                "Knd Cadet Xi": 626
+            },
+            "effects_count": 0,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Knd Cadet Kappa",
+                "Knd Vanguard Mu",
+                "Rapunzel"
+            ],
+            "team_b": [
+                "Anubis",
+                "Queen Grimhilde",
+                "Knd Cadet Eta"
+            ],
+            "damage_by_char": {
+                "Anubis": 2312,
+                "Knd Cadet Kappa": 100,
+                "Knd Vanguard Mu": 461,
+                "Rapunzel": 78,
+                "Queen Grimhilde": 279
+            },
+            "effects_count": 20,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 20,
+            "team_a": [
+                "Knd Vanguard Upsilon",
+                "Knd Specialist Theta",
+                "Albert Einstein"
+            ],
+            "team_b": [
+                "Knd Vanguard Chi",
+                "Aladdín",
+                "Knd Cadet Omicron"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Upsilon": 1439,
+                "Knd Vanguard Chi": 1649,
+                "Knd Specialist Theta": 701,
+                "Aladdín": 1235,
+                "Albert Einstein": 964
+            },
+            "effects_count": 7,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 18,
+            "team_a": [
+                "Knd Cadet Omicron",
+                "Kraken"
+            ],
+            "team_b": [
+                "Knd Vanguard Psi",
+                "Hercules"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Psi": 1191,
+                "Knd Cadet Omicron": 588,
+                "Kraken": 2137,
+                "Hercules": 1935
+            },
+            "effects_count": 17,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 19,
+            "team_a": [
+                "Knd Vanguard Zeta",
+                "Knd Cadet Gamma",
+                "Knd Cadet Delta"
+            ],
+            "team_b": [
+                "Knd Vanguard Kappa",
+                "Mad Hatter",
+                "Knd Vanguard Mu"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Kappa": 607,
+                "Knd Vanguard Zeta": 1177,
+                "Mad Hatter": 2217,
+                "Knd Cadet Gamma": 258,
+                "Knd Cadet Delta": 22
+            },
+            "effects_count": 21,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 19,
+            "team_a": [
+                "Julio César",
+                "Knd Vanguard Mu"
+            ],
+            "team_b": [
+                "Knd Specialist Zeta",
+                "Knd Vanguard Kappa"
+            ],
+            "damage_by_char": {
+                "Julio César": 2880,
+                "Knd Specialist Zeta": 110,
+                "Knd Vanguard Kappa": 2442,
+                "Knd Vanguard Mu": 242
+            },
+            "effects_count": 34,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 24,
+            "team_a": [
+                "Knd Specialist Beta",
+                "Knd Specialist Sigma",
+                "Queen Grimhilde"
+            ],
+            "team_b": [
+                "Knd Cadet Theta",
+                "Knd Specialist Kappa",
+                "Knd Cadet Beta"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Theta": 880,
+                "Knd Specialist Beta": 1878,
+                "Knd Specialist Kappa": 624,
+                "Knd Specialist Sigma": 1569,
+                "Knd Cadet Beta": 837,
+                "Queen Grimhilde": 119
+            },
+            "effects_count": 16,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 10,
+            "team_a": [
+                "Krampus",
+                "Knd Vanguard Theta",
+                "Knd Vanguard Lambda"
+            ],
+            "team_b": [
+                "Benjamin Franklin",
+                "Knd Specialist Nu",
+                "Knd Cadet Omicron"
+            ],
+            "damage_by_char": {
+                "Krampus": 1035,
+                "Benjamin Franklin": 1877,
+                "Knd Vanguard Lambda": 53
+            },
+            "effects_count": 21,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 18,
+            "team_a": [
+                "Knd Cadet Beta",
+                "Knd Cadet Theta",
+                "Knd Vanguard Gamma"
+            ],
+            "team_b": [
+                "Knd Vanguard Omicron",
+                "Benjamin Franklin",
+                "Pinocchio"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Omicron": 2547,
+                "Knd Cadet Beta": 241,
+                "Knd Cadet Theta": 1285,
+                "Benjamin Franklin": 1138,
+                "Knd Vanguard Gamma": 44
+            },
+            "effects_count": 8,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 21,
+            "team_a": [
+                "Knd Vanguard Epsilon",
+                "Knd Vanguard Beta",
+                "Odin"
+            ],
+            "team_b": [
+                "Knd Cadet Kappa",
+                "Knd Vanguard Zeta",
+                "Knd Vanguard Mu"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Epsilon": 1318,
+                "Knd Cadet Kappa": 660,
+                "Knd Vanguard Zeta": 1711,
+                "Knd Vanguard Beta": 1000,
+                "Odin": 989,
+                "Knd Vanguard Mu": 105
+            },
+            "effects_count": 2,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 24,
+            "team_a": [
+                "Knd Specialist Iota",
+                "Simon Bolivar",
+                "Knd Vanguard Theta"
+            ],
+            "team_b": [
+                "Knd Specialist Xi",
+                "Knd Cadet Iota",
+                "Dracula"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Xi": 1450,
+                "Knd Specialist Iota": 853,
+                "Simon Bolivar": 1246,
+                "Knd Cadet Iota": 324,
+                "Dracula": 1907,
+                "Knd Vanguard Theta": 648
+            },
+            "effects_count": 26,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Corrupted Loki",
+                "Knd Cadet Epsilon"
+            ],
+            "team_b": [
+                "Julio César",
+                "Knd Vanguard Epsilon"
+            ],
+            "damage_by_char": {
+                "Corrupted Loki": 2838,
+                "Julio César": 708,
+                "Knd Vanguard Epsilon": 365
+            },
+            "effects_count": 37,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 23,
+            "team_a": [
+                "Knd Cadet Omicron",
+                "Knd Specialist Eta",
+                "Corrupted Odin"
+            ],
+            "team_b": [
+                "Fenrir",
+                "Knd Vanguard Epsilon",
+                "Knd Specialist Sigma"
+            ],
+            "damage_by_char": {
+                "Fenrir": 2657,
+                "Knd Cadet Omicron": 213,
+                "Knd Specialist Eta": 153,
+                "Corrupted Odin": 2084,
+                "Knd Vanguard Epsilon": 546,
+                "Knd Specialist Sigma": 103
+            },
+            "effects_count": 15,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "Knd Specialist Kappa",
+                "Alice",
+                "Knd Cadet Alpha"
+            ],
+            "team_b": [
+                "Sandman",
+                "Hercules",
+                "Knd Specialist Eta"
+            ],
+            "damage_by_char": {
+                "Sandman": 2007,
+                "Knd Specialist Kappa": 232,
+                "Alice": 822,
+                "Hercules": 1098,
+                "Knd Cadet Alpha": 172
+            },
+            "effects_count": 31,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 6,
+            "team_a": [
+                "Knd Cadet Mu",
+                "Dorian Gray"
+            ],
+            "team_b": [
+                "Alice",
+                "Corrupted Odin"
+            ],
+            "damage_by_char": {
+                "Alice": 1058,
+                "Dorian Gray": 338
+            },
+            "effects_count": 7,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 15,
+            "team_a": [
+                "Knd Cadet Theta",
+                "Benjamin Franklin",
+                "Knd Cadet Sigma"
+            ],
+            "team_b": [
+                "Knd Specialist Iota",
+                "Arthur King",
+                "Knd Specialist Zeta"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Theta": 632,
+                "Knd Specialist Iota": 1065,
+                "Benjamin Franklin": 1565,
+                "Arthur King": 450,
+                "Knd Specialist Zeta": 155
+            },
+            "effects_count": 16,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 8,
+            "team_a": [
+                "Knd Cadet Kappa",
+                "Sherlock Holmes"
+            ],
+            "team_b": [
+                "Rapunzel",
+                "Knd Cadet Iota"
+            ],
+            "damage_by_char": {
+                "Rapunzel": 1632,
+                "Sherlock Holmes": 478
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 17,
+            "team_a": [
+                "Aladdín",
+                "Loki",
+                "Knd Specialist Nu"
+            ],
+            "team_b": [
+                "Knd Cadet Gamma",
+                "Knd Vanguard Theta",
+                "Knd Vanguard Delta"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Gamma": 280,
+                "Aladdín": 2034,
+                "Knd Vanguard Theta": 549,
+                "Knd Vanguard Delta": 364,
+                "Loki": 492
+            },
+            "effects_count": 25,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 21,
+            "team_a": [
+                "Jack Frost",
+                "Anubis",
+                "Knd Cadet Sigma"
+            ],
+            "team_b": [
+                "Knd Vanguard Theta",
+                "Ichabod Crane",
+                "Knd Specialist Alpha"
+            ],
+            "damage_by_char": {
+                "Jack Frost": 1142,
+                "Knd Vanguard Theta": 198,
+                "Ichabod Crane": 941,
+                "Anubis": 1518,
+                "Knd Specialist Alpha": 864,
+                "Knd Cadet Sigma": 143
+            },
+            "effects_count": 32,
+            "cc_count": 3
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Odin",
+                "Knd Vanguard Iota"
+            ],
+            "team_b": [
+                "Knd Cadet Iota",
+                "Knd Vanguard Nu"
+            ],
+            "damage_by_char": {
+                "Odin": 2268,
+                "Knd Cadet Iota": 338,
+                "Knd Vanguard Nu": 735,
+                "Knd Vanguard Iota": 164
+            },
+            "effects_count": 2,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Julio César",
+                "Alice",
+                "Knd Specialist Eta"
+            ],
+            "team_b": [
+                "Aladdín",
+                "Knd Cadet Gamma",
+                "Genghis Khan"
+            ],
+            "damage_by_char": {
+                "Aladdín": 501,
+                "Julio César": 2134,
+                "Knd Cadet Gamma": 222,
+                "Genghis Khan": 279,
+                "Alice": 180
+            },
+            "effects_count": 21,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 7,
+            "team_a": [
+                "Medusa",
+                "Loki"
+            ],
+            "team_b": [
+                "Sandman",
+                "Knd Vanguard Lambda"
+            ],
+            "damage_by_char": {
+                "Sandman": 514,
+                "Medusa": 1394,
+                "Knd Vanguard Lambda": 74
+            },
+            "effects_count": 10,
+            "cc_count": 3
+        },
+        {
+            "winner": "B",
+            "turns": 21,
+            "team_a": [
+                "Knd Cadet Kappa",
+                "Knd Vanguard Nu",
+                "Abraham Lincoln"
+            ],
+            "team_b": [
+                "Corrupted Odin",
+                "Knd Vanguard Nova",
+                "Zeus"
+            ],
+            "damage_by_char": {
+                "Corrupted Odin": 1655,
+                "Knd Cadet Kappa": 105,
+                "Knd Vanguard Nu": 189,
+                "Abraham Lincoln": 1339,
+                "Knd Vanguard Nova": 289,
+                "Zeus": 384
+            },
+            "effects_count": 25,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "Knd Specialist Tau",
+                "Knd Specialist Mu",
+                "Zeus"
+            ],
+            "team_b": [
+                "Zeus",
+                "Abraham Lincoln",
+                "Ichabod Crane"
+            ],
+            "damage_by_char": {
+                "Zeus": 3658,
+                "Knd Specialist Tau": 162
+            },
+            "effects_count": 6,
+            "cc_count": 10
+        },
+        {
+            "winner": "A",
+            "turns": 12,
+            "team_a": [
+                "George Washington",
+                "Fenrir"
+            ],
+            "team_b": [
+                "Morgana",
+                "Knd Vanguard Upsilon"
+            ],
+            "damage_by_char": {
+                "George Washington": 2605,
+                "Morgana": 410,
+                "Knd Vanguard Upsilon": 322,
+                "Fenrir": 65
+            },
+            "effects_count": 34,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 16,
+            "team_a": [
+                "Simon Bolivar",
+                "Wendigo",
+                "Knd Cadet Mu"
+            ],
+            "team_b": [
+                "Mad Hatter",
+                "Knd Vanguard Delta",
+                "Kraken"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 1632,
+                "Simon Bolivar": 602,
+                "Wendigo": 195,
+                "Knd Vanguard Delta": 1134,
+                "Knd Cadet Mu": 288
+            },
+            "effects_count": 24,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 8,
+            "team_a": [
+                "Mad Hatter",
+                "Wukong"
+            ],
+            "team_b": [
+                "Knd Vanguard Kappa",
+                "Albert Einstein"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 1134,
+                "Knd Vanguard Kappa": 194,
+                "Albert Einstein": 1107,
+                "Wukong": 223
+            },
+            "effects_count": 4,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 24,
+            "team_a": [
+                "Knd Vanguard Prime",
+                "Medusa",
+                "Knd Vanguard Xi"
+            ],
+            "team_b": [
+                "Knd Specialist Epsilon",
+                "George Washington",
+                "Anubis"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Epsilon": 1452,
+                "Knd Vanguard Prime": 1129,
+                "Medusa": 2384,
+                "George Washington": 376,
+                "Anubis": 393
+            },
+            "effects_count": 53,
+            "cc_count": 23
+        },
+        {
+            "winner": "A",
+            "turns": 12,
+            "team_a": [
+                "Anubis",
+                "Arthur King"
+            ],
+            "team_b": [
+                "Knd Vanguard Lambda",
+                "Ichabod Crane"
+            ],
+            "damage_by_char": {
+                "Anubis": 968,
+                "Knd Vanguard Lambda": 531,
+                "Ichabod Crane": 1152,
+                "Arthur King": 965
+            },
+            "effects_count": 15,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 20,
+            "team_a": [
+                "Arthur King",
+                "Hercules",
+                "Knd Specialist Kappa"
+            ],
+            "team_b": [
+                "Knd Vanguard Omicron",
+                "Knd Specialist Mu",
+                "Knd Cadet Gamma"
+            ],
+            "damage_by_char": {
+                "Arthur King": 3473,
+                "Knd Vanguard Omicron": 340,
+                "Knd Specialist Mu": 558,
+                "Knd Cadet Gamma": 144,
+                "Hercules": 96
+            },
+            "effects_count": 26,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "Knd Vanguard Nu",
+                "Knd Vanguard Alpha"
+            ],
+            "team_b": [
+                "Knd Vanguard Epsilon",
+                "Knd Cadet Iota"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Epsilon": 2245,
+                "Knd Vanguard Nu": 481,
+                "Knd Vanguard Alpha": 343
+            },
+            "effects_count": 0,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 9,
+            "team_a": [
+                "Knd Cadet Xi",
+                "Benjamin Franklin"
+            ],
+            "team_b": [
+                "Long John Silver",
+                "Jack Frost"
+            ],
+            "damage_by_char": {
+                "Long John Silver": 1714,
+                "Knd Cadet Xi": 168,
+                "Benjamin Franklin": 469,
+                "Jack Frost": 84
+            },
+            "effects_count": 8,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Knd Specialist Kappa",
+                "Odin"
+            ],
+            "team_b": [
+                "Knd Cadet Mu",
+                "Ichabod Crane"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Mu": 1232,
+                "Knd Specialist Kappa": 1505,
+                "Ichabod Crane": 1000,
+                "Odin": 302
+            },
+            "effects_count": 10,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 9,
+            "team_a": [
+                "Medusa",
+                "Knd Vanguard Chi",
+                "Little Red Riding Hood"
+            ],
+            "team_b": [
+                "Knd Vanguard Tau",
+                "Knd Cadet Lambda",
+                "Knd Specialist Nu"
+            ],
+            "damage_by_char": {
+                "Medusa": 2327,
+                "Knd Cadet Lambda": 77,
+                "Knd Specialist Nu": 135
+            },
+            "effects_count": 6,
+            "cc_count": 3
+        },
+        {
+            "winner": "A",
+            "turns": 10,
+            "team_a": [
+                "Merlin",
+                "Knd Cadet Theta"
+            ],
+            "team_b": [
+                "Genghis Khan",
+                "Napoleón Bonaparte"
+            ],
+            "damage_by_char": {
+                "Merlin": 2065,
+                "Genghis Khan": 668,
+                "Napoleón Bonaparte": 372
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 19,
+            "team_a": [
+                "Knd Vanguard Gamma",
+                "Merlin",
+                "Knd Vanguard Delta"
+            ],
+            "team_b": [
+                "Knd Vanguard Nova",
+                "Knd Vanguard Omicron",
+                "Morgana"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Nova": 1101,
+                "Knd Vanguard Gamma": 917,
+                "Merlin": 1297,
+                "Knd Vanguard Omicron": 166,
+                "Morgana": 1110,
+                "Knd Vanguard Delta": 244
+            },
+            "effects_count": 21,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 22,
+            "team_a": [
+                "Knd Vanguard Lambda",
+                "Frankenstein",
+                "Knd Vanguard Iota"
+            ],
+            "team_b": [
+                "Dracula",
+                "Knd Vanguard Epsilon",
+                "Knd Vanguard Xi"
+            ],
+            "damage_by_char": {
+                "Dracula": 1687,
+                "Knd Vanguard Lambda": 186,
+                "Frankenstein": 541,
+                "Knd Vanguard Epsilon": 1826,
+                "Knd Vanguard Iota": 706
+            },
+            "effects_count": 19,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 19,
+            "team_a": [
+                "Julio César",
+                "Genghis Khan",
+                "Jack Frost"
+            ],
+            "team_b": [
+                "Knd Cadet Kappa",
+                "Rapunzel",
+                "Puss In Boots"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Kappa": 542,
+                "Julio César": 1319,
+                "Rapunzel": 1422,
+                "Genghis Khan": 692,
+                "Jack Frost": 878,
+                "Puss In Boots": 249
+            },
+            "effects_count": 22,
+            "cc_count": 2
+        },
+        {
+            "winner": "B",
+            "turns": 19,
+            "team_a": [
+                "Simon Bolivar",
+                "Medusa",
+                "Knd Vanguard Omega"
+            ],
+            "team_b": [
+                "Isaac Newton",
+                "Wukong",
+                "Kraken"
+            ],
+            "damage_by_char": {
+                "Simon Bolivar": 903,
+                "Isaac Newton": 456,
+                "Wukong": 2185,
+                "Medusa": 12,
+                "Knd Vanguard Omega": 120
+            },
+            "effects_count": 24,
+            "cc_count": 10
+        },
+        {
+            "winner": "B",
+            "turns": 19,
+            "team_a": [
+                "Knd Vanguard Beta",
+                "Julio César"
+            ],
+            "team_b": [
+                "Knd Vanguard Beta",
+                "Knd Specialist Mu"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Beta": 1994,
+                "Julio César": 2176,
+                "Knd Specialist Mu": 1428
+            },
+            "effects_count": 19,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 8,
+            "team_a": [
+                "Dracula",
+                "Fenrir"
+            ],
+            "team_b": [
+                "Knd Vanguard Kappa",
+                "Knd Cadet Nu"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Kappa": 418,
+                "Dracula": 1374,
+                "Knd Cadet Nu": 126
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 8,
+            "team_a": [
+                "Knd Vanguard Xi",
+                "Knd Vanguard Tau"
+            ],
+            "team_b": [
+                "Merlin",
+                "Knd Specialist Kappa"
+            ],
+            "damage_by_char": {
+                "Merlin": 1819,
+                "Knd Vanguard Xi": 108,
+                "Knd Vanguard Tau": 343
+            },
+            "effects_count": 8,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 9,
+            "team_a": [
+                "Knd Vanguard Upsilon",
+                "Ichabod Crane"
+            ],
+            "team_b": [
+                "Knd Specialist Zeta",
+                "Wendigo"
+            ],
+            "damage_by_char": {
+                "Knd Vanguard Upsilon": 661,
+                "Knd Specialist Zeta": 1277,
+                "Ichabod Crane": 233,
+                "Wendigo": 476
+            },
+            "effects_count": 3,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "Knd Vanguard Omicron",
+                "Odin",
+                "Merlin"
+            ],
+            "team_b": [
+                "Corrupted Odin",
+                "Napoleón Bonaparte",
+                "Arthur King"
+            ],
+            "damage_by_char": {
+                "Corrupted Odin": 1830,
+                "Knd Vanguard Omicron": 176,
+                "Odin": 499,
+                "Merlin": 341,
+                "Napoleón Bonaparte": 504
+            },
+            "effects_count": 12,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 13,
+            "team_a": [
+                "Knd Specialist Beta",
+                "Benjamin Franklin"
+            ],
+            "team_b": [
+                "Knd Cadet Zeta",
+                "George Washington"
+            ],
+            "damage_by_char": {
+                "Knd Specialist Beta": 1180,
+                "Knd Cadet Zeta": 324,
+                "George Washington": 1106,
+                "Benjamin Franklin": 642
+            },
+            "effects_count": 4,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "Knd Cadet Delta",
+                "Knd Vanguard Phi"
+            ],
+            "team_b": [
+                "Knd Cadet Omicron",
+                "Knd Specialist Sigma"
+            ],
+            "damage_by_char": {
+                "Knd Cadet Omicron": 2027,
+                "Knd Cadet Delta": 1633,
+                "Knd Vanguard Phi": 961,
+                "Knd Specialist Sigma": 972
+            },
+            "effects_count": 0,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 11,
+            "team_a": [
+                "Pinocchio",
+                "Medusa"
+            ],
+            "team_b": [
+                "Knd Specialist Kappa",
+                "Merlin"
+            ],
+            "damage_by_char": {
+                "Pinocchio": 1439,
+                "Knd Specialist Kappa": 370,
+                "Merlin": 807,
+                "Medusa": 176
+            },
+            "effects_count": 16,
+            "cc_count": 1
+        }
+    ],
+    "stats": {
+        "team_a_wins": 84,
+        "team_b_wins": 116,
+        "draws": 0,
+        "avg_duration": 15.33,
+        "avg_cc_per_combat": 0.88
+    },
+    "team_stats": {
+        "team_a_wins": 84,
+        "team_b_wins": 116,
+        "draws": 0,
+        "team_a_avg_duration": 15.05,
+        "team_b_avg_duration": 15.53,
+        "team_a_total_damage": 386884,
+        "team_b_total_damage": 413242
+    },
+    "char_winrate": {
+        "Wukong": 9,
+        "Knd Specialist Omicron": 3,
+        "Pinocchio": 8,
+        "Loki": 12,
+        "Knd Cadet Alpha": 4,
+        "Julio César": 11,
+        "Knd Vanguard Delta": 4,
+        "Knd Cadet Delta": 3,
+        "Medusa": 11,
+        "Knd Cadet Eta": 2,
+        "Knd Vanguard Gamma": 4,
+        "Alice": 9,
+        "Knd Specialist Theta": 8,
+        "Kraken": 11,
+        "Odin": 7,
+        "Knd Specialist Epsilon": 5,
+        "Knd Cadet Theta": 5,
+        "Knd Specialist Eta": 7,
+        "Albert Einstein": 12,
+        "Knd Specialist Lambda": 3,
+        "Corrupted Loki": 5,
+        "Aladdín": 3,
+        "Jack Frost": 10,
+        "Napoleón Bonaparte": 4,
+        "Knd Specialist Alpha": 5,
+        "George Washington": 5,
+        "Knd Specialist Mu": 4,
+        "Knd Vanguard Psi": 8,
+        "Benjamin Franklin": 12,
+        "Morgana": 5,
+        "Knd Vanguard Omega": 2,
+        "Merlin": 5,
+        "Queen Grimhilde": 7,
+        "Knd Vanguard Chi": 4,
+        "Knd Specialist Beta": 7,
+        "Knd Vanguard Lambda": 6,
+        "Frankenstein": 3,
+        "Thor": 4,
+        "Knd Vanguard Mu": 4,
+        "Knd Specialist Nu": 5,
+        "Knd Vanguard Eta": 5,
+        "Knd Cadet Kappa": 2,
+        "Hercules": 7,
+        "Knd Specialist Omega": 7,
+        "Corrupted Odin": 8,
+        "Dorian Gray": 5,
+        "Mad Hatter": 7,
+        "Knd Cadet Omicron": 4,
+        "Abraham Lincoln": 7,
+        "Knd Vanguard Theta": 3,
+        "Knd Cadet Lambda": 2,
+        "Simon Bolivar": 3,
+        "Sandman": 3,
+        "Knd Specialist Tau": 5,
+        "Sherlock Holmes": 3,
+        "Knd Vanguard Alpha": 2,
+        "Fenrir": 11,
+        "Dracula": 5,
+        "Knd Vanguard Upsilon": 3,
+        "Little Red Riding Hood": 6,
+        "Knd Cadet Sigma": 4,
+        "Knd Cadet Nu": 4,
+        "Knd Specialist Gamma": 4,
+        "Knd Cadet Zeta": 3,
+        "Knd Specialist Xi": 5,
+        "Puss In Boots": 5,
+        "Knd Vanguard Beta": 4,
+        "Knd Vanguard Prime": 3,
+        "Headless Horseman": 6,
+        "Wendigo": 8,
+        "Knd Cadet Epsilon": 6,
+        "Knd Cadet Beta": 2,
+        "Knd Vanguard Tau": 3,
+        "Rapunzel": 3,
+        "Zeus": 7,
+        "Knd Cadet Xi": 3,
+        "Knd Vanguard Phi": 2,
+        "Krampus": 3,
+        "Knd Vanguard Nu": 3,
+        "Arthur King": 8,
+        "Knd Specialist Zeta": 2,
+        "Anubis": 8,
+        "Knd Specialist Kappa": 4,
+        "Isaac Newton": 4,
+        "Knd Vanguard Kappa": 5,
+        "Knd Specialist Delta": 7,
+        "Genghis Khan": 3,
+        "Knd Vanguard Xi": 5,
+        "Knd Cadet Iota": 6,
+        "Knd Specialist Sigma": 4,
+        "Knd Specialist Iota": 1,
+        "Knd Vanguard Iota": 4,
+        "Knd Vanguard Zeta": 2,
+        "Knd Vanguard Epsilon": 5,
+        "Knd Vanguard Omicron": 4,
+        "Knd Cadet Gamma": 1,
+        "Long John Silver": 4,
+        "Knd Vanguard Sigma": 1,
+        "Hydra": 1,
+        "Knd Vanguard Nova": 2,
+        "Ichabod Crane": 2,
+        "Knd Cadet Mu": 1
+    },
+    "char_appearances": {
+        "Knd Cadet Omicron": 17,
+        "Knd Specialist Xi": 16,
+        "Fenrir": 16,
+        "Knd Cadet Delta": 15,
+        "Knd Specialist Eta": 15,
+        "Julio César": 15,
+        "Medusa": 15,
+        "Knd Vanguard Nu": 15,
+        "Abraham Lincoln": 15,
+        "Loki": 14,
+        "Kraken": 14,
+        "Knd Cadet Theta": 14,
+        "Knd Specialist Alpha": 14,
+        "Benjamin Franklin": 14,
+        "Wendigo": 14,
+        "Wukong": 13,
+        "Knd Specialist Tau": 13,
+        "Arthur King": 13,
+        "Corrupted Odin": 13,
+        "Knd Specialist Omega": 13,
+        "Knd Vanguard Lambda": 13,
+        "Knd Cadet Kappa": 13,
+        "Anubis": 13,
+        "Knd Vanguard Delta": 12,
+        "Knd Vanguard Gamma": 12,
+        "Alice": 12,
+        "Odin": 12,
+        "Albert Einstein": 12,
+        "Knd Cadet Nu": 12,
+        "Knd Specialist Mu": 12,
+        "Knd Vanguard Psi": 12,
+        "Knd Cadet Iota": 12,
+        "Knd Vanguard Eta": 12,
+        "Knd Vanguard Kappa": 12,
+        "Knd Cadet Epsilon": 12,
+        "Knd Specialist Delta": 12,
+        "Knd Specialist Theta": 11,
+        "George Washington": 11,
+        "Mad Hatter": 11,
+        "Knd Specialist Epsilon": 11,
+        "Knd Specialist Kappa": 11,
+        "Knd Cadet Beta": 11,
+        "Knd Specialist Beta": 11,
+        "Hercules": 11,
+        "Knd Vanguard Mu": 11,
+        "Knd Specialist Sigma": 11,
+        "Knd Cadet Gamma": 11,
+        "Knd Specialist Lambda": 10,
+        "Knd Cadet Sigma": 10,
+        "Knd Vanguard Tau": 10,
+        "Jack Frost": 10,
+        "Knd Vanguard Theta": 10,
+        "Little Red Riding Hood": 9,
+        "Pinocchio": 9,
+        "Knd Cadet Alpha": 9,
+        "Queen Grimhilde": 9,
+        "Knd Vanguard Chi": 9,
+        "Corrupted Loki": 9,
+        "Aladdín": 9,
+        "Knd Specialist Nu": 9,
+        "Merlin": 9,
+        "Thor": 9,
+        "Knd Cadet Zeta": 9,
+        "Genghis Khan": 9,
+        "Zeus": 9,
+        "Knd Vanguard Iota": 9,
+        "Knd Vanguard Xi": 9,
+        "Long John Silver": 8,
+        "Knd Vanguard Beta": 8,
+        "Frankenstein": 8,
+        "Knd Vanguard Upsilon": 8,
+        "Knd Vanguard Omicron": 8,
+        "Knd Cadet Lambda": 8,
+        "Knd Vanguard Epsilon": 8,
+        "Ichabod Crane": 8,
+        "Knd Vanguard Prime": 7,
+        "Knd Vanguard Phi": 7,
+        "Morgana": 7,
+        "Knd Vanguard Zeta": 7,
+        "Dorian Gray": 7,
+        "Simon Bolivar": 7,
+        "Knd Specialist Iota": 7,
+        "Knd Cadet Xi": 7,
+        "Puss In Boots": 7,
+        "Dracula": 7,
+        "Knd Specialist Zeta": 7,
+        "Rapunzel": 6,
+        "Napoleón Bonaparte": 6,
+        "Knd Cadet Mu": 6,
+        "Knd Vanguard Omega": 6,
+        "Knd Vanguard Alpha": 6,
+        "Knd Vanguard Nova": 6,
+        "Knd Specialist Gamma": 6,
+        "Headless Horseman": 6,
+        "Knd Specialist Omicron": 5,
+        "Sherlock Holmes": 5,
+        "Sandman": 5,
+        "Krampus": 5,
+        "Isaac Newton": 5,
+        "Knd Vanguard Sigma": 3,
+        "Knd Cadet Eta": 3,
+        "Hydra": 3
+    },
+    "char_damage": {
+        "Kraken": 20902,
+        "Medusa": 20199,
+        "Loki": 19021,
+        "Julio César": 17695,
+        "Fenrir": 17501,
+        "Benjamin Franklin": 17359,
+        "Corrupted Odin": 16554,
+        "Abraham Lincoln": 16053,
+        "Arthur King": 15850,
+        "Anubis": 15763,
+        "Wukong": 15432,
+        "Mad Hatter": 14727,
+        "Zeus": 14087,
+        "Albert Einstein": 12881,
+        "Little Red Riding Hood": 12869,
+        "Alice": 12604,
+        "Thor": 12456,
+        "Merlin": 12300,
+        "Hercules": 12080,
+        "Jack Frost": 12042,
+        "Odin": 11740,
+        "Knd Specialist Beta": 11151,
+        "Wendigo": 10905,
+        "Corrupted Loki": 10857,
+        "Knd Specialist Epsilon": 10814,
+        "Aladdín": 10526,
+        "Knd Specialist Omega": 10459,
+        "George Washington": 10177,
+        "Queen Grimhilde": 9980,
+        "Long John Silver": 9933,
+        "Knd Vanguard Epsilon": 9397,
+        "Knd Specialist Tau": 9227,
+        "Simon Bolivar": 9092,
+        "Knd Specialist Xi": 8942,
+        "Dorian Gray": 8665,
+        "Headless Horseman": 8486,
+        "Puss In Boots": 8443,
+        "Knd Vanguard Kappa": 8396,
+        "Dracula": 8122,
+        "Knd Vanguard Eta": 8097,
+        "Knd Vanguard Gamma": 7866,
+        "Knd Vanguard Theta": 7833,
+        "Knd Vanguard Omicron": 7827,
+        "Knd Vanguard Chi": 7553,
+        "Knd Vanguard Lambda": 7446,
+        "Knd Cadet Theta": 7436,
+        "Genghis Khan": 7358,
+        "Knd Specialist Mu": 7238,
+        "Knd Specialist Alpha": 7172,
+        "Knd Cadet Kappa": 7015,
+        "Knd Specialist Eta": 6979,
+        "Knd Vanguard Beta": 6978,
+        "Sandman": 6922,
+        "Knd Vanguard Nu": 6866,
+        "Knd Vanguard Psi": 6835,
+        "Rapunzel": 6781,
+        "Knd Specialist Gamma": 6686,
+        "Morgana": 6621,
+        "Knd Specialist Delta": 6415,
+        "Knd Specialist Kappa": 6268,
+        "Knd Specialist Zeta": 6164,
+        "Knd Vanguard Delta": 6147,
+        "Knd Specialist Sigma": 5915,
+        "Ichabod Crane": 5911,
+        "Knd Vanguard Tau": 5841,
+        "Pinocchio": 5592,
+        "Knd Specialist Iota": 5544,
+        "Frankenstein": 5456,
+        "Knd Vanguard Upsilon": 5446,
+        "Knd Cadet Omicron": 5329,
+        "Knd Cadet Sigma": 4966,
+        "Knd Vanguard Xi": 4666,
+        "Knd Vanguard Omega": 4657,
+        "Napoleón Bonaparte": 4656,
+        "Knd Specialist Theta": 4337,
+        "Knd Vanguard Prime": 4218,
+        "Knd Vanguard Zeta": 3963,
+        "Knd Vanguard Mu": 3929,
+        "Knd Vanguard Iota": 3812,
+        "Krampus": 3692,
+        "Knd Specialist Omicron": 3683,
+        "Knd Vanguard Nova": 3575,
+        "Knd Cadet Zeta": 3540,
+        "Knd Cadet Beta": 3462,
+        "Knd Cadet Delta": 3376,
+        "Sherlock Holmes": 3372,
+        "Knd Cadet Alpha": 3224,
+        "Hydra": 3204,
+        "Knd Cadet Lambda": 2918,
+        "Knd Cadet Gamma": 2772,
+        "Knd Cadet Xi": 2645,
+        "Knd Vanguard Alpha": 2333,
+        "Knd Cadet Nu": 2309,
+        "Knd Cadet Mu": 2278,
+        "Knd Specialist Nu": 2273,
+        "Knd Cadet Epsilon": 2235,
+        "Knd Specialist Lambda": 2033,
+        "Knd Vanguard Sigma": 1949,
+        "Knd Vanguard Phi": 1899,
+        "Knd Cadet Iota": 1472,
+        "Isaac Newton": 1361,
+        "Knd Cadet Eta": 93
+    }
+}

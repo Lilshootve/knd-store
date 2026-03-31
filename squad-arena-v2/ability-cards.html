@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Squad Arena — Ability Cards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & ROOT ──────────────────────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-void:        #020508;
+  --bg-deep:        #040c10;
+  --bg-card:        #060e14;
+  --bg-panel:       #071219;
+
+  --cyan:           #00e5ff;
+  --cyan-dim:       #00b8cc;
+  --cyan-glow:      rgba(0,229,255,0.15);
+  --cyan-border:    rgba(0,229,255,0.25);
+
+  --magenta:        #d400ff;
+  --magenta-glow:   rgba(212,0,255,0.15);
+
+  --gold:           #ffd040;
+  --text-primary:   rgba(220,240,255,0.92);
+  --text-secondary: rgba(160,200,220,0.6);
+  --text-dim:       rgba(120,160,180,0.45);
+
+  /* Rarity */
+  --r-common:    #4a7a8a;
+  --r-special:   #1aaa6a;
+  --r-rare:      #1a6aee;
+  --r-epic:      #c040ff;
+  --r-legendary: #ffc030;
+
+  /* Ability types */
+  --t-passive:  #4a9aff;
+  --t-ability:  #00e5ff;
+  --t-special:  #d400ff;
+  --t-heal:     #20e080;
+  --t-attack:   #ff4060;
+  --t-defense:  #40c0ff;
+
+  --font-display: 'Orbitron', monospace;
+  --font-body:    'Rajdhani', sans-serif;
+}
+
+html, body {
+  background: var(--bg-void);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── BACKGROUND ─────────────────────────────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0,229,255,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 10% 60%,  rgba(212,0,255,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 30% at 90% 40%,  rgba(0,229,255,0.03) 0%, transparent 50%);
+  pointer-events: none;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+/* ── DEMO WRAPPER ────────────────────────────────────────────────────────────── */
+.demo-header {
+  position: relative; z-index: 1;
+  padding: 40px 40px 20px;
+  display: flex; align-items: flex-start; flex-direction: column; gap: 6px;
+}
+.demo-eyebrow {
+  font-family: var(--font-display);
+  font-size: 10px; letter-spacing: 4px;
+  color: var(--cyan); opacity: 0.6; text-transform: uppercase;
+}
+.demo-title {
+  font-family: var(--font-display);
+  font-size: clamp(22px,3vw,38px); font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--text-primary);
+}
+.demo-title em { font-style: normal; color: var(--cyan); text-shadow: 0 0 20px rgba(0,229,255,0.4); }
+.demo-sub {
+  font-size: 14px; color: var(--text-secondary); margin-top: 4px;
+}
+
+/* ── SECTION DIVIDER ──────────────────────────────────────────────────────────── */
+.section {
+  position: relative; z-index: 1;
+  padding: 32px 40px;
+}
+.section-label {
+  font-family: var(--font-display); font-size: 10px;
+  letter-spacing: 4px; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 20px;
+  display: flex; align-items: center; gap: 12px;
+}
+.section-label::before, .section-label::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,229,255,0.15));
+}
+.section-label::before { background: linear-gradient(90deg, rgba(0,229,255,0.15), transparent); }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   ABILITY CARD COMPONENT
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ── GRID ────────────────────────────────────────────────────────────────────── */
+.ability-grid {
+  display: flex; flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ── BASE CARD ───────────────────────────────────────────────────────────────── */
+.ability-card {
+  position: relative;
+  width: 200px;
+  flex-shrink: 0;
+  background: var(--bg-panel);
+  border: 1px solid rgba(0,229,255,0.12);
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    transform 0.25s cubic-bezier(.2,.8,.2,1),
+    border-color 0.25s,
+    box-shadow 0.25s;
+  animation: cardIn 0.4s ease both;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Hover state */
+.ability-card:not(.disabled):hover {
+  transform: translateY(-5px) scale(1.02);
+  border-color: var(--type-color, var(--cyan));
+  box-shadow:
+    0 16px 48px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(0,229,255,0.08),
+    0 0 32px var(--type-glow, rgba(0,229,255,0.1));
+}
+
+/* Selected state */
+.ability-card.selected {
+  border-color: var(--type-color, var(--cyan));
+  box-shadow:
+    0 0 0 1px var(--type-color, var(--cyan)),
+    0 0 40px var(--type-glow, rgba(0,229,255,0.2)),
+    0 8px 32px rgba(0,0,0,0.5);
+  transform: translateY(-3px);
+}
+.ability-card.selected .card-select-indicator {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Disabled / used state */
+.ability-card.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  filter: grayscale(0.6);
+}
+
+/* Cooldown overlay */
+.ability-card.on-cooldown::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(2,5,8,0.72);
+  z-index: 10;
+  pointer-events: none;
+}
+.ability-card.on-cooldown .cooldown-overlay {
+  display: flex;
+}
+
+/* Top rarity accent line */
+.ability-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--type-color, var(--cyan));
+  opacity: 0.7;
+  z-index: 3;
+  transition: opacity 0.25s;
+}
+.ability-card:hover::before,
+.ability-card.selected::before { opacity: 1; }
+
+/* Scan sweep */
+.ability-card::after {
+  content: '';
+  position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(180deg, transparent 0%, rgba(0,229,255,0.04) 50%, transparent 100%);
+  background-size: 100% 10px;
+  opacity: 0; pointer-events: none;
+  animation: scanSweep 2.5s linear infinite;
+  transition: opacity 0.3s;
+}
+.ability-card:hover::after { opacity: 1; }
+@keyframes scanSweep {
+  0%   { background-position: 0 -100%; }
+  100% { background-position: 0 200%; }
+}
+
+/* ── CARD HEADER ─────────────────────────────────────────────────────────────── */
+.card-header {
+  position: relative;
+  height: 56px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(0,229,255,0.07);
+}
+
+/* Background glow blob */
+.card-header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 120% at 50% 100%, var(--type-glow, rgba(0,229,255,0.12)), transparent 70%);
+  pointer-events: none;
+}
+
+/* Big faded icon */
+.card-type-bg-icon {
+  position: absolute;
+  font-size: 48px;
+  opacity: 0.06;
+  line-height: 1;
+  pointer-events: none;
+  filter: blur(0.5px);
+}
+
+.card-type-badge {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.card-type-icon {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--type-color, var(--cyan));
+  border-radius: 2px;
+  font-size: 14px;
+  color: var(--type-color, var(--cyan));
+  background: rgba(0,0,0,0.5);
+  box-shadow: 0 0 10px var(--type-glow, rgba(0,229,255,0.15));
+  transition: box-shadow 0.25s;
+}
+.ability-card:hover .card-type-icon,
+.ability-card.selected .card-type-icon {
+  box-shadow: 0 0 20px var(--type-glow, rgba(0,229,255,0.3));
+}
+.card-type-label {
+  font-family: var(--font-display); font-size: 7.5px;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--type-color, var(--cyan));
+  opacity: 0.9;
+}
+
+/* Cooldown number badge (top-right) */
+.card-cooldown-badge {
+  position: absolute; top: 6px; right: 6px; z-index: 4;
+  width: 20px; height: 20px;
+  border-radius: 2px;
+  background: rgba(0,0,0,0.8);
+  border: 1px solid rgba(0,229,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 9px; font-weight: 700;
+  color: var(--text-dim);
+  display: none;
+}
+.ability-card[data-cooldown]:not([data-cooldown=""]):not([data-cooldown="0"]) .card-cooldown-badge {
+  display: flex;
+}
+
+/* Cost badge (top-left) */
+.card-cost-badge {
+  position: absolute; top: 6px; left: 6px; z-index: 4;
+  padding: 2px 6px;
+  border-radius: 2px;
+  background: rgba(0,0,0,0.7);
+  border: 1px solid rgba(0,229,255,0.15);
+  font-family: var(--font-display); font-size: 7.5px;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text-dim);
+  display: none;
+}
+.ability-card[data-cost]:not([data-cost=""]) .card-cost-badge { display: block; }
+
+/* ── CARD BODY ───────────────────────────────────────────────────────────────── */
+.card-body {
+  padding: 10px 12px 12px;
+  display: flex; flex-direction: column; gap: 6px;
+  position: relative; z-index: 1;
+}
+
+.card-name {
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.card-desc {
+  font-size: 11px; font-weight: 400; line-height: 1.5;
+  color: var(--text-secondary);
+  letter-spacing: 0.2px;
+}
+
+/* Tags row */
+.card-tags {
+  display: flex; gap: 4px; flex-wrap: wrap; margin-top: 2px;
+}
+.card-tag {
+  font-family: var(--font-display); font-size: 7px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 2px 5px;
+  border-radius: 1px;
+  border: 1px solid var(--tag-color, rgba(0,229,255,0.2));
+  color: var(--tag-color, rgba(0,229,255,0.5));
+  background: rgba(0,0,0,0.4);
+}
+
+/* ── CARD FOOTER ─────────────────────────────────────────────────────────────── */
+.card-footer {
+  padding: 7px 12px 8px;
+  border-top: 1px solid rgba(0,229,255,0.07);
+  display: flex; align-items: center; justify-content: space-between;
+  position: relative; z-index: 1;
+}
+
+.card-owner {
+  font-family: var(--font-display); font-size: 8px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text-dim);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  max-width: 110px;
+}
+
+/* Select indicator (checkmark) */
+.card-select-indicator {
+  width: 18px; height: 18px;
+  border-radius: 1px;
+  background: var(--type-color, var(--cyan));
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.2s, transform 0.2s cubic-bezier(.2,.8,.2,1);
+  flex-shrink: 0;
+}
+.card-select-indicator svg {
+  width: 10px; height: 10px;
+  fill: none; stroke: #000; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* ── COOLDOWN OVERLAY ─────────────────────────────────────────────────────────── */
+.cooldown-overlay {
+  position: absolute; inset: 0; z-index: 11;
+  display: none;
+  flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  background: rgba(2,5,8,0.78);
+  backdrop-filter: blur(2px);
+}
+.cooldown-overlay .cd-num {
+  font-family: var(--font-display); font-size: 32px; font-weight: 900;
+  color: var(--text-dim);
+  text-shadow: 0 0 20px rgba(0,229,255,0.2);
+  line-height: 1;
+}
+.cooldown-overlay .cd-label {
+  font-family: var(--font-display); font-size: 8px;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   ABILITY TRAY — In-battle HUD component
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.arena-hud {
+  position: relative; z-index: 1;
+  background: linear-gradient(180deg, transparent, rgba(2,5,8,0.95) 40%);
+  padding: 20px 40px 32px;
+}
+
+.hud-label {
+  font-family: var(--font-display); font-size: 9px;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.hud-label::after { content: ''; flex: 1; height: 1px; background: rgba(0,229,255,0.1); }
+
+/* Character tray row */
+.hud-char-row {
+  display: flex; gap: 16px;
+  align-items: flex-end;
+}
+
+/* Per-character ability strip */
+.char-ability-strip {
+  flex: 1;
+  display: flex; flex-direction: column; gap: 8px;
+  background: rgba(0,229,255,0.02);
+  border: 1px solid rgba(0,229,255,0.08);
+  border-radius: 3px;
+  padding: 10px;
+  position: relative;
+  transition: border-color 0.2s;
+}
+.char-ability-strip.active-turn {
+  border-color: rgba(0,229,255,0.3);
+  box-shadow: 0 0 20px rgba(0,229,255,0.06);
+}
+.char-ability-strip.active-turn::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+}
+
+.strip-char-info {
+  display: flex; align-items: center; gap: 8px;
+}
+.strip-char-thumb {
+  width: 32px; height: 32px;
+  border-radius: 2px;
+  border: 1px solid rgba(0,229,255,0.2);
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(0,229,255,0.04);
+  display: flex; align-items: center; justify-content: center;
+}
+.strip-char-thumb img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.strip-char-thumb .thumb-fallback {
+  font-size: 18px; color: rgba(0,229,255,0.2);
+}
+.strip-char-meta { flex: 1; min-width: 0; }
+.strip-char-name {
+  font-family: var(--font-display); font-size: 9px;
+  font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.strip-char-hp {
+  display: flex; align-items: center; gap: 5px; margin-top: 3px;
+}
+.strip-hp-bar {
+  flex: 1; height: 3px;
+  background: rgba(0,229,255,0.1); border-radius: 1px; overflow: hidden;
+}
+.strip-hp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #20e080, #00e5ff);
+  border-radius: 1px;
+  transition: width 0.6s ease;
+}
+.strip-hp-val {
+  font-family: var(--font-display); font-size: 8px;
+  color: var(--text-dim);
+}
+
+/* Mini ability buttons in strip */
+.strip-abilities {
+  display: flex; gap: 5px;
+}
+.strip-ability-btn {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 6px 4px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(0,229,255,0.1);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.18s;
+  position: relative;
+  overflow: hidden;
+}
+.strip-ability-btn::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: var(--btn-color, var(--cyan));
+  opacity: 0.5;
+}
+.strip-ability-btn:hover:not(.disabled) {
+  border-color: var(--btn-color, var(--cyan));
+  background: rgba(0,229,255,0.06);
+  box-shadow: 0 0 12px var(--btn-glow, rgba(0,229,255,0.12));
+  transform: translateY(-1px);
+}
+.strip-ability-btn.active-btn {
+  border-color: var(--btn-color, var(--cyan));
+  background: var(--btn-glow, rgba(0,229,255,0.1));
+  box-shadow: 0 0 16px var(--btn-glow, rgba(0,229,255,0.15));
+}
+.strip-ability-btn.disabled {
+  opacity: 0.3; cursor: not-allowed;
+}
+.btn-icon { font-size: 13px; line-height: 1; }
+.btn-type {
+  font-family: var(--font-display); font-size: 6.5px;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  color: var(--btn-color, var(--cyan)); opacity: 0.8;
+}
+.btn-name {
+  font-family: var(--font-display); font-size: 7px;
+  font-weight: 600; color: var(--text-secondary);
+  text-align: center; line-height: 1.2;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  width: 100%;
+}
+.btn-cd {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(2,5,8,0.82);
+  font-family: var(--font-display); font-size: 14px; font-weight: 900;
+  color: var(--text-dim);
+  display: none;
+}
+.strip-ability-btn.on-cd .btn-cd { display: flex; }
+.strip-ability-btn.on-cd { opacity: 0.55; cursor: not-allowed; }
+
+/* ── ACTIVE ABILITY TOOLTIP ─────────────────────────────────────────────────── */
+.ability-tooltip {
+  position: fixed;
+  z-index: 500;
+  width: 220px;
+  background: rgba(4,12,16,0.97);
+  border: 1px solid rgba(0,229,255,0.25);
+  border-radius: 3px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,229,255,0.06);
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.15s, transform 0.15s;
+}
+.ability-tooltip.visible {
+  opacity: 1; transform: translateY(0);
+}
+.tooltip-header {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(0,229,255,0.08);
+  display: flex; align-items: center; gap: 8px;
+}
+.tooltip-type-dot {
+  width: 6px; height: 6px; border-radius: 1px;
+  background: var(--tip-color, var(--cyan));
+  box-shadow: 0 0 6px var(--tip-color, var(--cyan));
+  flex-shrink: 0;
+}
+.tooltip-type {
+  font-family: var(--font-display); font-size: 8px;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--tip-color, var(--cyan));
+}
+.tooltip-name {
+  padding: 8px 12px 2px;
+  font-family: var(--font-display); font-size: 12px;
+  font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text-primary);
+}
+.tooltip-desc {
+  padding: 4px 12px 10px;
+  font-size: 12px; line-height: 1.5;
+  color: var(--text-secondary);
+}
+.tooltip-divider {
+  height: 1px; background: rgba(0,229,255,0.08); margin: 0 12px;
+}
+.tooltip-stats {
+  padding: 8px 12px;
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.tooltip-stat {
+  display: flex; align-items: center; gap: 4px;
+  font-family: var(--font-display); font-size: 9px;
+  color: var(--text-dim); letter-spacing: 1px;
+}
+.tooltip-stat-val { color: var(--tip-color, var(--cyan)); font-weight: 700; }
+.tooltip-footer {
+  padding: 6px 12px;
+  border-top: 1px solid rgba(0,229,255,0.06);
+  font-family: var(--font-display); font-size: 8px;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: center;
+  background: rgba(0,229,255,0.02);
+}
+
+/* ── SELECTION CONFIRM PANEL ─────────────────────────────────────────────────── */
+.confirm-panel {
+  position: relative; z-index: 1;
+  padding: 24px 40px;
+  display: flex; align-items: center; gap: 20px;
+  border-top: 1px solid rgba(0,229,255,0.08);
+  background: rgba(0,229,255,0.015);
+}
+.confirm-panel-label {
+  font-family: var(--font-display); font-size: 9px;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-dim); flex-shrink: 0;
+}
+.confirm-slots {
+  display: flex; gap: 8px; flex: 1;
+}
+.confirm-slot {
+  flex: 1; max-width: 180px;
+  height: 40px;
+  border: 1px dashed rgba(0,229,255,0.15);
+  border-radius: 2px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 10px;
+  transition: all 0.2s;
+}
+.confirm-slot.filled {
+  border-style: solid;
+  border-color: var(--slot-color, var(--cyan));
+  background: rgba(0,0,0,0.4);
+  box-shadow: 0 0 10px var(--slot-glow, rgba(0,229,255,0.08));
+}
+.confirm-slot-icon { font-size: 14px; }
+.confirm-slot-name {
+  font-family: var(--font-display); font-size: 8px;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text-secondary);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.confirm-slot-empty {
+  font-family: var(--font-display); font-size: 8px;
+  letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase;
+}
+
+.confirm-btn {
+  background: transparent;
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  font-family: var(--font-display); font-size: 10px;
+  font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+  padding: 10px 24px;
+  cursor: pointer; border-radius: 2px;
+  position: relative; overflow: hidden;
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+.confirm-btn::before {
+  content: '';
+  position: absolute; left: -100%; top: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0,229,255,0.15), transparent);
+  transition: left 0.4s;
+}
+.confirm-btn:hover::before { left: 100%; }
+.confirm-btn:hover {
+  background: rgba(0,229,255,0.08);
+  box-shadow: 0 0 24px rgba(0,229,255,0.2);
+}
+.confirm-btn:disabled {
+  opacity: 0.3; cursor: not-allowed; border-color: rgba(0,229,255,0.2);
+}
+
+/* ── TYPE COLOR MAPS ─────────────────────────────────────────────────────────── */
+/* applied via JS inline --type-color + --type-glow */
+
+</style>
+</head>
+<body>
+
+<!-- ── DEMO HEADER ─────────────────────────────────────────────────────────── -->
+<header class="demo-header">
+  <div class="demo-eyebrow">⬡ KND NETWORK — SQUAD ARENA</div>
+  <h1 class="demo-title">ABILITY <em>CARDS</em> SYSTEM</h1>
+  <p class="demo-sub">In-battle ability selection UI — drop-in component demo</p>
+</header>
+
+<!-- ── SECTION 1: Full-size ability cards ─────────────────────────────────── -->
+<div class="section">
+  <div class="section-label">Full cards — pre-battle selection</div>
+  <div class="ability-grid" id="full-card-grid"></div>
+</div>
+
+<!-- ── SECTION 2: Arena HUD ───────────────────────────────────────────────── -->
+<div class="section" style="padding-top: 0;">
+  <div class="section-label">In-battle HUD — ability tray</div>
+  <div class="arena-hud">
+    <div class="hud-label">⬡ SQUAD INTERFACE</div>
+    <div class="hud-char-row" id="hud-char-row"></div>
+  </div>
+</div>
+
+<!-- ── SECTION 3: Selection confirm ──────────────────────────────────────── -->
+<div class="confirm-panel" id="confirm-panel">
+  <div class="confirm-panel-label">SELECTED</div>
+  <div class="confirm-slots" id="confirm-slots"></div>
+  <button class="confirm-btn" id="confirm-btn" disabled>CONFIRM ACTION ›</button>
+</div>
+
+<!-- ── TOOLTIP ────────────────────────────────────────────────────────────── -->
+<div class="ability-tooltip" id="ability-tooltip">
+  <div class="tooltip-header">
+    <div class="tooltip-type-dot"></div>
+    <span class="tooltip-type"></span>
+  </div>
+  <div class="tooltip-name"></div>
+  <div class="tooltip-desc"></div>
+  <div class="tooltip-divider"></div>
+  <div class="tooltip-stats"></div>
+  <div class="tooltip-footer">CLICK TO SELECT</div>
+</div>
+
+<script>
+/* ── ABILITY TYPE CONFIG ─────────────────────────────────────────────────────── */
+const ABILITY_TYPES = {
+  passive:  { color: '#4a9aff', glow: 'rgba(74,154,255,0.2)',  icon: '⬡', label: 'PASSIVE'  },
+  ability:  { color: '#00e5ff', glow: 'rgba(0,229,255,0.2)',   icon: '◈', label: 'ABILITY'  },
+  special:  { color: '#d400ff', glow: 'rgba(212,0,255,0.2)',   icon: '✦', label: 'SPECIAL'  },
+  heal:     { color: '#20e080', glow: 'rgba(32,224,128,0.2)',  icon: '✚', label: 'HEAL'     },
+  attack:   { color: '#ff4060', glow: 'rgba(255,64,96,0.2)',   icon: '⚡', label: 'ATTACK'  },
+  defense:  { color: '#40c0ff', glow: 'rgba(64,192,255,0.2)', icon: '⬟', label: 'DEFENSE'  },
+};
+
+function getType(t) {
+  const key = (t || 'ability').toLowerCase();
+  return ABILITY_TYPES[key] || ABILITY_TYPES.ability;
+}
+
+/* ── DEMO DATA ────────────────────────────────────────────────────────────────── */
+// Mirrors your real API shape: { type, name, description, passive_code?, ability_code? }
+const DEMO_AVATARS = [
+  {
+    id: 18, name: 'Dracula', rarity: 'epic', class: 'Controller',
+    thumb: '/assets/avatars/thumbs/dracula_new.png',
+    abilities: [
+      { type: 'passive',  name: 'Blood Pact',         description: 'Heal based on damage dealt to enemies.',         cooldown: 0 },
+      { type: 'attack',   name: 'Crimson Bite',        description: 'Damage + reduce healing received by target.',    cooldown: 2 },
+      { type: 'special',  name: 'Night Domination',    description: 'Apply Bleed + Anti-Heal + Fear chance.',         cooldown: 4 },
+      { type: 'heal',     name: 'Dark Regeneration',   description: 'Restore HP proportional to missing health.',     cooldown: 3 },
+    ]
+  },
+  {
+    id: 93, name: 'Abraham Lincoln', rarity: 'epic', class: 'Strategist',
+    thumb: '/assets/avatars/thumbs/lincoln.png',
+    abilities: [
+      { type: 'passive',  name: 'Iron Will',            description: 'Reduce damage taken when HP falls below 40%.',   cooldown: 0 },
+      { type: 'ability',  name: 'Emancipation Strike',  description: 'Attack + free an ally from debuffs.',            cooldown: 2 },
+      { type: 'special',  name: 'Empire Collapse',      description: 'Scaling massive damage based on enemy buffs.',   cooldown: 5 },
+      { type: 'defense',  name: 'Fortify the Union',    description: 'Raise defense for all allies for 2 turns.',      cooldown: 3 },
+    ]
+  },
+  {
+    id: 69, name: 'Achilles', rarity: 'rare', class: 'Striker',
+    thumb: '/assets/avatars/thumbs/achilles.png',
+    abilities: [
+      { type: 'passive',  name: 'Divine Armor',         description: 'Immune to critical hits while above 50% HP.',    cooldown: 0 },
+      { type: 'attack',   name: 'Spear of Pelion',      description: 'High-damage pierce that ignores defense.',       cooldown: 2 },
+      { type: 'special',  name: 'Wrath of Achilles',    description: 'Enter rage: +40% attack, ignore pain for 2t.',   cooldown: 5 },
+      { type: 'heal',     name: 'River Styx Dip',       description: 'Cleanse all debuffs and recover 15% HP.',        cooldown: 4 },
+    ]
+  },
+];
+
+/* ── BUILD FULL CARD ─────────────────────────────────────────────────────────── */
+function buildAbilityCard(ability, avatarName, opts = {}) {
+  const t = getType(ability.type);
+  const cd = ability.cooldown || 0;
+  const isOnCd = opts.onCooldown || false;
+  const isSelected = opts.selected || false;
+  const isPassive = ability.type === 'passive';
+
+  const card = document.createElement('div');
+  card.className = 'ability-card' +
+    (isOnCd ? ' on-cooldown' : '') +
+    (isSelected ? ' selected' : '') +
+    (isPassive ? ' disabled' : '');
+  card.dataset.type = ability.type;
+  card.dataset.cooldown = cd || '';
+  card.style.setProperty('--type-color', t.color);
+  card.style.setProperty('--type-glow', t.glow);
+
+  card.innerHTML = `
+    <div class="card-header">
+      <div class="card-type-bg-icon">${t.icon}</div>
+      ${cd > 0 ? `<div class="card-cost-badge">CD ${cd}</div>` : ''}
+      <div class="card-type-badge">
+        <div class="card-type-icon">${t.icon}</div>
+        <div class="card-type-label">${t.label}</div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="card-name">${ability.name}</div>
+      <div class="card-desc">${ability.description}</div>
+      <div class="card-tags">
+        ${cd > 0 ? `<div class="card-tag" style="--tag-color:rgba(120,160,180,0.4)">CD: ${cd}T</div>` : ''}
+        ${isPassive ? `<div class="card-tag" style="--tag-color:${t.color}88">AUTO</div>` : ''}
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <span class="card-owner">${avatarName}</span>
+      <div class="card-select-indicator">
+        <svg viewBox="0 0 12 9"><polyline points="1,4.5 4.5,8 11,1"/></svg>
+      </div>
+    </div>
+
+    <div class="cooldown-overlay">
+      <div class="cd-num">${isOnCd ? opts.cdRemaining || cd : ''}</div>
+      <div class="cd-label">turns left</div>
+    </div>
+  `;
+
+  // Click: toggle selected (skip passive & cooldown)
+  if (!isPassive && !isOnCd) {
+    card.addEventListener('click', () => toggleCardSelect(card, ability));
+  }
+
+  // Tooltip on hover
+  card.addEventListener('mouseenter', e => showTooltip(e, ability, t));
+  card.addEventListener('mousemove',  e => moveTooltip(e));
+  card.addEventListener('mouseleave', hideTooltip);
+
+  return card;
+}
+
+/* ── FULL CARD GRID RENDER ────────────────────────────────────────────────────── */
+const fullGrid = document.getElementById('full-card-grid');
+let selectedCards = [];
+
+DEMO_AVATARS.forEach(av => {
+  av.abilities.forEach((ab, i) => {
+    const card = buildAbilityCard(ab, av.name, {
+      onCooldown: i === 0 && av.id === 69, // demo: Achilles passive on cooldown
+      cdRemaining: 3,
+    });
+    card.style.animationDelay = `${i * 0.06 + (DEMO_AVATARS.indexOf(av) * 0.12)}s`;
+    fullGrid.appendChild(card);
+  });
+});
+
+/* ── SELECTION LOGIC ─────────────────────────────────────────────────────────── */
+function toggleCardSelect(card, ability) {
+  const isSelected = card.classList.contains('selected');
+  if (isSelected) {
+    card.classList.remove('selected');
+    selectedCards = selectedCards.filter(s => s.ability !== ability);
+  } else {
+    card.classList.add('selected');
+    selectedCards.push({ card, ability });
+  }
+  updateConfirmPanel();
+}
+
+function updateConfirmPanel() {
+  const slots = document.getElementById('confirm-slots');
+  const btn   = document.getElementById('confirm-btn');
+  slots.innerHTML = '';
+
+  // Show up to 3 slots
+  for (let i = 0; i < 3; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'confirm-slot';
+    const sel = selectedCards[i];
+    if (sel) {
+      const t = getType(sel.ability.type);
+      slot.classList.add('filled');
+      slot.style.setProperty('--slot-color', t.color);
+      slot.style.setProperty('--slot-glow', t.glow);
+      slot.innerHTML = `
+        <div class="confirm-slot-icon">${t.icon}</div>
+        <div class="confirm-slot-name">${sel.ability.name}</div>
+      `;
+    } else {
+      slot.innerHTML = `<div class="confirm-slot-empty">— empty —</div>`;
+    }
+    slots.appendChild(slot);
+  }
+
+  btn.disabled = selectedCards.length === 0;
+}
+
+updateConfirmPanel();
+
+/* ── HUD BUILD ────────────────────────────────────────────────────────────────── */
+const hudRow = document.getElementById('hud-char-row');
+
+DEMO_AVATARS.forEach((av, avIdx) => {
+  const isActive = avIdx === 1; // demo: Lincoln is active turn
+  const strip = document.createElement('div');
+  strip.className = 'char-ability-strip' + (isActive ? ' active-turn' : '');
+
+  const hp = avIdx === 0 ? 65 : avIdx === 1 ? 100 : 42;
+
+  // Thumb: show broken img gracefully
+  const thumbHtml = `<div class="strip-char-thumb">
+    <img src="${av.thumb}" alt="${av.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="thumb-fallback" style="display:none">⬡</div>
+  </div>`;
+
+  strip.innerHTML = `
+    <div class="strip-char-info">
+      ${thumbHtml}
+      <div class="strip-char-meta">
+        <div class="strip-char-name">${av.name}</div>
+        <div class="strip-char-hp">
+          <div class="strip-hp-bar"><div class="strip-hp-fill" style="width:${hp}%"></div></div>
+          <div class="strip-hp-val">${hp}%</div>
+        </div>
+      </div>
+    </div>
+    <div class="strip-abilities" id="strip-${av.id}"></div>
+  `;
+
+  hudRow.appendChild(strip);
+
+  // Build mini buttons
+  const abilitiesEl = strip.querySelector(`#strip-${av.id}`);
+  av.abilities.forEach((ab, i) => {
+    const t = getType(ab.type);
+    const onCd = (i === 3 && avIdx === 2); // demo cooldown
+    const cdNum = 2;
+    const btn = document.createElement('div');
+    btn.className = 'strip-ability-btn' + (onCd ? ' on-cd' : '') + (!isActive ? ' disabled' : '');
+    btn.style.setProperty('--btn-color', t.color);
+    btn.style.setProperty('--btn-glow', t.glow);
+    btn.innerHTML = `
+      <div class="btn-icon">${t.icon}</div>
+      <div class="btn-type">${t.label.slice(0,3)}</div>
+      <div class="btn-name">${ab.name.split(':')[0].split(' ').slice(0,2).join(' ')}</div>
+      <div class="btn-cd">${cdNum}</div>
+    `;
+    if (isActive && !onCd) {
+      btn.addEventListener('click', () => {
+        abilitiesEl.querySelectorAll('.strip-ability-btn').forEach(b => b.classList.remove('active-btn'));
+        btn.classList.add('active-btn');
+        showTooltipFixed(ab, t);
+      });
+      btn.addEventListener('mouseenter', e => showTooltip(e, ab, t));
+      btn.addEventListener('mousemove',  e => moveTooltip(e));
+      btn.addEventListener('mouseleave', hideTooltip);
+    }
+    abilitiesEl.appendChild(btn);
+  });
+});
+
+/* ── TOOLTIP ─────────────────────────────────────────────────────────────────── */
+const tooltip = document.getElementById('ability-tooltip');
+
+function showTooltip(e, ability, t) {
+  tooltip.querySelector('.tooltip-type-dot').style.background = t.color;
+  tooltip.querySelector('.tooltip-type-dot').style.boxShadow = `0 0 6px ${t.color}`;
+  tooltip.querySelector('.tooltip-type').textContent = t.label;
+  tooltip.querySelector('.tooltip-type').style.color = t.color;
+  tooltip.style.setProperty('--tip-color', t.color);
+  tooltip.querySelector('.tooltip-name').textContent = ability.name;
+  tooltip.querySelector('.tooltip-desc').textContent = ability.description;
+
+  const statsEl = tooltip.querySelector('.tooltip-stats');
+  statsEl.innerHTML = '';
+  if (ability.cooldown > 0) {
+    statsEl.innerHTML += `<div class="tooltip-stat">COOLDOWN <span class="tooltip-stat-val">${ability.cooldown}T</span></div>`;
+  }
+  if (ability.type === 'passive') {
+    statsEl.innerHTML += `<div class="tooltip-stat">TRIGGER <span class="tooltip-stat-val">AUTO</span></div>`;
+  }
+
+  tooltip.querySelector('.tooltip-footer').textContent =
+    ability.type === 'passive' ? 'PASSIVE — ALWAYS ACTIVE' : 'CLICK TO SELECT';
+
+  tooltip.classList.add('visible');
+  moveTooltip(e);
+}
+
+function moveTooltip(e) {
+  const x = e.clientX + 16;
+  const y = e.clientY - 10;
+  const maxX = window.innerWidth - 240;
+  const maxY = window.innerHeight - 200;
+  tooltip.style.left = Math.min(x, maxX) + 'px';
+  tooltip.style.top  = Math.min(y, maxY) + 'px';
+}
+
+function hideTooltip() {
+  tooltip.classList.remove('visible');
+}
+
+function showTooltipFixed(ability, t) {
+  // used on click in HUD — show near bottom-right for 2.5s
+  const fake = { clientX: window.innerWidth - 260, clientY: window.innerHeight - 300 };
+  showTooltip(fake, ability, t);
+  setTimeout(hideTooltip, 2500);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+Disallow: /cache/
+Disallow: /backups/
+Disallow: /includes/
+
+# Optimizaciones para móviles
+User-agent: Googlebot-Mobile
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Sitemaps
+Sitemap: https://kndstore.com/sitemap.xml
+
+# Crawl-delay para evitar sobrecarga
+Crawl-delay: 1

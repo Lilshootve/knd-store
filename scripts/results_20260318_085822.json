@@ -1,0 +1,4424 @@
+{
+    "seed": 383204,
+    "timestamp": "2026-03-18 08:58:22",
+    "battles": 200,
+    "results": [
+        {
+            "winner": "A",
+            "turns": 16,
+            "team_a": [
+                "Fenrir",
+                "Krampus",
+                "Aladdín"
+            ],
+            "team_b": [
+                "Fenrir",
+                "Krampus",
+                "KND Cadet Tank"
+            ],
+            "damage_by_char": {
+                "Fenrir": 1879,
+                "Krampus": 1638,
+                "KND Cadet Tank": 201,
+                "Aladdín": 361
+            },
+            "effects_count": 33,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Pinocchio",
+                "Wendigo",
+                "KND Cadet Support"
+            ],
+            "team_b": [
+                "Fenrir",
+                "Wendigo",
+                "Sherlock Holmes"
+            ],
+            "damage_by_char": {
+                "Pinocchio": 621,
+                "Fenrir": 1065,
+                "Wendigo": 1734,
+                "KND Cadet Support": 82
+            },
+            "effects_count": 19,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 10,
+            "team_a": [
+                "Wukong",
+                "Dracula",
+                "KND Cadet Striker"
+            ],
+            "team_b": [
+                "Albert Einstein",
+                "Wendigo",
+                "KND Vanguard Striker"
+            ],
+            "damage_by_char": {
+                "Wukong": 654,
+                "Albert Einstein": 1109,
+                "Dracula": 177,
+                "Wendigo": 857,
+                "KND Cadet Striker": 23
+            },
+            "effects_count": 8,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "Queen Grimhilde",
+                "KND Vanguard Support"
+            ],
+            "team_b": [
+                "Little Red Riding Hood",
+                "Krampus"
+            ],
+            "damage_by_char": {
+                "Queen Grimhilde": 1943,
+                "Little Red Riding Hood": 1218,
+                "Krampus": 1889,
+                "KND Vanguard Support": 1100
+            },
+            "effects_count": 14,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 10,
+            "team_a": [
+                "Sherlock Holmes",
+                "Krampus",
+                "KND Cadet Support"
+            ],
+            "team_b": [
+                "Kraken",
+                "KND Cadet Striker",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "Sherlock Holmes": 444,
+                "Kraken": 1862,
+                "Krampus": 305,
+                "KND Cadet Support": 1
+            },
+            "effects_count": 12,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 19,
+            "team_a": [
+                "KND Cadet Striker",
+                "Corrupted Loki"
+            ],
+            "team_b": [
+                "KND Specialist Tank",
+                "Anubis"
+            ],
+            "damage_by_char": {
+                "KND Specialist Tank": 3024,
+                "KND Cadet Striker": 744,
+                "Corrupted Loki": 1038,
+                "Anubis": 273
+            },
+            "effects_count": 23,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 20,
+            "team_a": [
+                "Sandman",
+                "KND Vanguard Support",
+                "Anubis"
+            ],
+            "team_b": [
+                "Sandman",
+                "Jack Frost",
+                "KND Specialist Tank"
+            ],
+            "damage_by_char": {
+                "Sandman": 2066,
+                "Jack Frost": 1323,
+                "KND Vanguard Support": 40,
+                "KND Specialist Tank": 269,
+                "Anubis": 842
+            },
+            "effects_count": 57,
+            "cc_count": 8
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "Frankenstein",
+                "Queen Grimhilde"
+            ],
+            "team_b": [
+                "Queen Grimhilde",
+                "Kraken"
+            ],
+            "damage_by_char": {
+                "Queen Grimhilde": 1236,
+                "Frankenstein": 1875,
+                "Kraken": 971
+            },
+            "effects_count": 25,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 10,
+            "team_a": [
+                "KND Specialist Support",
+                "Queen Grimhilde"
+            ],
+            "team_b": [
+                "Zeus",
+                "Headless Horseman"
+            ],
+            "damage_by_char": {
+                "KND Specialist Support": 236,
+                "Zeus": 1968,
+                "Queen Grimhilde": 396
+            },
+            "effects_count": 8,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 13,
+            "team_a": [
+                "KND Vanguard Striker",
+                "KND Cadet Tank",
+                "Puss in Boots"
+            ],
+            "team_b": [
+                "Sherlock Holmes",
+                "KND Specialist Striker",
+                "Arthur King"
+            ],
+            "damage_by_char": {
+                "KND Vanguard Striker": 298,
+                "Sherlock Holmes": 1691,
+                "KND Cadet Tank": 82,
+                "Puss in Boots": 547,
+                "KND Specialist Striker": 219
+            },
+            "effects_count": 24,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 10,
+            "team_a": [
+                "Simon Bolivar",
+                "Dracula"
+            ],
+            "team_b": [
+                "Pinocchio",
+                "Hydra"
+            ],
+            "damage_by_char": {
+                "Pinocchio": 581,
+                "Simon Bolivar": 969,
+                "Hydra": 981,
+                "Dracula": 240
+            },
+            "effects_count": 17,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 25,
+            "team_a": [
+                "Julio César",
+                "Dorian Gray",
+                "Fenrir"
+            ],
+            "team_b": [
+                "KND Specialist Support",
+                "Pinocchio",
+                "Krampus"
+            ],
+            "damage_by_char": {
+                "KND Specialist Support": 691,
+                "Julio César": 1229,
+                "Pinocchio": 712,
+                "Dorian Gray": 2164,
+                "Krampus": 1311
+            },
+            "effects_count": 74,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 15,
+            "team_a": [
+                "Mad Hatter",
+                "Frankenstein",
+                "Hercules"
+            ],
+            "team_b": [
+                "KND Cadet Striker",
+                "KND Specialist Striker",
+                "Headless Horseman"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 3093,
+                "KND Cadet Striker": 42,
+                "KND Specialist Striker": 68,
+                "Headless Horseman": 855
+            },
+            "effects_count": 22,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 10,
+            "team_a": [
+                "Puss in Boots",
+                "Morgana"
+            ],
+            "team_b": [
+                "KND Cadet Striker",
+                "Morgana"
+            ],
+            "damage_by_char": {
+                "Puss in Boots": 1562,
+                "KND Cadet Striker": 206,
+                "Morgana": 1076
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 15,
+            "team_a": [
+                "Genghis Khan",
+                "Albert Einstein",
+                "Kraken"
+            ],
+            "team_b": [
+                "KND Specialist Support",
+                "Krampus",
+                "Merlin"
+            ],
+            "damage_by_char": {
+                "Genghis Khan": 859,
+                "KND Specialist Support": 300,
+                "Krampus": 902,
+                "Albert Einstein": 677,
+                "Merlin": 377,
+                "Kraken": 482
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 11,
+            "team_a": [
+                "Wendigo",
+                "Medusa"
+            ],
+            "team_b": [
+                "KND Cadet Striker",
+                "Sherlock Holmes"
+            ],
+            "damage_by_char": {
+                "Wendigo": 1483,
+                "KND Cadet Striker": 231,
+                "Sherlock Holmes": 1095,
+                "Medusa": 440
+            },
+            "effects_count": 16,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Alice",
+                "Wendigo"
+            ],
+            "team_b": [
+                "Wendigo",
+                "KND Cadet Striker"
+            ],
+            "damage_by_char": {
+                "Wendigo": 2992,
+                "Alice": 840,
+                "KND Cadet Striker": 77
+            },
+            "effects_count": 37,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "Mad Hatter",
+                "Arthur King"
+            ],
+            "team_b": [
+                "Odin",
+                "Albert Einstein"
+            ],
+            "damage_by_char": {
+                "Odin": 675,
+                "Mad Hatter": 1244,
+                "Albert Einstein": 986,
+                "Arthur King": 222
+            },
+            "effects_count": 10,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 16,
+            "team_a": [
+                "Frankenstein",
+                "Arthur King"
+            ],
+            "team_b": [
+                "Corrupted Loki",
+                "Mad Hatter"
+            ],
+            "damage_by_char": {
+                "Frankenstein": 1507,
+                "Corrupted Loki": 742,
+                "Mad Hatter": 587,
+                "Arthur King": 734
+            },
+            "effects_count": 44,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 22,
+            "team_a": [
+                "Dorian Gray",
+                "Morgana",
+                "Frankenstein"
+            ],
+            "team_b": [
+                "Arthur King",
+                "Genghis Khan",
+                "Odin"
+            ],
+            "damage_by_char": {
+                "Arthur King": 1465,
+                "Dorian Gray": 323,
+                "Morgana": 474,
+                "Genghis Khan": 225,
+                "Frankenstein": 2349,
+                "Odin": 1335
+            },
+            "effects_count": 48,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 15,
+            "team_a": [
+                "Genghis Khan",
+                "Sherlock Holmes"
+            ],
+            "team_b": [
+                "Little Red Riding Hood",
+                "Long John Silver"
+            ],
+            "damage_by_char": {
+                "Little Red Riding Hood": 1505,
+                "Genghis Khan": 915,
+                "Long John Silver": 937,
+                "Sherlock Holmes": 1004
+            },
+            "effects_count": 45,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Sandman",
+                "Wendigo",
+                "Headless Horseman"
+            ],
+            "team_b": [
+                "Corrupted Loki",
+                "Benjamin Franklin",
+                "Wendigo"
+            ],
+            "damage_by_char": {
+                "Sandman": 605,
+                "Corrupted Loki": 1649,
+                "Wendigo": 307,
+                "Headless Horseman": 1050,
+                "Benjamin Franklin": 1109
+            },
+            "effects_count": 31,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 18,
+            "team_a": [
+                "Sherlock Holmes",
+                "Pinocchio",
+                "Alice"
+            ],
+            "team_b": [
+                "Genghis Khan",
+                "Anubis",
+                "Hercules"
+            ],
+            "damage_by_char": {
+                "Genghis Khan": 1070,
+                "Sherlock Holmes": 763,
+                "Pinocchio": 1462,
+                "Anubis": 824,
+                "Hercules": 480,
+                "Alice": 707
+            },
+            "effects_count": 47,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 11,
+            "team_a": [
+                "KND Specialist Striker",
+                "Simon Bolivar"
+            ],
+            "team_b": [
+                "Medusa",
+                "Mad Hatter"
+            ],
+            "damage_by_char": {
+                "Medusa": 2188,
+                "KND Specialist Striker": 68,
+                "Simon Bolivar": 1424,
+                "Mad Hatter": 104
+            },
+            "effects_count": 19,
+            "cc_count": 11
+        },
+        {
+            "winner": "B",
+            "turns": 9,
+            "team_a": [
+                "Fenrir",
+                "KND Cadet Tank"
+            ],
+            "team_b": [
+                "Aladdín",
+                "KND Specialist Support"
+            ],
+            "damage_by_char": {
+                "Fenrir": 820,
+                "Aladdín": 1032,
+                "KND Specialist Support": 416,
+                "KND Cadet Tank": 134
+            },
+            "effects_count": 17,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 22,
+            "team_a": [
+                "KND Specialist Support",
+                "Long John Silver",
+                "Fenrir"
+            ],
+            "team_b": [
+                "Dorian Gray",
+                "Kraken",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "KND Specialist Support": 634,
+                "Dorian Gray": 2436,
+                "Long John Silver": 300,
+                "Kraken": 1259,
+                "Fenrir": 821
+            },
+            "effects_count": 51,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 23,
+            "team_a": [
+                "Dorian Gray",
+                "Dracula",
+                "Krampus"
+            ],
+            "team_b": [
+                "Hydra",
+                "Sandman",
+                "Kraken"
+            ],
+            "damage_by_char": {
+                "Dorian Gray": 1154,
+                "Hydra": 408,
+                "Sandman": 2963,
+                "Dracula": 359,
+                "Krampus": 826,
+                "Kraken": 316
+            },
+            "effects_count": 44,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 10,
+            "team_a": [
+                "KND Cadet Tank",
+                "Wukong"
+            ],
+            "team_b": [
+                "Zeus",
+                "Simon Bolivar"
+            ],
+            "damage_by_char": {
+                "Zeus": 956,
+                "KND Cadet Tank": 50,
+                "Wukong": 1477,
+                "Simon Bolivar": 303
+            },
+            "effects_count": 0,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Kraken",
+                "Hercules",
+                "KND Cadet Support"
+            ],
+            "team_b": [
+                "Mad Hatter",
+                "Benjamin Franklin",
+                "Little Red Riding Hood"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 433,
+                "Kraken": 829,
+                "Benjamin Franklin": 2443,
+                "Hercules": 460,
+                "KND Cadet Support": 28
+            },
+            "effects_count": 19,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 8,
+            "team_a": [
+                "KND Specialist Striker",
+                "Pinocchio"
+            ],
+            "team_b": [
+                "Jack Frost",
+                "Genghis Khan"
+            ],
+            "damage_by_char": {
+                "KND Specialist Striker": 180,
+                "Jack Frost": 1688
+            },
+            "effects_count": 13,
+            "cc_count": 3
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "Genghis Khan",
+                "KND Vanguard Tank",
+                "KND Specialist Striker"
+            ],
+            "team_b": [
+                "Kraken",
+                "Zeus",
+                "KND Specialist Striker"
+            ],
+            "damage_by_char": {
+                "Genghis Khan": 301,
+                "Kraken": 2409,
+                "KND Vanguard Tank": 437,
+                "KND Specialist Striker": 24
+            },
+            "effects_count": 9,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "Frankenstein",
+                "KND Vanguard Tank"
+            ],
+            "team_b": [
+                "Puss in Boots",
+                "Krampus"
+            ],
+            "damage_by_char": {
+                "Frankenstein": 1250,
+                "Puss in Boots": 2131,
+                "KND Vanguard Tank": 80,
+                "Krampus": 60
+            },
+            "effects_count": 43,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 20,
+            "team_a": [
+                "KND Cadet Tank",
+                "Krampus",
+                "Odin"
+            ],
+            "team_b": [
+                "KND Vanguard Striker",
+                "Dracula",
+                "KND Specialist Tank"
+            ],
+            "damage_by_char": {
+                "KND Cadet Tank": 391,
+                "KND Vanguard Striker": 1157,
+                "Krampus": 354,
+                "Dracula": 2037,
+                "Odin": 689
+            },
+            "effects_count": 27,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 21,
+            "team_a": [
+                "Ichabod Crane",
+                "KND Specialist Tank",
+                "Medusa"
+            ],
+            "team_b": [
+                "KND Cadet Support",
+                "KND Vanguard Tank",
+                "Long John Silver"
+            ],
+            "damage_by_char": {
+                "Ichabod Crane": 1786,
+                "KND Vanguard Tank": 639,
+                "Long John Silver": 1943,
+                "KND Specialist Tank": 422,
+                "Medusa": 72
+            },
+            "effects_count": 23,
+            "cc_count": 2
+        },
+        {
+            "winner": "B",
+            "turns": 23,
+            "team_a": [
+                "KND Vanguard Support",
+                "Queen Grimhilde",
+                "Alice"
+            ],
+            "team_b": [
+                "Corrupted Loki",
+                "Genghis Khan",
+                "Fenrir"
+            ],
+            "damage_by_char": {
+                "Corrupted Loki": 1590,
+                "KND Vanguard Support": 189,
+                "Queen Grimhilde": 1634,
+                "Genghis Khan": 763,
+                "Alice": 1061,
+                "Fenrir": 665
+            },
+            "effects_count": 43,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "Sherlock Holmes",
+                "Anubis"
+            ],
+            "team_b": [
+                "Merlin",
+                "Jack Frost"
+            ],
+            "damage_by_char": {
+                "Merlin": 1881,
+                "Sherlock Holmes": 906,
+                "Anubis": 285,
+                "Jack Frost": 122
+            },
+            "effects_count": 36,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 17,
+            "team_a": [
+                "Morgana",
+                "Simon Bolivar",
+                "Puss in Boots"
+            ],
+            "team_b": [
+                "Puss in Boots",
+                "KND Cadet Striker",
+                "Medusa"
+            ],
+            "damage_by_char": {
+                "Puss in Boots": 1487,
+                "Morgana": 537,
+                "Simon Bolivar": 1168,
+                "KND Cadet Striker": 48,
+                "Medusa": 866
+            },
+            "effects_count": 22,
+            "cc_count": 3
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Puss in Boots",
+                "Pinocchio"
+            ],
+            "team_b": [
+                "Sherlock Holmes",
+                "Corrupted Loki"
+            ],
+            "damage_by_char": {
+                "Puss in Boots": 1287,
+                "Sherlock Holmes": 1599,
+                "Pinocchio": 1198,
+                "Corrupted Loki": 1191
+            },
+            "effects_count": 46,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "Benjamin Franklin",
+                "Pinocchio",
+                "KND Specialist Striker"
+            ],
+            "team_b": [
+                "Dracula",
+                "Long John Silver",
+                "KND Cadet Support"
+            ],
+            "damage_by_char": {
+                "Benjamin Franklin": 785,
+                "Dracula": 510,
+                "Long John Silver": 1612,
+                "Pinocchio": 402,
+                "KND Specialist Striker": 383,
+                "KND Cadet Support": 29
+            },
+            "effects_count": 25,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 8,
+            "team_a": [
+                "Albert Einstein",
+                "KND Cadet Striker"
+            ],
+            "team_b": [
+                "Frankenstein",
+                "Headless Horseman"
+            ],
+            "damage_by_char": {
+                "Albert Einstein": 1593,
+                "Frankenstein": 147,
+                "Headless Horseman": 457
+            },
+            "effects_count": 15,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 10,
+            "team_a": [
+                "Pinocchio",
+                "Simon Bolivar"
+            ],
+            "team_b": [
+                "Morgana",
+                "Genghis Khan"
+            ],
+            "damage_by_char": {
+                "Morgana": 971,
+                "Pinocchio": 992,
+                "Genghis Khan": 1119,
+                "Simon Bolivar": 488
+            },
+            "effects_count": 12,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 15,
+            "team_a": [
+                "Julio César",
+                "Sandman"
+            ],
+            "team_b": [
+                "Kraken",
+                "Pinocchio"
+            ],
+            "damage_by_char": {
+                "Julio César": 1697,
+                "Kraken": 1932,
+                "Sandman": 996,
+                "Pinocchio": 781
+            },
+            "effects_count": 31,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Julio César",
+                "Puss in Boots"
+            ],
+            "team_b": [
+                "KND Specialist Support",
+                "KND Vanguard Tank"
+            ],
+            "damage_by_char": {
+                "Julio César": 1559,
+                "KND Specialist Support": 1527,
+                "Puss in Boots": 1369,
+                "KND Vanguard Tank": 292
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 13,
+            "team_a": [
+                "Dracula",
+                "Dorian Gray"
+            ],
+            "team_b": [
+                "KND Cadet Support",
+                "Dracula"
+            ],
+            "damage_by_char": {
+                "Dracula": 3865,
+                "KND Cadet Support": 228,
+                "Dorian Gray": 71
+            },
+            "effects_count": 23,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 9,
+            "team_a": [
+                "KND Vanguard Support",
+                "KND Specialist Striker"
+            ],
+            "team_b": [
+                "Sandman",
+                "KND Cadet Tank"
+            ],
+            "damage_by_char": {
+                "KND Vanguard Support": 328,
+                "Sandman": 1712
+            },
+            "effects_count": 14,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 22,
+            "team_a": [
+                "Benjamin Franklin",
+                "KND Specialist Support",
+                "Queen Grimhilde"
+            ],
+            "team_b": [
+                "KND Vanguard Support",
+                "Hercules",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "Benjamin Franklin": 1048,
+                "Hercules": 1456,
+                "Wukong": 2335,
+                "KND Specialist Support": 364,
+                "Queen Grimhilde": 469
+            },
+            "effects_count": 33,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "Alice",
+                "Puss in Boots",
+                "Genghis Khan"
+            ],
+            "team_b": [
+                "Corrupted Loki",
+                "Headless Horseman",
+                "Hercules"
+            ],
+            "damage_by_char": {
+                "Corrupted Loki": 2361,
+                "Puss in Boots": 983,
+                "Genghis Khan": 841,
+                "Headless Horseman": 740
+            },
+            "effects_count": 32,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 15,
+            "team_a": [
+                "Sherlock Holmes",
+                "Little Red Riding Hood",
+                "Arthur King"
+            ],
+            "team_b": [
+                "KND Cadet Support",
+                "Wendigo",
+                "Pinocchio"
+            ],
+            "damage_by_char": {
+                "KND Cadet Support": 90,
+                "Sherlock Holmes": 1089,
+                "Wendigo": 720,
+                "Little Red Riding Hood": 608,
+                "Pinocchio": 1210,
+                "Arthur King": 285
+            },
+            "effects_count": 23,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Dracula",
+                "Sandman"
+            ],
+            "team_b": [
+                "Morgana",
+                "Arthur King"
+            ],
+            "damage_by_char": {
+                "Dracula": 983,
+                "Morgana": 1596,
+                "Sandman": 592,
+                "Arthur King": 262
+            },
+            "effects_count": 31,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 18,
+            "team_a": [
+                "Sandman",
+                "Queen Grimhilde",
+                "Mad Hatter"
+            ],
+            "team_b": [
+                "KND Vanguard Striker",
+                "Jack Frost",
+                "Queen Grimhilde"
+            ],
+            "damage_by_char": {
+                "Sandman": 654,
+                "KND Vanguard Striker": 204,
+                "Jack Frost": 2737
+            },
+            "effects_count": 39,
+            "cc_count": 15
+        },
+        {
+            "winner": "B",
+            "turns": 27,
+            "team_a": [
+                "KND Vanguard Support",
+                "Dracula",
+                "KND Vanguard Tank"
+            ],
+            "team_b": [
+                "Julio César",
+                "Morgana",
+                "Mad Hatter"
+            ],
+            "damage_by_char": {
+                "Julio César": 1392,
+                "KND Vanguard Support": 195,
+                "Dracula": 2952,
+                "Morgana": 1126,
+                "Mad Hatter": 1813,
+                "KND Vanguard Tank": 638
+            },
+            "effects_count": 53,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 24,
+            "team_a": [
+                "Corrupted Loki",
+                "KND Specialist Tank",
+                "Puss in Boots"
+            ],
+            "team_b": [
+                "Hydra",
+                "Puss in Boots",
+                "Long John Silver"
+            ],
+            "damage_by_char": {
+                "Corrupted Loki": 1706,
+                "Hydra": 2034,
+                "Puss in Boots": 2771,
+                "KND Specialist Tank": 454,
+                "Long John Silver": 52
+            },
+            "effects_count": 40,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 13,
+            "team_a": [
+                "Pinocchio",
+                "Zeus"
+            ],
+            "team_b": [
+                "KND Specialist Tank",
+                "Anubis"
+            ],
+            "damage_by_char": {
+                "Pinocchio": 1912,
+                "KND Specialist Tank": 185,
+                "Anubis": 1148,
+                "Zeus": 120
+            },
+            "effects_count": 29,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "Puss in Boots",
+                "KND Cadet Striker",
+                "KND Cadet Support"
+            ],
+            "team_b": [
+                "Long John Silver",
+                "Medusa",
+                "Dorian Gray"
+            ],
+            "damage_by_char": {
+                "Puss in Boots": 1085,
+                "Long John Silver": 759,
+                "Medusa": 1115,
+                "KND Cadet Support": 21
+            },
+            "effects_count": 18,
+            "cc_count": 3
+        },
+        {
+            "winner": "B",
+            "turns": 7,
+            "team_a": [
+                "Wendigo",
+                "Sandman"
+            ],
+            "team_b": [
+                "Albert Einstein",
+                "Little Red Riding Hood"
+            ],
+            "damage_by_char": {
+                "Wendigo": 489,
+                "Albert Einstein": 1304,
+                "Sandman": 421
+            },
+            "effects_count": 13,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "Dracula",
+                "Benjamin Franklin"
+            ],
+            "team_b": [
+                "Dorian Gray",
+                "Wendigo"
+            ],
+            "damage_by_char": {
+                "Dracula": 1415,
+                "Dorian Gray": 1117,
+                "Benjamin Franklin": 714,
+                "Wendigo": 316
+            },
+            "effects_count": 48,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 13,
+            "team_a": [
+                "Krampus",
+                "Kraken",
+                "Morgana"
+            ],
+            "team_b": [
+                "KND Vanguard Tank",
+                "Sandman",
+                "KND Cadet Support"
+            ],
+            "damage_by_char": {
+                "Krampus": 1369,
+                "KND Vanguard Tank": 405,
+                "Sandman": 564,
+                "Kraken": 690,
+                "KND Cadet Support": 5
+            },
+            "effects_count": 12,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 10,
+            "team_a": [
+                "Jack Frost",
+                "Hydra"
+            ],
+            "team_b": [
+                "Wendigo",
+                "Dorian Gray"
+            ],
+            "damage_by_char": {
+                "Jack Frost": 2145,
+                "Wendigo": 452
+            },
+            "effects_count": 25,
+            "cc_count": 3
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "KND Vanguard Support",
+                "Wukong"
+            ],
+            "team_b": [
+                "KND Cadet Tank",
+                "Long John Silver"
+            ],
+            "damage_by_char": {
+                "KND Vanguard Support": 1151,
+                "KND Cadet Tank": 873,
+                "Long John Silver": 293,
+                "Wukong": 854
+            },
+            "effects_count": 9,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "Odin",
+                "Anubis",
+                "KND Vanguard Striker"
+            ],
+            "team_b": [
+                "Dracula",
+                "Aladdín",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "Dracula": 2552,
+                "Odin": 1026,
+                "KND Vanguard Striker": 208,
+                "Aladdín": 138
+            },
+            "effects_count": 33,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 11,
+            "team_a": [
+                "Mad Hatter",
+                "Morgana"
+            ],
+            "team_b": [
+                "Kraken",
+                "Queen Grimhilde"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 465,
+                "Kraken": 1286,
+                "Morgana": 515,
+                "Queen Grimhilde": 104
+            },
+            "effects_count": 9,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 11,
+            "team_a": [
+                "Morgana",
+                "Long John Silver"
+            ],
+            "team_b": [
+                "Frankenstein",
+                "Odin"
+            ],
+            "damage_by_char": {
+                "Morgana": 1076,
+                "Frankenstein": 1005,
+                "Odin": 941,
+                "Long John Silver": 231
+            },
+            "effects_count": 15,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "Sandman",
+                "Anubis"
+            ],
+            "team_b": [
+                "Dorian Gray",
+                "Little Red Riding Hood"
+            ],
+            "damage_by_char": {
+                "Dorian Gray": 2463,
+                "Sandman": 495,
+                "Anubis": 739,
+                "Little Red Riding Hood": 109
+            },
+            "effects_count": 28,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 10,
+            "team_a": [
+                "Hydra",
+                "KND Cadet Tank"
+            ],
+            "team_b": [
+                "Simon Bolivar",
+                "Benjamin Franklin"
+            ],
+            "damage_by_char": {
+                "Simon Bolivar": 2079,
+                "Hydra": 1118,
+                "KND Cadet Tank": 22
+            },
+            "effects_count": 21,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 13,
+            "team_a": [
+                "Headless Horseman",
+                "Hercules",
+                "KND Specialist Support"
+            ],
+            "team_b": [
+                "Fenrir",
+                "Sherlock Holmes",
+                "Pinocchio"
+            ],
+            "damage_by_char": {
+                "Headless Horseman": 949,
+                "Fenrir": 311,
+                "Sherlock Holmes": 1394,
+                "Hercules": 302,
+                "Pinocchio": 237,
+                "KND Specialist Support": 66
+            },
+            "effects_count": 24,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 10,
+            "team_a": [
+                "KND Specialist Tank",
+                "KND Specialist Support",
+                "KND Cadet Support"
+            ],
+            "team_b": [
+                "Benjamin Franklin",
+                "Wendigo",
+                "KND Specialist Tank"
+            ],
+            "damage_by_char": {
+                "Benjamin Franklin": 2144,
+                "KND Specialist Tank": 92,
+                "KND Specialist Support": 96,
+                "KND Cadet Support": 18
+            },
+            "effects_count": 9,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 9,
+            "team_a": [
+                "Kraken",
+                "Queen Grimhilde"
+            ],
+            "team_b": [
+                "KND Vanguard Tank",
+                "Benjamin Franklin"
+            ],
+            "damage_by_char": {
+                "Kraken": 799,
+                "KND Vanguard Tank": 111,
+                "Benjamin Franklin": 816,
+                "Queen Grimhilde": 456
+            },
+            "effects_count": 7,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 10,
+            "team_a": [
+                "Headless Horseman",
+                "Medusa"
+            ],
+            "team_b": [
+                "KND Specialist Support",
+                "Queen Grimhilde"
+            ],
+            "damage_by_char": {
+                "Headless Horseman": 901,
+                "KND Specialist Support": 307,
+                "Queen Grimhilde": 491,
+                "Medusa": 335
+            },
+            "effects_count": 19,
+            "cc_count": 4
+        },
+        {
+            "winner": "B",
+            "turns": 9,
+            "team_a": [
+                "Dorian Gray",
+                "Ichabod Crane"
+            ],
+            "team_b": [
+                "Alice",
+                "Corrupted Loki"
+            ],
+            "damage_by_char": {
+                "Alice": 1945,
+                "Dorian Gray": 315,
+                "Ichabod Crane": 64
+            },
+            "effects_count": 23,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 11,
+            "team_a": [
+                "Arthur King",
+                "Morgana"
+            ],
+            "team_b": [
+                "KND Cadet Striker",
+                "Little Red Riding Hood"
+            ],
+            "damage_by_char": {
+                "Arthur King": 970,
+                "KND Cadet Striker": 171,
+                "Little Red Riding Hood": 934,
+                "Morgana": 578
+            },
+            "effects_count": 15,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 9,
+            "team_a": [
+                "Hercules",
+                "Jack Frost"
+            ],
+            "team_b": [
+                "Wendigo",
+                "Anubis"
+            ],
+            "damage_by_char": {
+                "Hercules": 778,
+                "Wendigo": 529,
+                "Anubis": 574,
+                "Jack Frost": 598
+            },
+            "effects_count": 13,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 13,
+            "team_a": [
+                "Alice",
+                "KND Specialist Striker"
+            ],
+            "team_b": [
+                "KND Vanguard Striker",
+                "Genghis Khan"
+            ],
+            "damage_by_char": {
+                "KND Vanguard Striker": 857,
+                "Alice": 1457,
+                "Genghis Khan": 983,
+                "KND Specialist Striker": 235
+            },
+            "effects_count": 18,
+            "cc_count": 2
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "Albert Einstein",
+                "Benjamin Franklin",
+                "Hercules"
+            ],
+            "team_b": [
+                "Krampus",
+                "Wukong",
+                "KND Specialist Tank"
+            ],
+            "damage_by_char": {
+                "Krampus": 1214,
+                "Albert Einstein": 474,
+                "Benjamin Franklin": 456,
+                "Wukong": 1370,
+                "Hercules": 297
+            },
+            "effects_count": 14,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Medusa",
+                "KND Cadet Tank"
+            ],
+            "team_b": [
+                "Alice",
+                "Odin"
+            ],
+            "damage_by_char": {
+                "Medusa": 2822,
+                "Alice": 432,
+                "Odin": 484
+            },
+            "effects_count": 64,
+            "cc_count": 24
+        },
+        {
+            "winner": "A",
+            "turns": 11,
+            "team_a": [
+                "Zeus",
+                "Frankenstein"
+            ],
+            "team_b": [
+                "Dorian Gray",
+                "KND Vanguard Support"
+            ],
+            "damage_by_char": {
+                "Zeus": 1987,
+                "Dorian Gray": 630,
+                "KND Vanguard Support": 248
+            },
+            "effects_count": 10,
+            "cc_count": 4
+        },
+        {
+            "winner": "B",
+            "turns": 20,
+            "team_a": [
+                "Anubis",
+                "Hercules",
+                "KND Vanguard Striker"
+            ],
+            "team_b": [
+                "Little Red Riding Hood",
+                "Pinocchio",
+                "Odin"
+            ],
+            "damage_by_char": {
+                "Little Red Riding Hood": 881,
+                "Anubis": 1066,
+                "Hercules": 703,
+                "Pinocchio": 2842
+            },
+            "effects_count": 38,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 20,
+            "team_a": [
+                "Aladdín",
+                "KND Vanguard Tank",
+                "Long John Silver"
+            ],
+            "team_b": [
+                "KND Specialist Striker",
+                "KND Cadet Tank",
+                "Genghis Khan"
+            ],
+            "damage_by_char": {
+                "Aladdín": 1986,
+                "KND Specialist Striker": 113,
+                "KND Cadet Tank": 401,
+                "Genghis Khan": 2459,
+                "KND Vanguard Tank": 608,
+                "Long John Silver": 101
+            },
+            "effects_count": 34,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 22,
+            "team_a": [
+                "Krampus",
+                "KND Specialist Tank",
+                "Puss in Boots"
+            ],
+            "team_b": [
+                "Simon Bolivar",
+                "Corrupted Loki",
+                "Queen Grimhilde"
+            ],
+            "damage_by_char": {
+                "Simon Bolivar": 1847,
+                "Krampus": 1207,
+                "KND Specialist Tank": 452,
+                "Corrupted Loki": 995,
+                "Puss in Boots": 533,
+                "Queen Grimhilde": 999
+            },
+            "effects_count": 50,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 16,
+            "team_a": [
+                "KND Specialist Support",
+                "Wendigo",
+                "Kraken"
+            ],
+            "team_b": [
+                "Headless Horseman",
+                "Sherlock Holmes",
+                "Alice"
+            ],
+            "damage_by_char": {
+                "KND Specialist Support": 282,
+                "Headless Horseman": 1566,
+                "Wendigo": 237,
+                "Kraken": 986,
+                "Sherlock Holmes": 590,
+                "Alice": 118
+            },
+            "effects_count": 22,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "KND Vanguard Striker",
+                "Albert Einstein",
+                "Pinocchio"
+            ],
+            "team_b": [
+                "KND Cadet Tank",
+                "Sherlock Holmes",
+                "Zeus"
+            ],
+            "damage_by_char": {
+                "KND Vanguard Striker": 971,
+                "KND Cadet Tank": 1350,
+                "Albert Einstein": 1086,
+                "Sherlock Holmes": 637,
+                "Zeus": 188
+            },
+            "effects_count": 7,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 21,
+            "team_a": [
+                "KND Specialist Tank",
+                "Alice",
+                "Fenrir"
+            ],
+            "team_b": [
+                "Pinocchio",
+                "Little Red Riding Hood",
+                "Ichabod Crane"
+            ],
+            "damage_by_char": {
+                "Pinocchio": 1246,
+                "KND Specialist Tank": 214,
+                "Alice": 407,
+                "Little Red Riding Hood": 809,
+                "Fenrir": 522,
+                "Ichabod Crane": 513
+            },
+            "effects_count": 44,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 21,
+            "team_a": [
+                "Queen Grimhilde",
+                "Frankenstein",
+                "Puss in Boots"
+            ],
+            "team_b": [
+                "Sandman",
+                "Hercules",
+                "Odin"
+            ],
+            "damage_by_char": {
+                "Queen Grimhilde": 1076,
+                "Sandman": 1255,
+                "Frankenstein": 1008,
+                "Hercules": 1212,
+                "Puss in Boots": 738,
+                "Odin": 900
+            },
+            "effects_count": 41,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 21,
+            "team_a": [
+                "Hydra",
+                "Morgana",
+                "Wendigo"
+            ],
+            "team_b": [
+                "Queen Grimhilde",
+                "Dorian Gray",
+                "Fenrir"
+            ],
+            "damage_by_char": {
+                "Hydra": 1095,
+                "Queen Grimhilde": 757,
+                "Dorian Gray": 779,
+                "Morgana": 989,
+                "Fenrir": 897,
+                "Wendigo": 833
+            },
+            "effects_count": 44,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 7,
+            "team_a": [
+                "Kraken",
+                "Dorian Gray"
+            ],
+            "team_b": [
+                "Sherlock Holmes",
+                "KND Cadet Striker"
+            ],
+            "damage_by_char": {
+                "Kraken": 1480,
+                "Sherlock Holmes": 425,
+                "KND Cadet Striker": 11
+            },
+            "effects_count": 10,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 16,
+            "team_a": [
+                "KND Vanguard Tank",
+                "Wendigo",
+                "Dorian Gray"
+            ],
+            "team_b": [
+                "Julio César",
+                "KND Cadet Tank",
+                "Krampus"
+            ],
+            "damage_by_char": {
+                "Julio César": 1060,
+                "KND Vanguard Tank": 136,
+                "Wendigo": 1532,
+                "KND Cadet Tank": 145,
+                "Krampus": 1264,
+                "Dorian Gray": 512
+            },
+            "effects_count": 17,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 13,
+            "team_a": [
+                "Long John Silver",
+                "KND Cadet Striker",
+                "Morgana"
+            ],
+            "team_b": [
+                "KND Cadet Support",
+                "Julio César",
+                "Aladdín"
+            ],
+            "damage_by_char": {
+                "Long John Silver": 2701,
+                "KND Cadet Support": 82,
+                "Julio César": 624,
+                "Aladdín": 208
+            },
+            "effects_count": 29,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 13,
+            "team_a": [
+                "Queen Grimhilde",
+                "Dracula"
+            ],
+            "team_b": [
+                "Wukong",
+                "Medusa"
+            ],
+            "damage_by_char": {
+                "Wukong": 1680,
+                "Queen Grimhilde": 232,
+                "Dracula": 625,
+                "Medusa": 114
+            },
+            "effects_count": 13,
+            "cc_count": 2
+        },
+        {
+            "winner": "B",
+            "turns": 25,
+            "team_a": [
+                "Sherlock Holmes",
+                "Corrupted Loki",
+                "Pinocchio"
+            ],
+            "team_b": [
+                "Aladdín",
+                "Headless Horseman",
+                "KND Vanguard Support"
+            ],
+            "damage_by_char": {
+                "Aladdín": 2590,
+                "Sherlock Holmes": 2580,
+                "Corrupted Loki": 550,
+                "Headless Horseman": 992,
+                "Pinocchio": 482,
+                "KND Vanguard Support": 241
+            },
+            "effects_count": 86,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 10,
+            "team_a": [
+                "Wukong",
+                "Dorian Gray"
+            ],
+            "team_b": [
+                "KND Vanguard Striker",
+                "Mad Hatter"
+            ],
+            "damage_by_char": {
+                "Wukong": 1951,
+                "KND Vanguard Striker": 152,
+                "Mad Hatter": 562
+            },
+            "effects_count": 6,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 15,
+            "team_a": [
+                "Albert Einstein",
+                "KND Specialist Striker",
+                "Alice"
+            ],
+            "team_b": [
+                "Arthur King",
+                "Headless Horseman",
+                "KND Specialist Striker"
+            ],
+            "damage_by_char": {
+                "Arthur King": 459,
+                "Albert Einstein": 680,
+                "Headless Horseman": 1074,
+                "KND Specialist Striker": 154,
+                "Alice": 1539
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 10,
+            "team_a": [
+                "Puss in Boots",
+                "KND Vanguard Tank"
+            ],
+            "team_b": [
+                "Aladdín",
+                "Mad Hatter"
+            ],
+            "damage_by_char": {
+                "Aladdín": 645,
+                "Puss in Boots": 1637,
+                "Mad Hatter": 446
+            },
+            "effects_count": 19,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 10,
+            "team_a": [
+                "Hercules",
+                "Fenrir"
+            ],
+            "team_b": [
+                "Genghis Khan",
+                "Merlin"
+            ],
+            "damage_by_char": {
+                "Hercules": 1075,
+                "Genghis Khan": 728,
+                "Merlin": 967,
+                "Fenrir": 624
+            },
+            "effects_count": 21,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 18,
+            "team_a": [
+                "KND Vanguard Striker",
+                "Zeus",
+                "Dracula"
+            ],
+            "team_b": [
+                "Sandman",
+                "Headless Horseman",
+                "Jack Frost"
+            ],
+            "damage_by_char": {
+                "Sandman": 850,
+                "KND Vanguard Striker": 177,
+                "Zeus": 1267,
+                "Headless Horseman": 780,
+                "Dracula": 697,
+                "Jack Frost": 779
+            },
+            "effects_count": 41,
+            "cc_count": 9
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "Julio César",
+                "Wendigo",
+                "Odin"
+            ],
+            "team_b": [
+                "Julio César",
+                "Medusa",
+                "Dorian Gray"
+            ],
+            "damage_by_char": {
+                "Julio César": 1479,
+                "Wendigo": 540,
+                "Medusa": 1510,
+                "Odin": 682
+            },
+            "effects_count": 23,
+            "cc_count": 9
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "Benjamin Franklin",
+                "Hercules"
+            ],
+            "team_b": [
+                "KND Vanguard Support",
+                "Queen Grimhilde"
+            ],
+            "damage_by_char": {
+                "Benjamin Franklin": 495,
+                "KND Vanguard Support": 86,
+                "Queen Grimhilde": 2119,
+                "Hercules": 261
+            },
+            "effects_count": 29,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 19,
+            "team_a": [
+                "Medusa",
+                "KND Cadet Tank",
+                "Queen Grimhilde"
+            ],
+            "team_b": [
+                "Morgana",
+                "KND Vanguard Tank",
+                "Mad Hatter"
+            ],
+            "damage_by_char": {
+                "Medusa": 3479,
+                "Morgana": 450,
+                "KND Vanguard Tank": 296,
+                "Mad Hatter": 711,
+                "KND Cadet Tank": 23
+            },
+            "effects_count": 49,
+            "cc_count": 22
+        },
+        {
+            "winner": "A",
+            "turns": 16,
+            "team_a": [
+                "Corrupted Loki",
+                "Julio César",
+                "Hydra"
+            ],
+            "team_b": [
+                "Morgana",
+                "KND Specialist Support",
+                "KND Specialist Striker"
+            ],
+            "damage_by_char": {
+                "Corrupted Loki": 2545,
+                "Morgana": 498,
+                "KND Specialist Support": 212,
+                "KND Specialist Striker": 251,
+                "Julio César": 484
+            },
+            "effects_count": 33,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 11,
+            "team_a": [
+                "Zeus",
+                "Morgana",
+                "Dorian Gray"
+            ],
+            "team_b": [
+                "Krampus",
+                "Medusa",
+                "Dracula"
+            ],
+            "damage_by_char": {
+                "Zeus": 2771,
+                "Medusa": 222,
+                "Dracula": 648
+            },
+            "effects_count": 28,
+            "cc_count": 5
+        },
+        {
+            "winner": "A",
+            "turns": 21,
+            "team_a": [
+                "KND Vanguard Striker",
+                "KND Cadet Support",
+                "Corrupted Loki"
+            ],
+            "team_b": [
+                "Krampus",
+                "Odin",
+                "KND Cadet Support"
+            ],
+            "damage_by_char": {
+                "Krampus": 1782,
+                "KND Vanguard Striker": 177,
+                "KND Cadet Support": 461,
+                "Corrupted Loki": 2202,
+                "Odin": 503
+            },
+            "effects_count": 26,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 11,
+            "team_a": [
+                "Hydra",
+                "Benjamin Franklin"
+            ],
+            "team_b": [
+                "Ichabod Crane",
+                "KND Vanguard Striker"
+            ],
+            "damage_by_char": {
+                "Ichabod Crane": 1548,
+                "Hydra": 794,
+                "Benjamin Franklin": 889,
+                "KND Vanguard Striker": 142
+            },
+            "effects_count": 25,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 17,
+            "team_a": [
+                "Queen Grimhilde",
+                "Mad Hatter",
+                "Morgana"
+            ],
+            "team_b": [
+                "KND Vanguard Support",
+                "Headless Horseman",
+                "Dorian Gray"
+            ],
+            "damage_by_char": {
+                "Queen Grimhilde": 2193,
+                "KND Vanguard Support": 366,
+                "Headless Horseman": 503,
+                "Dorian Gray": 1020,
+                "Mad Hatter": 712
+            },
+            "effects_count": 29,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 26,
+            "team_a": [
+                "Arthur King",
+                "Alice",
+                "Frankenstein"
+            ],
+            "team_b": [
+                "Frankenstein",
+                "Odin",
+                "Dorian Gray"
+            ],
+            "damage_by_char": {
+                "Arthur King": 1477,
+                "Frankenstein": 1334,
+                "Odin": 1254,
+                "Alice": 354,
+                "Dorian Gray": 498
+            },
+            "effects_count": 75,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "Krampus",
+                "Corrupted Loki"
+            ],
+            "team_b": [
+                "Sandman",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "Krampus": 1380,
+                "Sandman": 645,
+                "Wukong": 1909,
+                "Corrupted Loki": 339
+            },
+            "effects_count": 45,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 13,
+            "team_a": [
+                "Wendigo",
+                "Benjamin Franklin"
+            ],
+            "team_b": [
+                "KND Cadet Support",
+                "Krampus"
+            ],
+            "damage_by_char": {
+                "Wendigo": 1768,
+                "KND Cadet Support": 503,
+                "Krampus": 748,
+                "Benjamin Franklin": 407
+            },
+            "effects_count": 18,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 22,
+            "team_a": [
+                "Corrupted Loki",
+                "KND Vanguard Tank",
+                "KND Specialist Tank"
+            ],
+            "team_b": [
+                "Simon Bolivar",
+                "Dracula",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "Simon Bolivar": 1542,
+                "Corrupted Loki": 1898,
+                "Dracula": 500,
+                "KND Vanguard Tank": 134,
+                "Wukong": 1217
+            },
+            "effects_count": 46,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 18,
+            "team_a": [
+                "Sherlock Holmes",
+                "Hydra",
+                "Simon Bolivar"
+            ],
+            "team_b": [
+                "Puss in Boots",
+                "KND Cadet Support",
+                "Sherlock Holmes"
+            ],
+            "damage_by_char": {
+                "Puss in Boots": 1635,
+                "Sherlock Holmes": 1930,
+                "Hydra": 2006,
+                "KND Cadet Support": 63
+            },
+            "effects_count": 60,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 18,
+            "team_a": [
+                "Medusa",
+                "Headless Horseman",
+                "Pinocchio"
+            ],
+            "team_b": [
+                "Anubis",
+                "Albert Einstein",
+                "Dracula"
+            ],
+            "damage_by_char": {
+                "Anubis": 698,
+                "Medusa": 1512,
+                "Albert Einstein": 721,
+                "Headless Horseman": 242,
+                "Pinocchio": 1024,
+                "Dracula": 1282
+            },
+            "effects_count": 38,
+            "cc_count": 5
+        },
+        {
+            "winner": "B",
+            "turns": 20,
+            "team_a": [
+                "KND Vanguard Striker",
+                "Ichabod Crane",
+                "Mad Hatter"
+            ],
+            "team_b": [
+                "Krampus",
+                "Mad Hatter",
+                "Little Red Riding Hood"
+            ],
+            "damage_by_char": {
+                "Krampus": 2498,
+                "KND Vanguard Striker": 237,
+                "Ichabod Crane": 279,
+                "Mad Hatter": 1881,
+                "Little Red Riding Hood": 89
+            },
+            "effects_count": 36,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 13,
+            "team_a": [
+                "Jack Frost",
+                "KND Cadet Support",
+                "Headless Horseman"
+            ],
+            "team_b": [
+                "KND Vanguard Support",
+                "Dorian Gray",
+                "Little Red Riding Hood"
+            ],
+            "damage_by_char": {
+                "Jack Frost": 2632,
+                "Dorian Gray": 220,
+                "Little Red Riding Hood": 536
+            },
+            "effects_count": 29,
+            "cc_count": 8
+        },
+        {
+            "winner": "A",
+            "turns": 15,
+            "team_a": [
+                "Sherlock Holmes",
+                "Kraken"
+            ],
+            "team_b": [
+                "Fenrir",
+                "Corrupted Loki"
+            ],
+            "damage_by_char": {
+                "Sherlock Holmes": 1500,
+                "Fenrir": 800,
+                "Corrupted Loki": 677,
+                "Kraken": 1285
+            },
+            "effects_count": 32,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Corrupted Loki",
+                "Alice"
+            ],
+            "team_b": [
+                "Simon Bolivar",
+                "KND Vanguard Striker"
+            ],
+            "damage_by_char": {
+                "Simon Bolivar": 1142,
+                "Corrupted Loki": 468,
+                "Alice": 1309,
+                "KND Vanguard Striker": 405
+            },
+            "effects_count": 33,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 23,
+            "team_a": [
+                "Genghis Khan",
+                "Corrupted Loki",
+                "Kraken"
+            ],
+            "team_b": [
+                "Genghis Khan",
+                "Wukong",
+                "Merlin"
+            ],
+            "damage_by_char": {
+                "Genghis Khan": 1210,
+                "Corrupted Loki": 1986,
+                "Wukong": 2921,
+                "Kraken": 225
+            },
+            "effects_count": 42,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 10,
+            "team_a": [
+                "Odin",
+                "Pinocchio"
+            ],
+            "team_b": [
+                "KND Cadet Support",
+                "KND Cadet Striker"
+            ],
+            "damage_by_char": {
+                "Odin": 2094,
+                "KND Cadet Support": 66
+            },
+            "effects_count": 20,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "KND Vanguard Tank",
+                "Wukong",
+                "Kraken"
+            ],
+            "team_b": [
+                "Benjamin Franklin",
+                "Dracula",
+                "Corrupted Loki"
+            ],
+            "damage_by_char": {
+                "Benjamin Franklin": 1751,
+                "KND Vanguard Tank": 118,
+                "Wukong": 328,
+                "Kraken": 619,
+                "Dracula": 169,
+                "Corrupted Loki": 40
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 17,
+            "team_a": [
+                "Alice",
+                "Zeus",
+                "Morgana"
+            ],
+            "team_b": [
+                "Anubis",
+                "KND Specialist Striker",
+                "Ichabod Crane"
+            ],
+            "damage_by_char": {
+                "Anubis": 1338,
+                "Zeus": 1808,
+                "KND Specialist Striker": 316,
+                "Ichabod Crane": 792,
+                "Morgana": 561
+            },
+            "effects_count": 25,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 7,
+            "team_a": [
+                "Julio César",
+                "Jack Frost"
+            ],
+            "team_b": [
+                "KND Vanguard Tank",
+                "KND Cadet Striker"
+            ],
+            "damage_by_char": {
+                "Julio César": 1477,
+                "KND Vanguard Tank": 232,
+                "KND Cadet Striker": 21
+            },
+            "effects_count": 12,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 11,
+            "team_a": [
+                "Anubis",
+                "Fenrir"
+            ],
+            "team_b": [
+                "Hercules",
+                "KND Cadet Tank"
+            ],
+            "damage_by_char": {
+                "Hercules": 1011,
+                "Anubis": 543,
+                "Fenrir": 910,
+                "KND Cadet Tank": 180
+            },
+            "effects_count": 15,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "Pinocchio",
+                "Jack Frost",
+                "Benjamin Franklin"
+            ],
+            "team_b": [
+                "Wukong",
+                "Krampus",
+                "Hydra"
+            ],
+            "damage_by_char": {
+                "Wukong": 1915,
+                "Pinocchio": 606,
+                "Jack Frost": 352,
+                "Benjamin Franklin": 631,
+                "Krampus": 634,
+                "Hydra": 89
+            },
+            "effects_count": 12,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 10,
+            "team_a": [
+                "Krampus",
+                "KND Specialist Support"
+            ],
+            "team_b": [
+                "Hydra",
+                "Kraken"
+            ],
+            "damage_by_char": {
+                "Krampus": 837,
+                "Hydra": 2080,
+                "KND Specialist Support": 368
+            },
+            "effects_count": 23,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 10,
+            "team_a": [
+                "Corrupted Loki",
+                "KND Specialist Tank"
+            ],
+            "team_b": [
+                "Long John Silver",
+                "Albert Einstein"
+            ],
+            "damage_by_char": {
+                "Corrupted Loki": 927,
+                "Long John Silver": 1405,
+                "KND Specialist Tank": 95,
+                "Albert Einstein": 183
+            },
+            "effects_count": 7,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Mad Hatter",
+                "Ichabod Crane"
+            ],
+            "team_b": [
+                "Merlin",
+                "KND Vanguard Striker"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 526,
+                "Merlin": 1438,
+                "Ichabod Crane": 1107,
+                "KND Vanguard Striker": 302
+            },
+            "effects_count": 27,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 12,
+            "team_a": [
+                "Queen Grimhilde",
+                "Jack Frost"
+            ],
+            "team_b": [
+                "Odin",
+                "KND Vanguard Tank"
+            ],
+            "damage_by_char": {
+                "Odin": 904,
+                "Queen Grimhilde": 463,
+                "Jack Frost": 1501,
+                "KND Vanguard Tank": 37
+            },
+            "effects_count": 23,
+            "cc_count": 3
+        },
+        {
+            "winner": "B",
+            "turns": 7,
+            "team_a": [
+                "KND Specialist Striker",
+                "Fenrir"
+            ],
+            "team_b": [
+                "Jack Frost",
+                "Frankenstein"
+            ],
+            "damage_by_char": {
+                "Jack Frost": 1495,
+                "KND Specialist Striker": 136,
+                "Fenrir": 238
+            },
+            "effects_count": 10,
+            "cc_count": 4
+        },
+        {
+            "winner": "A",
+            "turns": 15,
+            "team_a": [
+                "Headless Horseman",
+                "Anubis"
+            ],
+            "team_b": [
+                "Sherlock Holmes",
+                "Sandman"
+            ],
+            "damage_by_char": {
+                "Sherlock Holmes": 1477,
+                "Headless Horseman": 1261,
+                "Sandman": 1481,
+                "Anubis": 1311
+            },
+            "effects_count": 46,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 11,
+            "team_a": [
+                "Wukong",
+                "Arthur King"
+            ],
+            "team_b": [
+                "Genghis Khan",
+                "Queen Grimhilde"
+            ],
+            "damage_by_char": {
+                "Wukong": 893,
+                "Genghis Khan": 368,
+                "Queen Grimhilde": 1388,
+                "Arthur King": 981
+            },
+            "effects_count": 18,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 20,
+            "team_a": [
+                "Medusa",
+                "Fenrir",
+                "KND Cadet Striker"
+            ],
+            "team_b": [
+                "Dorian Gray",
+                "Morgana",
+                "Jack Frost"
+            ],
+            "damage_by_char": {
+                "Medusa": 1722,
+                "Dorian Gray": 396,
+                "Morgana": 362,
+                "Jack Frost": 2340,
+                "Fenrir": 530,
+                "KND Cadet Striker": 23
+            },
+            "effects_count": 30,
+            "cc_count": 10
+        },
+        {
+            "winner": "A",
+            "turns": 12,
+            "team_a": [
+                "Ichabod Crane",
+                "Kraken"
+            ],
+            "team_b": [
+                "Wukong",
+                "Corrupted Loki"
+            ],
+            "damage_by_char": {
+                "Wukong": 1534,
+                "Ichabod Crane": 536,
+                "Kraken": 769,
+                "Corrupted Loki": 194
+            },
+            "effects_count": 10,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 16,
+            "team_a": [
+                "Julio César",
+                "Long John Silver",
+                "KND Cadet Striker"
+            ],
+            "team_b": [
+                "KND Cadet Striker",
+                "Julio César",
+                "Mad Hatter"
+            ],
+            "damage_by_char": {
+                "KND Cadet Striker": 317,
+                "Julio César": 3350,
+                "Long John Silver": 369
+            },
+            "effects_count": 28,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 11,
+            "team_a": [
+                "Corrupted Loki",
+                "Arthur King"
+            ],
+            "team_b": [
+                "Arthur King",
+                "Jack Frost"
+            ],
+            "damage_by_char": {
+                "Corrupted Loki": 1034,
+                "Arthur King": 1171,
+                "Jack Frost": 1031
+            },
+            "effects_count": 22,
+            "cc_count": 5
+        },
+        {
+            "winner": "A",
+            "turns": 12,
+            "team_a": [
+                "Headless Horseman",
+                "Sandman"
+            ],
+            "team_b": [
+                "Krampus",
+                "KND Vanguard Striker"
+            ],
+            "damage_by_char": {
+                "Headless Horseman": 1506,
+                "Krampus": 1552,
+                "Sandman": 1065,
+                "KND Vanguard Striker": 469
+            },
+            "effects_count": 22,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 15,
+            "team_a": [
+                "KND Vanguard Striker",
+                "Hydra"
+            ],
+            "team_b": [
+                "KND Specialist Tank",
+                "Long John Silver"
+            ],
+            "damage_by_char": {
+                "KND Specialist Tank": 1832,
+                "KND Vanguard Striker": 748,
+                "Hydra": 1093,
+                "Long John Silver": 455
+            },
+            "effects_count": 6,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 13,
+            "team_a": [
+                "Genghis Khan",
+                "Anubis"
+            ],
+            "team_b": [
+                "Long John Silver",
+                "Dracula"
+            ],
+            "damage_by_char": {
+                "Long John Silver": 1904,
+                "Genghis Khan": 450,
+                "Anubis": 286,
+                "Dracula": 77
+            },
+            "effects_count": 16,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 23,
+            "team_a": [
+                "Wukong",
+                "KND Specialist Support",
+                "Merlin"
+            ],
+            "team_b": [
+                "Simon Bolivar",
+                "Genghis Khan",
+                "KND Vanguard Striker"
+            ],
+            "damage_by_char": {
+                "Wukong": 1217,
+                "Simon Bolivar": 234,
+                "Genghis Khan": 1078,
+                "KND Specialist Support": 994,
+                "KND Vanguard Striker": 1106,
+                "Merlin": 495
+            },
+            "effects_count": 24,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 19,
+            "team_a": [
+                "Corrupted Loki",
+                "Little Red Riding Hood",
+                "Aladdín"
+            ],
+            "team_b": [
+                "Wendigo",
+                "Little Red Riding Hood",
+                "KND Vanguard Tank"
+            ],
+            "damage_by_char": {
+                "Wendigo": 2035,
+                "Corrupted Loki": 77,
+                "Little Red Riding Hood": 1389,
+                "Aladdín": 342
+            },
+            "effects_count": 49,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 23,
+            "team_a": [
+                "Headless Horseman",
+                "Pinocchio",
+                "Dracula"
+            ],
+            "team_b": [
+                "Pinocchio",
+                "Hercules",
+                "KND Specialist Tank"
+            ],
+            "damage_by_char": {
+                "Pinocchio": 2867,
+                "Headless Horseman": 565,
+                "Hercules": 341,
+                "Dracula": 811,
+                "KND Specialist Tank": 86
+            },
+            "effects_count": 48,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 7,
+            "team_a": [
+                "Wukong",
+                "KND Specialist Support"
+            ],
+            "team_b": [
+                "Queen Grimhilde",
+                "Mad Hatter"
+            ],
+            "damage_by_char": {
+                "Wukong": 1538,
+                "Mad Hatter": 89
+            },
+            "effects_count": 14,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Dracula",
+                "Fenrir"
+            ],
+            "team_b": [
+                "Aladdín",
+                "Wendigo"
+            ],
+            "damage_by_char": {
+                "Dracula": 1594,
+                "Aladdín": 1946,
+                "Fenrir": 590,
+                "Wendigo": 541
+            },
+            "effects_count": 33,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 6,
+            "team_a": [
+                "Alice",
+                "KND Cadet Support"
+            ],
+            "team_b": [
+                "Alice",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "Alice": 2086,
+                "KND Cadet Support": 19
+            },
+            "effects_count": 8,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 11,
+            "team_a": [
+                "KND Cadet Support",
+                "Dorian Gray"
+            ],
+            "team_b": [
+                "Wendigo",
+                "KND Specialist Tank"
+            ],
+            "damage_by_char": {
+                "KND Cadet Support": 147,
+                "Wendigo": 2186,
+                "Dorian Gray": 612
+            },
+            "effects_count": 9,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 16,
+            "team_a": [
+                "Fenrir",
+                "Wendigo",
+                "Benjamin Franklin"
+            ],
+            "team_b": [
+                "Sherlock Holmes",
+                "Kraken",
+                "Merlin"
+            ],
+            "damage_by_char": {
+                "Fenrir": 1143,
+                "Sherlock Holmes": 1563,
+                "Wendigo": 301,
+                "Kraken": 1361,
+                "Benjamin Franklin": 546
+            },
+            "effects_count": 51,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 29,
+            "team_a": [
+                "Wukong",
+                "Morgana",
+                "Frankenstein"
+            ],
+            "team_b": [
+                "Dracula",
+                "Alice",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "Wukong": 3917,
+                "Dracula": 2643,
+                "Alice": 1173,
+                "Morgana": 421,
+                "Frankenstein": 486
+            },
+            "effects_count": 45,
+            "cc_count": 2
+        },
+        {
+            "winner": "A",
+            "turns": 11,
+            "team_a": [
+                "Fenrir",
+                "Dracula"
+            ],
+            "team_b": [
+                "KND Vanguard Tank",
+                "Morgana"
+            ],
+            "damage_by_char": {
+                "Fenrir": 1208,
+                "KND Vanguard Tank": 391,
+                "Morgana": 522,
+                "Dracula": 533
+            },
+            "effects_count": 7,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 11,
+            "team_a": [
+                "Queen Grimhilde",
+                "Anubis"
+            ],
+            "team_b": [
+                "Pinocchio",
+                "Little Red Riding Hood"
+            ],
+            "damage_by_char": {
+                "Queen Grimhilde": 958,
+                "Pinocchio": 931,
+                "Anubis": 961,
+                "Little Red Riding Hood": 770
+            },
+            "effects_count": 18,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 7,
+            "team_a": [
+                "Zeus",
+                "Arthur King"
+            ],
+            "team_b": [
+                "Julio César",
+                "Aladdín"
+            ],
+            "damage_by_char": {
+                "Zeus": 1593,
+                "Julio César": 168,
+                "Aladdín": 291
+            },
+            "effects_count": 12,
+            "cc_count": 4
+        },
+        {
+            "winner": "B",
+            "turns": 13,
+            "team_a": [
+                "Simon Bolivar",
+                "KND Specialist Support",
+                "KND Cadet Striker"
+            ],
+            "team_b": [
+                "Simon Bolivar",
+                "Ichabod Crane",
+                "KND Vanguard Striker"
+            ],
+            "damage_by_char": {
+                "Simon Bolivar": 3172,
+                "KND Cadet Striker": 36,
+                "Ichabod Crane": 98
+            },
+            "effects_count": 26,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "KND Cadet Tank",
+                "Wukong"
+            ],
+            "team_b": [
+                "Wendigo",
+                "Frankenstein"
+            ],
+            "damage_by_char": {
+                "Wendigo": 1209,
+                "KND Cadet Tank": 126,
+                "Wukong": 1094,
+                "Frankenstein": 63
+            },
+            "effects_count": 21,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 13,
+            "team_a": [
+                "Hercules",
+                "Zeus"
+            ],
+            "team_b": [
+                "Mad Hatter",
+                "Dorian Gray"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 536,
+                "Hercules": 1026,
+                "Dorian Gray": 492,
+                "Zeus": 181
+            },
+            "effects_count": 29,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 22,
+            "team_a": [
+                "Headless Horseman",
+                "Queen Grimhilde"
+            ],
+            "team_b": [
+                "Wendigo",
+                "Mad Hatter"
+            ],
+            "damage_by_char": {
+                "Headless Horseman": 2019,
+                "Wendigo": 803,
+                "Mad Hatter": 1913,
+                "Queen Grimhilde": 739
+            },
+            "effects_count": 74,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 19,
+            "team_a": [
+                "Mad Hatter",
+                "Wendigo",
+                "Zeus"
+            ],
+            "team_b": [
+                "KND Cadet Striker",
+                "Headless Horseman",
+                "Sandman"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 3932,
+                "KND Cadet Striker": 188,
+                "Headless Horseman": 534,
+                "Sandman": 341
+            },
+            "effects_count": 62,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 8,
+            "team_a": [
+                "Dorian Gray",
+                "Fenrir",
+                "Zeus"
+            ],
+            "team_b": [
+                "Albert Einstein",
+                "Sherlock Holmes",
+                "Arthur King"
+            ],
+            "damage_by_char": {
+                "Albert Einstein": 1625,
+                "Dorian Gray": 156,
+                "Fenrir": 110,
+                "Zeus": 79
+            },
+            "effects_count": 12,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 18,
+            "team_a": [
+                "Puss in Boots",
+                "Dorian Gray",
+                "KND Vanguard Striker"
+            ],
+            "team_b": [
+                "KND Vanguard Tank",
+                "Simon Bolivar",
+                "Kraken"
+            ],
+            "damage_by_char": {
+                "Puss in Boots": 1149,
+                "KND Vanguard Tank": 558,
+                "Simon Bolivar": 969,
+                "Dorian Gray": 600,
+                "Kraken": 958,
+                "KND Vanguard Striker": 59
+            },
+            "effects_count": 19,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 22,
+            "team_a": [
+                "Puss in Boots",
+                "Julio César",
+                "Wukong"
+            ],
+            "team_b": [
+                "Fenrir",
+                "KND Vanguard Support",
+                "KND Vanguard Striker"
+            ],
+            "damage_by_char": {
+                "Puss in Boots": 1344,
+                "Fenrir": 545,
+                "KND Vanguard Support": 1982,
+                "Julio César": 733,
+                "KND Vanguard Striker": 113,
+                "Wukong": 678
+            },
+            "effects_count": 29,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 10,
+            "team_a": [
+                "Wukong",
+                "Jack Frost"
+            ],
+            "team_b": [
+                "Simon Bolivar",
+                "Albert Einstein"
+            ],
+            "damage_by_char": {
+                "Wukong": 1214,
+                "Albert Einstein": 1174,
+                "Jack Frost": 315
+            },
+            "effects_count": 14,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Krampus",
+                "KND Cadet Tank"
+            ],
+            "team_b": [
+                "Wendigo",
+                "Mad Hatter"
+            ],
+            "damage_by_char": {
+                "Krampus": 876,
+                "Wendigo": 1978,
+                "KND Cadet Tank": 138,
+                "Mad Hatter": 98
+            },
+            "effects_count": 25,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 19,
+            "team_a": [
+                "Little Red Riding Hood",
+                "Medusa",
+                "Krampus"
+            ],
+            "team_b": [
+                "Long John Silver",
+                "Jack Frost",
+                "Aladdín"
+            ],
+            "damage_by_char": {
+                "Long John Silver": 1612,
+                "Little Red Riding Hood": 433,
+                "Medusa": 1229,
+                "Jack Frost": 295,
+                "Krampus": 1235,
+                "Aladdín": 142
+            },
+            "effects_count": 38,
+            "cc_count": 4
+        },
+        {
+            "winner": "B",
+            "turns": 24,
+            "team_a": [
+                "KND Vanguard Tank",
+                "Medusa",
+                "KND Cadet Striker"
+            ],
+            "team_b": [
+                "Aladdín",
+                "Mad Hatter",
+                "Krampus"
+            ],
+            "damage_by_char": {
+                "KND Vanguard Tank": 903,
+                "Aladdín": 1105,
+                "Medusa": 1207,
+                "Mad Hatter": 487,
+                "Krampus": 1817,
+                "KND Cadet Striker": 245
+            },
+            "effects_count": 17,
+            "cc_count": 11
+        },
+        {
+            "winner": "B",
+            "turns": 23,
+            "team_a": [
+                "Headless Horseman",
+                "Anubis",
+                "KND Cadet Striker"
+            ],
+            "team_b": [
+                "Morgana",
+                "KND Specialist Support",
+                "Simon Bolivar"
+            ],
+            "damage_by_char": {
+                "Headless Horseman": 2191,
+                "Morgana": 775,
+                "KND Specialist Support": 307,
+                "Anubis": 1433,
+                "Simon Bolivar": 2012,
+                "KND Cadet Striker": 149
+            },
+            "effects_count": 54,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "KND Specialist Striker",
+                "Dracula"
+            ],
+            "team_b": [
+                "Wukong",
+                "KND Vanguard Support"
+            ],
+            "damage_by_char": {
+                "Wukong": 2615,
+                "Dracula": 786
+            },
+            "effects_count": 12,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 21,
+            "team_a": [
+                "KND Cadet Support",
+                "Alice",
+                "Sherlock Holmes"
+            ],
+            "team_b": [
+                "Arthur King",
+                "Jack Frost",
+                "Puss in Boots"
+            ],
+            "damage_by_char": {
+                "Arthur King": 1718,
+                "KND Cadet Support": 112,
+                "Alice": 703,
+                "Jack Frost": 879,
+                "Sherlock Holmes": 666,
+                "Puss in Boots": 403
+            },
+            "effects_count": 42,
+            "cc_count": 8
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Little Red Riding Hood",
+                "Merlin"
+            ],
+            "team_b": [
+                "Headless Horseman",
+                "Pinocchio"
+            ],
+            "damage_by_char": {
+                "Headless Horseman": 1402,
+                "Little Red Riding Hood": 1202,
+                "Merlin": 236,
+                "Pinocchio": 1432
+            },
+            "effects_count": 29,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 20,
+            "team_a": [
+                "Sandman",
+                "Corrupted Loki",
+                "KND Specialist Striker"
+            ],
+            "team_b": [
+                "Corrupted Loki",
+                "Kraken",
+                "Odin"
+            ],
+            "damage_by_char": {
+                "Sandman": 619,
+                "Corrupted Loki": 1996,
+                "Kraken": 1564,
+                "KND Specialist Striker": 92
+            },
+            "effects_count": 43,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 13,
+            "team_a": [
+                "Genghis Khan",
+                "Long John Silver"
+            ],
+            "team_b": [
+                "Odin",
+                "Jack Frost"
+            ],
+            "damage_by_char": {
+                "Genghis Khan": 1322,
+                "Odin": 1762,
+                "Long John Silver": 77,
+                "Jack Frost": 441
+            },
+            "effects_count": 28,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 12,
+            "team_a": [
+                "Genghis Khan",
+                "Zeus"
+            ],
+            "team_b": [
+                "Fenrir",
+                "KND Cadet Support"
+            ],
+            "damage_by_char": {
+                "Fenrir": 1058,
+                "Genghis Khan": 538,
+                "Zeus": 1608,
+                "KND Cadet Support": 66
+            },
+            "effects_count": 10,
+            "cc_count": 6
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "KND Vanguard Support",
+                "KND Vanguard Striker",
+                "KND Specialist Striker"
+            ],
+            "team_b": [
+                "Little Red Riding Hood",
+                "Zeus",
+                "Genghis Khan"
+            ],
+            "damage_by_char": {
+                "Little Red Riding Hood": 2871,
+                "KND Vanguard Support": 61,
+                "KND Vanguard Striker": 120,
+                "KND Specialist Striker": 124
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "KND Vanguard Tank",
+                "Alice",
+                "Headless Horseman"
+            ],
+            "team_b": [
+                "Long John Silver",
+                "Dracula",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "Long John Silver": 1517,
+                "KND Vanguard Tank": 265,
+                "Alice": 1223,
+                "Dracula": 406,
+                "Wukong": 481,
+                "Headless Horseman": 98
+            },
+            "effects_count": 12,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 21,
+            "team_a": [
+                "Aladdín",
+                "Wukong",
+                "Morgana"
+            ],
+            "team_b": [
+                "KND Vanguard Tank",
+                "Little Red Riding Hood",
+                "Odin"
+            ],
+            "damage_by_char": {
+                "Aladdín": 1768,
+                "KND Vanguard Tank": 1037,
+                "Little Red Riding Hood": 135,
+                "Wukong": 1715
+            },
+            "effects_count": 38,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 21,
+            "team_a": [
+                "Alice",
+                "Simon Bolivar",
+                "KND Vanguard Striker"
+            ],
+            "team_b": [
+                "Morgana",
+                "Arthur King",
+                "Kraken"
+            ],
+            "damage_by_char": {
+                "Morgana": 1939,
+                "Alice": 888,
+                "Simon Bolivar": 1192,
+                "Arthur King": 1100,
+                "KND Vanguard Striker": 114,
+                "Kraken": 533
+            },
+            "effects_count": 58,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 24,
+            "team_a": [
+                "Dracula",
+                "Long John Silver",
+                "Anubis"
+            ],
+            "team_b": [
+                "KND Vanguard Support",
+                "Julio César",
+                "Queen Grimhilde"
+            ],
+            "damage_by_char": {
+                "Dracula": 1243,
+                "KND Vanguard Support": 346,
+                "Julio César": 1378,
+                "Long John Silver": 1302,
+                "Queen Grimhilde": 588,
+                "Anubis": 158
+            },
+            "effects_count": 51,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 12,
+            "team_a": [
+                "Headless Horseman",
+                "Zeus",
+                "Queen Grimhilde"
+            ],
+            "team_b": [
+                "Little Red Riding Hood",
+                "Hercules",
+                "Odin"
+            ],
+            "damage_by_char": {
+                "Headless Horseman": 1456,
+                "Little Red Riding Hood": 996,
+                "Hercules": 327,
+                "Zeus": 1517
+            },
+            "effects_count": 23,
+            "cc_count": 3
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "KND Specialist Striker",
+                "Dorian Gray"
+            ],
+            "team_b": [
+                "KND Cadet Support",
+                "Morgana"
+            ],
+            "damage_by_char": {
+                "KND Specialist Striker": 1650,
+                "KND Cadet Support": 409,
+                "Morgana": 981,
+                "Dorian Gray": 423
+            },
+            "effects_count": 16,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "Aladdín",
+                "Ichabod Crane",
+                "Wukong"
+            ],
+            "team_b": [
+                "Jack Frost",
+                "Genghis Khan",
+                "Julio César"
+            ],
+            "damage_by_char": {
+                "Jack Frost": 2090,
+                "Aladdín": 102,
+                "Ichabod Crane": 813,
+                "Wukong": 194,
+                "Genghis Khan": 474
+            },
+            "effects_count": 38,
+            "cc_count": 6
+        },
+        {
+            "winner": "B",
+            "turns": 11,
+            "team_a": [
+                "Krampus",
+                "KND Specialist Tank"
+            ],
+            "team_b": [
+                "Headless Horseman",
+                "Puss in Boots"
+            ],
+            "damage_by_char": {
+                "Headless Horseman": 2254,
+                "Krampus": 665
+            },
+            "effects_count": 16,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 20,
+            "team_a": [
+                "KND Cadet Support",
+                "Odin",
+                "KND Cadet Striker"
+            ],
+            "team_b": [
+                "Aladdín",
+                "Sandman",
+                "KND Specialist Tank"
+            ],
+            "damage_by_char": {
+                "Aladdín": 1520,
+                "KND Cadet Support": 224,
+                "Odin": 834,
+                "Sandman": 1843,
+                "KND Cadet Striker": 566
+            },
+            "effects_count": 37,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "Anubis",
+                "Simon Bolivar"
+            ],
+            "team_b": [
+                "Anubis",
+                "Mad Hatter"
+            ],
+            "damage_by_char": {
+                "Anubis": 1742,
+                "Mad Hatter": 1592,
+                "Simon Bolivar": 698
+            },
+            "effects_count": 46,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 9,
+            "team_a": [
+                "Sandman",
+                "Merlin"
+            ],
+            "team_b": [
+                "Julio César",
+                "Ichabod Crane"
+            ],
+            "damage_by_char": {
+                "Julio César": 1373,
+                "Sandman": 528,
+                "Merlin": 535,
+                "Ichabod Crane": 75
+            },
+            "effects_count": 8,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 11,
+            "team_a": [
+                "Ichabod Crane",
+                "Dorian Gray",
+                "KND Cadet Tank"
+            ],
+            "team_b": [
+                "Sandman",
+                "Alice",
+                "Medusa"
+            ],
+            "damage_by_char": {
+                "Sandman": 1423,
+                "Ichabod Crane": 342,
+                "Dorian Gray": 217,
+                "Alice": 629,
+                "KND Cadet Tank": 22
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 13,
+            "team_a": [
+                "Hydra",
+                "Zeus"
+            ],
+            "team_b": [
+                "Sandman",
+                "Simon Bolivar"
+            ],
+            "damage_by_char": {
+                "Sandman": 1165,
+                "Hydra": 1272,
+                "Simon Bolivar": 569,
+                "Zeus": 1150
+            },
+            "effects_count": 18,
+            "cc_count": 4
+        },
+        {
+            "winner": "A",
+            "turns": 18,
+            "team_a": [
+                "Hercules",
+                "Arthur King",
+                "Headless Horseman"
+            ],
+            "team_b": [
+                "Puss in Boots",
+                "Arthur King",
+                "Little Red Riding Hood"
+            ],
+            "damage_by_char": {
+                "Puss in Boots": 1424,
+                "Hercules": 160,
+                "Arthur King": 1926,
+                "Little Red Riding Hood": 633,
+                "Headless Horseman": 817
+            },
+            "effects_count": 35,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 16,
+            "team_a": [
+                "Alice",
+                "Fenrir",
+                "KND Specialist Striker"
+            ],
+            "team_b": [
+                "Ichabod Crane",
+                "Dracula",
+                "Headless Horseman"
+            ],
+            "damage_by_char": {
+                "Ichabod Crane": 1151,
+                "Alice": 1751,
+                "Headless Horseman": 961,
+                "Fenrir": 972
+            },
+            "effects_count": 16,
+            "cc_count": 6
+        },
+        {
+            "winner": "A",
+            "turns": 11,
+            "team_a": [
+                "Sandman",
+                "Julio César"
+            ],
+            "team_b": [
+                "Kraken",
+                "KND Specialist Support"
+            ],
+            "damage_by_char": {
+                "Sandman": 439,
+                "Kraken": 587,
+                "Julio César": 1319
+            },
+            "effects_count": 21,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "Kraken",
+                "KND Specialist Support"
+            ],
+            "team_b": [
+                "Queen Grimhilde",
+                "Fenrir"
+            ],
+            "damage_by_char": {
+                "Kraken": 771,
+                "Queen Grimhilde": 158,
+                "Fenrir": 1227,
+                "KND Specialist Support": 124
+            },
+            "effects_count": 21,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Long John Silver",
+                "Benjamin Franklin"
+            ],
+            "team_b": [
+                "KND Cadet Tank",
+                "Medusa"
+            ],
+            "damage_by_char": {
+                "Long John Silver": 1919,
+                "KND Cadet Tank": 399,
+                "Medusa": 1367,
+                "Benjamin Franklin": 516
+            },
+            "effects_count": 19,
+            "cc_count": 11
+        },
+        {
+            "winner": "A",
+            "turns": 21,
+            "team_a": [
+                "Simon Bolivar",
+                "Krampus",
+                "Corrupted Loki"
+            ],
+            "team_b": [
+                "KND Cadet Support",
+                "Long John Silver",
+                "KND Vanguard Tank"
+            ],
+            "damage_by_char": {
+                "Simon Bolivar": 1000,
+                "KND Cadet Support": 184,
+                "Long John Silver": 1818,
+                "Krampus": 2144,
+                "KND Vanguard Tank": 148,
+                "Corrupted Loki": 247
+            },
+            "effects_count": 56,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 16,
+            "team_a": [
+                "Medusa",
+                "Albert Einstein",
+                "KND Vanguard Striker"
+            ],
+            "team_b": [
+                "Fenrir",
+                "Little Red Riding Hood",
+                "KND Cadet Striker"
+            ],
+            "damage_by_char": {
+                "Medusa": 2299,
+                "Fenrir": 463,
+                "Little Red Riding Hood": 655,
+                "Albert Einstein": 603,
+                "KND Cadet Striker": 88
+            },
+            "effects_count": 27,
+            "cc_count": 7
+        },
+        {
+            "winner": "B",
+            "turns": 11,
+            "team_a": [
+                "KND Vanguard Support",
+                "KND Cadet Tank"
+            ],
+            "team_b": [
+                "Frankenstein",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "Frankenstein": 2295,
+                "KND Vanguard Support": 264,
+                "KND Cadet Tank": 136
+            },
+            "effects_count": 14,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 18,
+            "team_a": [
+                "Wendigo",
+                "Hercules",
+                "Morgana"
+            ],
+            "team_b": [
+                "Simon Bolivar",
+                "Dorian Gray",
+                "Mad Hatter"
+            ],
+            "damage_by_char": {
+                "Simon Bolivar": 1313,
+                "Wendigo": 509,
+                "Hercules": 743,
+                "Dorian Gray": 662,
+                "Morgana": 554,
+                "Mad Hatter": 386
+            },
+            "effects_count": 38,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 21,
+            "team_a": [
+                "Alice",
+                "Queen Grimhilde",
+                "Medusa"
+            ],
+            "team_b": [
+                "Long John Silver",
+                "Arthur King",
+                "Dorian Gray"
+            ],
+            "damage_by_char": {
+                "Long John Silver": 735,
+                "Alice": 674,
+                "Arthur King": 1111,
+                "Queen Grimhilde": 1187,
+                "Dorian Gray": 945,
+                "Medusa": 1278
+            },
+            "effects_count": 32,
+            "cc_count": 2
+        },
+        {
+            "winner": "A",
+            "turns": 18,
+            "team_a": [
+                "Wukong",
+                "KND Vanguard Striker",
+                "Ichabod Crane"
+            ],
+            "team_b": [
+                "Frankenstein",
+                "Little Red Riding Hood",
+                "Alice"
+            ],
+            "damage_by_char": {
+                "Wukong": 1127,
+                "Frankenstein": 261,
+                "Little Red Riding Hood": 1740,
+                "KND Vanguard Striker": 362,
+                "Ichabod Crane": 862
+            },
+            "effects_count": 25,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 22,
+            "team_a": [
+                "Julio César",
+                "Benjamin Franklin",
+                "Alice"
+            ],
+            "team_b": [
+                "Long John Silver",
+                "Simon Bolivar",
+                "Sandman"
+            ],
+            "damage_by_char": {
+                "Julio César": 1568,
+                "Long John Silver": 671,
+                "Simon Bolivar": 485,
+                "Benjamin Franklin": 474,
+                "Sandman": 1566,
+                "Alice": 1033
+            },
+            "effects_count": 35,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 10,
+            "team_a": [
+                "Fenrir",
+                "Morgana"
+            ],
+            "team_b": [
+                "Sandman",
+                "KND Cadet Tank"
+            ],
+            "damage_by_char": {
+                "Fenrir": 2191,
+                "Sandman": 729,
+                "KND Cadet Tank": 197
+            },
+            "effects_count": 24,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 17,
+            "team_a": [
+                "Kraken",
+                "Benjamin Franklin",
+                "KND Cadet Striker"
+            ],
+            "team_b": [
+                "Pinocchio",
+                "Hydra",
+                "Odin"
+            ],
+            "damage_by_char": {
+                "Pinocchio": 1569,
+                "Kraken": 864,
+                "Hydra": 58,
+                "Benjamin Franklin": 1755,
+                "Odin": 285
+            },
+            "effects_count": 18,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 10,
+            "team_a": [
+                "Mad Hatter",
+                "Anubis"
+            ],
+            "team_b": [
+                "Alice",
+                "Mad Hatter"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 530,
+                "Alice": 1283,
+                "Anubis": 561
+            },
+            "effects_count": 16,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 12,
+            "team_a": [
+                "Albert Einstein",
+                "Medusa"
+            ],
+            "team_b": [
+                "Zeus",
+                "Headless Horseman"
+            ],
+            "damage_by_char": {
+                "Zeus": 1556,
+                "Albert Einstein": 552,
+                "Medusa": 995,
+                "Headless Horseman": 204
+            },
+            "effects_count": 8,
+            "cc_count": 10
+        },
+        {
+            "winner": "A",
+            "turns": 10,
+            "team_a": [
+                "Krampus",
+                "Albert Einstein"
+            ],
+            "team_b": [
+                "Sherlock Holmes",
+                "Simon Bolivar"
+            ],
+            "damage_by_char": {
+                "Krampus": 432,
+                "Sherlock Holmes": 605,
+                "Albert Einstein": 739,
+                "Simon Bolivar": 336
+            },
+            "effects_count": 20,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 10,
+            "team_a": [
+                "Little Red Riding Hood",
+                "KND Vanguard Striker",
+                "KND Cadet Support"
+            ],
+            "team_b": [
+                "Fenrir",
+                "Zeus",
+                "Sandman"
+            ],
+            "damage_by_char": {
+                "Fenrir": 1172,
+                "Little Red Riding Hood": 317,
+                "KND Vanguard Striker": 223,
+                "Zeus": 687
+            },
+            "effects_count": 6,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Dorian Gray",
+                "KND Vanguard Tank"
+            ],
+            "team_b": [
+                "Long John Silver",
+                "KND Vanguard Striker"
+            ],
+            "damage_by_char": {
+                "Dorian Gray": 1138,
+                "Long John Silver": 1555,
+                "KND Vanguard Tank": 214,
+                "KND Vanguard Striker": 142
+            },
+            "effects_count": 21,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "KND Specialist Support",
+                "Julio César",
+                "Sherlock Holmes"
+            ],
+            "team_b": [
+                "Genghis Khan",
+                "Benjamin Franklin",
+                "Merlin"
+            ],
+            "damage_by_char": {
+                "KND Specialist Support": 469,
+                "Genghis Khan": 1790,
+                "Julio César": 494,
+                "Benjamin Franklin": 903,
+                "Sherlock Holmes": 264
+            },
+            "effects_count": 22,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 10,
+            "team_a": [
+                "Dorian Gray",
+                "KND Cadet Striker",
+                "KND Vanguard Support"
+            ],
+            "team_b": [
+                "Benjamin Franklin",
+                "Pinocchio",
+                "Julio César"
+            ],
+            "damage_by_char": {
+                "Dorian Gray": 399,
+                "Benjamin Franklin": 2479,
+                "KND Cadet Striker": 256,
+                "KND Vanguard Support": 34
+            },
+            "effects_count": 15,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 12,
+            "team_a": [
+                "Little Red Riding Hood",
+                "Sandman"
+            ],
+            "team_b": [
+                "Julio César",
+                "KND Specialist Striker"
+            ],
+            "damage_by_char": {
+                "Little Red Riding Hood": 2162,
+                "Julio César": 953,
+                "KND Specialist Striker": 366,
+                "Sandman": 90
+            },
+            "effects_count": 25,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Aladdín",
+                "Krampus"
+            ],
+            "team_b": [
+                "Arthur King",
+                "Dorian Gray"
+            ],
+            "damage_by_char": {
+                "Arthur King": 1510,
+                "Aladdín": 1015,
+                "Krampus": 945,
+                "Dorian Gray": 655
+            },
+            "effects_count": 29,
+            "cc_count": 0
+        }
+    ],
+    "stats": {
+        "team_a_wins": 87,
+        "team_b_wins": 113,
+        "draws": 0,
+        "avg_duration": 14.8,
+        "avg_cc_per_combat": 1.26
+    },
+    "team_stats": {
+        "team_a_wins": 87,
+        "team_b_wins": 113,
+        "draws": 0,
+        "team_a_avg_duration": 14.64,
+        "team_b_avg_duration": 14.92,
+        "team_a_total_damage": 399943,
+        "team_b_total_damage": 381745
+    },
+    "char_winrate": {
+        "Fenrir": 12,
+        "Krampus": 12,
+        "Aladdín": 9,
+        "Wendigo": 15,
+        "Sherlock Holmes": 13,
+        "Albert Einstein": 12,
+        "KND Vanguard Striker": 11,
+        "Little Red Riding Hood": 13,
+        "Kraken": 18,
+        "KND Cadet Striker": 6,
+        "Wukong": 24,
+        "KND Specialist Tank": 7,
+        "Anubis": 7,
+        "Sandman": 13,
+        "KND Vanguard Support": 6,
+        "Queen Grimhilde": 15,
+        "Zeus": 15,
+        "Headless Horseman": 15,
+        "KND Specialist Striker": 5,
+        "Arthur King": 14,
+        "Pinocchio": 11,
+        "Hydra": 12,
+        "Julio César": 14,
+        "Dorian Gray": 14,
+        "Mad Hatter": 13,
+        "Frankenstein": 9,
+        "Hercules": 7,
+        "Puss in Boots": 10,
+        "Morgana": 17,
+        "Genghis Khan": 13,
+        "Medusa": 15,
+        "Odin": 7,
+        "Corrupted Loki": 12,
+        "Benjamin Franklin": 10,
+        "Alice": 13,
+        "KND Specialist Support": 4,
+        "KND Cadet Tank": 7,
+        "Jack Frost": 16,
+        "Dracula": 13,
+        "Ichabod Crane": 6,
+        "Merlin": 6,
+        "Simon Bolivar": 11,
+        "Long John Silver": 11,
+        "KND Cadet Support": 3,
+        "KND Vanguard Tank": 4
+    },
+    "char_appearances": {
+        "Dorian Gray": 32,
+        "Wukong": 31,
+        "Krampus": 28,
+        "Wendigo": 28,
+        "KND Vanguard Striker": 27,
+        "Queen Grimhilde": 27,
+        "Sandman": 27,
+        "Headless Horseman": 27,
+        "Morgana": 27,
+        "Fenrir": 26,
+        "Dracula": 26,
+        "KND Cadet Striker": 26,
+        "Mad Hatter": 26,
+        "Pinocchio": 25,
+        "KND Cadet Support": 25,
+        "Kraken": 25,
+        "Corrupted Loki": 25,
+        "Alice": 25,
+        "Little Red Riding Hood": 24,
+        "Sherlock Holmes": 23,
+        "Simon Bolivar": 23,
+        "Long John Silver": 23,
+        "KND Vanguard Tank": 23,
+        "Julio César": 22,
+        "Genghis Khan": 22,
+        "KND Specialist Striker": 21,
+        "KND Cadet Tank": 20,
+        "Anubis": 20,
+        "KND Specialist Support": 20,
+        "Puss in Boots": 20,
+        "Arthur King": 20,
+        "Medusa": 20,
+        "Benjamin Franklin": 20,
+        "Jack Frost": 19,
+        "Zeus": 19,
+        "Odin": 19,
+        "KND Vanguard Support": 18,
+        "KND Specialist Tank": 18,
+        "Hercules": 18,
+        "Aladdín": 16,
+        "Frankenstein": 16,
+        "Albert Einstein": 15,
+        "Hydra": 14,
+        "Ichabod Crane": 14,
+        "Merlin": 10
+    },
+    "char_damage": {
+        "Wukong": 36828,
+        "Krampus": 29884,
+        "Dracula": 27104,
+        "Corrupted Loki": 26452,
+        "Headless Horseman": 25377,
+        "Sandman": 25107,
+        "Kraken": 24837,
+        "Medusa": 24772,
+        "Wendigo": 24351,
+        "Long John Silver": 24268,
+        "Pinocchio": 23107,
+        "Simon Bolivar": 22942,
+        "Jack Frost": 22763,
+        "Julio César": 22337,
+        "Sherlock Holmes": 22222,
+        "Mad Hatter": 22140,
+        "Puss in Boots": 22085,
+        "Alice": 21612,
+        "Fenrir": 20761,
+        "Dorian Gray": 20397,
+        "Benjamin Franklin": 20361,
+        "Little Red Riding Hood": 19992,
+        "Queen Grimhilde": 19586,
+        "Zeus": 19436,
+        "Genghis Khan": 17493,
+        "Morgana": 16001,
+        "Arthur King": 15391,
+        "Aladdín": 15191,
+        "Anubis": 14782,
+        "Odin": 14368,
+        "Frankenstein": 13580,
+        "Albert Einstein": 13506,
+        "Hydra": 13028,
+        "Hercules": 10632,
+        "Ichabod Crane": 9966,
+        "KND Vanguard Striker": 8743,
+        "KND Vanguard Tank": 7679,
+        "KND Specialist Support": 7393,
+        "KND Specialist Tank": 7125,
+        "KND Vanguard Support": 6631,
+        "Merlin": 5929,
+        "KND Cadet Tank": 4870,
+        "KND Specialist Striker": 4379,
+        "KND Cadet Striker": 3442,
+        "KND Cadet Support": 2838
+    }
+}

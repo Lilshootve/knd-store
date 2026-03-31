@@ -1,0 +1,20 @@
+{
+  "colorR": 0,
+  "colorG": 2,
+  "colorB": 3,
+  "opacity": 0.83,
+  "fresnelStrength": 2.4,
+  "innerGlow": 0.81,
+  "rimStrength": 2.15,
+  "pulseSpeed": 0.1,
+  "pulseStrength": 0.52,
+  "scanSpeed": 2.5,
+  "scanDensity": 10,
+  "flickerIntensity": 0.045,
+  "baseOpacity": 0.15,
+  "texOpacity": 0.26,
+  "holoOpacityMul": 0.94,
+  "ringOpacity": 0.55,
+  "ringPulseSpeed": 2.2,
+  "beamIntensity": 0.22
+}

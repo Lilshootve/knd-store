@@ -1,0 +1,98 @@
+[
+  {
+    "id": 18,
+    "name": "Gengis Khan",
+    "rarity": "epic",
+    "class": "Controller",
+    "stats": {
+      "mind": 80,
+      "focus": 56,
+      "speed": 70,
+      "luck": 75
+    },
+    "abilities": [
+      {
+        "name": "Blood Pact",
+        "type": "passive",
+        "power": 28,
+        "cost": 0
+      },
+      {
+        "name": "Crimson Bite",
+        "type": "ability",
+        "power": 72,
+        "cost": 2
+      },
+      {
+        "name": "Night Domination",
+        "type": "special",
+        "power": 95,
+        "cost": 5
+      }
+    ]
+  },
+  {
+    "id": 1,
+    "name": "Thor",
+    "rarity": "legendary",
+    "class": "Strategist",
+    "stats": {
+      "mind": 75,
+      "focus": 67,
+      "speed": 60,
+      "luck": 70
+    },
+    "abilities": [
+      {
+        "name": "Mind Expansion",
+        "type": "passive",
+        "power": 45,
+        "cost": 0
+      },
+      {
+        "name": "Relativity Collapse",
+        "type": "ability",
+        "power": 65,
+        "cost": 2
+      },
+      {
+        "name": "Mental Singularity",
+        "type": "special",
+        "power": 88,
+        "cost": 5
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Kraken",
+    "rarity": "legendary",
+    "class": "Tank",
+    "stats": {
+      "mind": 80,
+      "focus": 33,
+      "speed": 40,
+      "luck": 50
+    },
+    "abilities": [
+      {
+        "name": "Abyssal Body",
+        "type": "passive",
+        "power": 52,
+        "cost": 0
+      },
+      {
+        "name": "Crushing Grip",
+        "type": "ability",
+        "power": 58,
+        "cost": 2
+      },
+      {
+        "name": "Deep Sea Collapse",
+        "type": "special",
+        "power": 78,
+        "cost": 5
+      }
+    ]
+  }
+]

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KND ACCESS — Enter the Ecosystem</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --void:#010508;--deep:#020a10;--surface:#04131c;
+  --c:#00e8ff;--c2:#00a8bb;--cg:rgba(0,232,255,.12);--cb:rgba(0,232,255,.22);
+  --m:#d44fff;--m2:#9b30ff;--mg:rgba(212,79,255,.12);
+  --gold:#ffcc00;--green:#00ff99;--red:#ff2255;
+  --t1:rgba(220,248,255,.95);--t2:rgba(155,215,235,.62);--t3:rgba(90,165,190,.38);--t4:rgba(60,120,145,.2);
+  --FD:'Orbitron',monospace;--FB:'Rajdhani',sans-serif;--FM:'Share Tech Mono',monospace;
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--void);color:var(--t1);font-family:var(--FB);cursor:default}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.035) 2px,rgba(0,0,0,.035) 3px)}
+
+/* ═══ BACKGROUND ═══ */
+#bg{position:fixed;inset:0;z-index:0;overflow:hidden}
+#bg::before{content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 30% 40%,rgba(0,80,180,.14),transparent 55%),
+    radial-gradient(ellipse 50% 50% at 80% 60%,rgba(150,30,200,.1),transparent 50%),
+    radial-gradient(ellipse 60% 30% at 50% 110%,rgba(0,40,80,.2),transparent 50%),
+    var(--void)}
+#bg::after{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,232,255,.012) 1px,transparent 1px),linear-gradient(90deg,rgba(0,232,255,.012) 1px,transparent 1px);
+  background-size:52px 52px}
+.bg-horizon{position:absolute;top:45%;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 5%,var(--cb) 25%,rgba(212,79,255,.25) 50%,var(--cb) 75%,transparent 95%);
+  box-shadow:0 0 40px rgba(0,232,255,.08)}
+.bg-floor{position:absolute;bottom:0;left:-30%;width:160%;height:35%;
+  background:repeating-linear-gradient(90deg,transparent,transparent calc(5.5% - 1px),rgba(0,232,255,.02) calc(5.5%)),
+    repeating-linear-gradient(0deg,transparent,transparent calc(12% - 1px),rgba(0,232,255,.015) calc(12%));
+  transform:perspective(400px) rotateX(62deg);transform-origin:bottom center}
+
+/* Star particles */
+.star{position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(200,220,255,.5);
+  animation:twinkle var(--d,3s) ease-in-out infinite var(--dl,0s)}
+@keyframes twinkle{0%,100%{opacity:.1}50%{opacity:var(--p,.7)}}
+
+/* ═══ LAYOUT — centered card with left brand accent ═══ */
+.shell{position:relative;z-index:1;height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+
+/* ═══ AUTH CONTAINER ═══ */
+.auth-container{display:flex;width:min(95vw,860px);max-height:90vh;position:relative}
+
+/* ── LEFT PANEL — branding ── */
+.auth-brand{width:280px;flex-shrink:0;
+  background:linear-gradient(180deg,rgba(0,232,255,.04),rgba(212,79,255,.03),rgba(0,232,255,.02));
+  border:1px solid rgba(0,232,255,.1);border-right:none;border-radius:4px 0 0 4px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+  padding:40px 24px;position:relative;overflow:hidden}
+.auth-brand::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,232,255,.3),transparent)}
+.auth-brand::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(212,79,255,.2),transparent)}
+
+/* Hex logo */
+.brand-hex{width:80px;height:80px;position:relative;display:flex;align-items:center;justify-content:center;
+  animation:hexFloat 4s ease-in-out infinite}
+@keyframes hexFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.brand-hex svg{width:80px;height:80px;filter:drop-shadow(0 0 20px rgba(0,232,255,.4))}
+.brand-hex-inner{position:absolute;font-family:var(--FD);font-size:20px;font-weight:900;color:var(--c);
+  text-shadow:0 0 16px rgba(0,232,255,.5)}
+
+.brand-title{font-family:var(--FD);font-size:18px;font-weight:900;letter-spacing:6px;color:var(--c);
+  text-shadow:0 0 20px rgba(0,232,255,.4);text-align:center}
+.brand-sub{font-family:var(--FM);font-size:10px;letter-spacing:3px;color:var(--t3);text-align:center;
+  max-width:200px;line-height:1.6}
+.brand-tagline{font-family:var(--FB);font-size:15px;font-weight:500;letter-spacing:1px;color:var(--t2);
+  text-align:center;line-height:1.5;max-width:200px}
+
+/* Decorative dots */
+.brand-dots{display:flex;gap:6px}
+.brand-dot{width:5px;height:5px;border-radius:50%;animation:dotPulse 2.5s ease-in-out infinite}
+.brand-dot:nth-child(1){background:var(--c);animation-delay:0s}
+.brand-dot:nth-child(2){background:var(--m);animation-delay:.3s}
+.brand-dot:nth-child(3){background:var(--gold);animation-delay:.6s}
+@keyframes dotPulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+
+/* ── RIGHT PANEL — form ── */
+.auth-form-panel{flex:1;background:rgba(4,16,24,.92);border:1px solid rgba(0,232,255,.08);
+  border-radius:0 4px 4px 0;backdrop-filter:blur(30px);padding:36px 40px;overflow-y:auto;
+  position:relative}
+.auth-form-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,rgba(0,232,255,.15),transparent)}
+
+/* ── TAB SWITCHER ── */
+.tab-switch{display:flex;gap:0;border:1px solid rgba(0,232,255,.1);border-radius:2px;overflow:hidden;margin-bottom:28px}
+.tab-btn{flex:1;padding:10px;font-family:var(--FD);font-size:9px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;background:transparent;border:none;color:var(--t3);cursor:pointer;
+  transition:all .3s;position:relative}
+.tab-btn::after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:2px;
+  background:var(--c);transform:scaleX(0);transition:transform .3s}
+.tab-btn.active{color:var(--c);background:rgba(0,232,255,.04)}
+.tab-btn.active::after{transform:scaleX(1)}
+.tab-btn:hover:not(.active){color:var(--t2);background:rgba(0,232,255,.02)}
+
+/* ── FORM HEADING ── */
+.form-heading{text-align:center;margin-bottom:24px}
+.form-heading h2{font-family:var(--FD);font-size:14px;font-weight:900;letter-spacing:4px;color:var(--c);
+  text-shadow:0 0 14px rgba(0,232,255,.3);margin-bottom:6px}
+.form-heading p{font-family:var(--FM);font-size:10px;letter-spacing:2px;color:var(--t3)}
+
+/* ── INPUT GROUPS ── */
+.input-group{position:relative;margin-bottom:18px}
+.input-group input{width:100%;padding:12px 14px 12px 40px;
+  background:rgba(0,0,0,.3);border:1px solid rgba(0,232,255,.1);color:var(--t1);
+  font-family:var(--FM);font-size:13px;letter-spacing:1px;outline:none;
+  transition:all .3s;border-radius:2px}
+.input-group input:focus{border-color:var(--c);box-shadow:0 0 12px rgba(0,232,255,.12);
+  background:rgba(0,10,20,.5)}
+.input-group input::placeholder{color:var(--t4);font-size:11px;letter-spacing:2px}
+.input-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  color:var(--t3);font-size:14px;transition:color .3s;pointer-events:none}
+.input-group input:focus ~ .input-icon{color:var(--c)}
+.input-hint{font-family:var(--FM);font-size:8px;letter-spacing:1.5px;color:var(--t4);margin-top:4px}
+
+/* Password toggle */
+.pwd-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--t3);cursor:pointer;font-size:13px;
+  transition:color .2s;padding:4px}
+.pwd-toggle:hover{color:var(--c)}
+
+/* Password strength */
+.pwd-strength{display:flex;gap:3px;margin-top:6px;height:3px}
+.pwd-str-seg{flex:1;height:100%;background:rgba(255,255,255,.06);border-radius:1px;transition:background .3s}
+.pwd-str-seg.weak{background:var(--red)}.pwd-str-seg.medium{background:var(--gold)}.pwd-str-seg.strong{background:var(--green)}
+.pwd-str-label{font-family:var(--FM);font-size:8px;letter-spacing:1.5px;margin-top:3px;transition:color .3s}
+
+/* Checkbox */
+.check-row{display:flex;align-items:center;gap:8px;margin-bottom:18px;cursor:pointer}
+.check-box{width:16px;height:16px;border:1px solid rgba(0,232,255,.2);background:transparent;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;border-radius:2px}
+.check-box.checked{border-color:var(--c);background:rgba(0,232,255,.1)}
+.check-box.checked::after{content:'✓';color:var(--c);font-size:10px}
+.check-label{font-family:var(--FM);font-size:9px;letter-spacing:1px;color:var(--t3)}
+
+/* ── BUTTONS ── */
+.auth-btn{width:100%;padding:13px;font-family:var(--FD);font-size:10px;font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;border:none;cursor:pointer;position:relative;
+  overflow:hidden;transition:all .3s;margin-bottom:12px;
+  clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px)}
+.auth-btn.primary{background:linear-gradient(90deg,rgba(0,232,255,.12),rgba(0,232,255,.06));
+  border:1px solid var(--c);color:var(--c)}
+.auth-btn.primary::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(0,232,255,.08),transparent);
+  animation:btnSweep 3s ease infinite}
+@keyframes btnSweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.auth-btn.primary:hover{box-shadow:0 0 24px rgba(0,232,255,.2);background:rgba(0,232,255,.1)}
+.auth-btn.outline{background:transparent;border:1px solid rgba(212,79,255,.25);color:var(--m)}
+.auth-btn.outline:hover{border-color:var(--m);box-shadow:0 0 18px rgba(212,79,255,.15);background:rgba(212,79,255,.04)}
+
+/* ── LINKS ── */
+.auth-links{text-align:center;margin-top:12px}
+.auth-link{font-family:var(--FM);font-size:9px;letter-spacing:1.5px;color:var(--t3);
+  text-decoration:none;cursor:pointer;transition:color .2s;display:inline-block;margin:4px 0}
+.auth-link:hover{color:var(--c)}
+
+/* ── ALERT ── */
+.auth-alert{margin-top:16px;padding:10px 14px;border-radius:2px;font-family:var(--FM);font-size:11px;
+  letter-spacing:1px;display:none}
+.auth-alert.success{background:rgba(0,255,153,.06);border:1px solid rgba(0,255,153,.2);color:var(--green)}
+.auth-alert.error{background:rgba(255,34,85,.06);border:1px solid rgba(255,34,85,.2);color:var(--red)}
+.auth-alert.show{display:block;animation:alertIn .3s ease}
+@keyframes alertIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── PANELS (verify, forgot) — stacked on form panel ── */
+.auth-panel{display:none;flex-direction:column;gap:18px}
+.auth-panel.visible{display:flex;animation:panelIn .4s ease}
+@keyframes panelIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── VERIFICATION CODE INPUT ── */
+.code-input-wrap{display:flex;gap:8px;justify-content:center;margin:8px 0}
+.code-digit{width:42px;height:50px;text-align:center;font-family:var(--FD);font-size:22px;font-weight:900;
+  color:var(--c);background:rgba(0,0,0,.4);border:1px solid rgba(0,232,255,.15);
+  outline:none;transition:all .3s;border-radius:2px;letter-spacing:0}
+.code-digit:focus{border-color:var(--c);box-shadow:0 0 14px rgba(0,232,255,.2);background:rgba(0,10,20,.6)}
+.code-digit:not(:placeholder-shown){border-color:rgba(0,232,255,.3)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .auth-brand{display:none}
+  .auth-form-panel{border-radius:4px}
+  .auth-container{width:min(95vw,420px)}
+}
+</style>
+</head>
+<body>
+
+<div id="bg">
+  <div class="bg-horizon"></div>
+  <div class="bg-floor"></div>
+</div>
+
+<!-- Stars -->
+<div id="stars"></div>
+
+<div class="shell">
+  <div class="auth-container">
+
+    <!-- ═══ LEFT — BRAND PANEL ═══ -->
+    <div class="auth-brand">
+      <div class="brand-hex">
+        <svg viewBox="0 0 100 100" fill="none">
+          <polygon points="50,3 95,25 95,75 50,97 5,75 5,25" stroke="rgba(0,232,255,.3)" stroke-width="1" fill="rgba(0,232,255,.03)"/>
+          <polygon points="50,12 85,30 85,70 50,88 15,70 15,30" stroke="rgba(0,232,255,.15)" stroke-width="0.5" fill="none"/>
+          <polygon points="50,22 74,35 74,65 50,78 26,65 26,35" stroke="rgba(212,79,255,.12)" stroke-width="0.5" fill="rgba(212,79,255,.02)"/>
+        </svg>
+        <span class="brand-hex-inner">⬡</span>
+      </div>
+
+      <div class="brand-title">KND</div>
+      <div class="brand-tagline">Enter the Ecosystem</div>
+      <div class="brand-sub">KNOWLEDGE 'N DEVELOPMENT — WHERE DIGITAL INNOVATION BEGINS</div>
+
+      <div class="brand-dots">
+        <div class="brand-dot"></div>
+        <div class="brand-dot"></div>
+        <div class="brand-dot"></div>
+      </div>
+
+      <div style="font-family:var(--FM);font-size:8px;letter-spacing:2px;color:var(--t4);margin-top:auto;">
+        SECURE · ENCRYPTED · PRIVATE
+      </div>
+    </div>
+
+    <!-- ═══ RIGHT — FORM PANEL ═══ -->
+    <div class="auth-form-panel">
+
+      <!-- Tab Switcher -->
+      <div class="tab-switch">
+        <button class="tab-btn active" onclick="showTab('login')">⬡ LOGIN</button>
+        <button class="tab-btn" onclick="showTab('register')">⬡ REGISTER</button>
+      </div>
+
+      <!-- ═══ LOGIN FORM ═══ -->
+      <div id="panel-login" class="auth-panel visible">
+        <div class="form-heading">
+          <h2>SIGNAL IN</h2>
+          <p>ACCESS YOUR KND ACCOUNT</p>
+        </div>
+
+        <div class="input-group">
+          <input type="text" placeholder="USERNAME" autocomplete="username">
+          <span class="input-icon">◆</span>
+        </div>
+
+        <div class="input-group">
+          <input type="password" placeholder="PASSWORD" autocomplete="current-password" id="login-pwd">
+          <span class="input-icon">🔒</span>
+          <button class="pwd-toggle" onclick="togglePwd('login-pwd',this)">👁</button>
+        </div>
+
+        <div class="check-row" onclick="this.querySelector('.check-box').classList.toggle('checked')">
+          <div class="check-box checked"></div>
+          <span class="check-label">REMEMBER CREDENTIALS ON THIS DEVICE</span>
+        </div>
+
+        <button class="auth-btn primary">⚡ ACCESS PLATFORM</button>
+
+        <div class="auth-links">
+          <a class="auth-link" onclick="showTab('forgot')">⬡ FORGOT PASSWORD OR USERNAME?</a><br>
+          <a class="auth-link" onclick="showTab('register')">⬡ DON'T HAVE AN ACCOUNT? REGISTER</a>
+        </div>
+
+        <div class="auth-alert success show" id="login-alert">
+          ✓ Demo: Click ACCESS PLATFORM to simulate login
+        </div>
+      </div>
+
+      <!-- ═══ REGISTER FORM ═══ -->
+      <div id="panel-register" class="auth-panel">
+        <div class="form-heading">
+          <h2>NEW SIGNAL</h2>
+          <p>CREATE YOUR KND IDENTITY</p>
+        </div>
+
+        <div class="input-group">
+          <input type="text" placeholder="USERNAME" autocomplete="username">
+          <span class="input-icon">◆</span>
+          <div class="input-hint">3-24 CHARS: LETTERS, NUMBERS, UNDERSCORE</div>
+        </div>
+
+        <div class="input-group">
+          <input type="email" placeholder="EMAIL">
+          <span class="input-icon">✉</span>
+          <div class="input-hint">WE'LL SEND A VERIFICATION CODE</div>
+        </div>
+
+        <div class="input-group">
+          <input type="password" placeholder="PASSWORD" id="reg-pwd" oninput="updateStrength(this.value)">
+          <span class="input-icon">🔒</span>
+          <button class="pwd-toggle" onclick="togglePwd('reg-pwd',this)">👁</button>
+          <div class="pwd-strength">
+            <div class="pwd-str-seg" id="str1"></div>
+            <div class="pwd-str-seg" id="str2"></div>
+            <div class="pwd-str-seg" id="str3"></div>
+            <div class="pwd-str-seg" id="str4"></div>
+          </div>
+          <div class="pwd-str-label" id="str-label" style="color:var(--t4)">MIN 8 CHARACTERS</div>
+        </div>
+
+        <div class="input-group">
+          <input type="password" placeholder="CONFIRM PASSWORD" id="reg-pwd2">
+          <span class="input-icon">🔒</span>
+          <button class="pwd-toggle" onclick="togglePwd('reg-pwd2',this)">👁</button>
+        </div>
+
+        <button class="auth-btn outline">⬡ CREATE ACCOUNT</button>
+
+        <div class="auth-links">
+          <a class="auth-link" onclick="showTab('login')">⬡ ALREADY HAVE AN ACCOUNT? LOG IN</a>
+        </div>
+      </div>
+
+      <!-- ═══ FORGOT PASSWORD ═══ -->
+      <div id="panel-forgot" class="auth-panel">
+        <div class="form-heading">
+          <h2>SIGNAL RECOVERY</h2>
+          <p>ENTER THE EMAIL LINKED TO YOUR ACCOUNT</p>
+        </div>
+
+        <div class="input-group">
+          <input type="email" placeholder="EMAIL ADDRESS">
+          <span class="input-icon">✉</span>
+        </div>
+
+        <button class="auth-btn primary" onclick="showTab('reset')">🔒 RESET PASSWORD</button>
+        <button class="auth-btn outline">◆ SEND ME MY USERNAME</button>
+
+        <div class="auth-links">
+          <a class="auth-link" onclick="showTab('login')">← BACK TO LOGIN</a>
+        </div>
+      </div>
+
+      <!-- ═══ RESET PASSWORD (step 2) ═══ -->
+      <div id="panel-reset" class="auth-panel">
+        <div class="form-heading">
+          <h2>NEW PASSWORD</h2>
+          <p>ENTER THE CODE FROM YOUR EMAIL</p>
+        </div>
+
+        <div class="code-input-wrap">
+          <input class="code-digit" type="text" maxlength="1" inputmode="numeric" placeholder="·">
+          <input class="code-digit" type="text" maxlength="1" inputmode="numeric" placeholder="·">
+          <input class="code-digit" type="text" maxlength="1" inputmode="numeric" placeholder="·">
+          <input class="code-digit" type="text" maxlength="1" inputmode="numeric" placeholder="·">
+          <input class="code-digit" type="text" maxlength="1" inputmode="numeric" placeholder="·">
+          <input class="code-digit" type="text" maxlength="1" inputmode="numeric" placeholder="·">
+        </div>
+
+        <div class="input-group">
+          <input type="password" placeholder="NEW PASSWORD">
+          <span class="input-icon">🔒</span>
+        </div>
+
+        <div class="input-group">
+          <input type="password" placeholder="CONFIRM NEW PASSWORD">
+          <span class="input-icon">🔒</span>
+        </div>
+
+        <button class="auth-btn primary">💾 SET NEW PASSWORD</button>
+
+        <div class="auth-links">
+          <a class="auth-link" onclick="showTab('login')">← BACK TO LOGIN</a>
+        </div>
+      </div>
+
+      <!-- ═══ EMAIL VERIFICATION ═══ -->
+      <div id="panel-verify" class="auth-panel">
+        <div class="form-heading">
+          <h2>VERIFY SIGNAL</h2>
+          <p>ENTER THE 6-DIGIT CODE FROM YOUR EMAIL</p>
+        </div>
+
+        <div class="code-input-wrap">
+          <input class="code-digit" type="text" maxlength="1" inputmode="numeric" placeholder="·">
+          <input class="code-digit" type="text" maxlength="1" inputmode="numeric" placeholder="·">
+          <input class="code-digit" type="text" maxlength="1" inputmode="numeric" placeholder="·">
+          <input class="code-digit" type="text" maxlength="1" inputmode="numeric" placeholder="·">
+          <input class="code-digit" type="text" maxlength="1" inputmode="numeric" placeholder="·">
+          <input class="code-digit" type="text" maxlength="1" inputmode="numeric" placeholder="·">
+        </div>
+
+        <button class="auth-btn primary">✓ VERIFY</button>
+
+        <div class="auth-links">
+          <a class="auth-link">⟳ RESEND CODE</a><br>
+          <span style="font-family:var(--FM);font-size:8px;color:var(--t4);letter-spacing:1px;margin-top:4px;display:inline-block;">RESEND AVAILABLE IN 58s</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── Stars ── */
+var starsEl=document.getElementById('stars');
+for(var i=0;i<60;i++){
+  var s=document.createElement('div');
+  s.className='star';
+  s.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;--d:'+(2+Math.random()*4)+'s;--dl:'+(Math.random()*3)+'s;--p:'+(0.3+Math.random()*0.6)+';width:'+(1+Math.random()*2)+'px;height:'+(1+Math.random()*2)+'px;';
+  starsEl.appendChild(s);
+}
+
+/* ── Tab Switching ── */
+function showTab(name){
+  document.querySelectorAll('.auth-panel').forEach(function(p){p.classList.remove('visible')});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+  var panel=document.getElementById('panel-'+name);
+  if(panel) panel.classList.add('visible');
+  if(name==='login') document.querySelectorAll('.tab-btn')[0].classList.add('active');
+  if(name==='register') document.querySelectorAll('.tab-btn')[1].classList.add('active');
+}
+
+/* ── Password Toggle ── */
+function togglePwd(id,btn){
+  var inp=document.getElementById(id);
+  if(inp.type==='password'){inp.type='text';btn.textContent='🔒';}
+  else{inp.type='password';btn.textContent='👁';}
+}
+
+/* ── Password Strength ── */
+function updateStrength(val){
+  var segs=[document.getElementById('str1'),document.getElementById('str2'),document.getElementById('str3'),document.getElementById('str4')];
+  var label=document.getElementById('str-label');
+  var score=0;
+  if(val.length>=8) score++;
+  if(/[A-Z]/.test(val)) score++;
+  if(/[0-9]/.test(val)) score++;
+  if(/[^A-Za-z0-9]/.test(val)) score++;
+  var cls=['','weak','medium','medium','strong'];
+  var labels=['MIN 8 CHARACTERS','WEAK','MEDIUM','GOOD','STRONG'];
+  var colors=['var(--t4)','var(--red)','var(--gold)','var(--gold)','var(--green)'];
+  segs.forEach(function(s,i){s.className='pwd-str-seg'+(i<score?' '+cls[score]:'')});
+  label.textContent=labels[score];
+  label.style.color=colors[score];
+}
+
+/* ── Code Input Auto-advance ── */
+document.querySelectorAll('.code-input-wrap').forEach(function(wrap){
+  var inputs=wrap.querySelectorAll('.code-digit');
+  inputs.forEach(function(inp,idx){
+    inp.addEventListener('input',function(){
+      if(inp.value.length===1&&idx<inputs.length-1)inputs[idx+1].focus();
+    });
+    inp.addEventListener('keydown',function(e){
+      if(e.key==='Backspace'&&inp.value===''&&idx>0)inputs[idx-1].focus();
+    });
+  });
+});
+</script>
+</body>
+</html>

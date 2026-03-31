@@ -1,0 +1,519 @@
+/* ═══════════════════════════════════════════════════════════════
+   KND LASTROLL — HOLOGRAPHIC LOBBY THEME
+   Overlays on Bootstrap to transform the lobby into KND style.
+   No HTML changes needed — targets existing classes/IDs.
+═══════════════════════════════════════════════════════════════ */
+
+/* ── PAGE BASE ── */
+.lastroll-page {
+  --lr-void: #010508;
+  --lr-deep: #020c14;
+  --lr-surface: #04131c;
+  --lr-glass: rgba(6,24,36,.78);
+  --lr-c: #00e8ff;
+  --lr-c2: #00a8bb;
+  --lr-cg: rgba(0,232,255,.12);
+  --lr-cb: rgba(0,232,255,.22);
+  --lr-m: #9b30ff;
+  --lr-gold: #ffcc00;
+  --lr-green: #00ff99;
+  --lr-red: #ff2255;
+  --lr-t1: rgba(220,248,255,.95);
+  --lr-t2: rgba(155,215,235,.62);
+  --lr-t3: rgba(90,165,190,.38);
+  --lr-FD: 'Orbitron', monospace;
+  --lr-FB: 'Rajdhani', sans-serif;
+  --lr-FM: 'Share Tech Mono', monospace;
+}
+
+.lastroll-page .hero-section {
+  position: relative;
+}
+
+/* Deep space background */
+.lastroll-page .hero-section::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 110% 60% at 50% -10%, rgba(0,80,160,.15) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 8% 55%, rgba(0,232,255,.06) 0%, transparent 45%),
+    radial-gradient(ellipse 50% 40% at 92% 45%, rgba(155,48,255,.05) 0%, transparent 45%),
+    radial-gradient(ellipse 60% 30% at 50% 110%, rgba(0,40,80,.2) 0%, transparent 50%),
+    var(--lr-void);
+  pointer-events: none;
+}
+
+/* Scanlines */
+.lastroll-page::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,.05) 3px, rgba(0,0,0,.05) 4px);
+}
+
+/* ── BRAND HEADER ── */
+.lastroll-brand {
+  font-family: var(--lr-FD) !important;
+  font-size: 22px !important;
+  font-weight: 900 !important;
+  letter-spacing: 5px !important;
+  color: var(--lr-c) !important;
+  text-shadow: 0 0 24px rgba(0,232,255,.5) !important;
+}
+
+.lastroll-subtitle {
+  font-family: var(--lr-FB) !important;
+  font-size: 14px !important;
+  letter-spacing: 0.5px;
+}
+
+/* KP Balance Badge */
+.lastroll-kp-badge {
+  font-family: var(--lr-FM) !important;
+  background: rgba(0,232,255,.06) !important;
+  border: 1px solid rgba(0,232,255,.2) !important;
+  color: var(--lr-c) !important;
+  letter-spacing: 1px;
+}
+
+.lastroll-kp-badge.balance-low {
+  border-color: rgba(255,34,85,.3) !important;
+  color: var(--lr-red) !important;
+  background: rgba(255,34,85,.06) !important;
+}
+
+/* ── GLASS CARDS ── */
+.lastroll-page .lastroll-card,
+.lastroll-page .glass-card-neon {
+  background: var(--lr-glass) !important;
+  border: 1px solid rgba(0,232,255,.1) !important;
+  backdrop-filter: blur(20px);
+  border-radius: 4px !important;
+  position: relative;
+  transition: border-color .3s;
+}
+
+.lastroll-page .lastroll-card::before,
+.lastroll-page .glass-card-neon::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,232,255,.2), transparent);
+  pointer-events: none;
+}
+
+.lastroll-page .lastroll-card:hover,
+.lastroll-page .glass-card-neon:hover {
+  border-color: rgba(0,232,255,.18) !important;
+}
+
+.lastroll-card-title {
+  font-family: var(--lr-FD) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 3px !important;
+  color: var(--lr-c) !important;
+  text-transform: uppercase;
+}
+
+/* ── TABLE — holographic rooms list ── */
+.lastroll-page .lastroll-table {
+  --bs-table-bg: transparent !important;
+  --bs-table-hover-bg: rgba(0,232,255,.04) !important;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.lastroll-page .lastroll-table thead th {
+  font-family: var(--lr-FD) !important;
+  font-size: 8px !important;
+  font-weight: 700 !important;
+  letter-spacing: 2.5px !important;
+  text-transform: uppercase;
+  color: var(--lr-t3) !important;
+  border-bottom: 1px solid rgba(0,232,255,.08) !important;
+  padding: 10px 12px !important;
+  background: rgba(0,232,255,.02);
+}
+
+.lastroll-page .lastroll-table tbody td {
+  font-family: var(--lr-FB) !important;
+  font-size: 14px !important;
+  color: var(--lr-t1) !important;
+  border-bottom: 1px solid rgba(0,232,255,.04) !important;
+  padding: 10px 12px !important;
+  vertical-align: middle;
+}
+
+.lastroll-page .lastroll-table tbody tr {
+  transition: background .2s;
+}
+
+.lastroll-page .lastroll-table tbody tr:hover {
+  background: rgba(0,232,255,.04) !important;
+}
+
+.lastroll-page .lastroll-table code {
+  font-family: var(--lr-FM) !important;
+  font-size: 13px !important;
+  letter-spacing: 3px !important;
+  color: var(--lr-gold) !important;
+  background: rgba(255,204,0,.06) !important;
+  padding: 2px 8px;
+  border: 1px solid rgba(255,204,0,.15);
+}
+
+/* ── ONLINE USERS LIST ── */
+#online-list li,
+#online-list .d-flex {
+  font-family: var(--lr-FB) !important;
+  font-size: 14px !important;
+  padding: 6px 0 !important;
+  border-bottom: 1px solid rgba(0,232,255,.04);
+  transition: background .15s;
+}
+
+#online-list li:hover,
+#online-list .d-flex:hover {
+  background: rgba(0,232,255,.03);
+}
+
+#online-count {
+  font-family: var(--lr-FM) !important;
+  font-size: 10px !important;
+  background: rgba(0,255,153,.15) !important;
+  color: var(--lr-green) !important;
+  border: 1px solid rgba(0,255,153,.25);
+  letter-spacing: 1px;
+}
+
+/* ── RULES ── */
+.lastroll-rules li {
+  font-family: var(--lr-FB) !important;
+  color: var(--lr-t2) !important;
+  line-height: 1.5;
+}
+
+/* ── BUTTONS — KND holographic style ── */
+.lastroll-page .lastroll-btn-primary {
+  font-family: var(--lr-FD) !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase;
+  background: transparent !important;
+  border: 1px solid var(--lr-c) !important;
+  color: var(--lr-c) !important;
+  border-radius: 0 !important;
+  clip-path: polygon(5px 0%, 100% 0%, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+  transition: all .25s !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.lastroll-page .lastroll-btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(0,232,255,.06), transparent);
+  animation: lrBtnSweep 3s ease infinite;
+}
+
+@keyframes lrBtnSweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.lastroll-page .lastroll-btn-primary:hover {
+  box-shadow: 0 0 22px rgba(0,232,255,.2) !important;
+  background: rgba(0,232,255,.08) !important;
+}
+
+.lastroll-page .lastroll-btn-secondary {
+  font-family: var(--lr-FD) !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase;
+  background: transparent !important;
+  border: 1px solid rgba(255,255,255,.1) !important;
+  color: var(--lr-t2) !important;
+  border-radius: 0 !important;
+  clip-path: polygon(5px 0%, 100% 0%, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+  transition: all .25s !important;
+}
+
+.lastroll-page .lastroll-btn-secondary:hover {
+  border-color: var(--lr-t2) !important;
+  box-shadow: 0 0 12px rgba(255,255,255,.05) !important;
+}
+
+/* Join button in table */
+.lastroll-page .btn-join-room,
+.lastroll-page .btn-outline-neon {
+  font-family: var(--lr-FD) !important;
+  font-size: 9px !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase;
+  background: transparent !important;
+  border: 1px solid var(--lr-c) !important;
+  color: var(--lr-c) !important;
+  border-radius: 0 !important;
+  padding: 4px 12px !important;
+  transition: all .2s;
+}
+
+.lastroll-page .btn-join-room:hover,
+.lastroll-page .btn-outline-neon:hover {
+  background: rgba(0,232,255,.1) !important;
+  box-shadow: 0 0 14px rgba(0,232,255,.2);
+}
+
+/* ── MODALS — holographic glass (match lobby cards) ── */
+.lastroll-page .lastroll-modal-content,
+.lastroll-page .modal-content.lastroll-modal-content {
+  background: var(--lr-glass) !important;
+  border: 1px solid rgba(0,232,255,.18) !important;
+  backdrop-filter: blur(24px);
+  border-radius: 4px !important;
+  box-shadow:
+    0 24px 64px rgba(0,0,0,.55),
+    0 0 0 1px rgba(0,232,255,.06) inset,
+    0 0 48px rgba(0,232,255,.08);
+  overflow: hidden;
+  position: relative;
+}
+
+.lastroll-page .lastroll-modal-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,232,255,.35), transparent);
+  pointer-events: none;
+}
+
+.lastroll-page .lastroll-modal-dialog {
+  max-width: min(440px, calc(100vw - 1.5rem));
+}
+
+.lastroll-page #modal-myrooms .lastroll-modal-dialog {
+  max-width: min(720px, calc(100vw - 1.5rem));
+}
+
+.lastroll-page .lastroll-modal-header {
+  border-bottom: 1px solid rgba(0,232,255,.1) !important;
+  background: rgba(0,232,255,.04);
+  padding: 1rem 1.25rem;
+}
+
+.lastroll-page .lastroll-modal-body {
+  padding: 1.25rem 1.25rem 1.5rem;
+}
+
+.lastroll-page .lastroll-modal-body-scroll {
+  max-height: min(60vh, 520px);
+  overflow-y: auto;
+}
+
+.lastroll-page .modal-title {
+  font-family: var(--lr-FD) !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 3px !important;
+  color: var(--lr-c) !important;
+  text-transform: uppercase;
+}
+
+.lastroll-page .lastroll-modal-close {
+  opacity: 0.55;
+  filter: brightness(0.6) invert(0);
+  transition: opacity .2s, box-shadow .2s;
+}
+
+.lastroll-page .lastroll-modal-close:hover {
+  opacity: 0.95;
+  box-shadow: 0 0 20px rgba(0,232,255,.2);
+}
+
+.lastroll-page .modal-body .form-label {
+  font-family: var(--lr-FM) !important;
+  font-size: 10px !important;
+  letter-spacing: 2px !important;
+  color: var(--lr-t3) !important;
+  text-transform: uppercase;
+}
+
+.lastroll-page .modal-body .form-select,
+.lastroll-page .modal-body .form-control {
+  background: rgba(0,0,0,.35) !important;
+  border: 1px solid rgba(0,232,255,.15) !important;
+  color: var(--lr-t1) !important;
+  font-family: var(--lr-FM) !important;
+  font-size: 13px !important;
+  border-radius: 2px !important;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.lastroll-page .modal-body .form-select:focus,
+.lastroll-page .modal-body .form-control:focus {
+  border-color: var(--lr-c) !important;
+  box-shadow: 0 0 0 1px rgba(0,232,255,.2), 0 0 16px rgba(0,232,255,.12) !important;
+  outline: none;
+}
+
+.lastroll-page .modal-body .form-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300e8ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.75rem center !important;
+  background-size: 16px 12px !important;
+  padding-right: 2.5rem !important;
+}
+
+body.modal-open .modal-backdrop.show {
+  background: rgba(1, 5, 8, 0.82) !important;
+  backdrop-filter: blur(6px);
+}
+
+.lastroll-page .lastroll-modal-payout-hint {
+  font-family: var(--lr-FB) !important;
+  color: var(--lr-t2) !important;
+  padding: 0.65rem 0.85rem;
+  background: rgba(0,232,255,.04);
+  border: 1px solid rgba(0,232,255,.12);
+  border-radius: 2px;
+  letter-spacing: 0.3px;
+}
+
+.lastroll-page .lastroll-modal-payout-hint strong,
+.lastroll-page .lastroll-modal-payout-hint #create-payout-preview {
+  font-family: var(--lr-FD) !important;
+  color: var(--lr-gold) !important;
+}
+
+/* ── BADGES ── */
+.lastroll-page .badge.bg-secondary {
+  font-family: var(--lr-FM) !important;
+  background: rgba(255,255,255,.06) !important;
+  color: var(--lr-t2) !important;
+  border: 1px solid rgba(255,255,255,.1);
+  letter-spacing: 1px;
+}
+
+.lastroll-page .badge.bg-success {
+  background: rgba(0,255,153,.12) !important;
+  color: var(--lr-green) !important;
+  border: 1px solid rgba(0,255,153,.25);
+}
+
+.lastroll-page .badge.bg-warning {
+  background: rgba(255,204,0,.1) !important;
+  color: var(--lr-gold) !important;
+  border: 1px solid rgba(255,204,0,.2);
+}
+
+.lastroll-page .badge.bg-danger {
+  background: rgba(255,34,85,.1) !important;
+  color: var(--lr-red) !important;
+  border: 1px solid rgba(255,34,85,.2);
+}
+
+.lastroll-page .badge.bg-info {
+  background: rgba(0,232,255,.1) !important;
+  color: var(--lr-c) !important;
+  border: 1px solid rgba(0,232,255,.2);
+}
+
+.lastroll-page .badge.bg-dark {
+  background: rgba(0,0,0,.4) !important;
+  border: 1px solid rgba(0,232,255,.12) !important;
+}
+
+/* ── MISC OVERRIDES ── */
+.lastroll-page .text-white-50 {
+  color: var(--lr-t3) !important;
+}
+
+.lastroll-page strong {
+  color: var(--lr-t1);
+}
+
+.lastroll-page .list-group-item {
+  background: transparent !important;
+  border-color: rgba(0,232,255,.06) !important;
+  transition: background .15s;
+}
+
+.lastroll-page .list-group-item:hover {
+  background: rgba(0,232,255,.03) !important;
+}
+
+.lastroll-page .btn-close-white {
+  filter: brightness(0.6) invert(0);
+  opacity: 0.5;
+  transition: opacity .2s;
+}
+
+.lastroll-page .btn-close-white:hover {
+  opacity: 0.9;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .lastroll-brand {
+    font-size: 16px !important;
+    letter-spacing: 3px !important;
+  }
+  
+  .lastroll-page .lastroll-btn-primary,
+  .lastroll-page .lastroll-btn-secondary {
+    font-size: 9px !important;
+    padding: 6px 12px !important;
+  }
+}
+
+/* Center column scroll — Mind Wars shell */
+.lastroll-center-wrap {
+  min-width: 0;
+  max-height: min(78vh, calc(100vh - 200px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+/* How to Play — full width band */
+.lastroll-card.lastroll-rules-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* LastRoll base + game class on same shell (match lastroll-holo game feel) */
+.lastroll-page.lastroll-game {
+  background: var(--lr-void) !important;
+  color: var(--lr-t1);
+  font-family: var(--lr-FB);
+}
+
+/* Bootstrap modals above .lastroll-page::after scanlines (z-index 9999) */
+body.modal-open .modal-backdrop {
+  z-index: 10050 !important;
+}
+body.modal-open .modal {
+  z-index: 10055 !important;
+}
+
+/* Embed-only lobby (death-roll-lobby.php?embed=1) */
+body.arena-embed.lastroll-context {
+  background: var(--lr-void) !important;
+}
+body.arena-embed.lastroll-context .lastroll-hero {
+  padding-top: 0.75rem !important;
+}

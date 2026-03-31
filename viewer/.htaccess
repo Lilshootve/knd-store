@@ -1,0 +1,8 @@
+<IfModule mod_headers.c>
+    # Allow this viewer to be embedded inside KND Labs shell (same origin)
+    Header always unset X-Frame-Options
+    Header always unset Content-Security-Policy
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Content-Security-Policy "frame-ancestors 'self';"
+</IfModule>
+

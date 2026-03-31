@@ -1,0 +1,84 @@
+/* Animaciones base y microinteracciones del sistema (FASE 1) */
+
+@keyframes portal-float-soft {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    50% {
+        transform: translate3d(0, -6px, 0);
+    }
+    100% {
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes portal-glow-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.45);
+    }
+    70% {
+        box-shadow: 0 0 40px 12px rgba(0, 229, 255, 0.18);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 229, 255, 0);
+    }
+}
+
+@keyframes portal-star-twinkle {
+    0%,
+    100% {
+        opacity: 0.25;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes portal-parallax-slow {
+    0% {
+        transform: scale(1.06) translate3d(-12px, 0, 0);
+    }
+    50% {
+        transform: scale(1.08) translate3d(12px, -6px, 0);
+    }
+    100% {
+        transform: scale(1.06) translate3d(-12px, 0, 0);
+    }
+}
+
+@keyframes portal-parallax-noise {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    50% {
+        transform: translate3d(8px, -4px, 0);
+    }
+    100% {
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.portal-shell-header {
+    animation: portal-float-soft 14s ease-in-out infinite;
+}
+
+.portal-panel--status {
+    animation: portal-float-soft 18s ease-in-out infinite;
+}
+
+.portal-brand-mark {
+    animation: portal-glow-pulse 4.6s ease-out infinite;
+}
+
+.portal-space-stars {
+    animation: portal-star-twinkle 9s ease-in-out infinite;
+}
+
+.portal-hero-galaxy::before {
+    animation: portal-parallax-slow 46s ease-in-out infinite;
+}
+
+.portal-hero-noise {
+    animation: portal-parallax-noise 38s ease-in-out infinite;
+}
+

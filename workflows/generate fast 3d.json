@@ -1,0 +1,104 @@
+{
+  "12": {
+    "inputs": {
+      "image": "Diseño sin título (6).png"
+    },
+    "class_type": "Hy3D21LoadImageWithTransparency",
+    "_meta": {
+      "title": "Hunyuan 3D 2.1 Load Image with Transparency"
+    }
+  },
+  "13": {
+    "inputs": {
+      "model": "model.fp16 .ckpt",
+      "steps": 30,
+      "guidance_scale": 5,
+      "seed": 491516054437577,
+      "attention_mode": "sdpa",
+      "image": [
+        "12",
+        2
+      ]
+    },
+    "class_type": "Hy3DMeshGenerator",
+    "_meta": {
+      "title": "Hunyuan 3D 2.1 Mesh Generator"
+    }
+  },
+  "14": {
+    "inputs": {
+      "model_name": "model.fp16.ckpt"
+    },
+    "class_type": "Hy3D21VAELoader",
+    "_meta": {
+      "title": "Hunyuan 3D 2.1 VAE Loader"
+    }
+  },
+  "15": {
+    "inputs": {
+      "box_v": 1.01,
+      "octree_resolution": 384,
+      "num_chunks": 8000,
+      "mc_level": 0,
+      "mc_algo": "mc",
+      "enable_flash_vdm": true,
+      "force_offload": false,
+      "vae": [
+        "14",
+        0
+      ],
+      "latents": [
+        "13",
+        0
+      ]
+    },
+    "class_type": "Hy3D21VAEDecode",
+    "_meta": {
+      "title": "Hunyuan 3D 2.1 VAE Decoder"
+    }
+  },
+  "16": {
+    "inputs": {
+      "remove_floaters": true,
+      "remove_degenerate_faces": true,
+      "reduce_faces": true,
+      "max_facenum": 50000,
+      "smooth_normals": false,
+      "trimesh": [
+        "15",
+        0
+      ]
+    },
+    "class_type": "Hy3D21PostprocessMesh",
+    "_meta": {
+      "title": "Hunyuan 3D 2.1 Post Process Trimesh"
+    }
+  },
+  "18": {
+    "inputs": {
+      "trimesh": [
+        "16",
+        0
+      ]
+    },
+    "class_type": "Hy3D21MeshUVWrap",
+    "_meta": {
+      "title": "Hunyuan 3D 2.1 Mesh UV Wrap"
+    }
+  },
+  "23": {
+    "inputs": {
+      "filename_prefix": "3D/Hy3D",
+      "file_format": "glb",
+      "save_file": true,
+      "trimesh": [
+        "18",
+        0
+      ]
+    },
+    "class_type": "Hy3D21ExportMesh",
+    "_meta": {
+      "title": "Hunyuan 3D 2.1 Export Mesh"
+    }
+  }
+}

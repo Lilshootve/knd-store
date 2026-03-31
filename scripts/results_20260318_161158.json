@@ -1,0 +1,59 @@
+{
+    "seed": 42,
+    "timestamp": "2026-03-18 16:11:58",
+    "battles": 1,
+    "results": [
+        {
+            "winner": "B",
+            "turns": 11,
+            "team_a": [
+                "Sigmund Freud",
+                "Joan of Arc"
+            ],
+            "team_b": [
+                "Leonidas",
+                "Miyamoto Musashi"
+            ],
+            "damage_by_char": {
+                "Sigmund Freud": 467,
+                "Leonidas": 263,
+                "Miyamoto Musashi": 455,
+                "Joan of Arc": 247
+            },
+            "effects_count": 0,
+            "cc_count": 0
+        }
+    ],
+    "stats": {
+        "team_a_wins": 0,
+        "team_b_wins": 1,
+        "draws": 0,
+        "avg_duration": 11,
+        "avg_cc_per_combat": 0
+    },
+    "team_stats": {
+        "team_a_wins": 0,
+        "team_b_wins": 1,
+        "draws": 0,
+        "team_a_avg_duration": 0,
+        "team_b_avg_duration": 11,
+        "team_a_total_damage": 714,
+        "team_b_total_damage": 718
+    },
+    "char_winrate": {
+        "Leonidas": 1,
+        "Miyamoto Musashi": 1
+    },
+    "char_appearances": {
+        "Sigmund Freud": 1,
+        "Joan of Arc": 1,
+        "Leonidas": 1,
+        "Miyamoto Musashi": 1
+    },
+    "char_damage": {
+        "Sigmund Freud": 467,
+        "Miyamoto Musashi": 455,
+        "Leonidas": 263,
+        "Joan of Arc": 247
+    }
+}

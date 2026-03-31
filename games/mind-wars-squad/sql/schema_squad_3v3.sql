@@ -1,0 +1,27 @@
+-- ══════════════════════════════════════════════════════════════
+--  Mind Wars Squad 3v3 — DB notes (KND Store)
+-- ══════════════════════════════════════════════════════════════
+--
+-- Squad battles use the SAME table as 1v1 Mind Wars:
+--   knd_mind_wars_battles
+-- with:
+--   mode = 'pve_3v3'
+--   state_json.meta.format = '3v3_squad'
+--
+-- No extra table is required for the squad mode to work.
+--
+-- ── If you ran an OLD version of this file ────────────────────
+-- Older drafts created `mw_battles` and `mw_squad_action_log`.
+-- The PHP code does NOT use those tables. If you want a clean DB:
+--
+--   DROP TABLE IF EXISTS mw_squad_action_log;
+--   DROP TABLE IF EXISTS mw_battles;
+--
+-- (Only if nothing else in your environment depends on them.)
+--
+-- ── Optional: index for admin / analytics ─────────────────────
+-- Uncomment if you query many rows by mode + open battles:
+--
+-- ALTER TABLE knd_mind_wars_battles
+--   ADD INDEX idx_mwb_mode_result (mode, result);
+--

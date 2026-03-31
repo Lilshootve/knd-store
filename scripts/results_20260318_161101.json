@@ -1,0 +1,188 @@
+{
+    "seed": 42,
+    "timestamp": "2026-03-18 16:11:01",
+    "battles": 5,
+    "results": [
+        {
+            "winner": "A",
+            "turns": 6,
+            "team_a": [
+                "Sigmund Freud",
+                "Joan of Arc"
+            ],
+            "team_b": [
+                "Leonidas",
+                "Miyamoto Musashi"
+            ],
+            "damage_by_char": {
+                "Sigmund Freud": 723,
+                "Leonidas": 56,
+                "Miyamoto Musashi": 70
+            },
+            "effects_count": 0,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "Aladdín",
+                "Stephen Hawking",
+                "Zeus"
+            ],
+            "team_b": [
+                "Little Red Riding Hood",
+                "Clara Barton",
+                "George Washington"
+            ],
+            "damage_by_char": {
+                "Little Red Riding Hood": 958,
+                "Aladdín": 113,
+                "Zeus": 247,
+                "Clara Barton": 336
+            },
+            "effects_count": 2,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 7,
+            "team_a": [
+                "Carl Jung",
+                "Sun Tzu"
+            ],
+            "team_b": [
+                "Sandman",
+                "Achilles"
+            ],
+            "damage_by_char": {
+                "Sandman": 924,
+                "Sun Tzu": 205
+            },
+            "effects_count": 3,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 14,
+            "team_a": [
+                "Corrupted Odin",
+                "Sigmund Freud",
+                "Wendigo"
+            ],
+            "team_b": [
+                "Puss in Boots",
+                "Genghis Khan",
+                "Albert Einstein"
+            ],
+            "damage_by_char": {
+                "Puss in Boots": 734,
+                "Sigmund Freud": 176,
+                "Wendigo": 418,
+                "Genghis Khan": 378
+            },
+            "effects_count": 6,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Fenrir",
+                "Niccolo Machiavelli",
+                "Abraham Lincoln"
+            ],
+            "team_b": [
+                "Arthur King",
+                "Frankenstein",
+                "Dracula"
+            ],
+            "damage_by_char": {
+                "Fenrir": 875,
+                "Frankenstein": 154,
+                "Dracula": 798,
+                "Niccolo Machiavelli": 281,
+                "Abraham Lincoln": 156
+            },
+            "effects_count": 2,
+            "cc_count": 0
+        }
+    ],
+    "stats": {
+        "team_a_wins": 2,
+        "team_b_wins": 3,
+        "draws": 0,
+        "avg_duration": 11.2,
+        "avg_cc_per_combat": 0.2
+    },
+    "team_stats": {
+        "team_a_wins": 2,
+        "team_b_wins": 3,
+        "draws": 0,
+        "team_a_avg_duration": 10,
+        "team_b_avg_duration": 12,
+        "team_a_total_damage": 3194,
+        "team_b_total_damage": 4408
+    },
+    "char_winrate": {
+        "Sigmund Freud": 1,
+        "Joan of Arc": 1,
+        "Little Red Riding Hood": 1,
+        "Clara Barton": 1,
+        "George Washington": 1,
+        "Sandman": 1,
+        "Achilles": 1,
+        "Puss in Boots": 1,
+        "Genghis Khan": 1,
+        "Albert Einstein": 1,
+        "Fenrir": 1,
+        "Niccolo Machiavelli": 1,
+        "Abraham Lincoln": 1
+    },
+    "char_appearances": {
+        "Sigmund Freud": 2,
+        "Joan of Arc": 1,
+        "Leonidas": 1,
+        "Miyamoto Musashi": 1,
+        "Aladdín": 1,
+        "Stephen Hawking": 1,
+        "Zeus": 1,
+        "Little Red Riding Hood": 1,
+        "Clara Barton": 1,
+        "George Washington": 1,
+        "Carl Jung": 1,
+        "Sun Tzu": 1,
+        "Sandman": 1,
+        "Achilles": 1,
+        "Corrupted Odin": 1,
+        "Wendigo": 1,
+        "Puss in Boots": 1,
+        "Genghis Khan": 1,
+        "Albert Einstein": 1,
+        "Fenrir": 1,
+        "Niccolo Machiavelli": 1,
+        "Abraham Lincoln": 1,
+        "Arthur King": 1,
+        "Frankenstein": 1,
+        "Dracula": 1
+    },
+    "char_damage": {
+        "Little Red Riding Hood": 958,
+        "Sandman": 924,
+        "Sigmund Freud": 899,
+        "Fenrir": 875,
+        "Dracula": 798,
+        "Puss in Boots": 734,
+        "Wendigo": 418,
+        "Genghis Khan": 378,
+        "Clara Barton": 336,
+        "Niccolo Machiavelli": 281,
+        "Zeus": 247,
+        "Sun Tzu": 205,
+        "Abraham Lincoln": 156,
+        "Frankenstein": 154,
+        "Aladdín": 113,
+        "Miyamoto Musashi": 70,
+        "Leonidas": 56
+    }
+}

@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MIND WARS — Squad Arena 3v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+/*══════════════════════════════════════════════════════════════════
+  RESET & ROOT — canonical KND palette from mind-wars-arena.php
+══════════════════════════════════════════════════════════════════*/
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --void:#010408;--deep:#030a10;--surface:#05111a;--surface2:#071520;
+  --c:#00f0ff;--c2:#00a8bb;--cg:rgba(0,240,255,.14);--cb:rgba(0,240,255,.22);
+  --m:#d400ff;--mg:rgba(212,0,255,.14);--mb:rgba(212,0,255,.28);
+  --gold:#ffc820;--red:#ff2244;--green:#00ff88;--orange:#ff8800;
+  --t1:rgba(220,245,255,.93);--t2:rgba(150,210,230,.6);--t3:rgba(90,160,185,.38);--t4:rgba(60,120,145,.2);
+  --FD:'Orbitron',monospace;--FB:'Rajdhani',sans-serif;--FM:'Share Tech Mono',monospace;
+  /* Rarity */
+  --r-common:#4a7a8a;--r-special:#1aaa6a;--r-rare:#1a6aee;--r-epic:#c040ff;--r-legendary:#ffc030;
+  /* Ability types */
+  --t-passive:#4a9aff;--t-ability:#00f0ff;--t-special:#d400ff;--t-heal:#20e080;--t-attack:#ff4060;--t-defense:#40c0ff;
+}
+html,body{height:100%;overflow:hidden}
+body{background:var(--void);color:var(--t1);font-family:var(--FB);cursor:default;user-select:none}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 3px)}
+
+#app{width:100%;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+/*══════════════════════════════════════════════════════════════════
+  LOBBY TOPBAR (injected by battlefield.php) + turn / round strip
+══════════════════════════════════════════════════════════════════*/
+header.topbar{flex-shrink:0}
+#battle-hud-strip{
+  display:flex;align-items:center;justify-content:center;
+  padding:6px 16px;
+  background:linear-gradient(180deg,rgba(1,4,8,.92),rgba(1,4,8,.75));
+  border-bottom:1px solid rgba(0,240,255,.08);
+  min-height:36px;z-index:19;flex-shrink:0;position:relative;
+}
+#battle-hud-strip::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 5%,var(--c) 30%,var(--m) 50%,var(--c) 70%,transparent 95%);opacity:.22}
+.bhs-center{display:flex;flex-direction:column;align-items:center;gap:2px}
+#tl{font-family:var(--FD);font-size:11px;font-weight:900;letter-spacing:5px;text-shadow:0 0 18px rgba(0,240,255,.4)}
+#rl{font-family:var(--FM);font-size:8px;letter-spacing:2px;color:var(--t3);margin-top:1px}
+
+/*══════════════════════════════════════════════════════════════════
+  ARENA VIEWPORT — Three.js canvas (squad-arena style HUD)
+══════════════════════════════════════════════════════════════════*/
+#arena{flex:1;position:relative;overflow:hidden;min-height:0}
+#canvas-container{position:absolute;inset:0;z-index:0;overflow:hidden}
+#three-container{position:absolute;inset:0;z-index:1;overflow:hidden;background:#000}
+#three-canvas{width:100%;height:100%;display:block;touch-action:none}
+#mw-floating-pops{position:absolute;inset:0;pointer-events:none;z-index:12;overflow:hidden}
+.mw-dp{position:absolute;transform:translate(-50%,-50%);z-index:100;font-family:var(--FD);font-weight:900;letter-spacing:2px;pointer-events:none;white-space:nowrap}
+.mw-dp.damage{color:var(--red);font-size:22px;text-shadow:0 0 10px rgba(255,34,68,.6),0 2px 4px #000;animation:fUp 1.15s ease-out forwards}
+.mw-dp.crit{color:var(--gold);font-size:28px;text-shadow:0 0 14px rgba(255,200,32,.7),0 2px 4px #000;animation:fUpCrit 1.2s ease-out forwards}
+.mw-dp.heal{color:var(--green);font-size:18px;text-shadow:0 0 8px rgba(0,255,136,.5);animation:fUp 1.15s ease-out forwards}
+.mw-dp.miss{color:var(--t2);font-size:14px;font-family:var(--FM);letter-spacing:3px;animation:fUp 1.15s ease-out forwards}
+.mw-dp.block{color:var(--c);font-size:14px;animation:fUp 1.15s ease-out forwards}
+#mw-arena-hud{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:10}
+#mw-round-banner{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.72);border:1px solid rgba(0,240,255,.35);padding:4px 18px;font-family:var(--FM);font-size:9px;letter-spacing:3px;color:var(--c);display:none}
+/* ── FLOATING HP BARS (projected over 3D models) ── */
+#mw-hp-overlay{position:absolute;inset:0;pointer-events:none;z-index:13;overflow:hidden}
+.mw-hp-float{position:absolute;transform:translate(-50%,0);display:flex;flex-direction:column;align-items:center;gap:1px;transition:left .1s,top .1s}
+.mw-hp-float-name{font-family:var(--FD);font-size:8px;font-weight:700;letter-spacing:1.5px;color:rgba(220,240,255,.9);text-shadow:0 1px 4px rgba(0,0,0,.9),0 0 8px rgba(0,240,255,.2);white-space:nowrap}
+.mw-hp-float-name.enemy{color:rgba(255,200,220,.9);text-shadow:0 1px 4px rgba(0,0,0,.9),0 0 8px rgba(212,0,255,.2)}
+.mw-hp-float-track{width:90px;height:7px;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.12);border-radius:1px;overflow:hidden;position:relative}
+.mw-hp-float-fill{height:100%;transition:width .4s cubic-bezier(.2,.8,.2,1);border-radius:0}
+.mw-hp-float-fill.player{background:linear-gradient(90deg,#0088ff,#00ddff);box-shadow:inset 0 -1px 0 rgba(0,0,0,.3),0 0 6px rgba(0,200,255,.3)}
+.mw-hp-float-fill.enemy{background:linear-gradient(90deg,#ff3344,#ff7744);box-shadow:inset 0 -1px 0 rgba(0,0,0,.3),0 0 6px rgba(255,60,80,.3)}
+.mw-hp-float-fill.low{background:linear-gradient(90deg,#ff8800,#ffcc00)!important;box-shadow:inset 0 -1px 0 rgba(0,0,0,.3),0 0 8px rgba(255,150,0,.4)!important}
+.mw-hp-float-fill.crit{background:linear-gradient(90deg,#ff0022,#ff3344)!important;animation:hpCritPulse .8s ease-in-out infinite!important}
+@keyframes hpCritPulse{0%,100%{box-shadow:0 0 4px rgba(255,0,30,.4)}50%{box-shadow:0 0 12px rgba(255,0,30,.8)}}
+.mw-hp-float-nums{font-family:var(--FM);font-size:7px;color:rgba(200,220,255,.65);letter-spacing:.5px;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+
+/* ── CORNER HP BARS (secondary, semi-transparent — floating bars are primary) ── */
+.mw-hp-bar-group{position:absolute;display:flex;flex-direction:column;gap:5px;pointer-events:none;opacity:0.5}
+#mw-player-bars{bottom:12px;left:10px}
+#mw-enemy-bars{bottom:12px;right:10px;align-items:flex-end}
+.mw-unit-hp-block{display:flex;flex-direction:column;gap:2px}
+.mw-unit-hp-block.enemy{align-items:flex-end}
+.mw-unit-name-tag{font-family:var(--FM);font-size:7px;letter-spacing:1.2px;color:rgba(200,220,255,.75)}
+.mw-unit-name-tag.enemy{color:rgba(255,150,180,.75)}
+.mw-hp-track{width:108px;height:5px;background:rgba(255,255,255,.08);border-radius:0;overflow:hidden;position:relative}
+.mw-hp-fill{height:100%;transition:width .45s ease;position:relative}
+.mw-hp-fill.player{background:linear-gradient(90deg,#0088ff,#00ddff)}
+.mw-hp-fill.enemy{background:linear-gradient(90deg,#ff4444,#ff8800)}
+.mw-hp-fill.enemy.low{background:linear-gradient(90deg,#ff8800,#ffcc00)}
+.mw-hp-nums{font-family:var(--FM);font-size:7px;color:rgba(200,220,255,.45);letter-spacing:.5px}
+.mw-hp-nums.enemy{text-align:right}
+#mw-center-fx{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%);pointer-events:none;text-align:center}
+#mw-dmg-number{font-size:0;color:#ff4444;font-weight:700;letter-spacing:2px;transition:all .1s;text-shadow:0 0 10px rgba(255,68,68,.8);opacity:0;font-family:var(--FD)}
+#mw-flash-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:#fff;opacity:0;pointer-events:none;z-index:20}
+#mw-cinematic-bars-top{position:absolute;top:0;left:0;right:0;height:0;background:#000;transition:height .3s ease;z-index:15}
+#mw-cinematic-bars-bot{position:absolute;bottom:0;left:0;right:0;height:0;background:#000;transition:height .3s ease;z-index:15}
+#mw-ability-caption{position:absolute;bottom:44px;left:50%;transform:translateX(-50%);opacity:0;text-align:center;transition:opacity .3s;pointer-events:none}
+#mw-ability-name{font-family:var(--FD);font-size:13px;letter-spacing:3px;color:#fff;font-weight:700}
+#mw-ability-sub{font-family:var(--FM);font-size:8px;letter-spacing:2px;color:rgba(255,200,0,.85);margin-top:2px}
+
+/* BG */
+#abg{position:absolute;inset:0;z-index:0}
+.abg-sky{position:absolute;inset:0;background:linear-gradient(180deg,#080c18 0%,#0d1525 30%,#14213d 55%,#1a1a3e 70%,#1e1530 100%)}
+.abg-stars{position:absolute;inset:0}.abg-hz{position:absolute;top:24%;left:0;right:0;height:26%;
+  background:linear-gradient(180deg,rgba(160,90,40,.06),rgba(0,180,255,.025),transparent)}
+.star{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d,3s) ease-in-out infinite var(--dl,0s)}
+@keyframes tw{0%,100%{opacity:.15}50%{opacity:var(--p,.65)}}
+
+/* Floor */
+#afl{position:absolute;bottom:0;left:50%;width:150%;transform:translateX(-50%);height:60%;perspective:520px;z-index:1}
+#afp{width:100%;height:100%;transform:rotateX(55deg);transform-origin:bottom center;position:relative}
+#afg{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,240,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.05) 1px,transparent 1px);
+  background-size:52px 52px;mask-image:radial-gradient(ellipse 62% 82% at 50% 55%,black 12%,transparent 72%)}
+#afglow{position:absolute;inset:0;background:radial-gradient(ellipse 42% 50% at 50% 48%,rgba(0,240,255,.045),transparent 60%)}
+
+/* Ring */
+#aring{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:80%;height:0;padding-bottom:30%;z-index:2;pointer-events:none}
+#aring::before{content:'';position:absolute;inset:0;border:1px solid rgba(0,240,255,.1);border-radius:50%;
+  box-shadow:0 0 22px rgba(0,240,255,.04),inset 0 0 22px rgba(0,240,255,.02);animation:rpl 4s ease-in-out infinite}
+@keyframes rpl{0%,100%{opacity:.35}50%{opacity:.8}}
+
+/* Command frame */
+#cfr{position:absolute;inset:0;z-index:10;pointer-events:none}
+.fe{position:absolute;pointer-events:auto}
+.fe.l{left:0;top:0;bottom:0;width:50px;background:linear-gradient(to right,rgba(3,16,28,.94),rgba(3,16,28,.4),transparent)}
+.fe.r{right:0;top:0;bottom:0;width:50px;background:linear-gradient(to left,rgba(3,16,28,.94),rgba(3,16,28,.4),transparent)}
+.fpn{position:absolute;width:36px;height:65px;background:rgba(3,16,28,.9);border:1px solid rgba(0,240,255,.09);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-radius:2px}
+.fpn.tl{left:6px;top:40px}.fpn.bl{left:6px;bottom:40px}.fpn.tr{right:6px;top:40px}.fpn.br{right:6px;bottom:40px}
+.fl{width:6px;height:6px;border-radius:1px;box-shadow:0 0 5px currentColor}
+.fl.cy{background:var(--c);color:var(--c)}.fl.or{background:var(--orange);color:var(--orange)}
+.fl.gn{background:var(--green);color:var(--green)}.fl.off{background:rgba(60,80,100,.1);color:transparent;box-shadow:none}
+.fb{position:absolute;height:2px;background:linear-gradient(90deg,var(--c),var(--m),var(--c));border-radius:1px;
+  box-shadow:0 0 6px rgba(0,240,255,.2);animation:fbp 3s ease-in-out infinite}
+.fb.ftl{top:10px;left:52px;width:90px}.fb.ftr{top:10px;right:52px;width:90px}
+@keyframes fbp{0%,100%{opacity:.3}50%{opacity:.8}}
+
+/*══════════════════════════════════════════════════════════════════
+  UNIT PLATFORMS
+══════════════════════════════════════════════════════════════════*/
+#units{position:absolute;inset:0;z-index:5}
+.up{position:absolute;display:flex;flex-direction:column;align-items:center;transform:translate(-50%,-50%);
+  transition:all .4s cubic-bezier(.2,.8,.2,1);cursor:pointer;z-index:5}
+.up:hover{z-index:8}
+.up.dead{opacity:.15;pointer-events:none;filter:grayscale(1) brightness(.4)}
+.up.tgt .pb{box-shadow:0 0 26px rgba(255,34,68,.5);border-color:rgba(255,34,68,.5)}
+.up.tgt .pb::after{background:rgba(255,34,68,.06)}
+.up.act .uf{animation:abounce .5s ease}
+@keyframes abounce{0%{transform:translateY(0) scale(1)}30%{transform:translateY(-14px) scale(1.1)}100%{transform:translateY(0) scale(1)}}
+.up.sel .pb{border-color:var(--c);box-shadow:0 0 26px rgba(0,240,255,.35)}
+/* Arena shake from arena.php */
+.up.shaking{animation:shake .44s cubic-bezier(.36,.07,.19,.97)!important}
+@keyframes shake{0%,100%{transform:translate(-50%,-50%) translateX(0)}15%{transform:translate(-50%,-50%) translateX(-7px)}30%{transform:translate(-50%,-50%) translateX(7px)}45%{transform:translate(-50%,-50%) translateX(-4px)}60%{transform:translate(-50%,-50%) translateX(4px)}75%{transform:translate(-50%,-50%) translateX(-2px)}}
+/* Death from arena.php */
+.up.dying{animation:holoDie 1.2s ease forwards!important}
+@keyframes holoDie{0%{opacity:1;filter:brightness(1)}20%{filter:brightness(2.8) saturate(4) hue-rotate(30deg)}50%{opacity:.5;filter:brightness(.4) blur(2px) saturate(0)}100%{opacity:.08;filter:brightness(.1) blur(5px) saturate(0)}}
+
+/* Hex platform */
+.pb{width:110px;height:32px;position:relative;border:1px solid rgba(0,240,255,.2);
+  background:linear-gradient(180deg,rgba(0,240,255,.06),rgba(0,240,255,.012));
+  clip-path:polygon(12% 0%,88% 0%,100% 50%,88% 100%,12% 100%,0% 50%);
+  box-shadow:0 0 16px rgba(0,240,255,.1);transition:all .3s}
+.pb::before{content:'';position:absolute;inset:2px;clip-path:polygon(12% 0%,88% 0%,100% 50%,88% 100%,12% 100%,0% 50%);
+  background:repeating-linear-gradient(90deg,rgba(0,240,255,.03) 0px,transparent 1px,transparent 7px)}
+.pb::after{content:'';position:absolute;inset:0;clip-path:polygon(12% 0%,88% 0%,100% 50%,88% 100%,12% 100%,0% 50%);
+  background:rgba(0,240,255,.025);animation:pg 3s ease-in-out infinite;transition:background .3s}
+@keyframes pg{0%,100%{opacity:.4}50%{opacity:1}}
+.pb.ep{border-color:rgba(212,0,255,.16);background:linear-gradient(180deg,rgba(212,0,255,.04),rgba(212,0,255,.008));box-shadow:0 0 12px rgba(212,0,255,.07)}
+.pb.ep::before{background:repeating-linear-gradient(90deg,rgba(212,0,255,.02) 0px,transparent 1px,transparent 7px)}
+.pb.ep::after{background:rgba(212,0,255,.02)}
+
+.uf{position:relative;display:flex;flex-direction:column;align-items:center;margin-bottom:-2px;transition:transform .3s}
+.up:hover .uf{transform:translateY(-5px)}
+.uf-i{font-size:42px;filter:drop-shadow(0 0 14px rgba(0,240,255,.3));line-height:1;animation:ufl 4s ease-in-out infinite}
+.uf-i .uf-img{width:48px;height:48px;object-fit:cover;border-radius:4px;border:1px solid rgba(0,240,255,.2);display:block}
+.es .uf-i{filter:drop-shadow(0 0 14px rgba(212,0,255,.22))}
+@keyframes ufl{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.hb{position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:2px;height:26px;
+  background:linear-gradient(0deg,rgba(0,240,255,.22),transparent);filter:blur(1px);pointer-events:none}
+.es .hb{background:linear-gradient(0deg,rgba(212,0,255,.14),transparent)}
+
+/* Unit HUD */
+.uh{display:flex;flex-direction:column;align-items:center;gap:1px;margin-bottom:2px;min-width:100px}
+.upos{font-family:var(--FD);font-size:6px;font-weight:700;letter-spacing:2px;padding:1px 5px;border:1px solid;margin-bottom:1px}
+.upos.front{color:#ff6644;border-color:rgba(255,102,68,.28)}.upos.mid{color:var(--gold);border-color:rgba(255,200,32,.28)}
+.upos.back{color:var(--c);border-color:rgba(0,240,255,.28)}
+.unm{font-family:var(--FD);font-size:7.5px;font-weight:700;letter-spacing:1.5px;color:var(--t1);text-shadow:0 1px 3px rgba(0,0,0,.9);white-space:nowrap}
+.ucl{font-family:var(--FM);font-size:6px;letter-spacing:.8px;color:var(--t3)}
+.uhp{width:82px;display:flex;flex-direction:column;gap:1px}
+.uhpb{height:5px;background:rgba(0,0,0,.5);border:1px solid rgba(0,240,255,.1);overflow:hidden}
+.uhpf{height:100%;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.uhpf.al{background:linear-gradient(90deg,#00cc55,#00ff99);box-shadow:0 0 6px rgba(0,255,136,.3)}
+.uhpf.en{background:linear-gradient(90deg,#cc0022,#ff2244);box-shadow:0 0 6px rgba(255,30,60,.3)}
+.uhpf.warn{background:linear-gradient(90deg,#ff6600,#ff9900)!important;box-shadow:0 0 6px rgba(255,120,0,.3)!important}
+.uhpf.crit{background:linear-gradient(90deg,#cc0022,#ff2244)!important;animation:critF .9s ease-in-out infinite!important}
+@keyframes critF{0%,100%{box-shadow:0 0 6px rgba(255,30,60,.3)}50%{box-shadow:0 0 16px rgba(255,30,60,.65)}}
+.uhpt{font-family:var(--FM);font-size:6.5px;color:var(--t2);text-align:center;text-shadow:0 0 3px rgba(0,0,0,.8)}
+
+/* Damage popups — from arena fnum */
+.dp{position:absolute;top:-10px;left:50%;transform:translateX(-50%);z-index:100;
+  font-family:var(--FD);font-weight:900;letter-spacing:2px;pointer-events:none;white-space:nowrap}
+.dp.damage{color:var(--red);font-size:22px;text-shadow:0 0 10px rgba(255,34,68,.6),0 2px 4px #000;animation:fUp 1.15s ease-out forwards}
+.dp.crit{color:var(--gold);font-size:28px;text-shadow:0 0 14px rgba(255,200,32,.7),0 2px 4px #000;animation:fUpCrit 1.2s ease-out forwards}
+.dp.heal{color:var(--green);font-size:18px;text-shadow:0 0 8px rgba(0,255,136,.5);animation:fUp 1.15s ease-out forwards}
+.dp.miss{color:var(--t2);font-size:14px;font-family:var(--FM);letter-spacing:3px;animation:fUp 1.15s ease-out forwards}
+.dp.block{color:var(--c);font-size:14px;animation:fUp 1.15s ease-out forwards}
+@keyframes fUp{0%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}15%{transform:translateX(-50%) translateY(-14px) scale(1.15)}100%{opacity:0;transform:translateX(-50%) translateY(-70px) scale(.7)}}
+@keyframes fUpCrit{0%{opacity:1;transform:translateX(-50%) translateY(0) scale(1) rotate(-3deg)}10%{transform:translateX(-50%) translateY(-10px) scale(1.35) rotate(2deg)}25%{transform:translateX(-50%) translateY(-22px) scale(1.45) rotate(-1deg)}100%{opacity:0;transform:translateX(-50%) translateY(-90px) scale(.6) rotate(0)}}
+
+/* Screen flash from arena */
+#sf{position:fixed;inset:0;z-index:500;pointer-events:none;opacity:0;background:rgba(255,30,50,.12);transition:opacity .06s}
+#sf.pop{opacity:1;transition:none}
+
+/*══════════════════════════════════════════════════════════════════
+  COMBAT LOG — right sidebar
+══════════════════════════════════════════════════════════════════*/
+#clog{position:absolute;top:8px;right:56px;width:185px;z-index:15;pointer-events:none;display:flex;flex-direction:column;gap:2px}
+.cle{padding:3px 7px;font-family:var(--FB);font-size:12px;font-weight:600;letter-spacing:.3px;color:var(--t2);line-height:1.3;
+  background:rgba(1,4,8,.82);border-left:2px solid var(--c);backdrop-filter:blur(5px);animation:cli .22s ease both}
+@keyframes cli{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
+.cle .trn{font-family:var(--FM);font-size:8px;color:var(--t3);margin-right:5px}
+.cle.pa{color:rgba(175,248,255,.9);border-left-color:var(--c)}.cle.pa .actor{color:var(--c)}
+.cle.ea{color:rgba(238,210,255,.9);border-left-color:var(--m)}.cle.ea .actor{color:var(--m)}
+.cle .dt{color:var(--red);font-weight:700}.cle .ht{color:var(--green);font-weight:700}
+.cle .ct{color:var(--gold);font-family:var(--FD);font-size:10px}
+.cle.sys{color:var(--t3);font-style:italic;border-left-color:rgba(0,240,255,.3)}
+
+/*══════════════════════════════════════════════════════════════════
+  BOTTOM — tools/cards .avatar-card (row-span 2) + 2×2 skill tiles
+══════════════════════════════════════════════════════════════════*/
+#ability-hud{--ahsq:min(118px,12vw);z-index:20;flex-shrink:0;border-top:1px solid rgba(0,240,255,.1);
+  background:linear-gradient(0deg,rgba(1,4,8,.97) 60%,rgba(1,4,8,.88));backdrop-filter:blur(14px);position:relative;
+  display:flex;flex-direction:column;min-height:0}
+#ability-hud::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 5%,var(--c) 25%,var(--m) 50%,var(--c) 75%,transparent 95%);opacity:.2}
+
+.hud-label{font-family:var(--FD);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--t3);
+  padding:6px 16px 0;display:flex;align-items:center;gap:8px;flex-shrink:0;box-sizing:border-box;overflow:hidden}
+.hud-label::after{content:'';flex:1;height:1px;background:rgba(0,240,255,.08)}
+
+#apanel{z-index:1;flex:1;min-height:0;position:relative;
+  background:linear-gradient(0deg,rgba(1,6,14,.92),rgba(1,8,18,.88));border-top:1px solid rgba(0,240,255,.06)}
+#apanel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 5%,var(--c) 25%,var(--m) 50%,var(--c) 75%,transparent 95%);opacity:.15}
+#ah-inner{padding:6px 12px 8px;min-height:0}
+.ah-row-squad{display:flex;gap:8px;align-items:stretch}
+
+/* Per-ally: grid [ avatar-card ×2 rows | 3×2 skill tiles ] — passive not shown as tile */
+.pu-pack{flex:1;display:grid;grid-template-columns:minmax(100px,12.5vw) repeat(3,var(--ahsq));
+  grid-template-rows:var(--ahsq) var(--ahsq);gap:8px;min-width:0;
+  background:rgba(0,240,255,.02);border:1px solid rgba(0,240,255,.08);border-radius:3px;padding:6px 8px}
+.pu-pack.unit-dead{opacity:.28;pointer-events:none;filter:grayscale(.75)}
+.pu-pack>.avatar-card.ac-hud{grid-column:1;grid-row:1/span 2;align-self:stretch;min-height:0;margin:0}
+.pu-pack>.skc:nth-child(2){grid-column:2;grid-row:1}
+.pu-pack>.skc:nth-child(3){grid-column:3;grid-row:1}
+.pu-pack>.skc:nth-child(4){grid-column:4;grid-row:1}
+.pu-pack>.skc:nth-child(5){grid-column:2;grid-row:2}
+.pu-pack>.skc:nth-child(6){grid-column:3;grid-row:2}
+.pu-pack>.skc:nth-child(7){grid-column:4;grid-row:2}
+
+/* ── tools/cards/index.html — avatar-card (compact HUD) ─────────── */
+#apanel .avatar-card.ac-hud{position:relative;background:var(--surface);border:1px solid rgba(0,229,255,.12);border-radius:4px;
+  overflow:hidden;cursor:default;pointer-events:none;display:flex;flex-direction:column;
+  min-height:calc(var(--ahsq) * 2 + 8px);justify-content:flex-start}
+#apanel .avatar-card.ac-hud::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--rarity-color,var(--c));opacity:.85;z-index:2}
+#apanel .ac-hud .card-thumb{position:relative;flex:0 0 auto;height:56px;min-height:56px;max-height:56px;
+  background:radial-gradient(ellipse at center,rgba(0,229,255,.06) 0%,transparent 70%);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid rgba(0,229,255,.08)}
+#apanel .ac-hud .thumb-model{font-size:clamp(36px,8vw,52px);line-height:1;animation:acFloat 3.5s ease-in-out infinite;
+  filter:drop-shadow(0 0 12px rgba(0,240,255,.25))}
+#apanel .ac-hud .thumb-model.ac-hud-thumb-img{font-size:0;animation:none;filter:none;width:100%;height:100%;max-height:68px;display:flex;align-items:center;justify-content:center}
+#apanel .ac-hud .thumb-model.ac-hud-thumb-img img{width:100%;height:100%;max-height:56px;object-fit:contain}
+@keyframes acFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+#apanel .ac-hud .thumb-ring{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:52px;height:7px;border-radius:50%;
+  border:1px solid rgba(0,229,255,.35);box-shadow:0 0 8px rgba(0,229,255,.15);opacity:.6}
+#apanel .ac-hud .card-rarity-badge{position:absolute;top:4px;right:4px;font-family:var(--FD);font-size:6px;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;padding:2px 5px;border-radius:2px;border:1px solid var(--rarity-color,var(--c));
+  color:var(--rarity-color,var(--c));background:rgba(0,0,0,.55);z-index:4}
+#apanel .ac-hud .card-id{position:absolute;top:4px;left:4px;font-family:var(--FD);font-size:6px;letter-spacing:.5px;color:var(--t3);z-index:4}
+#apanel .ac-hud .card-body{padding:5px 7px 6px;display:flex;flex-direction:column;gap:5px;flex:1 1 auto;min-height:0;overflow:visible}
+#apanel .ac-hud .card-name{font-family:var(--FD);font-size:8.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  color:var(--t1);line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#apanel .ac-hud .card-tagline{font-family:var(--FM);font-size:6px;letter-spacing:.3px;color:var(--t3);margin-top:-2px}
+#apanel .ac-hud .card-stats{display:grid;grid-template-columns:1fr 1fr;gap:3px 5px}
+#apanel .ac-hud .stat-item{display:flex;flex-direction:column;gap:1px}
+#apanel .ac-hud .stat-header{display:flex;justify-content:space-between;align-items:center}
+#apanel .ac-hud .stat-label{font-family:var(--FD);font-size:5px;letter-spacing:1px;text-transform:uppercase;color:var(--t4)}
+#apanel .ac-hud .stat-value{font-family:var(--FD);font-size:7px;font-weight:600;color:var(--t2)}
+#apanel .ac-hud .stat-bar{height:2px;background:rgba(0,229,255,.1);border-radius:1px;overflow:hidden}
+#apanel .ac-hud .stat-fill{height:100%;border-radius:1px;box-shadow:0 0 3px var(--stat-color,var(--c));transition:width .6s ease}
+#apanel .ac-hud .card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:4px;margin-top:1px;
+  border-top:1px solid rgba(0,229,255,.08);font-family:var(--FM);font-size:6px;color:var(--t3)}
+#apanel .ac-hud .card-class{text-transform:uppercase;letter-spacing:.5px}
+#apanel .ac-hud .card-hp-bar{flex:1;max-width:48px;height:3px;background:rgba(0,0,0,.4);border:1px solid rgba(0,240,255,.12);
+  border-radius:1px;overflow:hidden;margin:0 4px}
+#apanel .ac-hud .card-hp-f{height:100%;background:linear-gradient(90deg,#20e080,var(--c));transition:width .6s ease}
+
+/* Square skill tiles */
+#apanel .pu-pack>.skc{width:var(--ahsq);height:var(--ahsq);max-width:100%;max-height:100%;justify-self:center;align-self:center;
+  background:rgba(0,12,28,.78);border:1px solid rgba(0,240,255,.12);padding:6px 7px;cursor:pointer;
+  transition:all .2s;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:2px;box-sizing:border-box;
+  clip-path:polygon(5px 0%,100% 0%,100% calc(100% - 5px),calc(100% - 5px) 100%,0 100%,0 5px)}
+#apanel .pu-pack>.skc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--skc,var(--c));opacity:.5;transition:opacity .2s}
+#apanel .pu-pack>.skc:hover:not(.cdx):not(.skdis):not(.skph){border-color:rgba(0,240,255,.35);background:rgba(0,22,48,.82);transform:translateY(-2px);
+  box-shadow:0 4px 14px rgba(0,240,255,.1)}
+#apanel .pu-pack>.skc:hover:not(.cdx):not(.skdis):not(.skph)::before{opacity:1}
+#apanel .pu-pack>.skc.sl{border-color:var(--c);background:rgba(0,35,55,.68);box-shadow:0 0 16px rgba(0,240,255,.12)}
+#apanel .pu-pack>.skc.cdx,#apanel .pu-pack>.skc.skdis{opacity:.38;pointer-events:none;cursor:not-allowed}
+#apanel .pu-pack>.skc.skph{visibility:hidden;pointer-events:none;opacity:0!important;border-color:transparent!important;
+  background:transparent!important;box-shadow:none!important}
+#apanel .pu-pack>.skc.skph::before{display:none}
+.skt{font-family:var(--FD);font-size:5px;letter-spacing:1.8px;color:var(--skc,var(--t3));text-transform:uppercase}
+.skn{font-family:var(--FB);font-size:11px;font-weight:700;color:var(--t1);line-height:1.08}
+.skd{font-family:var(--FM);font-size:6px;color:var(--t3);line-height:1.25;flex:1;min-height:0;overflow:hidden;
+  display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical}
+.skm{display:flex;justify-content:space-between;align-items:center;gap:4px;font-family:var(--FM);font-size:6.5px;margin-top:auto;flex-shrink:0}
+.skcs{color:var(--gold);letter-spacing:.35px;white-space:nowrap}
+.skcv{color:var(--t3);letter-spacing:.35px;white-space:nowrap}.skcv.on{color:var(--red)}
+
+/* ── CONFIRM PANEL ── */
+#confirm{display:flex;align-items:center;gap:12px;padding:5px 16px 8px;border-top:1px solid rgba(0,240,255,.06);flex-shrink:0}
+#confirm-label{font-family:var(--FD);font-size:8px;letter-spacing:3px;color:var(--t3);flex-shrink:0}
+#confirm-slots{display:flex;gap:6px;flex:1}
+.cslot{flex:1;max-width:160px;height:32px;border:1px dashed rgba(0,240,255,.12);border-radius:2px;
+  display:flex;align-items:center;gap:6px;padding:0 8px;transition:all .2s;overflow:hidden}
+.cslot.filled{border-style:solid;border-color:var(--sc,var(--c));background:rgba(0,0,0,.35);
+  box-shadow:0 0 8px var(--sg,rgba(0,240,255,.06))}
+.cslot-i{font-size:12px}.cslot-n{font-family:var(--FD);font-size:7px;letter-spacing:1px;color:var(--t2);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cslot-e{font-family:var(--FD);font-size:7px;letter-spacing:2px;color:var(--t4)}
+
+#send-btn{padding:8px 22px;background:transparent;border:1px solid rgba(0,240,255,.2);color:rgba(0,240,255,.3);
+  font-family:var(--FD);font-size:10px;font-weight:900;letter-spacing:4px;cursor:not-allowed;transition:all .25s;
+  position:relative;overflow:hidden;flex-shrink:0;
+  clip-path:polygon(6px 0%,100% 0%,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px)}
+#send-btn.rdy{border-color:var(--c);color:var(--c);cursor:pointer;box-shadow:0 0 16px rgba(0,240,255,.1)}
+#send-btn.rdy::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(0,240,255,.05),transparent);animation:sw 2.5s ease infinite}
+@keyframes sw{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+#send-btn.rdy:hover{box-shadow:0 0 26px rgba(0,240,255,.2);background:rgba(0,30,55,.8);letter-spacing:6px}
+
+/*══════════════════════════════════════════════════════════════════
+  OVERLAYS
+══════════════════════════════════════════════════════════════════*/
+#phov{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;
+  background:transparent;opacity:0;pointer-events:none;transition:opacity .3s}
+#phov.show{opacity:1;pointer-events:none}
+#phtx{font-family:var(--FD);font-size:26px;font-weight:900;letter-spacing:10px;color:var(--c);
+  text-shadow:0 0 40px rgba(0,240,255,.5);animation:phz .9s cubic-bezier(.2,.8,.2,1) both}
+@keyframes phz{0%{transform:scale(1.5);opacity:0}40%{transform:scale(1);opacity:1}100%{transform:scale(.95);opacity:0}}
+
+/* ══ EPIC ENDGAME RESULT SCREEN ══ */
+#eg{position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .5s}
+#eg.show{opacity:1;pointer-events:all}
+#eg-bg{position:absolute;inset:0;backdrop-filter:blur(22px) saturate(1.5) brightness(0.7);transition:background .6s}
+#eg.win #eg-bg{background:radial-gradient(ellipse at 50% 40%,rgba(0,40,60,.85),rgba(0,5,12,.95))}
+#eg.lose #eg-bg{background:radial-gradient(ellipse at 50% 40%,rgba(40,0,20,.85),rgba(8,0,5,.95))}
+#eg-confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1}
+.confetti-p{position:absolute;width:6px;height:10px;opacity:0;animation:confettiFall var(--dur,3s) ease-in var(--delay,0s) forwards}
+@keyframes confettiFall{0%{opacity:1;transform:translateY(-20px) rotate(0deg) scale(1)}50%{opacity:1}100%{opacity:0;transform:translateY(100vh) rotate(var(--rot,720deg)) scale(0.3)}}
+#eg-p{position:relative;z-index:2;width:min(94vw,580px);display:flex;flex-direction:column;align-items:center;text-align:center;gap:0}
+
+/* Top accent line */
+.eg-tl{width:100%;height:3px;background:var(--egc,var(--c));box-shadow:0 0 30px var(--egc,var(--c)),0 0 60px var(--egc,var(--c));transform:scaleX(0);animation:egLine .7s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes egLine{to{transform:scaleX(1)}}
+
+/* Main card */
+.eg-box{width:100%;background:linear-gradient(180deg,rgba(5,17,26,.95),rgba(3,10,18,.98));border:1px solid rgba(255,255,255,.06);
+  border-top:none;border-bottom:none;padding:36px 40px 32px;display:flex;flex-direction:column;align-items:center;gap:0;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,16px 100%,0 calc(100% - 16px))}
+
+/* Icon */
+.eg-icon{font-size:64px;line-height:1;opacity:0;transform:scale(0.2) rotate(-20deg);filter:drop-shadow(0 0 24px var(--egc,var(--c)))}
+.eg-icon.anim{animation:egIconPop .6s cubic-bezier(.15,1.2,.3,1) forwards}
+@keyframes egIconPop{to{opacity:1;transform:scale(1) rotate(0deg)}}
+
+/* Title: VICTORY / DEFEAT */
+.eg-res{font-family:var(--FD);font-weight:900;letter-spacing:8px;line-height:1;color:var(--egc,var(--c));margin-top:10px;
+  text-shadow:0 0 30px var(--egc,var(--c)),0 0 80px var(--egc,var(--c));font-size:clamp(42px,8vw,76px);
+  opacity:0;transform:translateY(24px) scaleX(0.7)}
+.eg-res.anim{animation:egTitleSlam .5s cubic-bezier(.15,1,.3,1) forwards}
+@keyframes egTitleSlam{to{opacity:1;transform:translateY(0) scaleX(1)}}
+
+/* Subtitle */
+.eg-sub{font-family:var(--FM);font-size:11px;letter-spacing:3px;color:var(--t2);margin-top:8px;opacity:0;transform:translateY(8px)}
+.eg-sub.anim{animation:egFade .4s ease forwards}
+@keyframes egFade{to{opacity:1;transform:translateY(0)}}
+
+/* Divider */
+.eg-div{width:80%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);margin:18px 0;opacity:0}
+.eg-div.anim{animation:egFade .3s ease forwards}
+
+/* Stats row */
+.eg-sr{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%;margin-top:4px}
+.eg-si{text-align:center;opacity:0;transform:translateY(12px)}
+.eg-si.anim{animation:egStatPop .5s cubic-bezier(.2,1,.3,1) forwards}
+@keyframes egStatPop{to{opacity:1;transform:translateY(0)}}
+.eg-sv{font-family:var(--FD);font-size:26px;font-weight:700;color:var(--egc,var(--c));text-shadow:0 0 14px var(--egc,var(--c))}
+.eg-sl{font-family:var(--FM);font-size:7px;letter-spacing:2.5px;color:var(--t3);text-transform:uppercase;margin-top:2px}
+
+/* XP Bar */
+.eg-xp-wrap{width:85%;margin-top:16px;opacity:0;transform:translateY(8px)}
+.eg-xp-wrap.anim{animation:egFade .4s ease forwards}
+.eg-xp-label{display:flex;justify-content:space-between;font-family:var(--FM);font-size:8px;letter-spacing:2px;color:var(--t3);margin-bottom:4px}
+.eg-xp-track{width:100%;height:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:1px;overflow:hidden;position:relative}
+.eg-xp-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--c),#00ffaa);box-shadow:0 0 10px var(--c);border-radius:1px;transition:width 1.5s cubic-bezier(.2,.8,.2,1)}
+.eg-xp-fill.lose{background:linear-gradient(90deg,var(--m),#ff6688)}
+
+/* Rewards row */
+.eg-rw{display:flex;gap:18px;margin-top:16px;flex-wrap:wrap;justify-content:center}
+.eg-ri{display:flex;align-items:center;gap:5px;font-family:var(--FM);font-size:13px;opacity:0;transform:scale(0.5) translateY(10px)}
+.eg-ri.anim{animation:egRewardPop .5s cubic-bezier(.15,1.2,.3,1) forwards}
+@keyframes egRewardPop{to{opacity:1;transform:scale(1) translateY(0)}}
+.eg-rv{font-weight:700;font-family:var(--FD);font-size:15px}.eg-rv.xp{color:var(--c)}.eg-rv.rk{color:var(--gold)}.eg-rv.ke{color:var(--green)}
+.eg-ri-icon{font-size:18px;filter:drop-shadow(0 0 6px currentColor)}
+.eg-ri-icon:empty{display:none}
+
+/* Quote */
+.eg-q{font-family:var(--FB);font-size:14px;font-style:italic;color:var(--t2);line-height:1.6;max-width:380px;margin-top:18px;min-height:22px;opacity:0}
+.eg-q.anim{animation:egFade .3s ease forwards}
+
+/* Buttons */
+.eg-btns{display:flex;gap:12px;margin-top:20px;opacity:0;transform:translateY(10px)}
+.eg-btns.anim{animation:egFade .4s ease forwards}
+.eg-btn{background:transparent;border:1px solid var(--egc,var(--c));color:var(--egc,var(--c));font-family:var(--FD);
+  font-size:10px;font-weight:700;letter-spacing:3px;padding:12px 28px;cursor:pointer;text-transform:uppercase;
+  transition:all .25s;position:relative;overflow:hidden;
+  clip-path:polygon(6px 0%,100% 0%,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px)}
+.eg-btn::before{content:'';position:absolute;inset:0;background:var(--egc,var(--c));opacity:0;transition:opacity .22s}
+.eg-btn:hover::before{opacity:.12}
+.eg-btn:hover{box-shadow:0 0 28px var(--egc,var(--c));letter-spacing:4px}
+.eg-btn.sec{border-color:rgba(255,255,255,.12);color:var(--t2)}.eg-btn.sec:hover{border-color:var(--t2);box-shadow:0 0 12px rgba(255,255,255,.1)}
+
+/* Bottom accent */
+.eg-bl{width:100%;height:3px;background:var(--egc,var(--c));box-shadow:0 0 30px var(--egc,var(--c)),0 0 60px var(--egc,var(--c));transform:scaleX(0)}
+.eg-bl.anim{animation:egLine .7s cubic-bezier(.2,.8,.2,1) forwards}
+
+/* Enemy-turn badge — no blur/dim on canvas so Three.js combat stays visible */
+#wov{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:30;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;gap:6px;padding:8px 14px;background:rgba(1,4,8,.82);
+  border:1px solid rgba(212,0,255,.25);border-radius:2px;box-shadow:0 4px 24px rgba(0,0,0,.45);
+  opacity:0;pointer-events:none;transition:opacity .25s}
+#wov.show{opacity:1;pointer-events:none}
+.wsp{width:42px;height:42px;margin:0 auto 8px;position:relative}
+.wr{position:absolute;inset:0;border-radius:50%;border:2px solid transparent;border-top-color:var(--c);animation:ws 1.1s linear infinite}
+.wr2{inset:5px;border-width:1px;border-right-color:var(--m);animation-direction:reverse;animation-duration:1.7s}
+@keyframes ws{to{transform:rotate(360deg)}}
+#wtx{font-family:var(--FD);font-size:9px;letter-spacing:3px;color:var(--c);text-align:center}
+
+@media(max-width:960px){
+  .uh{min-width:82px}.unm{font-size:6.5px}.uf-i{font-size:34px}.pb{width:90px;height:26px}.uhp{width:65px}
+  #ability-hud{--ahsq:min(72px,28vw)}
+  .ah-row-squad{flex-direction:column;gap:10px}
+  #apanel .pu-pack{grid-template-columns:repeat(3,1fr);grid-template-rows:auto var(--ahsq) var(--ahsq)}
+  #apanel .pu-pack>.avatar-card.ac-hud{grid-column:1/span 3;grid-row:1;max-height:none;min-height:0}
+  #apanel .pu-pack>.skc:nth-child(2){grid-column:1;grid-row:2}
+  #apanel .pu-pack>.skc:nth-child(3){grid-column:2;grid-row:2}
+  #apanel .pu-pack>.skc:nth-child(4){grid-column:3;grid-row:2}
+  #apanel .pu-pack>.skc:nth-child(5){grid-column:1;grid-row:3}
+  #apanel .pu-pack>.skc:nth-child(6){grid-column:2;grid-row:3}
+  #apanel .pu-pack>.skc:nth-child(7){grid-column:3;grid-row:3}
+  .skd{display:none}.skn{font-size:10px}
+}
+</style>
+</head>
+<body>
+<div id="sf"></div>
+
+<!-- ═══ VS INTRO SCREEN ═══ -->
+<div id="vs-intro" style="position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;background:#010408;opacity:1;transition:opacity 0.6s;">
+  <div style="display:flex;align-items:center;gap:40px;width:90%;max-width:900px;">
+    <div id="vs-left" style="flex:1;text-align:center;transform:translateX(-80px);opacity:0;transition:all 0.6s cubic-bezier(.2,.8,.2,1);">
+      <div style="font-family:var(--FD);font-size:11px;letter-spacing:4px;color:var(--c);margin-bottom:8px;">YOUR SQUAD</div>
+      <div id="vs-allies" style="display:flex;flex-direction:column;gap:6px;align-items:center;"></div>
+    </div>
+    <div id="vs-badge" style="flex-shrink:0;text-align:center;transform:scale(0);transition:transform 0.5s cubic-bezier(.2,1.4,.4,1) 0.3s;">
+      <div style="font-family:var(--FD);font-size:42px;font-weight:900;color:#fff;text-shadow:0 0 40px var(--c),0 0 80px var(--m);letter-spacing:8px;">VS</div>
+      <div style="width:120px;height:2px;margin:8px auto;background:linear-gradient(90deg,var(--c),var(--m),var(--c));box-shadow:0 0 12px var(--c);"></div>
+    </div>
+    <div id="vs-right" style="flex:1;text-align:center;transform:translateX(80px);opacity:0;transition:all 0.6s cubic-bezier(.2,.8,.2,1) 0.15s;">
+      <div style="font-family:var(--FD);font-size:11px;letter-spacing:4px;color:var(--m);margin-bottom:8px;">ENEMY SQUAD</div>
+      <div id="vs-enemies" style="display:flex;flex-direction:column;gap:6px;align-items:center;"></div>
+    </div>
+  </div>
+</div>
+
+<div id="phov"><div id="phtx"></div></div>
+<div id="eg">
+  <div id="eg-bg"></div>
+  <div id="eg-confetti"></div>
+  <div id="eg-p">
+    <div class="eg-tl"></div>
+    <div class="eg-box">
+      <div class="eg-icon" id="egi"></div>
+      <div class="eg-res" id="egr"></div>
+      <div class="eg-sub" id="egs"></div>
+      <div class="eg-div" id="egd1"></div>
+      <div class="eg-sr" id="egst"></div>
+      <div class="eg-div" id="egd2"></div>
+      <div class="eg-xp-wrap" id="egxp">
+        <div class="eg-xp-label"><span>EXPERIENCE</span><span id="egxpv">+0 XP</span></div>
+        <div class="eg-xp-track"><div class="eg-xp-fill" id="egxpf"></div></div>
+      </div>
+      <div class="eg-rw" id="egrw"></div>
+      <p class="eg-q" id="egq"></p>
+      <div class="eg-btns" id="egbtns">
+        <button class="eg-btn" onclick="location.reload()">⚔ REMATCH</button>
+        <button class="eg-btn sec" onclick="goLobby()">← RETURN</button>
+      </div>
+    </div>
+    <div class="eg-bl" id="egbl"></div>
+  </div>
+</div>
+
+<div id="app">
+  <!--MW_TOPBAR_INJECT-->
+  <div id="battle-hud-strip">
+    <div class="bhs-center">
+      <div id="tl" style="color:var(--c)">YOUR TURN</div>
+      <div id="rl">ROUND 1</div>
+    </div>
+  </div>
+  <div id="arena">
+    <div id="canvas-container">
+      <div id="three-container">
+        <canvas id="three-canvas"></canvas>
+      </div>
+      <div id="mw-floating-pops"></div>
+      <div id="mw-hp-overlay"></div>
+      <div id="mw-arena-hud">
+        <div id="mw-round-banner">ROUND 1</div>
+        <div class="mw-hp-bar-group" id="mw-player-bars">
+          <div class="mw-unit-hp-block" id="mw-phb0"><div class="mw-unit-name-tag">ALLY // FRONT</div><div class="mw-hp-track"><div class="mw-hp-fill player" id="mw-php0" style="width:100%"></div></div><div class="mw-hp-nums">0 / 0</div></div>
+          <div class="mw-unit-hp-block" id="mw-phb1"><div class="mw-unit-name-tag">ALLY // MID</div><div class="mw-hp-track"><div class="mw-hp-fill player" id="mw-php1" style="width:100%"></div></div><div class="mw-hp-nums">0 / 0</div></div>
+          <div class="mw-unit-hp-block" id="mw-phb2"><div class="mw-unit-name-tag">ALLY // BACK</div><div class="mw-hp-track"><div class="mw-hp-fill player" id="mw-php2" style="width:100%"></div></div><div class="mw-hp-nums">0 / 0</div></div>
+        </div>
+        <div class="mw-hp-bar-group" id="mw-enemy-bars">
+          <div class="mw-unit-hp-block enemy" id="mw-ehb0"><div class="mw-unit-name-tag enemy">ENEMY // FRONT</div><div class="mw-hp-track"><div class="mw-hp-fill enemy" id="mw-ehp0" style="width:100%"></div></div><div class="mw-hp-nums enemy">0 / 0</div></div>
+          <div class="mw-unit-hp-block enemy" id="mw-ehb1"><div class="mw-unit-name-tag enemy">ENEMY // MID</div><div class="mw-hp-track"><div class="mw-hp-fill enemy" id="mw-ehp1" style="width:100%"></div></div><div class="mw-hp-nums enemy">0 / 0</div></div>
+          <div class="mw-unit-hp-block enemy" id="mw-ehb2"><div class="mw-unit-name-tag enemy">ENEMY // BACK</div><div class="mw-hp-track"><div class="mw-hp-fill enemy" id="mw-ehp2" style="width:100%"></div></div><div class="mw-hp-nums enemy">0 / 0</div></div>
+        </div>
+        <div id="mw-center-fx"><div id="mw-dmg-number"></div></div>
+        <div id="mw-cinematic-bars-top"></div>
+        <div id="mw-cinematic-bars-bot"></div>
+        <div id="mw-ability-caption"><div id="mw-ability-name"></div><div id="mw-ability-sub"></div></div>
+        <div id="mw-flash-overlay"></div>
+      </div>
+    </div>
+    <div id="cfr">
+      <div class="fe l"></div><div class="fe r"></div>
+      <div class="fpn tl"><div class="fl cy"></div><div class="fl gn"></div><div class="fl off"></div></div>
+      <div class="fpn bl"><div class="fl or"></div><div class="fl off"></div><div class="fl cy"></div></div>
+      <div class="fpn tr"><div class="fl off"></div><div class="fl cy"></div><div class="fl or"></div></div>
+      <div class="fpn br"><div class="fl gn"></div><div class="fl cy"></div><div class="fl off"></div></div>
+      <div class="fb ftl"></div><div class="fb ftr"></div>
+    </div>
+    <div id="clog"></div>
+    <div id="wov"><div><div class="wsp"><div class="wr"></div><div class="wr wr2"></div></div><div id="wtx">ENEMY TURN</div></div></div>
+  </div>
+
+  <!-- ABILITY HUD: avatar-card + 3×2 skill tiles (attack, defend, ability, special, heal + spacer) -->
+  <div id="ability-hud">
+    <div class="hud-label">⬡ SQUAD INTERFACE</div>
+    <div id="apanel">
+      <div id="ah-inner">
+        <div class="ah-row-squad" id="ah-squad"></div>
+      </div>
+    </div>
+    <div id="confirm">
+      <div id="confirm-label">ACTIONS</div>
+      <div id="confirm-slots"></div>
+      <button id="send-btn" onclick="executeTurn()">CONFIRM ›</button>
+    </div>
+  </div>
+</div>
+
+<script src="/squad-arena-v2/js/three.min.js"></script>
+<script src="/squad-arena-v2/js/GLTFLoader.js"></script>
+<script src="/squad-arena-v2/js/DRACOLoader.js"></script>
+<!-- MeshoptDecoder (EXT_meshopt_compression) debe existir antes de cargar GLB en el arena. -->
+<script src="/squad-arena-v2/js/mw-hologram-layers.js?v=fix9"></script>
+<script src="/squad-arena-v2/js/arena-sfx.js?v=fix9"></script>
+<script src="/squad-arena-v2/js/arena-vfx.js?v=fix9"></script>
+<script src="/squad-arena-v2/js/arena-status.js?v=fix9"></script>
+<script src="/squad-arena-v2/js/arena-three-canvas.js?v=fix9"></script>
+<script defer src="/squad-arena-v2/js/arena-actions.js?v=fix9"></script>
+<script defer src="/squad-arena-v2/js/arena-playback.js?v=fix9"></script>
+<script>
+/*══════════════════════════════════════════════════════════════════
+  MIND WARS — UNIFIED BATTLEFIELD ENGINE V3
+  • Isometric arena + tools/cards avatar-card + 2×2 skill tiles + PHP formulas
+══════════════════════════════════════════════════════════════════*/
+const RC={legendary:'#ffc030',epic:'#c040ff',rare:'#1a6aee',special:'#1aaa6a',common:'#4a7a8a'};
+const AT={
+  passive:{c:'#4a9aff',g:'rgba(74,154,255,.15)',i:'⬡',l:'PASSIVE'},
+  ability:{c:'#00f0ff',g:'rgba(0,240,255,.15)',i:'◈',l:'ABILITY'},
+  special:{c:'#d400ff',g:'rgba(212,0,255,.15)',i:'✦',l:'SPECIAL'},
+  heal:{c:'#20e080',g:'rgba(32,224,128,.15)',i:'✚',l:'HEAL'},
+  attack:{c:'#ff4060',g:'rgba(255,64,96,.15)',i:'⚡',l:'ATTACK'},
+  defense:{c:'#40c0ff',g:'rgba(64,192,255,.15)',i:'⬟',l:'DEFENSE'}
+};
+function gt(t){return AT[(t||'ability').toLowerCase()]||AT.ability}
+
+/* ── PHP-MATCHING CONSTANTS ── */
+const MW={HP_BASE:1000,HP_PER_LVL:12,MAX_ENERGY:5,E_START:1,E_ATK:1,E_ABL:2,E_SPL:5,E_HEAL:2,
+  E_GAIN_ATK:1,E_GAIN_DMG:1,E_GAIN_CRIT:2,FOCUS_RED:.8,CRIT_MULT:1.5,DEFEND_MULT:.5,CRIT_CAP:.75,EVADE_CAP:.35,EVADE_RATIO:.25};
+
+function escHtml(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')}
+
+/* ── DEMO SQUADS (battlefield.html sin PHP) ── */
+const DEMO_AS=[
+  {id:1,name:'NIKOLA TESLA',class:'Strategist',rarity:'legendary',icon:'⚡',mind:55,focus:50,speed:35,luck:40,
+    level:5,pos:'front',modelGlb:'/assets/avatars/models/legendary/nicola_tesla.glb',abilities:[
+      {type:'passive',name:'Spark of Genius',desc:'Energy gain +1 on crit hits',cd:0,maxCd:0,passive:true},
+      {type:'attack',name:'Strike',desc:'Basic attack (1⚡)',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
+      {type:'defense',name:'Defend',desc:'Reduce damage taken until next turn (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
+      {type:'ability',name:'Lightning Conductor',desc:'Channel electricity — high damage',dmg:1.2,target:'default',cd:0,maxCd:3,cost:'2⚡',eCost:2},
+      {type:'special',name:'Storm Protocol',desc:'Massive AOE lightning — hits all enemies',dmg:.7,target:'all',cd:0,maxCd:0,cost:'5⚡',eCost:5},
+      {type:'heal',name:'Field Charge',desc:'Restore 15% max HP to self',healPct:.15,target:'self',cd:0,maxCd:2,cost:'2⚡',eCost:2}]},
+  {id:2,name:'MARIE CURIE',class:'Controller',rarity:'epic',icon:'☢️',mind:45,focus:55,speed:30,luck:35,
+    level:4,pos:'mid',modelGlb:'/assets/avatars/models/epic/marie_curie.glb',abilities:[
+      {type:'passive',name:'Radiation Aura',desc:'Enemies take 5% more damage each round',cd:0,maxCd:0,passive:true},
+      {type:'attack',name:'Strike',desc:'Basic attack (1⚡)',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
+      {type:'defense',name:'Defend',desc:'Brace (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
+      {type:'ability',name:'Isotope Strike',desc:'Irradiate target — Mind-based damage',dmg:1.0,target:'default',cd:0,maxCd:3,cost:'2⚡',eCost:2},
+      {type:'special',name:'Nuclear Meltdown',desc:'Devastating single-target ignore defense',dmg:1.4,ignoreDef:true,target:'any',cd:0,maxCd:0,cost:'5⚡',eCost:5},
+      {type:'heal',name:'Radium Glow',desc:'Heal lowest HP ally for 20%',healPct:.20,target:'lowest_ally',cd:0,maxCd:2,cost:'2⚡',eCost:2}]},
+  {id:3,name:'DRACULA',class:'Striker',rarity:'legendary',icon:'🧛',mind:50,focus:40,speed:50,luck:40,
+    level:5,pos:'back',modelGlb:'/assets/avatars/models/epic/dracula.glb',abilities:[
+      {type:'passive',name:'Blood Pact',desc:'Heal 12% of damage dealt',cd:0,maxCd:0,passive:true,lifesteal:.12},
+      {type:'attack',name:'Strike',desc:'Basic attack (1⚡)',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
+      {type:'defense',name:'Defend',desc:'Brace (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
+      {type:'ability',name:'Crimson Bite',desc:'Strike any target + lifesteal',dmg:1.1,lifesteal:.12,target:'any',cd:0,maxCd:3,cost:'2⚡',eCost:2},
+      {type:'special',name:'Night Domination',desc:'AOE damage + bleed all enemies',dmg:.8,target:'all',cd:0,maxCd:0,cost:'5⚡',eCost:5},
+      {type:'heal',name:'Dark Regeneration',desc:'Restore HP based on missing health',healPct:.18,target:'self',cd:0,maxCd:3,cost:'2⚡',eCost:2}]}
+];
+const DEMO_ES=[
+  {id:101,name:'KRAKEN',class:'Tank',rarity:'legendary',icon:'🐙',mind:55,focus:60,speed:30,luck:35,
+    level:5,pos:'front',modelGlb:'/assets/avatars/models/legendary/kraken.glb',abilities:[
+      {type:'passive',name:'Deep Armor',desc:'Reduce incoming damage by 15%',cd:0,maxCd:0,passive:true,dmgReduction:.15},
+      {type:'attack',name:'Strike',desc:'Basic attack',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
+      {type:'defense',name:'Defend',desc:'Brace (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
+      {type:'ability',name:'Abyssal Grip',desc:'Crush front target',dmg:1.0,target:'default',cd:0,maxCd:3,cost:'2⚡',eCost:2},
+      {type:'special',name:'Leviathan Crush',desc:'Massive AOE tidal impact',dmg:.6,target:'all',cd:0,maxCd:0,cost:'5⚡',eCost:5},
+      {type:'heal',name:'Deep Regen',desc:'Regenerate 12% HP',healPct:.12,target:'self',cd:0,maxCd:2,cost:'2⚡',eCost:2}]},
+  {id:102,name:'MORGANA',class:'Controller',rarity:'epic',icon:'🔮',mind:50,focus:55,speed:35,luck:40,
+    level:4,pos:'mid',modelGlb:'/assets/avatars/models/epic/morgana.glb',abilities:[
+      {type:'passive',name:'Cursed Presence',desc:'5% damage reduction above 50% HP',cd:0,maxCd:0,passive:true},
+      {type:'attack',name:'Strike',desc:'Basic attack',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
+      {type:'defense',name:'Defend',desc:'Brace (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
+      {type:'ability',name:'Petrifying Gaze',desc:'Strike front/mid + stun chance',dmg:.9,target:'default',cd:0,maxCd:3,cost:'2⚡',eCost:2},
+      {type:'special',name:'Stone Eternity',desc:'High damage ignore defense',dmg:1.3,ignoreDef:true,target:'any',cd:0,maxCd:0,cost:'5⚡',eCost:5},
+      {type:'heal',name:'Shadow Mend',desc:'Heal lowest ally 18%',healPct:.18,target:'lowest_ally',cd:0,maxCd:2,cost:'2⚡',eCost:2}]},
+  {id:103,name:'CLEOPATRA',class:'Strategist',rarity:'epic',icon:'👑',mind:48,focus:45,speed:40,luck:50,
+    level:4,pos:'back',modelGlb:'/assets/avatars/models/epic/pericles.glb',abilities:[
+      {type:'passive',name:'Golden Aura',desc:'Allies gain +5% crit chance',cd:0,maxCd:0,passive:true},
+      {type:'attack',name:'Strike',desc:'Basic attack',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
+      {type:'defense',name:'Defend',desc:'Brace (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
+      {type:'ability',name:'Pharaoh Decree',desc:'Strike any position',dmg:.95,target:'any',cd:0,maxCd:3,cost:'2⚡',eCost:2},
+      {type:'special',name:'Nile Flood',desc:'AOE damage to all',dmg:.7,target:'all',cd:0,maxCd:0,cost:'5⚡',eCost:5},
+      {type:'heal',name:'Royal Grace',desc:'Heal all allies 10%',healPct:.10,target:'all_allies',cd:0,maxCd:3,cost:'2⚡',eCost:2}]}
+];
+
+function safeAttrUrl(s){
+  const t=String(s==null?'':s).trim();
+  if(!t||/^javascript:/i.test(t))return'';
+  return t.replace(/"/g,'');
+}
+function normalizeUnitForBattle(u,isEnemySlot){
+  const o={...u,isEnemy:u.isEnemy!=null?!!u.isEnemy:!!isEnemySlot};
+  if(o.image==null)o.image='';
+  if(o.modelGlb==null)o.modelGlb='';
+  if(o.icon==null)o.icon='◆';
+  if(o.level==null)o.level=1;
+  ['mind','focus','speed','luck'].forEach(k=>{if(o[k]!=null)o[k]=Math.round(Number(o[k])||0)});
+  return o;
+}
+
+/* ── STATE (var: Three.js arena + pick-target need global G) ── */
+var G={round:1,turn:'player',phase:'select',dd:0,dt:0,allies:[],enemies:[],actions:{},pendingPickEnemy:null};
+
+/* ── PHP-MATCHING DAMAGE CALC ── */
+function calcDmg(atk,def,mult=1.0,ignoreDef=false){
+  const base=(atk.mind*2)+4+Math.floor(Math.random()*5);
+  const red=ignoreDef?0:def.focus*MW.FOCUS_RED;
+  /* Apply synergy damage bonus */
+  var synergyMult = window.MWArenaStatus ? MWArenaStatus.getSynergyDmgMultiplier(atk) : 1;
+  let dmg=Math.max(1,Math.round((base-red)*mult*synergyMult));
+  /* Apply synergy crit bonus */
+  var synergyCrit = window.MWArenaStatus ? MWArenaStatus.getSynergyCritBonus(atk) : 0;
+  const critCh=Math.min((atk.luck*2)/100+synergyCrit,MW.CRIT_CAP);
+  const crit=Math.random()<=critCh;
+  if(crit)dmg=Math.round(dmg*MW.CRIT_MULT);
+  const evCh=Math.min((def.speed*MW.EVADE_RATIO)/100,MW.EVADE_CAP);
+  const evaded=Math.random()<=evCh;
+  if(evaded)dmg=0;
+  if(def.defending)dmg=Math.round(dmg*MW.DEFEND_MULT);
+  if(def.passiveData?.dmgReduction&&dmg>0)dmg=Math.round(dmg*(1-def.passiveData.dmgReduction));
+  /* Apply synergy team damage reduction */
+  var synergyDR = window.MWArenaStatus ? MWArenaStatus.getSynergyDmgReduction(def) : 0;
+  if(synergyDR>0&&dmg>0)dmg=Math.round(dmg*(1-synergyDR));
+  return{damage:Math.max(0,dmg),crit,evaded};
+}
+function calcHp(lvl){return MW.HP_BASE+(Math.max(1,lvl)*MW.HP_PER_LVL)}
+/** PHP bootstrap may send maxHp (mw_calc_hp + Tank hp_flat_bonus); else derive from level. */
+function resolveUnitHp(x){
+  const m=x&&x.maxHp;
+  if(m!=null&&Number.isFinite(Number(m)))return Math.max(1,Math.round(Number(m)));
+  return calcHp(x.level);
+}
+
+/* ── INIT ── */
+function init(){
+  const boot=window.__MW_BATTLE_INIT__;
+  const srcA=(boot&&Array.isArray(boot.allies)&&boot.allies.length)?boot.allies:DEMO_AS;
+  const srcE=(boot&&Array.isArray(boot.enemies)&&boot.enemies.length)?boot.enemies:DEMO_ES;
+  G.allies=srcA.map(u=>{
+    const x=normalizeUnitForBattle(u,false);
+    const hp=resolveUnitHp(x);
+    return{...x,abilities:x.abilities.map(a=>({...a})),hp,maxHp:hp,energy:MW.E_START,defending:false,
+      passiveData:x.abilities.find(a=>a.passive)||{}};
+  });
+  G.enemies=srcE.map(u=>{
+    const x=normalizeUnitForBattle(u,true);
+    const hp=resolveUnitHp(x);
+    return{...x,abilities:x.abilities.map(a=>({...a})),hp,maxHp:hp,energy:MW.E_START,defending:false,
+      passiveData:x.abilities.find(a=>a.passive)||{}};
+  });
+  G.actions={};
+  G.pendingPickEnemy=null;
+
+  // ── VS INTRO SCREEN ──
+  showVsIntro().then(function(){
+    renderUnits();buildHUD();updateConfirm();
+    showPh('ROUND 1 — FIGHT');
+    lg('Neural link established. Battle begins!','sys');
+    if(window.MWArenaSFX){MWArenaSFX.unlock();MWArenaSFX.playRoundStart();MWArenaSFX.startMusic();}
+  });
+}
+
+function showVsIntro(){
+  return new Promise(function(resolve){
+    var vsEl=document.getElementById('vs-intro');
+    if(!vsEl){resolve();return;}
+    var leftBox=document.getElementById('vs-allies');
+    var rightBox=document.getElementById('vs-enemies');
+    if(leftBox) G.allies.forEach(function(u){
+      var d=document.createElement('div');
+      d.style.cssText='font-family:var(--FD);font-size:13px;font-weight:700;letter-spacing:3px;color:var(--t1);text-shadow:0 0 10px rgba(0,240,255,.3);';
+      d.textContent=(u.name||'UNIT').toUpperCase();
+      var s=document.createElement('div');
+      s.style.cssText='font-family:var(--FM);font-size:9px;letter-spacing:2px;color:var(--t3);';
+      s.textContent=(u.class||'')+' · LV '+(u.level||1)+' · '+(u.rarity||'common').toUpperCase();
+      leftBox.appendChild(d);leftBox.appendChild(s);
+    });
+    if(rightBox) G.enemies.forEach(function(u){
+      var d=document.createElement('div');
+      d.style.cssText='font-family:var(--FD);font-size:13px;font-weight:700;letter-spacing:3px;color:var(--t1);text-shadow:0 0 10px rgba(212,0,255,.3);';
+      d.textContent=(u.name||'ENEMY').toUpperCase();
+      var s=document.createElement('div');
+      s.style.cssText='font-family:var(--FM);font-size:9px;letter-spacing:2px;color:var(--t3);';
+      s.textContent=(u.class||'')+' · LV '+(u.level||1)+' · '+(u.rarity||'common').toUpperCase();
+      rightBox.appendChild(d);rightBox.appendChild(s);
+    });
+    // Animate in
+    requestAnimationFrame(function(){
+      var left=document.getElementById('vs-left');
+      var right=document.getElementById('vs-right');
+      var badge=document.getElementById('vs-badge');
+      if(left){left.style.transform='translateX(0)';left.style.opacity='1';}
+      if(right){right.style.transform='translateX(0)';right.style.opacity='1';}
+      if(badge) badge.style.transform='scale(1)';
+    });
+    // Hold, then fade out
+    setTimeout(function(){
+      vsEl.style.opacity='0';
+      setTimeout(function(){
+        vsEl.style.display='none';
+        resolve();
+      },600);
+    },2200);
+  });
+}
+
+/* ── ARENA: Three.js + HUD sync ── */
+var _arenaBuilt=false;
+function renderUnits(){
+  if(window.MWArenaThree){
+    if(!_arenaBuilt){
+      _arenaBuilt=true;
+      var container=document.getElementById('three-container');
+      if(container&&MWArenaThree.boot) MWArenaThree.boot(container);
+      if(MWArenaThree.rebuildFromG) MWArenaThree.rebuildFromG();
+    } else {
+      if(MWArenaThree.syncFromG) MWArenaThree.syncFromG(G);
+    }
+  }
+  /* Evaluate synergies + update status icons */
+  if(window.MWArenaStatus){
+    MWArenaStatus.evaluateSynergies(G.allies,G.enemies);
+    MWArenaStatus.renderSynergyBanner(G.allies);
+    MWArenaStatus.updateStatusIcons(G.allies,G.enemies);
+  }
+}
+
+/* ── BUILD ABILITY HUD — tools/cards .avatar-card + 2×2 .skc ── */
+const AC_STATC={mind:'#00f0ff',focus:'#d400ff',speed:'#ffc820',luck:'#20e080'};
+function acStatBar(label,key,val){
+  const n=Math.max(0,Math.round(Number(val)||0));
+  const pct=Math.min(100,Math.round(n*1.15));
+  const col=AC_STATC[key]||'var(--c)';
+  return`<div class="stat-item"><div class="stat-header"><span class="stat-label">${label}</span><span class="stat-value">${n}</span></div>
+<div class="stat-bar"><div class="stat-fill" style="width:${pct}%;--stat-color:${col}"></div></div></div>`;
+}
+function collectionCardEl(u){
+  const r=(u.rarity||'common').toLowerCase();
+  const rc=RC[r]||'#4a7a8a';
+  const badge={legendary:'LEG',epic:'EPIC',rare:'RARE',special:'SPEC',common:'COM'}[(u.rarity||'common').toLowerCase()]||'COM';
+  const mh=Math.max(1,Number(u.maxHp)||1);
+  const hpPct=Math.max(0,(Number(u.hp)||0)/mh*100);
+  const thumbUrl=safeAttrUrl(u.image);
+  const thumbInner=thumbUrl
+    ?`<div class="thumb-model ac-hud-thumb-img" aria-hidden="true"><img src="${thumbUrl}" alt=""></div>`
+    :`<div class="thumb-model" aria-hidden="true">${u.icon||'◆'}</div>`;
+  const art=document.createElement('article');
+  art.className='avatar-card ac-hud';
+  art.style.setProperty('--rarity-color',rc);
+  art.innerHTML=`
+    <div class="card-thumb">
+      <div class="card-id">LV ${escHtml(u.level)}</div>
+      <div class="card-rarity-badge">${escHtml(badge)}</div>
+      ${thumbInner}
+      <div class="thumb-ring"></div>
+    </div>
+    <div class="card-body">
+      <div>
+        <div class="card-name">${escHtml(u.name)}</div>
+        <div class="card-tagline">${escHtml(u.class)} · ${escHtml(u.pos).toUpperCase()}</div>
+      </div>
+      <div class="card-stats">
+        ${acStatBar('MND','mind',u.mind)}${acStatBar('FCS','focus',u.focus)}
+        ${acStatBar('SPD','speed',u.speed)}${acStatBar('LCK','luck',u.luck)}
+      </div>
+      <div class="card-footer">
+        <span class="card-class">${escHtml(u.energy)}⚡</span>
+        <div class="card-hp-bar"><div class="card-hp-f" style="width:${hpPct}%"></div></div>
+        <span>${Math.max(0,Number(u.hp)||0)}/${mh}</span>
+      </div>
+    </div>`;
+  return art;
+}
+function mountSkillCard(u,ab,dead){
+  if(!ab){
+    const ph=document.createElement('div');
+    ph.className='skc skph';
+    return ph;
+  }
+  const t=gt(ab.type);const ocd=ab.cd>0;
+  const ec=ab.eCost!==undefined&&ab.eCost!==null?Number(ab.eCost):0;
+  const noE=ec>u.energy;
+  const selected=G.actions[u.id]===ab;
+  const card=document.createElement('div');
+  card.className='skc'+(ocd?' cdx':'')+(noE&&!ocd?' skdis':'')+(selected?' sl':'');
+  card.style.setProperty('--skc',t.c);
+  const costLbl=ab.cost!=null&&ab.cost!==''?ab.cost:(ab.eCost!==undefined&&ab.eCost!==null?ab.eCost+'⚡':'—');
+  const right=ocd?`<span class="skcv on">${ab.cd} CD</span>`:(ab.maxCd>0?`<span class="skcv">CD:${ab.maxCd}</span>`:'<span class="skcv"></span>');
+  card.innerHTML=`<div class="skt">${escHtml(t.l)}</div><div class="skn">${escHtml(ab.name)}</div><div class="skd">${escHtml(ab.desc)}</div><div class="skm"><span class="skcs">${escHtml(costLbl)}</span>${right}</div>`;
+  if(!dead&&!ocd&&!noE)card.onclick=(e)=>{e.stopPropagation();selectAbility(u,ab)};
+  return card;
+}
+function buildHUD(){
+  const row=document.getElementById('ah-squad');
+  if(!row)return;
+  row.innerHTML='';
+  G.allies.forEach(u=>{
+    const dead=u.hp<=0;
+    const act=u.abilities.filter(a=>!a.passive);
+    const pack=document.createElement('div');
+    pack.className='pu-pack'+(dead?' unit-dead':'');
+    pack.appendChild(collectionCardEl(u));
+    for(let i=0;i<5;i++)pack.appendChild(mountSkillCard(u,act[i],dead));
+    pack.appendChild(mountSkillCard(u,null,dead));
+    row.appendChild(pack);
+  });
+}
+
+/* ── SELECT ABILITY ── */
+function selectAbility(unit,ab){
+  if(G.actions[unit.id]===ab){delete G.actions[unit.id]}
+  else{
+    G.actions[unit.id]=ab;
+    if(window.MWArenaSFX)MWArenaSFX.playSelect();
+    if(ab.target==='any'&&!ab.healPct){
+      G.pendingPickEnemy=null;
+      if(window.MWArenaThree)MWArenaThree.setEnemyPickMode(true);
+    }
+  }
+  buildHUD();updateConfirm();
+}
+
+function selectTarget(enemy){
+  G.pendingPickEnemy=enemy;
+  if(window.MWArenaThree)MWArenaThree.setEnemyPickMode(false);
+  buildHUD();updateConfirm();
+}
+
+/* ── CONFIRM PANEL ── */
+function updateConfirm(){
+  const slots=document.getElementById('confirm-slots');slots.innerHTML='';
+  const aliveAllies=G.allies.filter(a=>a.hp>0);
+  aliveAllies.forEach(u=>{
+    const ab=G.actions[u.id];const s=document.createElement('div');s.className='cslot';
+    if(ab){const t=gt(ab.type);s.classList.add('filled');s.style.setProperty('--sc',t.c);s.style.setProperty('--sg',t.g);
+      s.innerHTML=`<div class="cslot-i">${t.i}</div><div class="cslot-n">${u.name}: ${ab.name}</div>`}
+    else{s.innerHTML=`<div class="cslot-e">— ${u.name} —</div>`}
+    slots.appendChild(s);
+  });
+  const allSet=aliveAllies.every(u=>G.actions[u.id]);
+  document.getElementById('send-btn').classList.toggle('rdy',allSet);
+}
+
+/* ── EXECUTE TURN ── */
+async function executeTurn(){
+  const alive=G.allies.filter(a=>a.hp>0);
+  if(!alive.every(u=>G.actions[u.id])||G.phase!=='select')return;
+  G.phase='anim';document.getElementById('send-btn').classList.remove('rdy');
+  if(window.MWArenaSFX)MWArenaSFX.playConfirm();
+  G.pendingPickEnemy=null;
+  if(window.MWArenaThree)MWArenaThree.setEnemyPickMode(false);
+
+  // Sort by speed (fastest first)
+  const order=[...alive].sort((a,b)=>b.speed-a.speed);
+  for(const u of order){
+    const ab=G.actions[u.id];if(!ab||u.hp<=0)continue;
+    await sl(200);
+    if(ab.healPct)await doHeal(u,ab);
+    else if(ab.defend===true||ab.type==='defense'||ab.type==='defend'){
+      u.defending=true;
+      if(window.MWArenaThree)await MWArenaThree.playDefendVisual(u,'player');
+      lg(`<span class="actor">${u.name}</span> <span class="ht">DEFENDS</span> — reduced incoming damage this round`,'pa');
+    }else await doAtk(u,ab);
+    if(ab.maxCd>0)ab.cd=ab.maxCd;
+    const pay=ab.eCost!==undefined&&ab.eCost!==null?Number(ab.eCost):0;
+    u.energy=Math.min(MW.MAX_ENERGY,u.energy-pay+MW.E_GAIN_ATK);
+    await sl(200);
+    renderUnits();
+    if(checkEnd())return;
+  }
+  // Reduce ally CDs
+  G.allies.forEach(a=>a.abilities.forEach(s=>{if(s.cd>0)s.cd--}));
+  G.actions={};
+  G.enemies.forEach(e=>{e.defending=false});
+  if(checkEnd())return;
+
+  // Enemy turn
+  G.turn='enemy';G.phase='enemy';
+  document.getElementById('tl').textContent="ENEMY TURN";document.getElementById('tl').style.color='var(--m)';
+  await sl(280);await aiTurn();await sl(120);
+  if(checkEnd())return;
+
+  // New round
+  G.round++;G.turn='player';G.phase='select';
+  document.getElementById('tl').textContent='YOUR TURN';document.getElementById('tl').style.color='var(--c)';
+  document.getElementById('rl').textContent='ROUND '+G.round;
+  showPh('ROUND '+G.round);
+  if(window.MWArenaSFX)MWArenaSFX.playRoundStart();
+  G.enemies.forEach(a=>a.abilities.forEach(s=>{if(s.cd>0)s.cd--}));
+  // Energy regen
+  G.allies.forEach(u=>{if(u.hp>0)u.energy=Math.min(MW.MAX_ENERGY,u.energy+1)});
+  G.enemies.forEach(u=>{if(u.hp>0)u.energy=Math.min(MW.MAX_ENERGY,u.energy+1)});
+  renderUnits();buildHUD();updateConfirm();
+}
+
+/* ── ATTACK ── */
+async function doAtk(atk,ab){
+  let targets=[];
+  if(ab.target==='all')targets=G.enemies.filter(e=>e.hp>0);
+  else if(ab.target==='any'){
+    const pool=G.enemies.filter(e=>e.hp>0);
+    const picked=G.pendingPickEnemy&&pool.some(e=>e.id===G.pendingPickEnemy.id)?G.pendingPickEnemy:null;
+    targets=[picked||pool.sort((a,b)=>a.hp-b.hp)[0]].filter(Boolean);
+  }
+  else targets=getValidTargets(atk,G.enemies);
+  if(!targets.length)return;
+
+  const AX=window.MWArenaThree;
+  const specAll=ab.target==='all'&&String(ab.type||'').toLowerCase()==='special'&&AX;
+
+  if(specAll){
+    const packs=[];
+    for(const t of targets){
+      packs.push({t,r:calcDmg(atk,t,ab.dmg||1.0,ab.ignoreDef)});
+    }
+    for(const {t,r} of packs){
+      if(r.evaded){
+        if(AX){AX.flashUnitById(t.id);AX.popOnUnit(t.id,'EVADE','miss')}
+        lg(`<span class="actor">${atk.name}</span> → ${t.name}: <span class="ct">EVADE</span>`,'pa');
+      }else if(r.damage===0){
+        if(AX){AX.flashUnitById(t.id);AX.popOnUnit(t.id,'BLOCK','block')}
+        lg(`<span class="actor">${atk.name}</span> → ${t.name}: BLOCKED`,'pa');
+      }else{
+        t.hp=Math.max(0,t.hp-r.damage);G.dd+=r.damage;
+        screenFlash();
+        lg(`<span class="actor">${atk.name}</span> → ${t.name}: <span class="dt">-${r.damage}</span>${r.crit?' <span class="ct">CRIT!</span>':''}`,'pa');
+        if(ab.lifesteal&&r.damage>0){const h=Math.round(r.damage*ab.lifesteal);atk.hp=Math.min(atk.maxHp,atk.hp+h);if(AX)AX.popOnUnit(atk.id,'+'+h,'heal')}
+      }
+    }
+    renderUnits();
+    const hitPacks=packs.filter(x=>!x.r.evaded&&x.r.damage>0);
+    if(hitPacks.length&&AX)await AX.playSpecialAoeVisual(atk,ab,hitPacks,'player');
+    for(const {t,r} of packs){
+      if(!r.evaded&&r.damage>0&&t.hp<=0&&AX)await AX.maybeDeathAnim(t,'enemy');
+      if(t.hp<=0){
+        lg(`${t.name} has been <span class="dt">ELIMINATED</span>!`,'sys');
+        if(window.MWArenaStatus)MWArenaStatus.onKill(G.allies,atk);
+      }
+    }
+    renderUnits();
+    return;
+  }
+
+  for(const t of targets){
+    const r=calcDmg(atk,t,ab.dmg||1.0,ab.ignoreDef);
+    if(AX)AX.flashUnitById(t.id);await sl(120);
+    if(r.evaded){
+      if(AX)AX.popOnUnit(t.id,'EVADE','miss');
+      lg(`<span class="actor">${atk.name}</span> → ${t.name}: <span class="ct">EVADE</span>`,'pa');
+    }
+    else if(r.damage===0){
+      if(AX)AX.popOnUnit(t.id,'BLOCK','block');
+      lg(`<span class="actor">${atk.name}</span> → ${t.name}: BLOCKED`,'pa');
+    }
+    else{
+      t.hp=Math.max(0,t.hp-r.damage);G.dd+=r.damage;
+      screenFlash();
+      renderUnits();
+      if(AX)await AX.playAttackVisual(atk,t,ab,r,'player');
+      lg(`<span class="actor">${atk.name}</span> → ${t.name}: <span class="dt">-${r.damage}</span>${r.crit?' <span class="ct">CRIT!</span>':''}`,'pa');
+      if(ab.lifesteal&&r.damage>0){const h=Math.round(r.damage*ab.lifesteal);atk.hp=Math.min(atk.maxHp,atk.hp+h);if(AX)AX.popOnUnit(atk.id,'+'+h,'heal')}
+      if(t.hp<=0){
+        if(AX)await AX.maybeDeathAnim(t,'enemy');
+        lg(`${t.name} has been <span class="dt">ELIMINATED</span>!`,'sys');
+        if(window.MWArenaStatus)MWArenaStatus.onKill(G.allies,atk);
+      }
+    }
+    renderUnits();await sl(180);
+  }
+}
+
+async function doHeal(u,ab){
+  let targets=[];
+  if(ab.target==='self')targets=[u];
+  else if(ab.target==='lowest_ally'){const a=G.allies.filter(a=>a.hp>0).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp);targets=a.length?[a[0]]:[]}
+  else if(ab.target==='all_allies')targets=G.allies.filter(a=>a.hp>0);
+  else targets=[u];
+  const AX=window.MWArenaThree;
+  for(const t of targets){
+    const h=Math.round(t.maxHp*ab.healPct);t.hp=Math.min(t.maxHp,t.hp+h);
+    if(AX)await AX.playHealVisual(u,t,h,'player');
+    lg(`<span class="actor">${u.name}</span> heals ${t.name}: <span class="ht">+${h}</span>`,'pa');
+    renderUnits();await sl(200);
+  }
+}
+
+/* ── TARGETING ── */
+function getValidTargets(unit,enemies){
+  const a=enemies.filter(e=>e.hp>0);if(!a.length)return[];
+  const f=a.filter(e=>e.pos==='front'),m=a.filter(e=>e.pos==='mid'),b=a.filter(e=>e.pos==='back');
+  const p=unit.pos;
+  if(p==='front'){return f.length?[f[0]]:m.length?[m[0]]:b.length?[b[0]]:[]}
+  if(p==='mid'){const t=[...f,...m];return t.length?[t[0]]:b.length?[b[0]]:[]}
+  return a.length?[a[0]]:[];
+}
+
+/* ── ENEMY AI ── */
+async function aiTurn(){
+  const AX=window.MWArenaThree;
+  const order=[...G.enemies.filter(e=>e.hp>0)].sort((a,b)=>b.speed-a.speed);
+  for(const en of order){
+    if(!G.allies.filter(a=>a.hp>0).length)break;
+    const usable=en.abilities.filter(s=>{
+      if(s.passive||s.cd>0)return false;
+      const c=s.eCost!==undefined&&s.eCost!==null?Number(s.eCost):0;
+      return c<=en.energy;
+    });if(!usable.length)continue;
+    const low=en.hp/en.maxHp<.35;const heals=usable.filter(s=>s.healPct);
+    const dmgers=usable.filter(s=>s.dmg);
+    const defenders=usable.filter(s=>s.defend===true||s.type==='defense');
+    let ab=low&&heals.length?heals[0]:dmgers.length?dmgers[~~(Math.random()*dmgers.length)]:(defenders.length&&Math.random()<.22?defenders[0]:usable[0]);
+    await sl(250);
+    if(ab.healPct){
+      let tgts=ab.target==='self'?[en]:ab.target==='lowest_ally'?[G.enemies.filter(e=>e.hp>0).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0]]:
+        ab.target==='all_allies'?G.enemies.filter(e=>e.hp>0):[en];
+      for(const t of tgts){
+        const h=Math.round(t.maxHp*ab.healPct);t.hp=Math.min(t.maxHp,t.hp+h);
+        if(AX)await AX.playHealVisual(en,t,h,'enemy');
+        lg(`<span class="actor">${en.name}</span> heals ${t.name}: <span class="ht">+${h}</span>`,'ea');
+        renderUnits();await sl(200);
+      }
+    } else if(ab.defend===true||ab.type==='defense'||ab.type==='defend'){
+      en.defending=true;
+      if(AX)await AX.playDefendVisual(en,'enemy');
+      lg(`<span class="actor">${en.name}</span> <span class="ht">DEFENDS</span>`,'ea');
+    } else {
+      let tgts=ab.target==='all'?G.allies.filter(a=>a.hp>0):ab.target==='any'?[G.allies.filter(a=>a.hp>0).sort((a,b)=>a.hp-b.hp)[0]].filter(Boolean):getValidTargets(en,G.allies);
+      const specAll=ab.target==='all'&&String(ab.type||'').toLowerCase()==='special'&&AX;
+      if(specAll){
+        const packs=[];
+        for(const t of tgts)packs.push({t,r:calcDmg(en,t,ab.dmg||1.0,ab.ignoreDef)});
+        for(const {t,r} of packs){
+          if(r.evaded){
+            if(AX){AX.flashUnitById(t.id);AX.popOnUnit(t.id,'EVADE','miss')}
+            lg(`<span class="actor">${en.name}</span> → ${t.name}: <span class="ct">EVADE</span>`,'ea');
+          }else if(r.damage===0){
+            if(AX){AX.flashUnitById(t.id);AX.popOnUnit(t.id,'BLOCK','block')}
+            lg(`<span class="actor">${en.name}</span> → ${t.name}: BLOCKED`,'ea');
+          }else{
+            t.hp=Math.max(0,t.hp-r.damage);G.dt+=r.damage;screenFlash();
+            lg(`<span class="actor">${en.name}</span> → ${t.name}: <span class="dt">-${r.damage}</span>${r.crit?' <span class="ct">CRIT!</span>':''}`,'ea');
+            if(ab.lifesteal&&r.damage>0){const h=Math.round(r.damage*ab.lifesteal);en.hp=Math.min(en.maxHp,en.hp+h);if(AX)AX.popOnUnit(en.id,'+'+h,'heal')}
+          }
+        }
+        renderUnits();
+        const hitPacks=packs.filter(x=>!x.r.evaded&&x.r.damage>0);
+        if(hitPacks.length&&AX)await AX.playSpecialAoeVisual(en,ab,hitPacks,'enemy');
+        for(const {t,r} of packs){
+          if(!r.evaded&&r.damage>0&&t.hp<=0&&AX)await AX.maybeDeathAnim(t,'player');
+          if(t.hp<=0)lg(`${t.name} <span class="dt">ELIMINATED</span>!`,'sys');
+        }
+        renderUnits();
+      } else {
+        for(const t of tgts){
+          const r=calcDmg(en,t,ab.dmg||1.0,ab.ignoreDef);
+          if(AX)AX.flashUnitById(t.id);await sl(120);
+          if(r.evaded){
+            if(AX)AX.popOnUnit(t.id,'EVADE','miss');
+            lg(`<span class="actor">${en.name}</span> → ${t.name}: <span class="ct">EVADE</span>`,'ea');
+          }else if(r.damage===0){
+            if(AX)AX.popOnUnit(t.id,'BLOCK','block');
+            lg(`<span class="actor">${en.name}</span> → ${t.name}: BLOCKED`,'ea');
+          }else{
+            t.hp=Math.max(0,t.hp-r.damage);G.dt+=r.damage;screenFlash();
+            renderUnits();
+            if(AX)await AX.playAttackVisual(en,t,ab,r,'enemy');
+            lg(`<span class="actor">${en.name}</span> → ${t.name}: <span class="dt">-${r.damage}</span>${r.crit?' <span class="ct">CRIT!</span>':''}`,'ea');
+            if(ab.lifesteal&&r.damage>0){const h=Math.round(r.damage*ab.lifesteal);en.hp=Math.min(en.maxHp,en.hp+h);if(AX)AX.popOnUnit(en.id,'+'+h,'heal')}
+            if(t.hp<=0){
+              if(AX)await AX.maybeDeathAnim(t,'player');
+              lg(`${t.name} <span class="dt">ELIMINATED</span>!`,'sys');
+            }
+          }
+          renderUnits();await sl(180);
+        }
+      }
+    }
+    if(ab.maxCd>0)ab.cd=ab.maxCd;
+    const ep=ab.eCost!==undefined&&ab.eCost!==null?Number(ab.eCost):0;
+    en.energy=Math.min(MW.MAX_ENERGY,en.energy-ep+MW.E_GAIN_ATK);
+    renderUnits();await sl(300);
+  }
+  G.allies.forEach(a=>{a.defending=false});
+}
+
+/* ── CHECK END ── */
+function checkEnd(){
+  if(!G.enemies.filter(e=>e.hp>0).length){G.phase='done';setTimeout(()=>showResult(true),600);return true}
+  if(!G.allies.filter(a=>a.hp>0).length){G.phase='done';setTimeout(()=>showResult(false),600);return true}
+  return false}
+
+/* ── RESULT — sync rewards with Mind Wars (pve_submit-equivalent) when PHP boot provides tokens ── */
+let squadRewardsSubmitDone=false;
+async function submitSquadBattleResult(win){
+  if(squadRewardsSubmitDone)return null;
+  const b=window.__MW_BATTLE_INIT__;
+  if(!b||!b.battleToken||!b.csrfToken)return null;
+  squadRewardsSubmitDone=true;
+  const url=b.submitResultUrl||'/squad-arena-v2/api/submit_result.php';
+  try{
+    const r=await fetch(url,{
+      method:'POST',
+      credentials:'same-origin',
+      headers:{'Content-Type':'application/json','X-CSRF-Token':String(b.csrfToken)},
+      body:JSON.stringify({
+        battle_token:String(b.battleToken),
+        result:win?'win':'lose',
+        rounds:G.round,
+        dmg_dealt:G.dd,
+        dmg_taken:G.dt
+      })
+    });
+    const j=await r.json().catch(()=>null);
+    if(j&&j.ok&&j.data&&j.data.rewards)return j.data.rewards;
+  }catch(err){console.warn('submitSquadBattleResult',err)}
+  return null;
+}
+async function showResult(w){
+  if(window.MWArenaSFX){MWArenaSFX.stopMusic();if(w)MWArenaSFX.playVictory();else MWArenaSFX.playDefeat();}
+  const srv=await submitSquadBattleResult(w);
+  const o=document.getElementById('eg');
+  o.classList.add('show',w?'win':'lose');
+  o.style.setProperty('--egc',w?'var(--c)':'var(--m)');
+
+  const xp=srv?~~Number(srv.xp):(w?~~(20+G.round*2):~~(8+G.round));
+  const rk=srv?~~Number(srv.rank):(w?20:-5);
+  const ke=srv?~~Number(srv.knowledge_energy):(w?10:4);
+  const quotes=w?[
+    "Your neural pathways evolved beyond comprehension.",
+    "The void bows to your strategic supremacy.",
+    "Every dimension collapsed in your favor.",
+    "Signal integrity: absolute. Victory: inevitable."
+  ]:[
+    "Your neural link was severed before adaptation.",
+    "The void consumed your strategy whole.",
+    "Recalibrate. Rebuild. Return stronger.",
+    "Even the brightest signals fade — temporarily."
+  ];
+
+  /* ── CONFETTI (victory) or ASH PARTICLES (defeat) ── */
+  const confettiEl=document.getElementById('eg-confetti');
+  confettiEl.innerHTML='';
+  if(w){
+    const colors=['#00f0ff','#d400ff','#ffc820','#00ff88','#ff2244','#ffffff'];
+    for(let i=0;i<60;i++){
+      const p=document.createElement('div');
+      p.className='confetti-p';
+      p.style.cssText=`left:${Math.random()*100}%;top:-10px;width:${4+Math.random()*6}px;height:${6+Math.random()*10}px;background:${colors[~~(Math.random()*colors.length)]};border-radius:${Math.random()>0.5?'50%':'1px'};--dur:${2+Math.random()*3}s;--delay:${Math.random()*1.5}s;--rot:${360+Math.random()*720}deg;`;
+      confettiEl.appendChild(p);
+    }
+  } else {
+    for(let i=0;i<30;i++){
+      const p=document.createElement('div');
+      p.className='confetti-p';
+      p.style.cssText=`left:${Math.random()*100}%;top:-10px;width:${2+Math.random()*3}px;height:${2+Math.random()*3}px;background:rgba(${150+~~(Math.random()*60)},${50+~~(Math.random()*40)},${80+~~(Math.random()*40)},0.6);border-radius:50%;--dur:${4+Math.random()*4}s;--delay:${Math.random()*2}s;--rot:${Math.random()*360}deg;`;
+      confettiEl.appendChild(p);
+    }
+  }
+
+  /* ── STAGGERED REVEAL ── */
+  const icon=document.getElementById('egi');
+  const title=document.getElementById('egr');
+  const sub=document.getElementById('egs');
+  const div1=document.getElementById('egd1');
+  const statsEl=document.getElementById('egst');
+  const div2=document.getElementById('egd2');
+  const xpWrap=document.getElementById('egxp');
+  const xpFill=document.getElementById('egxpf');
+  const xpVal=document.getElementById('egxpv');
+  const rwEl=document.getElementById('egrw');
+  const quoteEl=document.getElementById('egq');
+  const btnsEl=document.getElementById('egbtns');
+  const blEl=document.getElementById('egbl');
+
+  /* Reset all animations */
+  [icon,title,sub,div1,div2,xpWrap,quoteEl,btnsEl,blEl].forEach(el=>{if(el)el.classList.remove('anim')});
+
+  /* Icon + Title: 200ms — sin calavera en derrota */
+  if(w){
+    icon.style.display='';
+    icon.textContent='⚡';
+    setTimeout(()=>icon.classList.add('anim'),200);
+  }else{
+    icon.style.display='none';
+    icon.textContent='';
+    icon.classList.remove('anim');
+  }
+
+  title.textContent=w?'VICTORY':'DEFEAT';
+  setTimeout(()=>title.classList.add('anim'),400);
+
+  sub.textContent=w?'YOUR SIGNAL RESONATES ACROSS THE VOID':'YOUR SIGNAL HAS BEEN SEVERED';
+  setTimeout(()=>sub.classList.add('anim'),650);
+
+  /* Divider 1 */
+  setTimeout(()=>div1.classList.add('anim'),850);
+
+  /* Stats — appear one by one with counting animation */
+  const statData=[
+    {v:G.round,l:'ROUNDS'},
+    {v:G.dd,l:'DMG DEALT'},
+    {v:G.dt,l:'DMG TAKEN'}
+  ];
+  statsEl.innerHTML='';
+  statData.forEach((s,i)=>{
+    const si=document.createElement('div');
+    si.className='eg-si';
+    si.innerHTML=`<div class="eg-sv" id="egsv${i}">0</div><div class="eg-sl">${s.l}</div>`;
+    statsEl.appendChild(si);
+    setTimeout(()=>{
+      si.classList.add('anim');
+      /* Count up animation */
+      const target=s.v;
+      const svEl=document.getElementById('egsv'+i);
+      const countDur=600;
+      const t0=performance.now();
+      function tick(){
+        const p=Math.min((performance.now()-t0)/countDur,1);
+        const ease=1-Math.pow(1-p,3);
+        svEl.textContent=Math.round(target*ease).toLocaleString();
+        if(p<1)requestAnimationFrame(tick);
+      }
+      tick();
+      if(window.MWArenaSFX)MWArenaSFX.playSelect();
+    },1000+i*200);
+  });
+
+  /* Divider 2 */
+  setTimeout(()=>div2.classList.add('anim'),1650);
+
+  /* XP Bar — fill animation */
+  xpFill.style.width='0%';
+  xpFill.classList.toggle('lose',!w);
+  xpVal.textContent='+0 XP';
+  setTimeout(()=>{
+    xpWrap.classList.add('anim');
+    setTimeout(()=>{
+      const maxXP=100;
+      const pct=Math.min(100,(xp/maxXP)*100);
+      xpFill.style.width=pct+'%';
+      /* Count up XP number */
+      const t0=performance.now();
+      function tickXP(){
+        const p=Math.min((performance.now()-t0)/1200,1);
+        const ease=1-Math.pow(1-p,3);
+        xpVal.textContent='+'+Math.round(xp*ease)+' XP';
+        if(p<1)requestAnimationFrame(tickXP);
+      }
+      tickXP();
+    },150);
+  },1800);
+
+  /* Rewards — pop in one by one */
+  rwEl.innerHTML='';
+  const rewards=[
+    {icon:'✨',val:'+'+xp,cls:'xp',label:'XP'},
+    {icon:'',val:(rk>0?'+':'')+rk,cls:'rk',label:'RANK'},
+    {icon:'⚡',val:'+'+ke,cls:'ke',label:'KE'}
+  ];
+  rewards.forEach((r,i)=>{
+    const ri=document.createElement('div');
+    ri.className='eg-ri';
+    ri.innerHTML=`<span class="eg-ri-icon">${r.icon}</span> <span class="eg-rv ${r.cls}">${r.val}</span> ${r.label}`;
+    rwEl.appendChild(ri);
+    setTimeout(()=>{
+      ri.classList.add('anim');
+      if(window.MWArenaSFX)MWArenaSFX.playSelect();
+    },2400+i*180);
+  });
+
+  /* Quote — typewriter effect */
+  const chosenQuote=quotes[~~(Math.random()*quotes.length)];
+  quoteEl.textContent='';
+  setTimeout(()=>{
+    quoteEl.classList.add('anim');
+    quoteEl.textContent='"';
+    let ci=0;
+    function typeChar(){
+      if(ci<chosenQuote.length){
+        quoteEl.textContent='"'+chosenQuote.substring(0,ci+1);
+        ci++;
+        setTimeout(typeChar,25+Math.random()*15);
+      } else {
+        quoteEl.textContent='"'+chosenQuote+'"';
+      }
+    }
+    typeChar();
+  },3100);
+
+  /* Buttons + bottom line */
+  setTimeout(()=>btnsEl.classList.add('anim'),3800);
+  setTimeout(()=>blEl.classList.add('anim'),3900);
+}
+
+/* ── FX ── */
+function flash(id){if(window.MWArenaThree)MWArenaThree.flashUnitById(id)}
+function screenFlash(){const s=document.getElementById('sf');s.classList.add('pop');setTimeout(()=>s.classList.remove('pop'),80)}
+function pop(id,t,ty){if(window.MWArenaThree)MWArenaThree.popOnUnit(id,t,ty)}
+function showPh(t){const o=document.getElementById('phov');document.getElementById('phtx').textContent=t;o.classList.add('show');setTimeout(()=>o.classList.remove('show'),950)}
+function lg(m,ty='sys'){const c=document.getElementById('clog');const e=document.createElement('div');e.className='cle '+ty;
+  e.innerHTML=`<span class="trn">R${G.round}</span>`+m;c.appendChild(e);while(c.children.length>8)c.removeChild(c.firstChild);
+  Array.from(c.children).forEach((el,i,a)=>{el.style.opacity=.25+(i/a.length)*.75})}
+function sl(ms){return new Promise(r=>setTimeout(r,ms))}
+function goLobby(){window.location.href='/squad-arena-v2/squad-selector.php'}
+
+init();
+</script>
+</body>
+</html>

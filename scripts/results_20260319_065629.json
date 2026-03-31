@@ -1,0 +1,353 @@
+{
+    "seed": 42,
+    "timestamp": "2026-03-19 06:56:29",
+    "battles": 10,
+    "results": [
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Sigmund Freud",
+                "Joan of Arc"
+            ],
+            "team_b": [
+                "Leonidas",
+                "Miyamoto Musashi"
+            ],
+            "damage_by_char": {
+                "Sigmund Freud": 2274,
+                "Leonidas": 343,
+                "Miyamoto Musashi": 535
+            },
+            "effects_count": 6,
+            "cc_count": 3
+        },
+        {
+            "winner": "B",
+            "turns": 25,
+            "team_a": [
+                "Long John Silver",
+                "Jack Frost",
+                "Miyamoto Musashi"
+            ],
+            "team_b": [
+                "Carl Jung",
+                "Sun Tzu",
+                "Dracula"
+            ],
+            "damage_by_char": {
+                "Long John Silver": 1175,
+                "Carl Jung": 872,
+                "Sun Tzu": 1939,
+                "Jack Frost": 661,
+                "Miyamoto Musashi": 609,
+                "Dracula": 443
+            },
+            "effects_count": 11,
+            "cc_count": 2
+        },
+        {
+            "winner": "B",
+            "turns": 30,
+            "team_a": [
+                "Atlas",
+                "Hippocrates",
+                "Avicenna"
+            ],
+            "team_b": [
+                "Wendigo",
+                "Frankenstein",
+                "Krampus"
+            ],
+            "damage_by_char": {
+                "Wendigo": 606,
+                "Atlas": 1758,
+                "Frankenstein": 1411,
+                "Hippocrates": 219
+            },
+            "effects_count": 17,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 24,
+            "team_a": [
+                "Achilles",
+                "Joan of Arc"
+            ],
+            "team_b": [
+                "William Wallace",
+                "Spartacus"
+            ],
+            "damage_by_char": {
+                "Achilles": 1244,
+                "William Wallace": 912,
+                "Spartacus": 646,
+                "Joan of Arc": 879
+            },
+            "effects_count": 3,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 17,
+            "team_a": [
+                "Little Red Riding Hood",
+                "Simon Bolivar"
+            ],
+            "team_b": [
+                "Kraken",
+                "Queen Grimhilde"
+            ],
+            "damage_by_char": {
+                "Little Red Riding Hood": 2305,
+                "Kraken": 515,
+                "Queen Grimhilde": 494
+            },
+            "effects_count": 9,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Confucius",
+                "George Washington"
+            ],
+            "team_b": [
+                "El Cid",
+                "Rapunzel"
+            ],
+            "damage_by_char": {
+                "El Cid": 732,
+                "Confucius": 1350,
+                "Rapunzel": 286,
+                "George Washington": 893
+            },
+            "effects_count": 10,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 30,
+            "team_a": [
+                "Arthur King",
+                "Clara Barton",
+                "Pericles"
+            ],
+            "team_b": [
+                "Pericles",
+                "Corrupted Loki",
+                "Julio César"
+            ],
+            "damage_by_char": {
+                "Arthur King": 989,
+                "Pericles": 2252,
+                "Clara Barton": 164,
+                "Corrupted Loki": 1959,
+                "Julio César": 189
+            },
+            "effects_count": 20,
+            "cc_count": 1
+        },
+        {
+            "winner": "A",
+            "turns": 30,
+            "team_a": [
+                "Little Red Riding Hood",
+                "Rasputin",
+                "Achilles"
+            ],
+            "team_b": [
+                "Nikola Tesla",
+                "Benjamin Franklin",
+                "Wendigo"
+            ],
+            "damage_by_char": {
+                "Nikola Tesla": 1625,
+                "Little Red Riding Hood": 774,
+                "Rasputin": 1516,
+                "Benjamin Franklin": 173,
+                "Wendigo": 686,
+                "Achilles": 459
+            },
+            "effects_count": 15,
+            "cc_count": 4
+        },
+        {
+            "winner": "B",
+            "turns": 30,
+            "team_a": [
+                "Dracula",
+                "Merlin",
+                "Morgana"
+            ],
+            "team_b": [
+                "Leonardo da Vinci",
+                "Genghis Khan",
+                "Bruce Lee"
+            ],
+            "damage_by_char": {
+                "Dracula": 971,
+                "Leonardo da Vinci": 1267,
+                "Merlin": 168,
+                "Genghis Khan": 1608,
+                "Morgana": 1613,
+                "Bruce Lee": 252
+            },
+            "effects_count": 17,
+            "cc_count": 3
+        },
+        {
+            "winner": "A",
+            "turns": 28,
+            "team_a": [
+                "Joan of Arc",
+                "Odin",
+                "Sherlock Holmes"
+            ],
+            "team_b": [
+                "Headless Horseman",
+                "Bruce Lee",
+                "Niccolo Machiavelli"
+            ],
+            "damage_by_char": {
+                "Headless Horseman": 1087,
+                "Joan of Arc": 919,
+                "Odin": 1527,
+                "Bruce Lee": 962,
+                "Niccolo Machiavelli": 1023,
+                "Sherlock Holmes": 1070
+            },
+            "effects_count": 7,
+            "cc_count": 1
+        }
+    ],
+    "stats": {
+        "team_a_wins": 6,
+        "team_b_wins": 4,
+        "draws": 0,
+        "avg_duration": 24.2,
+        "avg_cc_per_combat": 1.4
+    },
+    "team_stats": {
+        "team_a_wins": 6,
+        "team_b_wins": 4,
+        "draws": 0,
+        "team_a_avg_duration": 21.17,
+        "team_b_avg_duration": 28.75,
+        "team_a_total_damage": 25789,
+        "team_b_total_damage": 20565
+    },
+    "char_winrate": {
+        "Sigmund Freud": 1,
+        "Joan of Arc": 3,
+        "Carl Jung": 1,
+        "Sun Tzu": 1,
+        "Dracula": 1,
+        "Wendigo": 1,
+        "Frankenstein": 1,
+        "Krampus": 1,
+        "Achilles": 2,
+        "Little Red Riding Hood": 2,
+        "Simon Bolivar": 1,
+        "Confucius": 1,
+        "George Washington": 1,
+        "Pericles": 1,
+        "Corrupted Loki": 1,
+        "Julio César": 1,
+        "Rasputin": 1,
+        "Leonardo da Vinci": 1,
+        "Genghis Khan": 1,
+        "Bruce Lee": 1,
+        "Odin": 1,
+        "Sherlock Holmes": 1
+    },
+    "char_appearances": {
+        "Joan of Arc": 3,
+        "Miyamoto Musashi": 2,
+        "Dracula": 2,
+        "Wendigo": 2,
+        "Achilles": 2,
+        "Little Red Riding Hood": 2,
+        "Pericles": 2,
+        "Bruce Lee": 2,
+        "Sigmund Freud": 1,
+        "Leonidas": 1,
+        "Long John Silver": 1,
+        "Jack Frost": 1,
+        "Carl Jung": 1,
+        "Sun Tzu": 1,
+        "Atlas": 1,
+        "Hippocrates": 1,
+        "Avicenna": 1,
+        "Frankenstein": 1,
+        "Krampus": 1,
+        "William Wallace": 1,
+        "Spartacus": 1,
+        "Simon Bolivar": 1,
+        "Kraken": 1,
+        "Queen Grimhilde": 1,
+        "Confucius": 1,
+        "George Washington": 1,
+        "El Cid": 1,
+        "Rapunzel": 1,
+        "Arthur King": 1,
+        "Clara Barton": 1,
+        "Corrupted Loki": 1,
+        "Julio César": 1,
+        "Rasputin": 1,
+        "Nikola Tesla": 1,
+        "Benjamin Franklin": 1,
+        "Merlin": 1,
+        "Morgana": 1,
+        "Leonardo da Vinci": 1,
+        "Genghis Khan": 1,
+        "Odin": 1,
+        "Sherlock Holmes": 1,
+        "Headless Horseman": 1,
+        "Niccolo Machiavelli": 1
+    },
+    "char_damage": {
+        "Little Red Riding Hood": 3079,
+        "Sigmund Freud": 2274,
+        "Pericles": 2252,
+        "Corrupted Loki": 1959,
+        "Sun Tzu": 1939,
+        "Joan of Arc": 1798,
+        "Atlas": 1758,
+        "Achilles": 1703,
+        "Nikola Tesla": 1625,
+        "Morgana": 1613,
+        "Genghis Khan": 1608,
+        "Odin": 1527,
+        "Rasputin": 1516,
+        "Dracula": 1414,
+        "Frankenstein": 1411,
+        "Confucius": 1350,
+        "Wendigo": 1292,
+        "Leonardo da Vinci": 1267,
+        "Bruce Lee": 1214,
+        "Long John Silver": 1175,
+        "Miyamoto Musashi": 1144,
+        "Headless Horseman": 1087,
+        "Sherlock Holmes": 1070,
+        "Niccolo Machiavelli": 1023,
+        "Arthur King": 989,
+        "William Wallace": 912,
+        "George Washington": 893,
+        "Carl Jung": 872,
+        "El Cid": 732,
+        "Jack Frost": 661,
+        "Spartacus": 646,
+        "Kraken": 515,
+        "Queen Grimhilde": 494,
+        "Leonidas": 343,
+        "Rapunzel": 286,
+        "Hippocrates": 219,
+        "Julio César": 189,
+        "Benjamin Franklin": 173,
+        "Merlin": 168,
+        "Clara Barton": 164
+    }
+}

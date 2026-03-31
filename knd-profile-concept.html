@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KND PROFILE — Neural Identity</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --void:#010508;--deep:#020a10;--surface:#04131c;
+  --glass:rgba(6,24,36,.75);--glassl:rgba(8,30,44,.55);
+  --c:#00e8ff;--c2:#00a8bb;--cg:rgba(0,232,255,.12);--cb:rgba(0,232,255,.22);
+  --m:#d44fff;--m2:#9b30ff;--mg:rgba(212,79,255,.12);
+  --gold:#ffcc00;--green:#00ff99;--red:#ff2255;--orange:#ff8800;
+  --t1:rgba(220,248,255,.95);--t2:rgba(155,215,235,.62);--t3:rgba(90,165,190,.38);--t4:rgba(60,120,145,.2);
+  --FD:'Orbitron',monospace;--FB:'Rajdhani',sans-serif;--FM:'Share Tech Mono',monospace;
+}
+html{height:100%}
+body{min-height:100%;background:var(--void);color:var(--t1);font-family:var(--FB);cursor:default;overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 3px)}
+#bg{position:fixed;inset:0;z-index:0}
+#bg::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 40% at 50% 15%,rgba(0,80,180,.12),transparent 50%),
+    radial-gradient(ellipse 40% 40% at 80% 70%,rgba(150,30,200,.07),transparent 45%),
+    var(--void)}
+#bg::after{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,232,255,.01) 1px,transparent 1px),linear-gradient(90deg,rgba(0,232,255,.01) 1px,transparent 1px);
+  background-size:48px 48px}
+
+.page{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:24px 20px 60px}
+
+/* ═══ HERO IDENTITY CARD ═══ */
+.hero-card{display:grid;grid-template-columns:auto 1fr;gap:28px;
+  background:var(--glass);border:1px solid rgba(0,232,255,.1);backdrop-filter:blur(20px);
+  padding:32px;margin-bottom:24px;position:relative;overflow:hidden;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%)}
+.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--c),var(--m),transparent)}
+.hero-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,232,255,.15),transparent)}
+
+/* Level Badge */
+.level-hex{width:110px;height:110px;position:relative;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.level-hex svg{position:absolute;inset:0;width:100%;height:100%}
+.level-hex-bg{fill:rgba(0,232,255,.04);stroke:rgba(0,232,255,.25);stroke-width:1.5;
+  filter:drop-shadow(0 0 15px rgba(0,232,255,.15))}
+.level-hex-inner{fill:none;stroke:rgba(0,232,255,.1);stroke-width:0.5}
+.level-num{font-family:var(--FD);font-size:36px;font-weight:900;color:var(--c);
+  text-shadow:0 0 20px rgba(0,232,255,.5);position:relative;z-index:2}
+.level-label{position:absolute;bottom:12px;font-family:var(--FM);font-size:7px;letter-spacing:3px;
+  color:var(--t3);text-transform:uppercase;z-index:2}
+/* Tier colors */
+.level-hex.gold .level-hex-bg{fill:rgba(255,204,0,.06);stroke:rgba(255,204,0,.4);filter:drop-shadow(0 0 15px rgba(255,204,0,.2))}
+.level-hex.gold .level-num{color:var(--gold);text-shadow:0 0 20px rgba(255,204,0,.5)}
+.level-hex.epic .level-hex-bg{fill:rgba(167,139,250,.06);stroke:rgba(167,139,250,.4);filter:drop-shadow(0 0 15px rgba(167,139,250,.2))}
+.level-hex.epic .level-num{color:#c4b5fd;text-shadow:0 0 20px rgba(167,139,250,.5)}
+.level-hex.legendary .level-hex-bg{fill:rgba(251,191,36,.08);stroke:rgba(251,191,36,.5);filter:drop-shadow(0 0 20px rgba(251,191,36,.3));
+  animation:legPulse 3s ease-in-out infinite}
+.level-hex.legendary .level-num{color:#fef08a;text-shadow:0 0 20px rgba(251,191,36,.6),0 0 40px rgba(251,191,36,.3)}
+@keyframes legPulse{0%,100%{filter:drop-shadow(0 0 15px rgba(251,191,36,.3))}50%{filter:drop-shadow(0 0 25px rgba(251,191,36,.5))}}
+
+/* Identity Info */
+.identity{display:flex;flex-direction:column;justify-content:center;gap:8px}
+.identity-name{font-family:var(--FD);font-size:22px;font-weight:900;letter-spacing:3px;color:var(--t1);
+  text-shadow:0 0 12px rgba(0,232,255,.15)}
+.identity-tag{font-family:var(--FM);font-size:9px;letter-spacing:2px;color:var(--t3)}
+.identity-xp{font-family:var(--FM);font-size:12px;letter-spacing:1px;color:var(--c)}
+.identity-xp strong{font-family:var(--FD);font-size:16px}
+
+/* XP Progress Bar */
+.xp-bar{width:100%;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;margin-top:4px}
+.xp-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--c),var(--m));
+  box-shadow:0 0 8px rgba(0,232,255,.3);transition:width 1.5s cubic-bezier(.2,.8,.2,1);position:relative}
+.xp-fill::after{content:'';position:absolute;right:0;top:0;bottom:0;width:6px;
+  background:rgba(255,255,255,.8);border-radius:3px}
+.xp-next{font-family:var(--FM);font-size:9px;letter-spacing:1.5px;color:var(--t3);margin-top:4px}
+
+/* ═══ RANK STRIP ═══ */
+.rank-strip{display:flex;gap:12px;margin-bottom:24px}
+.rank-chip{flex:1;display:flex;align-items:center;gap:10px;padding:12px 16px;
+  background:var(--glass);border:1px solid rgba(0,232,255,.08);backdrop-filter:blur(16px);
+  position:relative;overflow:hidden}
+.rank-chip::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px}
+.rank-chip:nth-child(1)::before{background:var(--c);box-shadow:0 0 8px var(--c)}
+.rank-chip:nth-child(2)::before{background:var(--m);box-shadow:0 0 8px var(--m)}
+.rank-chip:nth-child(3)::before{background:var(--gold);box-shadow:0 0 8px var(--gold)}
+.rc-val{font-family:var(--FD);font-size:20px;font-weight:900;letter-spacing:2px}
+.rank-chip:nth-child(1) .rc-val{color:var(--c);text-shadow:0 0 10px rgba(0,232,255,.3)}
+.rank-chip:nth-child(2) .rc-val{color:var(--m);text-shadow:0 0 10px rgba(212,79,255,.3)}
+.rank-chip:nth-child(3) .rc-val{color:var(--gold);text-shadow:0 0 10px rgba(255,204,0,.3)}
+.rc-label{font-family:var(--FM);font-size:8px;letter-spacing:2px;color:var(--t3);text-transform:uppercase}
+
+/* ═══ STAT CARDS — hexagonal grid ═══ */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:var(--glass);border:1px solid rgba(0,232,255,.08);backdrop-filter:blur(16px);
+  padding:20px;position:relative;overflow:hidden;transition:all .3s;cursor:default;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--sc,var(--c)),transparent);opacity:.5}
+.stat-card:hover{border-color:rgba(0,232,255,.15);transform:translateY(-2px);
+  box-shadow:0 8px 30px rgba(0,0,0,.3),0 0 15px var(--sg,rgba(0,232,255,.06))}
+.sc-header{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.sc-icon{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-size:14px;background:rgba(0,232,255,.08);border:1px solid rgba(0,232,255,.15);color:var(--c)}
+.stat-card:nth-child(2) .sc-icon{background:rgba(212,79,255,.08);border-color:rgba(212,79,255,.15);color:var(--m)}
+.stat-card:nth-child(2){--sc:var(--m);--sg:rgba(212,79,255,.06)}
+.stat-card:nth-child(3) .sc-icon{background:rgba(255,204,0,.08);border-color:rgba(255,204,0,.15);color:var(--gold)}
+.stat-card:nth-child(3){--sc:var(--gold);--sg:rgba(255,204,0,.06)}
+.sc-title{font-family:var(--FD);font-size:9px;font-weight:700;letter-spacing:2px;color:var(--t2)}
+.sc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sc-item-label{font-family:var(--FM);font-size:7px;letter-spacing:2px;color:var(--t3);text-transform:uppercase}
+.sc-item-val{font-family:var(--FD);font-size:16px;font-weight:700;color:var(--t1);margin-top:2px}
+.sc-item-val.win{color:var(--green)}.sc-item-val.lose{color:var(--red)}
+
+/* ═══ AVATAR SHOWCASE ═══ */
+.avatar-section{background:var(--glass);border:1px solid rgba(0,232,255,.08);backdrop-filter:blur(16px);
+  padding:24px;margin-bottom:24px;position:relative;overflow:hidden}
+.avatar-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,232,255,.2),transparent)}
+.section-title{font-family:var(--FD);font-size:10px;font-weight:700;letter-spacing:3px;color:var(--c);
+  text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.section-title .sdot{width:5px;height:5px;border-radius:50%;background:var(--c);
+  box-shadow:0 0 6px var(--c);animation:dotPulse 2.5s ease-in-out infinite}
+@keyframes dotPulse{0%,100%{opacity:.4;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+
+/* Avatar stage */
+.avatar-stage{display:flex;align-items:center;gap:24px}
+.avatar-frame{width:180px;height:220px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  border-radius:12px;position:relative;
+  background:radial-gradient(circle at 50% 30%,rgba(0,232,255,.08),rgba(4,19,28,.9));
+  border:1px solid rgba(0,232,255,.15);box-shadow:inset 0 0 30px rgba(0,232,255,.04),0 0 20px rgba(0,232,255,.06)}
+.avatar-img{width:85%;height:85%;object-fit:contain;filter:drop-shadow(0 8px 20px rgba(0,0,0,.5));
+  animation:avatarFloat 4s ease-in-out infinite}
+@keyframes avatarFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+/* Glow rings around avatar */
+.avatar-frame::before{content:'';position:absolute;inset:-8px;border-radius:18px;
+  border:1px solid rgba(0,232,255,.08);animation:ringBreath 4s ease-in-out infinite}
+@keyframes ringBreath{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.7;transform:scale(1.02)}}
+.avatar-meta{display:flex;flex-direction:column;gap:6px}
+.avatar-name{font-family:var(--FD);font-size:16px;font-weight:900;letter-spacing:2px;color:var(--t1)}
+.avatar-rarity{font-family:var(--FM);font-size:9px;letter-spacing:2px;text-transform:uppercase}
+.avatar-rarity.legendary{color:var(--gold);text-shadow:0 0 8px rgba(255,204,0,.4)}
+.avatar-rarity.epic{color:#c4b5fd}
+.avatar-badge{font-family:var(--FM);font-size:8px;letter-spacing:2px;padding:3px 10px;
+  border:1px solid rgba(0,232,255,.2);color:var(--c);background:rgba(0,232,255,.04);
+  display:inline-block;margin-top:4px}
+
+/* ═══ COLLECTION WALL ═══ */
+.collection-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
+.coll-item{padding:12px 8px;text-align:center;background:rgba(255,255,255,.02);
+  border:1px solid rgba(255,255,255,.05);transition:all .25s;cursor:default;position:relative;overflow:hidden}
+.coll-item:hover{transform:translateY(-3px);border-color:rgba(0,232,255,.15);
+  box-shadow:0 6px 20px rgba(0,0,0,.3),0 0 10px rgba(0,232,255,.05);background:rgba(0,232,255,.03)}
+.coll-item.selected{border-color:rgba(0,232,255,.4);background:rgba(0,232,255,.05);
+  box-shadow:0 0 12px rgba(0,232,255,.1)}
+.coll-item.selected::after{content:'✓';position:absolute;top:4px;right:6px;font-size:10px;color:var(--c)}
+.coll-img{width:48px;height:48px;object-fit:contain;margin:0 auto 6px;display:block;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+.coll-name{font-family:var(--FM);font-size:8px;letter-spacing:1px;color:var(--t2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.coll-rarity{font-family:var(--FM);font-size:7px;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.coll-rarity.common{color:#9ca3af}.coll-rarity.rare{color:#60a5fa}
+.coll-rarity.epic{color:#a78bfa}.coll-rarity.legendary{color:var(--gold)}
+.coll-btn{font-family:var(--FD);font-size:7px;letter-spacing:1.5px;padding:3px 8px;margin-top:6px;
+  border:1px solid rgba(0,232,255,.15);color:var(--t3);background:transparent;cursor:pointer;
+  transition:all .2s;text-transform:uppercase}
+.coll-btn:hover{border-color:var(--c);color:var(--c)}
+.coll-btn.active{border-color:var(--c);color:var(--c);background:rgba(0,232,255,.06)}
+
+/* ═══ BADGES ═══ */
+.badges-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.badge-card{padding:14px 10px;text-align:center;border:1px solid rgba(0,232,255,.1);
+  background:rgba(0,232,255,.03);transition:all .25s;position:relative}
+.badge-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.badge-card.locked{border:1px dashed rgba(255,255,255,.08);background:rgba(255,255,255,.01);opacity:.6}
+.badge-card.locked .badge-icon{opacity:.3}
+.badge-card .lock-icon{position:absolute;top:6px;right:8px;font-size:8px;color:var(--t4)}
+.badge-icon{font-size:24px;margin-bottom:6px;filter:drop-shadow(0 0 6px currentColor)}
+.badge-name{font-family:var(--FM);font-size:8px;letter-spacing:1px;color:var(--t1);margin-bottom:3px}
+.badge-desc{font-family:var(--FM);font-size:7px;letter-spacing:1px;color:var(--t3)}
+.badge-progress{width:100%;height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin-top:6px;overflow:hidden}
+.badge-prog-fill{height:100%;border-radius:2px;background:var(--c);transition:width .8s}
+
+/* ═══ MILESTONES ═══ */
+.mile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;
+  padding-top:16px;border-top:1px solid rgba(0,232,255,.06)}
+.mile-item{text-align:center;padding:10px;background:rgba(255,255,255,.02);
+  border:1px solid rgba(255,255,255,.04)}
+.mile-val{font-family:var(--FD);font-size:18px;font-weight:700;color:var(--c)}
+.mile-label{font-family:var(--FM);font-size:7px;letter-spacing:1.5px;color:var(--t3);
+  text-transform:uppercase;margin-top:2px}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:768px){
+  .hero-card{grid-template-columns:1fr;text-align:center}
+  .level-hex{margin:0 auto}
+  .stats-grid{grid-template-columns:1fr}
+  .rank-strip{flex-direction:column}
+  .avatar-stage{flex-direction:column;text-align:center}
+  .collection-grid{grid-template-columns:repeat(3,1fr)}
+  .mile-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<div id="bg"></div>
+
+<div class="page">
+
+  <!-- ═══ HERO IDENTITY CARD ═══ -->
+  <div class="hero-card">
+    <div class="level-hex legendary">
+      <svg viewBox="0 0 120 120"><polygon class="level-hex-bg" points="60,6 112,30 112,90 60,114 8,90 8,30"/><polygon class="level-hex-inner" points="60,18 98,36 98,84 60,102 22,84 22,36"/></svg>
+      <span class="level-num">27</span>
+      <span class="level-label">LEVEL</span>
+    </div>
+    <div class="identity">
+      <div class="identity-tag">NEURAL OPERATIVE · LEGENDARY TIER</div>
+      <div class="identity-name">NEUROMANCER_X</div>
+      <div class="identity-xp">TOTAL XP: <strong>284,750</strong></div>
+      <div class="xp-bar"><div class="xp-fill" style="width:68%"></div></div>
+      <div class="xp-next">XP TO NEXT LEVEL: 12,250</div>
+    </div>
+  </div>
+
+  <!-- ═══ RANK STRIP ═══ -->
+  <div class="rank-strip">
+    <div class="rank-chip">
+      <div><div class="rc-val">#14</div><div class="rc-label">SEASON RANK</div></div>
+    </div>
+    <div class="rank-chip">
+      <div><div class="rc-val">#7</div><div class="rc-label">ALL-TIME RANK</div></div>
+    </div>
+    <div class="rank-chip">
+      <div><div class="rc-val">S3</div><div class="rc-label">SIGNAL STORM · ENDS APR 15</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ STAT CARDS ═══ -->
+  <div class="stats-grid">
+    <!-- LastRoll -->
+    <div class="stat-card">
+      <div class="sc-header">
+        <div class="sc-icon">🎲</div>
+        <div class="sc-title">KND LASTROLL</div>
+      </div>
+      <div class="sc-grid">
+        <div><div class="sc-item-label">MATCHES</div><div class="sc-item-val">142</div></div>
+        <div><div class="sc-item-label">WINS</div><div class="sc-item-val win">89</div></div>
+        <div><div class="sc-item-label">LOSSES</div><div class="sc-item-val lose">53</div></div>
+        <div><div class="sc-item-label">WINRATE</div><div class="sc-item-val">62.7%</div></div>
+      </div>
+    </div>
+    <!-- Insight -->
+    <div class="stat-card">
+      <div class="sc-header">
+        <div class="sc-icon">👁</div>
+        <div class="sc-title">KND INSIGHT</div>
+      </div>
+      <div class="sc-grid">
+        <div><div class="sc-item-label">ROLLS</div><div class="sc-item-val">318</div></div>
+        <div><div class="sc-item-label">WINS</div><div class="sc-item-val win">167</div></div>
+        <div><div class="sc-item-label">WINRATE</div><div class="sc-item-val">52.5%</div></div>
+        <div><div class="sc-item-label">NET KP</div><div class="sc-item-val win">+4,230</div></div>
+      </div>
+    </div>
+    <!-- Drops -->
+    <div class="stat-card">
+      <div class="sc-header">
+        <div class="sc-icon">📦</div>
+        <div class="sc-title">DROP CHAMBER</div>
+      </div>
+      <div class="sc-grid">
+        <div><div class="sc-item-label">DROPS</div><div class="sc-item-val">45</div></div>
+        <div><div class="sc-item-label">BEST</div><div class="sc-item-val" style="color:var(--gold)">Legendary</div></div>
+        <div><div class="sc-item-label">AVG REWARD</div><div class="sc-item-val">182 KP</div></div>
+        <div><div class="sc-item-label">COLLECTED</div><div class="sc-item-val">23</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ AVATAR SHOWCASE ═══ -->
+  <div class="avatar-section">
+    <div class="section-title"><span class="sdot"></span> ACTIVE AVATAR</div>
+    <div class="avatar-stage">
+      <div class="avatar-frame">
+        <div style="font-size:80px;filter:drop-shadow(0 8px 20px rgba(0,0,0,.5));animation:avatarFloat 4s ease-in-out infinite">⚡</div>
+      </div>
+      <div class="avatar-meta">
+        <div class="avatar-name">NIKOLA TESLA</div>
+        <div class="avatar-rarity legendary">★ LEGENDARY</div>
+        <div class="avatar-badge">◆ ACTIVE FAVORITE</div>
+        <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+          <span style="font-family:var(--FM);font-size:9px;color:var(--t3);letter-spacing:1px">🔮 FRAGMENTS: <strong style="color:#a78bfa">1,247</strong></span>
+          <span style="font-family:var(--FM);font-size:9px;color:var(--t3);letter-spacing:1px">💰 KP: <strong style="color:var(--c)">12,450</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ COLLECTED AVATARS ═══ -->
+  <div class="avatar-section">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div class="section-title" style="margin-bottom:0"><span class="sdot"></span> COLLECTED AVATARS</div>
+      <span style="font-family:var(--FM);font-size:9px;color:var(--t3);letter-spacing:1px">23 ITEMS</span>
+    </div>
+    <div class="collection-grid">
+      <div class="coll-item selected">
+        <div style="font-size:32px;margin-bottom:6px">⚡</div>
+        <div class="coll-name">NIKOLA TESLA</div>
+        <div class="coll-rarity legendary">LEGENDARY</div>
+        <button class="coll-btn active">✓ ACTIVE</button>
+      </div>
+      <div class="coll-item">
+        <div style="font-size:32px;margin-bottom:6px">🔮</div>
+        <div class="coll-name">MORGANA</div>
+        <div class="coll-rarity epic">EPIC</div>
+        <button class="coll-btn">SET FAV</button>
+      </div>
+      <div class="coll-item">
+        <div style="font-size:32px;margin-bottom:6px">☢</div>
+        <div class="coll-name">MARIE CURIE</div>
+        <div class="coll-rarity epic">EPIC</div>
+        <button class="coll-btn">SET FAV</button>
+      </div>
+      <div class="coll-item">
+        <div style="font-size:32px;margin-bottom:6px">🧛</div>
+        <div class="coll-name">DRACULA</div>
+        <div class="coll-rarity legendary">LEGENDARY</div>
+        <button class="coll-btn">SET FAV</button>
+      </div>
+      <div class="coll-item">
+        <div style="font-size:32px;margin-bottom:6px">🐙</div>
+        <div class="coll-name">KRAKEN</div>
+        <div class="coll-rarity legendary">LEGENDARY</div>
+        <button class="coll-btn">SET FAV</button>
+      </div>
+      <div class="coll-item">
+        <div style="font-size:32px;margin-bottom:6px">👑</div>
+        <div class="coll-name">CLEOPATRA</div>
+        <div class="coll-rarity epic">EPIC</div>
+        <button class="coll-btn">SET FAV</button>
+      </div>
+      <div class="coll-item">
+        <div style="font-size:32px;margin-bottom:6px">🗡</div>
+        <div class="coll-name">GLADIATOR</div>
+        <div class="coll-rarity rare">RARE</div>
+        <button class="coll-btn">SET FAV</button>
+      </div>
+      <div class="coll-item">
+        <div style="font-size:32px;margin-bottom:6px">🌊</div>
+        <div class="coll-name">POSEIDON</div>
+        <div class="coll-rarity rare">RARE</div>
+        <button class="coll-btn">SET FAV</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ BADGES ═══ -->
+  <div class="avatar-section">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div class="section-title" style="margin-bottom:0"><span class="sdot"></span> BADGES</div>
+      <span style="font-family:var(--FM);font-size:9px;color:var(--t3);letter-spacing:1px">7 / 24 UNLOCKED</span>
+    </div>
+    <div class="badges-grid">
+      <div class="badge-card">
+        <div class="badge-icon" style="color:var(--c)">🎲</div>
+        <div class="badge-name">FIRST ROLL</div>
+        <div class="badge-desc">Play your first game</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-icon" style="color:var(--green)">🏆</div>
+        <div class="badge-name">VICTOR</div>
+        <div class="badge-desc">Win 10 matches</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-icon" style="color:var(--gold)">⚡</div>
+        <div class="badge-name">LEGENDARY PULL</div>
+        <div class="badge-desc">Get a legendary drop</div>
+      </div>
+      <div class="badge-card">
+        <div class="badge-icon" style="color:var(--m)">🔮</div>
+        <div class="badge-name">MIND WARRIOR</div>
+        <div class="badge-desc">Win 50 Mind Wars</div>
+      </div>
+      <div class="badge-card locked">
+        <span class="lock-icon">🔒</span>
+        <div class="badge-icon" style="color:var(--t4)">🔥</div>
+        <div class="badge-name">ON FIRE</div>
+        <div class="badge-desc">Win 5 in a row</div>
+        <div class="badge-progress"><div class="badge-prog-fill" style="width:60%;background:var(--orange)"></div></div>
+        <div style="font-family:var(--FM);font-size:7px;color:var(--t4);margin-top:3px">3 / 5</div>
+      </div>
+      <div class="badge-card locked">
+        <span class="lock-icon">🔒</span>
+        <div class="badge-icon" style="color:var(--t4)">💎</div>
+        <div class="badge-name">COLLECTOR</div>
+        <div class="badge-desc">Collect 50 items</div>
+        <div class="badge-progress"><div class="badge-prog-fill" style="width:46%;background:#a78bfa"></div></div>
+        <div style="font-family:var(--FM);font-size:7px;color:var(--t4);margin-top:3px">23 / 50</div>
+      </div>
+    </div>
+
+    <!-- Milestones -->
+    <div class="mile-grid">
+      <div class="mile-item"><div class="mile-val">142</div><div class="mile-label">MATCHES PLAYED</div></div>
+      <div class="mile-item"><div class="mile-val">318</div><div class="mile-label">INSIGHT ROLLS</div></div>
+      <div class="mile-item"><div class="mile-val">45</div><div class="mile-label">DROPS OPENED</div></div>
+      <div class="mile-item"><div class="mile-val" style="color:var(--gold)">3</div><div class="mile-label">LEGENDARY PULLS</div></div>
+      <div class="mile-item"><div class="mile-val" style="color:var(--m)">4</div><div class="mile-label">BEST STREAK</div></div>
+      <div class="mile-item"><div class="mile-val" style="color:var(--green)">23</div><div class="mile-label">ITEMS COLLECTED</div></div>
+    </div>
+  </div>
+
+  <!-- Back link -->
+  <div style="text-align:center;margin-top:20px">
+    <a href="#" style="font-family:var(--FM);font-size:9px;letter-spacing:2px;color:var(--t3);text-decoration:none;transition:color .2s"
+       onmouseover="this.style.color='var(--c)'" onmouseout="this.style.color='var(--t3)'">
+      ← BACK TO ARENA
+    </a>
+  </div>
+
+</div>
+
+<script>
+/* Animate XP bar on load */
+document.addEventListener('DOMContentLoaded',function(){
+  var fill=document.querySelector('.xp-fill');
+  if(fill){fill.style.width='0%';setTimeout(function(){fill.style.width='68%'},300)}
+  /* Animate stat numbers */
+  document.querySelectorAll('.sc-item-val,.rc-val,.mile-val').forEach(function(el){
+    var text=el.textContent.trim();
+    var num=parseFloat(text.replace(/[^0-9.]/g,''));
+    if(isNaN(num)||num===0)return;
+    var prefix=text.match(/^[^0-9]*/)[0];
+    var suffix=text.match(/[^0-9.]*$/)[0];
+    var isFloat=text.includes('.');
+    el.textContent=prefix+'0'+suffix;
+    var t0=performance.now();
+    function tick(){
+      var p=Math.min((performance.now()-t0)/800,1);
+      var ease=1-Math.pow(1-p,3);
+      var v=num*ease;
+      el.textContent=prefix+(isFloat?v.toFixed(1):Math.round(v).toLocaleString())+suffix;
+      if(p<1)requestAnimationFrame(tick);
+    }
+    setTimeout(tick,200+Math.random()*400);
+  });
+});
+</script>
+</body>
+</html>

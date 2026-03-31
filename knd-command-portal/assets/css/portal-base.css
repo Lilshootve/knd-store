@@ -1,0 +1,277 @@
+:root {
+    /* Paleta principal */
+    --portal-bg-deep: #02030a;
+    --portal-bg-elevated: #050918;
+    --portal-bg-panel: #070c1e;
+    --portal-bg-panel-soft: #0b1024;
+
+    --portal-neon-cyan: #00e5ff;
+    --portal-neon-violet: #7a5cff;
+    --portal-neon-lime: #00ff9d;
+    --portal-accent-gold: #ffb800;
+
+    --portal-text-main: #f5f7ff;
+    --portal-text-soft: rgba(217, 223, 255, 0.8);
+    --portal-text-muted: rgba(181, 190, 231, 0.7);
+
+    --portal-border-subtle: rgba(255, 255, 255, 0.06);
+    --portal-border-strong: rgba(255, 255, 255, 0.14);
+
+    --portal-shadow-soft: 0 22px 60px rgba(0, 0, 0, 0.8);
+    --portal-shadow-glow-cyan: 0 0 28px rgba(0, 229, 255, 0.6);
+    --portal-shadow-glow-violet: 0 0 28px rgba(122, 92, 255, 0.6);
+
+    /* Tipografía */
+    --portal-font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --portal-font-orbitron: 'Orbitron', system-ui, sans-serif;
+
+    /* Spacing scale */
+    --space-2xs: 0.15rem;
+    --space-xs: 0.3rem;
+    --space-sm: 0.55rem;
+    --space-md: 0.9rem;
+    --space-lg: 1.4rem;
+    --space-xl: 2.1rem;
+    --space-2xl: 3rem;
+
+    /* Radius */
+    --radius-xs: 6px;
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-pill: 999px;
+
+    /* Durations & easing */
+    --dur-fast: 140ms;
+    --dur-med: 260ms;
+    --dur-slow: 420ms;
+
+    --ease-soft: cubic-bezier(0.19, 1, 0.22, 1);
+    --ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1);
+
+    /* Blur */
+    --blur-soft: 14px;
+    --blur-strong: 24px;
+}
+
+.portal-body {
+    min-height: 100%;
+    margin: 0;
+    overflow-x: hidden;
+    font-family: var(--portal-font-sans);
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--portal-text-main);
+    background-color: #02030a;
+    background-image: none;
+}
+
+.portal-root {
+    position: relative;
+    min-height: 100vh;
+    z-index: 0;
+    color: var(--portal-text-main);
+}
+
+.portal-bg-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    background: #02030a;
+}
+
+.portal-global-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transform: scale(1.08);
+    filter: saturate(0.95) contrast(1.08) brightness(0.42);
+}
+
+.portal-bg-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 22% 30%, rgba(0,229,255,0.10) 0%, rgba(0,229,255,0) 35%),
+        radial-gradient(circle at 78% 20%, rgba(122,92,255,0.12) 0%, rgba(122,92,255,0) 32%),
+        linear-gradient(180deg, rgba(2,4,12,0.35) 0%, rgba(2,4,12,0.52) 45%, rgba(2,4,12,0.82) 100%);
+}
+
+
+.portal-root::before,
+.portal-root::after {
+    content: none;
+}
+
+/* Hero galáctico específico */
+
+.portal-hero-galaxy {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    min-height: 100vh;
+    width: 100%;
+    background-color: #050814;
+}
+
+.portal-hero-galaxy::before {
+    content: "";
+    position: absolute;
+    inset: -4%;
+    background: url('../images/background%20(2).png?v=5') center 42% / cover no-repeat;
+    opacity: 0.36;
+    transform: scale(1.08);
+    filter: saturate(1.02) contrast(1.02) brightness(0.74);
+    z-index: 1;
+}
+
+/* Overlay calibrado: legibilidad sin matar la galaxia */
+.portal-hero-galaxy::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 74% 60% at 34% 48%, rgba(8, 12, 24, 0.38) 0%, rgba(8, 12, 24, 0.66) 44%, transparent 72%),
+        radial-gradient(ellipse 122% 92% at 50% 52%, rgba(0, 0, 0, 0.26) 36%, rgba(0, 0, 0, 0.68) 100%),
+        linear-gradient(180deg, rgba(2, 4, 12, 0.42) 0%, rgba(2, 4, 12, 0.58) 48%, rgba(2, 4, 12, 0.82) 100%);
+    z-index: 2;
+}
+
+.portal-hero-stars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        radial-gradient(circle at 12% 25%, rgba(255, 255, 255, 0.72) 1px, transparent 1px),
+        radial-gradient(circle at 36% 68%, rgba(255, 255, 255, 0.62) 1px, transparent 1px),
+        radial-gradient(circle at 74% 34%, rgba(255, 255, 255, 0.68) 1px, transparent 1px),
+        radial-gradient(circle at 88% 74%, rgba(255, 255, 255, 0.56) 1px, transparent 1px);
+    background-size: 240px 240px, 280px 280px, 320px 320px, 360px 360px;
+    opacity: 0.3;
+    z-index: 3;
+}
+
+.portal-hero-bg-atmosphere {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 22% 58%, rgba(0, 229, 255, 0.16) 0%, rgba(0, 229, 255, 0) 34%),
+        radial-gradient(circle at 78% 22%, rgba(122, 92, 255, 0.2) 0%, rgba(122, 92, 255, 0) 36%),
+        radial-gradient(circle at 55% 72%, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 18%);
+    z-index: 4;
+}
+
+.portal-hero-bg-secondary {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: url('../images/background%20(3).png?v=5') center center / cover no-repeat;
+    opacity: 0.2;
+    mix-blend-mode: screen;
+    filter: blur(8px) saturate(0.92);
+    transform: scale(1.05);
+    z-index: 5;
+}
+
+.portal-hero-noise {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.03;
+    mix-blend-mode: soft-light;
+    background-image: url('../images/background%20(1).png?v=5');
+    background-size: cover;
+    background-position: center;
+    filter: blur(16px) grayscale(0.12);
+    z-index: 6;
+}
+
+/* Tipografía base */
+
+h1,
+h2,
+h3,
+h4 {
+    font-family: var(--portal-font-orbitron);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+p {
+    color: var(--portal-text-soft);
+}
+
+/* Utilidades genéricas de stack y layout */
+
+.portal-stack {
+    display: flex;
+    flex-direction: column;
+}
+
+.portal-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.portal-stack.gap-md {
+    gap: var(--space-md);
+}
+
+.portal-stack.gap-lg {
+    gap: var(--space-lg);
+}
+
+.portal-row.gap-md {
+    gap: var(--space-md);
+}
+
+.align-start {
+    align-items: flex-start;
+}
+
+/* Sección posterior con fondo galáctico suave (Labs demo) */
+
+.portal-section-labs-bg {
+    position: relative;
+    background-color: #090e19;
+    overflow: hidden;
+}
+
+.portal-section-labs-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url('../images/background%20(2).png?v=5') center center / cover no-repeat;
+    opacity: 0.18;
+    filter: blur(6px) saturate(0.92);
+    transform: scale(1.04);
+    z-index: -2;
+}
+
+.portal-section-labs-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(7,11,20,0.78) 0%, rgba(7,11,20,0.9) 100%);
+    z-index: -1;
+}
+
+.portal-section-labs-bg > * {
+    position: relative;
+    z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .portal-global-video {
+        transform: none;
+    }
+}
+
+

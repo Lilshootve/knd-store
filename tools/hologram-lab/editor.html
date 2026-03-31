@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Holographic Viewer</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { overflow: hidden; background: #000; font-family: 'Courier New', monospace; }
+  #canvas-container { width: 100vw; height: 100vh; position: relative; }
+  canvas { display: block; }
+
+  #ui-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .corner-bracket {
+    position: absolute;
+    width: 40px; height: 40px;
+    border-color: rgba(0, 255, 255, 0.5);
+    border-style: solid;
+  }
+  .corner-bracket.tl { top: 20px; left: 20px; border-width: 2px 0 0 2px; }
+  .corner-bracket.tr { top: 20px; right: 20px; border-width: 2px 2px 0 0; }
+  .corner-bracket.bl { bottom: 20px; left: 20px; border-width: 0 0 2px 2px; }
+  .corner-bracket.br { bottom: 20px; right: 20px; border-width: 0 2px 2px 0; }
+
+  #scan-line {
+    position: absolute;
+    left: 0; width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,255,255,0.4), transparent);
+    top: 0;
+    animation: scan 4s linear infinite;
+  }
+  @keyframes scan {
+    0% { top: 0%; opacity: 1; }
+    95% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  #status-panel {
+    position: absolute;
+    top: 30px; left: 50%;
+    transform: translateX(-50%);
+    color: rgba(0,255,255,0.8);
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(0,255,255,0.6);
+  }
+
+  #bottom-bar {
+    position: absolute;
+    bottom: 30px; left: 50%;
+    transform: translateX(-50%);
+    color: rgba(0,255,255,0.5);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+
+  #load-btn {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: all;
+    background: transparent;
+    border: 1px solid rgba(0,255,255,0.6);
+    color: rgba(0,255,255,0.9);
+    padding: 12px 28px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 20;
+    box-shadow: 0 0 20px rgba(0,255,255,0.2), inset 0 0 20px rgba(0,255,255,0.05);
+  }
+  #load-btn:hover {
+    background: rgba(0,255,255,0.1);
+    box-shadow: 0 0 30px rgba(0,255,255,0.4), inset 0 0 30px rgba(0,255,255,0.1);
+  }
+  #load-btn.hidden { display: none; }
+
+  #file-input { display: none; }
+
+  #loading-msg {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(0,255,255,0.8);
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    display: none;
+  }
+
+  .pulse-dot {
+    display: inline-block;
+    animation: blink 1s infinite;
+  }
+  .pulse-dot:nth-child(2) { animation-delay: 0.3s; }
+  .pulse-dot:nth-child(3) { animation-delay: 0.6s; }
+  @keyframes blink { 0%,100%{opacity:0.2} 50%{opacity:1} }
+
+  #grid-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image:
+      linear-gradient(rgba(0,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+  #ctrl-panel {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 240px;
+    background: rgba(0,8,12,0.88);
+    border: 1px solid rgba(0,255,255,0.25);
+    border-radius: 4px;
+    box-shadow: 0 0 30px rgba(0,255,255,0.08), inset 0 0 40px rgba(0,20,30,0.6);
+    z-index: 30;
+    pointer-events: all;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    color: rgba(0,255,255,0.85);
+    user-select: none;
+    overflow: hidden;
+  }
+  #ctrl-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(0,255,255,0.18);
+    cursor: pointer;
+    letter-spacing: 2px;
+    font-size: 10px;
+    text-transform: uppercase;
+    background: rgba(0,255,255,0.04);
+  }
+  #ctrl-header:hover { background: rgba(0,255,255,0.08); }
+  #ctrl-toggle { font-size: 14px; line-height: 1; color: rgba(0,255,255,0.6); }
+  #ctrl-body { padding: 6px 0; max-height: 80vh; overflow-y: auto; }
+  #ctrl-body::-webkit-scrollbar { width: 3px; }
+  #ctrl-body::-webkit-scrollbar-thumb { background: rgba(0,255,255,0.3); }
+
+  .ctrl-group { margin: 0; }
+  .ctrl-group-title {
+    padding: 5px 10px 3px;
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    color: rgba(0,255,255,0.45);
+    text-transform: uppercase;
+    border-top: 1px solid rgba(0,255,255,0.08);
+    margin-top: 2px;
+  }
+  .ctrl-group:first-child .ctrl-group-title { border-top: none; }
+  .ctrl-row {
+    display: flex; align-items: center;
+    padding: 2px 10px;
+    gap: 6px;
+  }
+  .ctrl-label {
+    width: 92px; flex-shrink: 0;
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    color: rgba(0,255,255,0.7);
+    text-overflow: ellipsis; overflow: hidden; white-space: nowrap;
+  }
+  .ctrl-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 2px;
+    background: rgba(0,255,255,0.2);
+    border-radius: 1px;
+    outline: none;
+    cursor: pointer;
+  }
+  .ctrl-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(0,255,255,0.9);
+    box-shadow: 0 0 6px rgba(0,255,255,0.8);
+    cursor: pointer;
+  }
+  .ctrl-slider::-moz-range-thumb {
+    width: 10px; height: 10px; border: none; border-radius: 50%;
+    background: rgba(0,255,255,0.9);
+    box-shadow: 0 0 6px rgba(0,255,255,0.8);
+    cursor: pointer;
+  }
+  .ctrl-val {
+    width: 28px; flex-shrink: 0; text-align: right;
+    font-size: 9px; color: rgba(0,255,255,0.5);
+  }
+  .ctrl-check-row {
+    display: flex; align-items: center;
+    padding: 3px 10px; gap: 7px; cursor: pointer;
+  }
+  .ctrl-check-row input[type=checkbox] {
+    appearance: none; -webkit-appearance: none;
+    width: 10px; height: 10px;
+    border: 1px solid rgba(0,255,255,0.5);
+    border-radius: 2px;
+    background: transparent;
+    cursor: pointer; flex-shrink: 0;
+    position: relative;
+  }
+  .ctrl-check-row input[type=checkbox]:checked {
+    background: rgba(0,255,255,0.3);
+    border-color: rgba(0,255,255,0.9);
+  }
+  .ctrl-check-row input[type=checkbox]:checked::after {
+    content: '';
+    position: absolute; top: 1px; left: 3px;
+    width: 3px; height: 5px;
+    border: 1px solid rgba(0,255,255,1);
+    border-width: 0 1px 1px 0;
+    transform: rotate(45deg);
+  }
+  .ctrl-check-label { font-size: 9px; letter-spacing: 0.5px; color: rgba(0,255,255,0.7); }
+
+  #preset-bar {
+    display: flex; gap: 4px;
+    padding: 6px 10px 8px;
+    border-top: 1px solid rgba(0,255,255,0.1);
+    flex-wrap: wrap;
+  }
+  .preset-btn, #reset-btn {
+    flex: 1; min-width: 60px;
+    background: transparent;
+    border: 1px solid rgba(0,255,255,0.3);
+    color: rgba(0,255,255,0.75);
+    font-family: 'Courier New', monospace;
+    font-size: 8px;
+    letter-spacing: 1px;
+    padding: 4px 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    border-radius: 2px;
+  }
+  .preset-btn:hover, #reset-btn:hover {
+    background: rgba(0,255,255,0.12);
+    border-color: rgba(0,255,255,0.7);
+    color: rgba(0,255,255,1);
+    box-shadow: 0 0 8px rgba(0,255,255,0.2);
+  }
+  #reset-btn { border-color: rgba(0,255,255,0.5); color: rgba(0,255,255,0.9); }
+ #model-btns {
+    display: flex; gap: 4px;
+    padding: 6px 10px 4px;
+    flex-wrap: wrap;
+  }
+  .model-btn {
+    flex: 1; min-width: 70px;
+    background: transparent;
+    border: 1px solid rgba(0,255,255,0.35);
+    color: rgba(0,255,255,0.8);
+    font-family: 'Courier New', monospace;
+    font-size: 8px;
+    letter-spacing: 1px;
+    padding: 5px 6px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    border-radius: 2px;
+  }
+  .model-btn:hover {
+    background: rgba(0,255,255,0.12);
+    border-color: rgba(0,255,255,0.7);
+    color: rgba(0,255,255,1);
+    box-shadow: 0 0 8px rgba(0,255,255,0.2);
+  }
+  .model-btn.hidden { display: none; }
+  
+</style>
+</head>
+<body>
+<div id="canvas-container">
+  <div id="grid-overlay"></div>
+  <canvas id="three-canvas"></canvas>
+  <div id="ui-overlay">
+    <div id="scan-line"></div>
+    <div class="corner-bracket tl"></div>
+    <div class="corner-bracket tr"></div>
+    <div class="corner-bracket bl"></div>
+    <div class="corner-bracket br"></div>
+    <div id="status-panel">HOLOGRAPHIC PROJECTION SYSTEM v2.4</div>
+    <div id="bottom-bar">
+      DRAG TO ROTATE &nbsp;|&nbsp; SCROLL TO ZOOM &nbsp;|&nbsp; RIGHT-DRAG TO PAN
+    </div>
+  </div>
+  <button id="load-btn">⬡ LOAD GLB MODEL</button>
+  <input type="file" id="file-input" accept=".glb,.gltf">
+  <div id="loading-msg">INITIALIZING <span class="pulse-dot">.</span><span class="pulse-dot">.</span><span class="pulse-dot">.</span></div>
+  <!-- ── CONTROL LAB PANEL ───────────────────────────────────────────────── -->
+  <div id="ctrl-panel">
+    <div id="ctrl-header">
+      <span>⬡ HOLO CONTROL LAB</span>
+      <span id="ctrl-toggle">▲</span>
+    </div>
+    <div id="ctrl-body">
+
+   <!-- GROUP 0: MODEL -->
+      <div class="ctrl-group">
+        <div class="ctrl-group-title">00 — MODEL</div>
+        <div id="model-btns">
+          <button id="change-model-btn" class="model-btn">⬡ CHANGE MODEL</button>
+          <button id="remove-model-btn" class="model-btn hidden">✕ REMOVE</button>
+        </div>
+      </div>
+      
+      <!-- GROUP 1: HOLOGRAM CORE -->
+      <div class="ctrl-group">
+        <div class="ctrl-group-title">01 — HOLOGRAM CORE</div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">COLOR R</span>
+          <input class="ctrl-slider" type="range" id="s-colorR" min="0" max="3" step="0.01" value="0.0">
+          <span class="ctrl-val" id="v-colorR">0.00</span>
+        </div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">COLOR G</span>
+          <input class="ctrl-slider" type="range" id="s-colorG" min="0" max="3" step="0.01" value="2.0">
+          <span class="ctrl-val" id="v-colorG">2.00</span>
+        </div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">COLOR B</span>
+          <input class="ctrl-slider" type="range" id="s-colorB" min="0" max="3" step="0.01" value="2.5">
+          <span class="ctrl-val" id="v-colorB">2.50</span>
+        </div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">OPACITY</span>
+          <input class="ctrl-slider" type="range" id="s-opacity" min="0" max="1" step="0.01" value="0.82">
+          <span class="ctrl-val" id="v-opacity">0.82</span>
+        </div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">FRESNEL</span>
+          <input class="ctrl-slider" type="range" id="s-fresnelStrength" min="0.3" max="5" step="0.05" value="1.8">
+          <span class="ctrl-val" id="v-fresnelStrength">1.80</span>
+        </div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">INNER GLOW</span>
+          <input class="ctrl-slider" type="range" id="s-innerGlow" min="0" max="2" step="0.01" value="0.45">
+          <span class="ctrl-val" id="v-innerGlow">0.45</span>
+        </div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">RIM STRENGTH</span>
+          <input class="ctrl-slider" type="range" id="s-rimStrength" min="0" max="4" step="0.05" value="1.4">
+          <span class="ctrl-val" id="v-rimStrength">1.40</span>
+        </div>
+      </div>
+
+      <!-- GROUP 2: ANIMATION -->
+      <div class="ctrl-group">
+        <div class="ctrl-group-title">02 — ANIMATION</div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">PULSE SPEED</span>
+          <input class="ctrl-slider" type="range" id="s-pulseSpeed" min="0" max="6" step="0.05" value="1.8">
+          <span class="ctrl-val" id="v-pulseSpeed">1.80</span>
+        </div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">PULSE STRENGTH</span>
+          <input class="ctrl-slider" type="range" id="s-pulseStrength" min="0" max="1" step="0.01" value="0.25">
+          <span class="ctrl-val" id="v-pulseStrength">0.25</span>
+        </div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">SCAN SPEED</span>
+          <input class="ctrl-slider" type="range" id="s-scanSpeed" min="0" max="10" step="0.1" value="2.5">
+          <span class="ctrl-val" id="v-scanSpeed">2.50</span>
+        </div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">SCAN DENSITY</span>
+          <input class="ctrl-slider" type="range" id="s-scanDensity" min="5" max="300" step="1" value="80">
+          <span class="ctrl-val" id="v-scanDensity">80</span>
+        </div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">FLICKER</span>
+          <input class="ctrl-slider" type="range" id="s-flickerIntensity" min="0" max="0.5" step="0.005" value="0.1">
+          <span class="ctrl-val" id="v-flickerIntensity">0.10</span>
+        </div>
+      </div>
+
+      <!-- GROUP 3: VISUAL BALANCE -->
+      <div class="ctrl-group">
+        <div class="ctrl-group-title">03 — VISUAL BALANCE</div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">BASE OPACITY</span>
+          <input class="ctrl-slider" type="range" id="s-baseOpacity" min="0" max="1" step="0.01" value="0.15">
+          <span class="ctrl-val" id="v-baseOpacity">0.15</span>
+        </div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">TEX OPACITY</span>
+          <input class="ctrl-slider" type="range" id="s-texOpacity" min="0" max="1" step="0.01" value="0.38">
+          <span class="ctrl-val" id="v-texOpacity">0.38</span>
+        </div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">HOLO MUL</span>
+          <input class="ctrl-slider" type="range" id="s-holoOpacityMul" min="0" max="2" step="0.01" value="1.0">
+          <span class="ctrl-val" id="v-holoOpacityMul">1.00</span>
+        </div>
+      </div>
+
+      <!-- GROUP 4: PROJECTOR -->
+      <div class="ctrl-group">
+        <div class="ctrl-group-title">04 — PROJECTOR</div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">RING OPACITY</span>
+          <input class="ctrl-slider" type="range" id="s-ringOpacity" min="0" max="1" step="0.01" value="0.55">
+          <span class="ctrl-val" id="v-ringOpacity">0.55</span>
+        </div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">RING PULSE SPD</span>
+          <input class="ctrl-slider" type="range" id="s-ringPulseSpeed" min="0" max="10" step="0.1" value="2.2">
+          <span class="ctrl-val" id="v-ringPulseSpeed">2.20</span>
+        </div>
+        <div class="ctrl-row">
+          <span class="ctrl-label">BEAM INTENSITY</span>
+          <input class="ctrl-slider" type="range" id="s-beamIntensity" min="0" max="1" step="0.01" value="0.18">
+          <span class="ctrl-val" id="v-beamIntensity">0.18</span>
+        </div>
+      </div>
+
+      <!-- GROUP 5: DEBUG TOGGLES -->
+      <div class="ctrl-group">
+        <div class="ctrl-group-title">05 — LAYER TOGGLES</div>
+        <label class="ctrl-check-row">
+          <input type="checkbox" id="t-base" checked>
+          <span class="ctrl-check-label">BASE MESH</span>
+        </label>
+        <label class="ctrl-check-row">
+          <input type="checkbox" id="t-tex" checked>
+          <span class="ctrl-check-label">TEXTURE LAYER</span>
+        </label>
+        <label class="ctrl-check-row">
+          <input type="checkbox" id="t-holo" checked>
+          <span class="ctrl-check-label">HOLOGRAM LAYER</span>
+        </label>
+        <label class="ctrl-check-row">
+          <input type="checkbox" id="t-beam" checked>
+          <span class="ctrl-check-label">BEAM</span>
+        </label>
+        <label class="ctrl-check-row">
+          <input type="checkbox" id="t-ring" checked>
+          <span class="ctrl-check-label">RING</span>
+        </label>
+      </div>
+
+      <!-- PRESETS + RESET -->
+      <div id="preset-bar">
+        <button id="reset-btn">↺ RESET</button>
+        <button id="save-preset-btn" class="preset-btn" title="Export current preset as .json">SAVE PRESET</button>
+        <button class="preset-btn" data-preset="knd">KND</button>
+        <button class="preset-btn" data-preset="legendary">LEGENDARY</button>
+        <button class="preset-btn" data-preset="tripo">TRIPO</button>
+        <button class="preset-btn" data-preset="soft">SOFT</button>
+        <button class="preset-btn" data-preset="energy">ENERGY</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+
+// ─── SCENE ───────────────────────────────────────────────────────────────────
+const canvas = document.getElementById('three-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x000000, 0);
+renderer.sortObjects = true;
+renderer.toneMapping = THREE.NoToneMapping;
+
+const scene = new THREE.Scene();
+
+// Background gradient via a full-screen quad
+const bgGeo = new THREE.PlaneGeometry(2, 2);
+const bgMat = new THREE.ShaderMaterial({
+  depthWrite: false,
+  depthTest: false,
+  uniforms: {},
+  vertexShader: `
+    void main() {
+      gl_Position = vec4(position.xy, 1.0, 1.0);
+    }
+  `,
+  fragmentShader: `
+    void main() {
+      vec2 uv = gl_FragCoord.xy / vec2(${window.innerWidth.toFixed(1)}, ${window.innerHeight.toFixed(1)});
+      float dist = length(uv - 0.5) * 1.6;
+      vec3 center = vec3(0.0, 0.04, 0.07);
+      vec3 edge   = vec3(0.0, 0.0, 0.0);
+      gl_FragColor = vec4(mix(center, edge, dist), 1.0);
+    }
+  `
+});
+const bgMesh = new THREE.Mesh(bgGeo, bgMat);
+bgMesh.renderOrder = -1000;
+bgMesh.frustumCulled = false;
+scene.add(bgMesh);
+
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 100);
+camera.position.set(0, 0, 2);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.minDistance = 0.5;
+controls.maxDistance = 10;
+controls.target.set(0, 0, 0);
+
+// Lights (subtle, not dominant)
+const ambient = new THREE.AmbientLight(0x00ffff, 0.15);
+scene.add(ambient);
+const dirLight = new THREE.DirectionalLight(0x00ffff, 0.3);
+dirLight.position.set(1, 2, 2);
+scene.add(dirLight);
+
+// ─── HOLOGRAM SHADER ─────────────────────────────────────────────────────────
+const holoVertexShader = `
+  varying vec3 vNormal;
+  varying vec3 vViewDir;
+  varying vec3 vWorldPos;
+  varying vec2 vUv;
+
+  void main() {
+    vUv = uv;
+    vec4 worldPos = modelMatrix * vec4(position, 1.0);
+    vWorldPos = worldPos.xyz;
+    vNormal = normalize(normalMatrix * normal);
+    vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+    vViewDir = normalize(-mvPos.xyz);
+    gl_Position = projectionMatrix * mvPos;
+  }
+`;
+
+const holoFragmentShader = `
+  uniform float uTime;
+  uniform vec3  uColor;
+  uniform float uOpacity;
+  uniform float uFresnelStrength;
+  uniform float uInnerGlow;
+  uniform float uRimStrength;
+  uniform float uPulseSpeed;
+  uniform float uPulseStrength;
+  uniform float uScanSpeed;
+  uniform float uScanDensity;
+  uniform float uFlickerIntensity;
+
+  varying vec3 vNormal;
+  varying vec3 vViewDir;
+  varying vec3 vWorldPos;
+  varying vec2 vUv;
+
+  void main() {
+    // Fresnel edge glow
+    float fresnel = 1.0 - max(dot(vNormal, vViewDir), 0.0);
+    fresnel = pow(fresnel, uFresnelStrength);
+
+    // Scan lines
+    float scanLine = sin(vWorldPos.y * uScanDensity + uTime * uScanSpeed) * 0.5 + 0.5;
+    scanLine = pow(scanLine, 3.0) * 0.35 + 0.65;
+
+    // Pulsing energy
+    float pulse  = sin(uTime * uPulseSpeed) * 0.5 + 0.5;
+    float pulse2 = sin(uTime * uPulseSpeed * 0.4 + vWorldPos.y * 3.0) * 0.5 + 0.5;
+    float energy = mix(pulse, pulse2, 0.4);
+
+    // Inner core glow
+    float inner = 1.0 - fresnel;
+    float core  = pow(inner, 3.5) * uInnerGlow;
+
+    // Rim light boost
+    float rim = pow(fresnel, 1.2) * uRimStrength;
+
+    // Combine
+    float alpha = (rim + core) * scanLine * (1.0 - uPulseStrength + energy * uPulseStrength);
+    alpha = clamp(alpha, 0.0, 1.0);
+
+    // Shimmer flicker
+    float flicker = 1.0 - uFlickerIntensity + uFlickerIntensity * sin(uTime * 17.3 + vUv.y * 100.0);
+    alpha *= flicker;
+
+    // Color
+    vec3 col = uColor * (0.9 + rim * 0.4 + core * 0.5);
+    col = clamp(col, 0.0, 3.0);
+
+    gl_FragColor = vec4(col, alpha * uOpacity);
+  }
+`;
+
+// ─── PROJECTOR BASE RING ──────────────────────────────────────────────────────
+const ringGeo   = new THREE.RingGeometry(0.55, 0.85, 64);
+const ringMat   = new THREE.MeshBasicMaterial({
+  color: 0x00ffff,
+  transparent: true,
+  opacity: 0.55,
+  side: THREE.DoubleSide,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending,
+});
+const ringMesh  = new THREE.Mesh(ringGeo, ringMat);
+ringMesh.rotation.x = -Math.PI / 2;
+ringMesh.position.y = -1.05;
+ringMesh.renderOrder = 5;
+scene.add(ringMesh);
+
+// Inner dot
+const dotGeo  = new THREE.CircleGeometry(0.3, 48);
+const dotMat  = new THREE.MeshBasicMaterial({
+  color: 0x00ffff,
+  transparent: true,
+  opacity: 0.08,
+  side: THREE.DoubleSide,
+  depthWrite: false,
+  blending: THREE.AdditiveBlending,
+});
+const dotMesh = new THREE.Mesh(dotGeo, dotMat);
+dotMesh.rotation.x = -Math.PI / 2;
+dotMesh.position.y = -1.06;
+dotMesh.renderOrder = 4;
+scene.add(dotMesh);
+
+// Vertical energy beam (cylinder)
+const beamGeo = new THREE.CylinderGeometry(0.01, 0.4, 1.1, 32, 1, true);
+const beamMat = new THREE.ShaderMaterial({
+  transparent: true,
+  depthWrite: false,
+  side: THREE.DoubleSide,
+  blending: THREE.AdditiveBlending,
+  uniforms: { uTime: { value: 0 }, uBeamIntensity: { value: 0.18 } },
+  vertexShader: `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+    }
+  `,
+  fragmentShader: `
+    uniform float uTime;
+    uniform float uBeamIntensity;
+    varying vec2 vUv;
+    void main() {
+      float alpha = (1.0 - vUv.y) * uBeamIntensity;
+      alpha *= 0.7 + 0.3 * sin(uTime * 2.0);
+      gl_FragColor = vec4(0.0, 1.0, 1.0, alpha);
+    }
+  `
+});
+const beamMesh = new THREE.Mesh(beamGeo, beamMat);
+beamMesh.position.y = -0.5;
+beamMesh.renderOrder = 3;
+scene.add(beamMesh);
+
+// ─── GLOBAL HOLOGRAM STATE ────────────────────────────────────────────────────
+const DEFAULTS = {
+  colorR: 0.0, colorG: 2.0, colorB: 2.5,
+  opacity: 0.82,
+  fresnelStrength: 1.8,
+  innerGlow: 0.45,
+  rimStrength: 1.4,
+  pulseSpeed: 1.8,
+  pulseStrength: 0.25,
+  scanSpeed: 2.5,
+  scanDensity: 80.0,
+  flickerIntensity: 0.1,
+  baseOpacity: 0.15,
+  texOpacity: 0.38,
+  holoOpacityMul: 1.0,
+  ringOpacity: 0.55,
+  ringPulseSpeed: 2.2,
+  beamIntensity: 0.18,
+};
+const P = { ...DEFAULTS };
+
+// ─── MODEL LOAD ───────────────────────────────────────────────────────────────
+const shaderUniforms = [];
+const baseMeshes  = [];
+const texMeshes   = [];
+const holoMeshes  = [];
+let modelGroup = null;
+
+function buildHologramLayers(gltf) {
+  if (modelGroup) {
+    scene.remove(modelGroup);
+    modelGroup.traverse(o => {
+      if (o.isMesh) {
+        o.geometry.dispose();
+        if (Array.isArray(o.material)) o.material.forEach(m => m.dispose());
+        else o.material.dispose();
+      }
+    });
+  }
+
+  shaderUniforms.length = 0;
+  baseMeshes.length = 0;
+  texMeshes.length  = 0;
+  holoMeshes.length = 0;
+
+  modelGroup = new THREE.Group();
+
+  // Auto-center & scale
+  const box = new THREE.Box3().setFromObject(gltf.scene);
+  const center = new THREE.Vector3();
+  box.getCenter(center);
+  const size = new THREE.Vector3();
+  box.getSize(size);
+  const maxDim = Math.max(size.x, size.y, size.z);
+  const scale  = 1.6 / maxDim;
+  gltf.scene.position.sub(center);
+  gltf.scene.scale.setScalar(scale);
+
+  // Position base so ring sits at feet
+  const box2 = new THREE.Box3().setFromObject(gltf.scene);
+  const center2 = new THREE.Vector3();
+  box2.getCenter(center2);
+  gltf.scene.position.y -= box2.min.y + 1.05 / scale;
+
+  gltf.scene.traverse(child => {
+    if (!child.isMesh) return;
+
+    const origMat = Array.isArray(child.material) ? child.material[0] : child.material;
+    const geo     = child.geometry;
+
+    // ── LAYER 1: base volume ──────────────────────────────────────────────────
+    const baseMat = new THREE.MeshBasicMaterial({
+      color: 0x003333,
+      transparent: true,
+      opacity: P.baseOpacity,
+      depthWrite: false,
+    });
+    const baseMesh = new THREE.Mesh(geo, baseMat);
+    baseMesh.renderOrder = 0;
+    baseMesh.applyMatrix4(child.matrixWorld);
+    modelGroup.add(baseMesh);
+    baseMeshes.push(baseMesh);
+
+    // ── LAYER 2: texture / detail ─────────────────────────────────────────────
+    const texMap = origMat?.map ?? null;
+    const texMat = new THREE.MeshBasicMaterial({
+      map: texMap,
+      color: texMap ? 0xffffff : 0x007777,
+      transparent: true,
+      opacity: texMap ? P.texOpacity : 0.18,
+      depthWrite: false,
+    });
+    const texMesh = new THREE.Mesh(geo, texMat);
+    texMesh.renderOrder = 1;
+    texMesh.applyMatrix4(child.matrixWorld);
+    modelGroup.add(texMesh);
+    texMeshes.push(texMesh);
+
+    // ── LAYER 3: hologram shader ──────────────────────────────────────────────
+    const uniforms = {
+      uTime:             { value: 0 },
+      uColor:            { value: new THREE.Vector3(P.colorR, P.colorG, P.colorB) },
+      uOpacity:          { value: P.opacity * P.holoOpacityMul },
+      uFresnelStrength:  { value: P.fresnelStrength },
+      uInnerGlow:        { value: P.innerGlow },
+      uRimStrength:      { value: P.rimStrength },
+      uPulseSpeed:       { value: P.pulseSpeed },
+      uPulseStrength:    { value: P.pulseStrength },
+      uScanSpeed:        { value: P.scanSpeed },
+      uScanDensity:      { value: P.scanDensity },
+      uFlickerIntensity: { value: P.flickerIntensity },
+    };
+    shaderUniforms.push(uniforms);
+
+    const holoMat = new THREE.ShaderMaterial({
+      uniforms,
+      vertexShader:   holoVertexShader,
+      fragmentShader: holoFragmentShader,
+      transparent: true,
+      depthWrite:  false,
+      blending:    THREE.AdditiveBlending,
+      side:        THREE.FrontSide,
+    });
+    const holoMesh = new THREE.Mesh(geo, holoMat);
+    holoMesh.scale.setScalar(1.002);
+    holoMesh.renderOrder = 2;
+    holoMesh.applyMatrix4(child.matrixWorld);
+    modelGroup.add(holoMesh);
+    holoMeshes.push(holoMesh);
+  });
+
+  scene.add(modelGroup);
+  updateModelButtons();
+}
+
+function removeModel() {
+  if (!modelGroup) return;
+  scene.remove(modelGroup);
+  modelGroup.traverse(o => {
+    if (o.isMesh) {
+      o.geometry.dispose();
+      if (Array.isArray(o.material)) o.material.forEach(m => m.dispose());
+      else o.material.dispose();
+    }
+  });
+  modelGroup = null;
+  shaderUniforms.length = 0;
+  baseMeshes.length = 0;
+  texMeshes.length = 0;
+  holoMeshes.length = 0;
+  loadBtn.classList.remove('hidden');
+  fileInput.value = '';
+  updateModelButtons();
+}
+
+function updateModelButtons() {
+  const hasModel = !!modelGroup;
+  removeModelBtn.classList.toggle('hidden', !hasModel);
+}
+
+// ─── FILE INPUT ───────────────────────────────────────────────────────────────
+const loadBtn       = document.getElementById('load-btn');
+const fileInput     = document.getElementById('file-input');
+const loadingMsg    = document.getElementById('loading-msg');
+const changeModelBtn = document.getElementById('change-model-btn');
+const removeModelBtn = document.getElementById('remove-model-btn');
+
+loadBtn.addEventListener('click', () => fileInput.click());
+changeModelBtn.addEventListener('click', () => fileInput.click());
+removeModelBtn.addEventListener('click', removeModel);
+fileInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  loadBtn.classList.add('hidden');
+  loadingMsg.style.display = 'block';
+
+  const url = URL.createObjectURL(file);
+  const dracoLoader = new DRACOLoader();
+  dracoLoader.setDecoderPath('https://unpkg.com/three@0.160.0/examples/jsm/libs/draco/');
+
+  const loader = new GLTFLoader();
+  loader.setDRACOLoader(dracoLoader);
+  loader.load(url, gltf => {
+    buildHologramLayers(gltf);
+    loadingMsg.style.display = 'none';
+    URL.revokeObjectURL(url);
+  }, undefined, err => {
+    console.error(err);
+    loadingMsg.textContent = 'ERROR LOADING MODEL';
+  });
+});
+
+// ─── ANIMATION ───────────────────────────────────────────────────────────────
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const elapsed = clock.getElapsedTime();
+
+  // Update hologram uniforms
+  for (const u of shaderUniforms) {
+    u.uTime.value = elapsed;
+  }
+
+  // Projector ring pulse driven by P
+  ringMat.opacity = P.ringOpacity * (0.8 + 0.2 * Math.sin(elapsed * P.ringPulseSpeed));
+  beamMat.uniforms.uTime.value = elapsed;
+  beamMat.uniforms.uBeamIntensity.value = P.beamIntensity;
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+// ─── CONTROL PANEL BINDINGS ───────────────────────────────────────────────────
+
+// Collapse toggle
+const ctrlHeader = document.getElementById('ctrl-header');
+const ctrlBody   = document.getElementById('ctrl-body');
+const ctrlToggle = document.getElementById('ctrl-toggle');
+ctrlHeader.addEventListener('click', () => {
+  const collapsed = ctrlBody.style.display === 'none';
+  ctrlBody.style.display = collapsed ? '' : 'none';
+  ctrlToggle.textContent = collapsed ? '▲' : '▼';
+});
+
+// Helper: push P values into all live shader uniforms + mesh materials
+function applyP() {
+  for (const u of shaderUniforms) {
+    u.uColor.value.set(P.colorR, P.colorG, P.colorB);
+    u.uOpacity.value          = P.opacity * P.holoOpacityMul;
+    u.uFresnelStrength.value  = P.fresnelStrength;
+    u.uInnerGlow.value        = P.innerGlow;
+    u.uRimStrength.value      = P.rimStrength;
+    u.uPulseSpeed.value       = P.pulseSpeed;
+    u.uPulseStrength.value    = P.pulseStrength;
+    u.uScanSpeed.value        = P.scanSpeed;
+    u.uScanDensity.value      = P.scanDensity;
+    u.uFlickerIntensity.value = P.flickerIntensity;
+  }
+  for (const m of baseMeshes)  m.material.opacity = P.baseOpacity;
+  for (const m of texMeshes)   m.material.opacity = P.texOpacity;
+}
+
+// Helper: sync DOM sliders + value labels from P
+function syncUI() {
+  const keys = [
+    'colorR','colorG','colorB','opacity','fresnelStrength','innerGlow','rimStrength',
+    'pulseSpeed','pulseStrength','scanSpeed','scanDensity','flickerIntensity',
+    'baseOpacity','texOpacity','holoOpacityMul',
+    'ringOpacity','ringPulseSpeed','beamIntensity'
+  ];
+  for (const k of keys) {
+    const s = document.getElementById('s-' + k);
+    const v = document.getElementById('v-' + k);
+    if (s) s.value = P[k];
+    if (v) v.textContent = parseFloat(P[k]).toFixed(2);
+  }
+}
+// export and import
+
+function exportPreset() {
+  const dataStr = JSON.stringify(P, null, 2);
+  const blob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'holo-preset.json';
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+function importPreset(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    Object.assign(P, JSON.parse(e.target.result));
+    syncUI();
+    applyP();
+  };
+  reader.readAsText(file);
+}
+
+// Wire every slider
+const sliderDefs = [
+  ['colorR',         0, 3,   0.01],
+  ['colorG',         0, 3,   0.01],
+  ['colorB',         0, 3,   0.01],
+  ['opacity',        0, 1,   0.01],
+  ['fresnelStrength',0.3, 5, 0.05],
+  ['innerGlow',      0, 2,   0.01],
+  ['rimStrength',    0, 4,   0.05],
+  ['pulseSpeed',     0, 6,   0.05],
+  ['pulseStrength',  0, 1,   0.01],
+  ['scanSpeed',      0, 10,  0.1 ],
+  ['scanDensity',    5, 300, 1   ],
+  ['flickerIntensity',0,0.5, 0.005],
+  ['baseOpacity',    0, 1,   0.01],
+  ['texOpacity',     0, 1,   0.01],
+  ['holoOpacityMul', 0, 2,   0.01],
+  ['ringOpacity',    0, 1,   0.01],
+  ['ringPulseSpeed', 0, 10,  0.1 ],
+  ['beamIntensity',  0, 1,   0.01],
+];
+for (const [key] of sliderDefs) {
+  const el = document.getElementById('s-' + key);
+  const vl = document.getElementById('v-' + key);
+  if (!el) continue;
+  el.addEventListener('input', () => {
+    P[key] = parseFloat(el.value);
+    vl.textContent = P[key].toFixed(2);
+    applyP();
+  });
+}
+
+// Debug toggles
+document.getElementById('t-base').addEventListener('change', e => {
+  baseMeshes.forEach(m => m.visible = e.target.checked);
+});
+document.getElementById('t-tex').addEventListener('change', e => {
+  texMeshes.forEach(m => m.visible = e.target.checked);
+});
+document.getElementById('t-holo').addEventListener('change', e => {
+  holoMeshes.forEach(m => m.visible = e.target.checked);
+});
+document.getElementById('t-beam').addEventListener('change', e => {
+  beamMesh.visible = e.target.checked;
+});
+document.getElementById('t-ring').addEventListener('change', e => {
+  ringMesh.visible = e.target.checked;
+  dotMesh.visible  = e.target.checked;
+});
+
+// Reset
+document.getElementById('reset-btn').addEventListener('click', () => {
+  Object.assign(P, DEFAULTS);
+  syncUI();
+  applyP();
+});
+
+// Save preset (export as .json)
+document.getElementById('save-preset-btn').addEventListener('click', exportPreset);
+
+// Presets
+const PRESETS = {
+  knd: {
+    colorR: 0, colorG: 0.61, colorB: 3,
+    opacity: 0.6, fresnelStrength: 0.4, innerGlow: 0.45, rimStrength: 1.4,
+    pulseSpeed: 1.75, pulseStrength: 0.32, scanSpeed: 2.5, scanDensity: 20,
+    flickerIntensity: 0.04, baseOpacity: 1, texOpacity: 0.38, holoOpacityMul: 1,
+    ringOpacity: 0.55, ringPulseSpeed: 2.2, beamIntensity: 0.18,
+  },
+  legendary: {
+    colorR: 3, colorG: 0.61, colorB: 0.43,
+    opacity: 0.6, fresnelStrength: 0.4, innerGlow: 0.45, rimStrength: 1.4,
+    pulseSpeed: 1.75, pulseStrength: 0.32, scanSpeed: 2.5, scanDensity: 20,
+    flickerIntensity: 0.04, baseOpacity: 1, texOpacity: 0.38, holoOpacityMul: 1,
+    ringOpacity: 0.55, ringPulseSpeed: 2.2, beamIntensity: 0.18,
+  },
+  tripo: {
+    colorR: 0.0, colorG: 2.2, colorB: 2.8,
+    opacity: 0.88, fresnelStrength: 1.6, innerGlow: 0.5, rimStrength: 1.6,
+    pulseSpeed: 1.5, pulseStrength: 0.2, scanSpeed: 2.0, scanDensity: 100,
+    flickerIntensity: 0.06, baseOpacity: 0.1, texOpacity: 0.42, holoOpacityMul: 1.0,
+    ringOpacity: 0.6, ringPulseSpeed: 1.8, beamIntensity: 0.2,
+  },
+  soft: {
+    colorR: 0.1, colorG: 1.2, colorB: 1.8,
+    opacity: 0.55, fresnelStrength: 2.5, innerGlow: 0.2, rimStrength: 0.9,
+    pulseSpeed: 0.8, pulseStrength: 0.15, scanSpeed: 1.0, scanDensity: 40,
+    flickerIntensity: 0.03, baseOpacity: 0.08, texOpacity: 0.5, holoOpacityMul: 0.7,
+    ringOpacity: 0.3, ringPulseSpeed: 1.0, beamIntensity: 0.1,
+  },
+  energy: {
+    colorR: 0.0, colorG: 2.8, colorB: 3.0,
+    opacity: 1.0, fresnelStrength: 1.2, innerGlow: 0.9, rimStrength: 2.2,
+    pulseSpeed: 4.0, pulseStrength: 0.6, scanSpeed: 6.0, scanDensity: 160,
+    flickerIntensity: 0.25, baseOpacity: 0.2, texOpacity: 0.25, holoOpacityMul: 1.4,
+    ringOpacity: 0.85, ringPulseSpeed: 5.0, beamIntensity: 0.45,
+  },
+};
+document.querySelectorAll('.preset-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const preset = PRESETS[btn.dataset.preset];
+    if (!preset) return;
+    Object.assign(P, preset);
+    syncUI();
+    applyP();
+  });
+});
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

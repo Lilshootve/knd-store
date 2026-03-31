@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KND ECOSYSTEM — Labs · Services · Apparel</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --void:#010508;--deep:#020a10;--surface:#04131c;
+  --glass:rgba(6,24,36,.72);
+  --c:#00e8ff;--c2:#00a8bb;--cg:rgba(0,232,255,.12);--cb:rgba(0,232,255,.22);
+  --m:#d44fff;--m2:#9b30ff;--mg:rgba(212,79,255,.12);
+  --gold:#ffcc00;--green:#00ff99;--red:#ff2255;--orange:#ff8800;
+  --t1:rgba(220,248,255,.95);--t2:rgba(155,215,235,.62);--t3:rgba(90,165,190,.38);--t4:rgba(60,120,145,.2);
+  --FD:'Orbitron',monospace;--FB:'Rajdhani',sans-serif;--FM:'Share Tech Mono',monospace;
+}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(0,232,255,.2) transparent}
+body{background:var(--void);color:var(--t1);font-family:var(--FB);overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 3px)}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(0,232,255,.2);border-radius:2px}
+
+/* ═══ BG ═══ */
+#bg{position:fixed;inset:0;z-index:0}
+#bg-c{position:absolute;inset:0;width:100%;height:100%}
+#bg::before{content:'';position:absolute;inset:0;z-index:1;
+  background:radial-gradient(ellipse 60% 40% at 50% 8%,rgba(0,60,140,.12),transparent 50%),
+    radial-gradient(ellipse 35% 35% at 85% 65%,rgba(155,48,255,.06),transparent 45%),
+    radial-gradient(ellipse 35% 35% at 12% 60%,rgba(0,232,255,.05),transparent 45%)}
+
+/* ═══ TOPBAR ═══ */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:54px;display:flex;align-items:center;
+  justify-content:space-between;padding:0 24px;background:rgba(1,5,8,.88);
+  border-bottom:1px solid rgba(0,232,255,.06);backdrop-filter:blur(24px)}
+.tb-logo{font-family:var(--FD);font-size:14px;font-weight:900;letter-spacing:5px;color:var(--c);
+  text-shadow:0 0 16px rgba(0,232,255,.4);text-decoration:none;display:flex;align-items:center;gap:8px}
+.tb-sub{font-family:var(--FM);font-size:8px;letter-spacing:3px;color:var(--t3);border-left:1px solid var(--t4);padding-left:10px;margin-left:4px}
+.tb-links{display:flex;gap:4px}
+.tb-link{font-family:var(--FD);font-size:7px;letter-spacing:2px;padding:5px 12px;color:var(--t3);
+  text-decoration:none;transition:all .2s;text-transform:uppercase;border:1px solid transparent;
+  clip-path:polygon(3px 0,100% 0,100% calc(100% - 3px),calc(100% - 3px) 100%,0 100%,0 3px)}
+.tb-link:hover,.tb-link.active{color:var(--c);border-color:rgba(0,232,255,.15);background:rgba(0,232,255,.03)}
+
+/* ═══ HERO ═══ */
+.hero{position:relative;z-index:1;min-height:60vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:100px 24px 60px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;margin-bottom:18px;
+  border:1px solid rgba(212,79,255,.2);background:rgba(212,79,255,.04);
+  font-family:var(--FM);font-size:8px;letter-spacing:3px;color:var(--m);text-transform:uppercase;
+  animation:fadeUp .7s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.hero-title{font-family:var(--FD);font-size:clamp(32px,6vw,56px);font-weight:900;letter-spacing:clamp(4px,1vw,8px);
+  line-height:1.15;margin-bottom:12px;animation:fadeUp .7s ease .1s both}
+.hero-title .gr{background:linear-gradient(90deg,var(--c),var(--m),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-family:var(--FB);font-size:clamp(15px,2.2vw,20px);color:var(--t2);max-width:560px;
+  margin:0 auto;line-height:1.6;animation:fadeUp .7s ease .2s both}
+
+/* Nav pills */
+.eco-nav{display:flex;gap:8px;justify-content:center;margin-top:28px;flex-wrap:wrap;animation:fadeUp .7s ease .35s both}
+.eco-pill{font-family:var(--FD);font-size:9px;font-weight:700;letter-spacing:2px;padding:8px 20px;
+  text-decoration:none;color:var(--t3);border:1px solid rgba(255,255,255,.08);background:transparent;
+  cursor:pointer;transition:all .3s;text-transform:uppercase;
+  clip-path:polygon(5px 0,100% 0,100% calc(100% - 5px),calc(100% - 5px) 100%,0 100%,0 5px)}
+.eco-pill:hover,.eco-pill.active{border-color:var(--epc,var(--c));color:var(--epc,var(--c));
+  background:rgba(0,232,255,.04);box-shadow:0 0 14px var(--epg,rgba(0,232,255,.1))}
+.eco-pill[data-s="labs"]{--epc:var(--c);--epg:rgba(0,232,255,.1)}
+.eco-pill[data-s="services"]{--epc:var(--m);--epg:rgba(212,79,255,.1)}
+.eco-pill[data-s="apparel"]{--epc:var(--gold);--epg:rgba(255,204,0,.1)}
+
+/* ═══ SECTION BASE ═══ */
+.eco-section{position:relative;z-index:1;padding:80px 24px}
+.eco-inner{max-width:1100px;margin:0 auto}
+.sec-header{margin-bottom:44px}
+.sec-tag{font-family:var(--FM);font-size:8px;letter-spacing:4px;text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.sec-tag .dot{width:5px;height:5px;border-radius:50%;box-shadow:0 0 6px currentColor;
+  animation:dotP 2.5s ease-in-out infinite}
+@keyframes dotP{0%,100%{opacity:.4;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+.sec-title{font-family:var(--FD);font-size:clamp(22px,3.5vw,32px);font-weight:900;letter-spacing:4px;margin-bottom:6px}
+.sec-sub{font-family:var(--FB);font-size:16px;color:var(--t3);max-width:480px;line-height:1.5}
+.sec-div{width:100px;height:1px;margin:40px 0;background:linear-gradient(90deg,var(--sc,var(--c)),transparent)}
+
+/* ═══ LABS — tool cards ═══ */
+.labs-color{--sc:var(--c)}
+.labs-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.lab-card{background:var(--glass);border:1px solid rgba(0,232,255,.08);backdrop-filter:blur(14px);
+  padding:0;position:relative;overflow:hidden;cursor:pointer;transition:all .4s;
+  display:flex;flex-direction:column}
+.lab-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--c);transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.lab-card:hover::before{transform:scaleX(1)}
+.lab-card:hover{border-color:rgba(0,232,255,.2);transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(0,0,0,.4),0 0 18px rgba(0,232,255,.06)}
+.lab-visual{height:120px;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 50% 70%,rgba(0,232,255,.05),transparent 65%);position:relative}
+.lab-icon{font-size:40px;filter:drop-shadow(0 0 14px rgba(0,232,255,.4));
+  transition:transform .3s;position:relative;z-index:2}
+.lab-card:hover .lab-icon{transform:scale(1.12) translateY(-4px)}
+/* Subtle grid inside visual */
+.lab-visual::after{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,232,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(0,232,255,.015) 1px,transparent 1px);
+  background-size:20px 20px}
+.lab-body{padding:14px;flex:1;display:flex;flex-direction:column}
+.lab-name{font-family:var(--FD);font-size:9px;font-weight:700;letter-spacing:2px;color:var(--c);margin-bottom:4px}
+.lab-desc{font-family:var(--FB);font-size:13px;color:var(--t2);line-height:1.4;flex:1}
+.lab-tag{font-family:var(--FM);font-size:7px;letter-spacing:1.5px;color:var(--t4);margin-top:8px;text-transform:uppercase}
+
+/* ═══ SERVICES — 3 tier cards ═══ */
+.svc-color{--sc:var(--m)}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.svc-card{background:var(--glass);border:1px solid rgba(212,79,255,.08);backdrop-filter:blur(14px);
+  padding:28px 22px;position:relative;overflow:hidden;transition:all .4s;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+.svc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--svc,var(--m)),transparent)}
+.svc-card:hover{border-color:rgba(212,79,255,.18);transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(0,0,0,.4),0 0 18px rgba(212,79,255,.06)}
+.svc-icon{font-size:32px;margin-bottom:14px;filter:drop-shadow(0 0 10px var(--svc,var(--m)))}
+.svc-name{font-family:var(--FD);font-size:12px;font-weight:900;letter-spacing:3px;
+  color:var(--svc,var(--m));margin-bottom:8px}
+.svc-desc{font-family:var(--FB);font-size:15px;color:var(--t2);line-height:1.5;margin-bottom:16px}
+.svc-features{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
+.svc-features li{font-family:var(--FM);font-size:10px;letter-spacing:1px;color:var(--t3);
+  display:flex;align-items:center;gap:6px}
+.svc-features li::before{content:'◆';font-size:6px;color:var(--svc,var(--m))}
+.svc-btn{display:inline-block;font-family:var(--FD);font-size:8px;letter-spacing:2px;padding:8px 18px;
+  border:1px solid var(--svc,var(--m));color:var(--svc,var(--m));background:transparent;
+  cursor:pointer;transition:all .25s;text-transform:uppercase;text-decoration:none;
+  clip-path:polygon(4px 0,100% 0,100% calc(100% - 4px),calc(100% - 4px) 100%,0 100%,0 4px)}
+.svc-btn:hover{box-shadow:0 0 16px rgba(212,79,255,.15);background:rgba(212,79,255,.06)}
+/* Card accents */
+.svc-card:nth-child(1){--svc:#60a5fa}.svc-card:nth-child(2){--svc:var(--m)}.svc-card:nth-child(3){--svc:var(--c)}
+
+/* ═══ APPAREL ═══ */
+.app-color{--sc:var(--gold)}
+.apparel-showcase{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center}
+.apparel-visual{position:relative;display:flex;align-items:center;justify-content:center;
+  min-height:360px;background:radial-gradient(ellipse at 50% 50%,rgba(255,204,0,.04),transparent 60%);
+  border:1px solid rgba(255,204,0,.08);overflow:hidden}
+.apparel-visual::before{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,204,0,.01) 1px,transparent 1px),linear-gradient(90deg,rgba(255,204,0,.01) 1px,transparent 1px);
+  background-size:30px 30px}
+/* Rotating product display placeholder */
+.product-stage{display:flex;flex-direction:column;align-items:center;gap:16px;position:relative;z-index:2}
+.product-icon{font-size:80px;filter:drop-shadow(0 0 24px rgba(255,204,0,.3));
+  animation:prodFloat 4s ease-in-out infinite}
+@keyframes prodFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
+.product-label{font-family:var(--FD);font-size:11px;letter-spacing:3px;color:var(--gold);
+  text-shadow:0 0 12px rgba(255,204,0,.3)}
+/* Glow ring */
+.apparel-visual::after{content:'';position:absolute;width:200px;height:200px;border-radius:50%;
+  border:1px solid rgba(255,204,0,.1);box-shadow:0 0 40px rgba(255,204,0,.04);
+  animation:ringB 4s ease-in-out infinite}
+@keyframes ringB{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.6;transform:scale(1.05)}}
+
+.apparel-info{display:flex;flex-direction:column;gap:16px}
+.apparel-title{font-family:var(--FD);font-size:20px;font-weight:900;letter-spacing:4px;color:var(--gold);
+  text-shadow:0 0 16px rgba(255,204,0,.3)}
+.apparel-desc{font-family:var(--FB);font-size:17px;color:var(--t2);line-height:1.6}
+.apparel-items{display:flex;gap:10px;flex-wrap:wrap}
+.apparel-chip{font-family:var(--FM);font-size:9px;letter-spacing:1.5px;padding:6px 14px;
+  border:1px solid rgba(255,204,0,.15);color:var(--t2);background:rgba(255,204,0,.03);
+  transition:all .2s;cursor:default}
+.apparel-chip:hover{border-color:rgba(255,204,0,.3);color:var(--gold);background:rgba(255,204,0,.06)}
+.apparel-cta{display:inline-block;margin-top:8px;font-family:var(--FD);font-size:9px;letter-spacing:3px;
+  padding:10px 24px;border:1px solid var(--gold);color:var(--gold);background:transparent;
+  text-decoration:none;cursor:pointer;transition:all .3s;text-transform:uppercase;
+  clip-path:polygon(5px 0,100% 0,100% calc(100% - 5px),calc(100% - 5px) 100%,0 100%,0 5px)}
+.apparel-cta:hover{box-shadow:0 0 20px rgba(255,204,0,.15);background:rgba(255,204,0,.06)}
+
+/* ═══ CTA BANNER ═══ */
+.cta-banner{position:relative;z-index:1;padding:60px 24px;text-align:center}
+.cta-inner{max-width:600px;margin:0 auto;padding:40px;background:var(--glass);
+  border:1px solid rgba(0,232,255,.1);backdrop-filter:blur(20px);position:relative;overflow:hidden;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,16px 100%,0 calc(100% - 16px))}
+.cta-inner::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--c),var(--m),var(--gold))}
+.cta-title{font-family:var(--FD);font-size:18px;font-weight:900;letter-spacing:4px;margin-bottom:10px}
+.cta-sub{font-family:var(--FB);font-size:16px;color:var(--t2);margin-bottom:20px}
+.cta-btn{font-family:var(--FD);font-size:10px;font-weight:700;letter-spacing:3px;padding:12px 30px;
+  border:1px solid var(--c);color:var(--c);background:rgba(0,232,255,.05);cursor:pointer;
+  transition:all .3s;text-transform:uppercase;text-decoration:none;position:relative;overflow:hidden;
+  clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px)}
+.cta-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(0,232,255,.08),transparent);
+  animation:sweep 2.5s ease infinite}
+@keyframes sweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.cta-btn:hover{box-shadow:0 0 24px rgba(0,232,255,.2);background:rgba(0,232,255,.1)}
+
+/* ═══ FOOTER ═══ */
+.knd-footer{position:relative;z-index:1;padding:36px 24px 20px;text-align:center;
+  border-top:1px solid rgba(0,232,255,.05)}
+.ft-brand{font-family:var(--FD);font-size:10px;letter-spacing:4px;color:var(--t3);margin-bottom:6px}
+.ft-sub{font-family:var(--FM);font-size:8px;letter-spacing:2px;color:var(--t4)}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){
+  .labs-grid{grid-template-columns:repeat(2,1fr)}
+  .svc-grid{grid-template-columns:1fr}
+  .apparel-showcase{grid-template-columns:1fr}
+  .apparel-visual{min-height:240px}
+}
+@media(max-width:600px){
+  .labs-grid{grid-template-columns:1fr}
+  .eco-nav{gap:6px}
+  .eco-pill{font-size:8px;padding:6px 14px}
+}
+</style>
+</head>
+<body>
+
+<div id="bg"><canvas id="bg-c"></canvas></div>
+
+<!-- ═══ TOPBAR ═══ -->
+<div class="topbar">
+  <a class="tb-logo" href="#">⬡ KND <span class="tb-sub">ECOSYSTEM</span></a>
+  <div class="tb-links">
+    <a class="tb-link" href="#">HOME</a>
+    <a class="tb-link active" href="#">ECOSYSTEM</a>
+    <a class="tb-link" href="#">ARENA</a>
+    <a class="tb-link" href="#">PROFILE</a>
+  </div>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-badge">⬡ BEYOND THE ARENA</div>
+  <h1 class="hero-title">THE KND <span class="gr">ECOSYSTEM</span></h1>
+  <p class="hero-sub">AI-powered creative tools. Professional digital services. Holographic apparel. Everything you need to create, build, and represent.</p>
+  <div class="eco-nav">
+    <a class="eco-pill active" data-s="labs" href="#labs">🧪 KND LABS</a>
+    <a class="eco-pill" data-s="services" href="#services">⚙ SERVICES</a>
+    <a class="eco-pill" data-s="apparel" href="#apparel">👕 APPAREL</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     KND LABS — AI Creative Laboratory
+═══════════════════════════════════════════════════ -->
+<section class="eco-section labs-color" id="labs">
+  <div class="eco-inner">
+    <div class="sec-header">
+      <div class="sec-tag" style="color:var(--c)"><span class="dot" style="background:var(--c)"></span> AI CREATIVE LABORATORY</div>
+      <h2 class="sec-title" style="color:var(--c)">KND LABS</h2>
+      <p class="sec-sub">Five AI-powered tools to generate, transform, and visualize. From text to image to 3D — all in one laboratory.</p>
+    </div>
+    <div class="sec-div"></div>
+
+    <div class="labs-grid">
+      <!-- Image Gen -->
+      <div class="lab-card">
+        <div class="lab-visual"><span class="lab-icon">🎨</span></div>
+        <div class="lab-body">
+          <div class="lab-name">IMAGE GEN</div>
+          <div class="lab-desc">Text-to-image AI. Describe anything, get stunning visuals in seconds.</div>
+          <div class="lab-tag">TEXT → IMAGE · MULTIPLE STYLES</div>
+        </div>
+      </div>
+      <!-- BG Remove -->
+      <div class="lab-card">
+        <div class="lab-visual"><span class="lab-icon">✂️</span></div>
+        <div class="lab-body">
+          <div class="lab-name">BG REMOVE</div>
+          <div class="lab-desc">Instant background removal. Clean cutouts with AI precision.</div>
+          <div class="lab-tag">ONE-CLICK · HIGH ACCURACY</div>
+        </div>
+      </div>
+      <!-- Upscale -->
+      <div class="lab-card">
+        <div class="lab-visual"><span class="lab-icon">🔍</span></div>
+        <div class="lab-body">
+          <div class="lab-name">UPSCALE</div>
+          <div class="lab-desc">Enhance resolution up to 4x. Sharpen details that weren't there before.</div>
+          <div class="lab-tag">AI SUPER-RESOLUTION · 4X</div>
+        </div>
+      </div>
+      <!-- 3D Model -->
+      <div class="lab-card">
+        <div class="lab-visual"><span class="lab-icon">🧊</span></div>
+        <div class="lab-body">
+          <div class="lab-name">3D FORGE</div>
+          <div class="lab-desc">Generate 3D models from text or images. With or without textures — export-ready.</div>
+          <div class="lab-tag">TEXT/IMG → 3D · GLB EXPORT</div>
+        </div>
+      </div>
+      <!-- Model Viewer -->
+      <div class="lab-card">
+        <div class="lab-visual"><span class="lab-icon">👁</span></div>
+        <div class="lab-body">
+          <div class="lab-name">3D VIEWER</div>
+          <div class="lab-desc">Inspect any 3D model in a holographic viewer. Rotate, zoom, analyze.</div>
+          <div class="lab-tag">WEBGL · DRAG & DROP</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     DIGITAL SERVICES
+═══════════════════════════════════════════════════ -->
+<section class="eco-section svc-color" id="services">
+  <div class="eco-inner">
+    <div class="sec-header">
+      <div class="sec-tag" style="color:var(--m)"><span class="dot" style="background:var(--m)"></span> PROFESSIONAL DIGITAL SERVICES</div>
+      <h2 class="sec-title" style="color:var(--m)">KND SERVICES</h2>
+      <p class="sec-sub">From brand identity to full-stack development. We build digital systems that last.</p>
+    </div>
+    <div class="sec-div" style="background:linear-gradient(90deg,var(--m),transparent)"></div>
+
+    <div class="svc-grid">
+      <!-- Web Dev -->
+      <div class="svc-card">
+        <div class="svc-icon">💻</div>
+        <div class="svc-name">WEB DEV</div>
+        <div class="svc-desc">Custom websites, web apps, and platforms built from scratch with modern tech stacks.</div>
+        <ul class="svc-features">
+          <li>Full-stack development</li>
+          <li>Custom PHP / JS / React</li>
+          <li>Database architecture</li>
+          <li>API integrations</li>
+          <li>Performance optimization</li>
+        </ul>
+        <a class="svc-btn" href="#">LEARN MORE →</a>
+      </div>
+      <!-- Branding -->
+      <div class="svc-card">
+        <div class="svc-icon">🎯</div>
+        <div class="svc-name">BRANDING</div>
+        <div class="svc-desc">Complete visual identity systems. Logos, guidelines, and digital presence that define who you are.</div>
+        <ul class="svc-features">
+          <li>Logo design & brand mark</li>
+          <li>Visual identity system</li>
+          <li>Brand guidelines</li>
+          <li>Typography & color systems</li>
+          <li>Social media kits</li>
+        </ul>
+        <a class="svc-btn" href="#">LEARN MORE →</a>
+      </div>
+      <!-- AI Consulting -->
+      <div class="svc-card">
+        <div class="svc-icon">🤖</div>
+        <div class="svc-name">AI INTEGRATION</div>
+        <div class="svc-desc">Integrate AI into your business. From chatbots to image generation to custom LLM workflows.</div>
+        <ul class="svc-features">
+          <li>AI chatbot deployment</li>
+          <li>Image generation pipelines</li>
+          <li>Custom model fine-tuning</li>
+          <li>Workflow automation</li>
+          <li>Strategy & consulting</li>
+        </ul>
+        <a class="svc-btn" href="#">LEARN MORE →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     APPAREL
+═══════════════════════════════════════════════════ -->
+<section class="eco-section app-color" id="apparel">
+  <div class="eco-inner">
+    <div class="sec-header">
+      <div class="sec-tag" style="color:var(--gold)"><span class="dot" style="background:var(--gold)"></span> HOLOGRAPHIC STREETWEAR</div>
+      <h2 class="sec-title" style="color:var(--gold)">KND APPAREL</h2>
+      <p class="sec-sub">Wear the signal. Premium streetwear infused with the KND holographic aesthetic.</p>
+    </div>
+    <div class="sec-div" style="background:linear-gradient(90deg,var(--gold),transparent)"></div>
+
+    <div class="apparel-showcase">
+      <div class="apparel-visual">
+        <div class="product-stage">
+          <div class="product-icon" id="product-icon">👕</div>
+          <div class="product-label" id="product-label">KND CORE TEE</div>
+        </div>
+      </div>
+      <div class="apparel-info">
+        <div class="apparel-title">REPRESENT THE VOID</div>
+        <div class="apparel-desc">Each piece is designed with the same holographic DNA as the KND ecosystem. Dark palettes, subtle neon accents, premium fabric. Built for the digital generation.</div>
+        <div class="apparel-items">
+          <span class="apparel-chip" data-icon="👕" data-name="KND CORE TEE">⬡ T-SHIRTS</span>
+          <span class="apparel-chip" data-icon="🧥" data-name="KND VOID HOODIE">⬡ HOODIES</span>
+          <span class="apparel-chip" data-icon="👕" data-name="KND SIGNAL LONGSLEEVE">⬡ LONGSLEEVES</span>
+        </div>
+        <a class="apparel-cta" href="#">⬡ VIEW COLLECTION →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ CTA BANNER ═══ -->
+<div class="cta-banner">
+  <div class="cta-inner">
+    <div class="cta-title">READY TO CREATE?</div>
+    <div class="cta-sub">Open KND Labs, request a project, or browse the collection. The ecosystem is yours.</div>
+    <a class="cta-btn" href="#">⚡ ENTER KND</a>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<div class="knd-footer">
+  <div class="ft-brand">⬡ KND — KNOWLEDGE 'N DEVELOPMENT</div>
+  <div class="ft-sub">LABS · SERVICES · APPAREL · ARENA</div>
+</div>
+
+<script>
+/* ═══ Stars ═══ */
+(function(){
+  var c=document.getElementById('bg-c'),x=c.getContext('2d'),stars=[],N=160;
+  function R(){c.width=innerWidth;c.height=innerHeight}
+  addEventListener('resize',R);R();
+  for(var i=0;i<N;i++)stars.push({x:Math.random()*c.width,y:Math.random()*c.height,r:.3+Math.random()*1,a:.1+Math.random()*.4,s:.03+Math.random()*.04,p:Math.random()*6.28});
+  (function draw(){
+    x.clearRect(0,0,c.width,c.height);var t=Date.now()*.001;
+    stars.forEach(function(s){x.fillStyle='rgba(180,220,255,'+(s.a*(.5+.5*Math.sin(t*s.s*10+s.p)))+')';x.beginPath();x.arc(s.x,s.y,s.r,0,6.28);x.fill()});
+    requestAnimationFrame(draw);
+  })();
+})();
+
+/* ═══ Scroll reveal ═══ */
+document.querySelectorAll('.eco-section,.cta-banner').forEach(function(s){
+  s.style.opacity='0';s.style.transform='translateY(28px)';s.style.transition='opacity .7s ease,transform .7s ease';
+  new IntersectionObserver(function(e){if(e[0].isIntersecting){s.style.opacity='1';s.style.transform='translateY(0)'}},{threshold:.08}).observe(s);
+});
+
+/* ═══ Nav pills active on scroll ═══ */
+var pills=document.querySelectorAll('.eco-pill');
+var sections={labs:document.getElementById('labs'),services:document.getElementById('services'),apparel:document.getElementById('apparel')};
+window.addEventListener('scroll',function(){
+  var st=scrollY+200;
+  pills.forEach(function(p){p.classList.remove('active')});
+  if(sections.apparel&&st>=sections.apparel.offsetTop)document.querySelector('[data-s="apparel"]').classList.add('active');
+  else if(sections.services&&st>=sections.services.offsetTop)document.querySelector('[data-s="services"]').classList.add('active');
+  else document.querySelector('[data-s="labs"]').classList.add('active');
+});
+
+/* ═══ Apparel product switcher ═══ */
+document.querySelectorAll('.apparel-chip').forEach(function(chip){
+  chip.addEventListener('click',function(){
+    var icon=this.dataset.icon,name=this.dataset.name;
+    var el=document.getElementById('product-icon'),lbl=document.getElementById('product-label');
+    el.style.transform='scale(0)';
+    setTimeout(function(){
+      el.textContent=icon;lbl.textContent=name;
+      el.style.transform='scale(1)';el.style.transition='transform .3s cubic-bezier(.15,1.2,.3,1)';
+    },200);
+    document.querySelectorAll('.apparel-chip').forEach(function(c){c.style.borderColor='rgba(255,204,0,.15)';c.style.color='var(--t2)'});
+    this.style.borderColor='rgba(255,204,0,.4)';this.style.color='var(--gold)';
+  });
+});
+
+/* ═══ Lab card hover sound (visual feedback only) ═══ */
+document.querySelectorAll('.lab-card').forEach(function(card,i){
+  card.style.animationDelay=(i*0.08)+'s';
+});
+</script>
+</body>
+</html>

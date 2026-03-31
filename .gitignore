@@ -1,0 +1,19 @@
+includes/config.php
+includes/config-local.php
+includes/secrets.local.php
+includes/paypal_secrets.local.php
+config/*.local.php
+workers/worker_config.local.php
+.env
+!.env.example
+
+# Storage data files — never overwrite server data on deploy
+storage/*.json
+storage/logs/*.log
+storage/logs/*.txt
+
+# Runtime logs
+logs/*.log
+
+# Worker debug output
+workers/_debug/

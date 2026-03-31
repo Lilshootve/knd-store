@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<!-- Visual reference only. Live page: /about — assets/css/knd-about.css + sections/knd_about.php -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KND — About Us</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --void:#010508;--deep:#020a10;--surface:#04131c;
+  --glass:rgba(6,24,36,.72);
+  --c:#00e8ff;--c2:#00a8bb;--cg:rgba(0,232,255,.12);--cb:rgba(0,232,255,.22);
+  --m:#d44fff;--gold:#ffcc00;--green:#00ff99;--red:#ff2255;
+  --t1:rgba(220,248,255,.95);--t2:rgba(155,215,235,.62);--t3:rgba(90,165,190,.38);--t4:rgba(60,120,145,.2);
+  --FD:'Orbitron',monospace;--FB:'Rajdhani',sans-serif;--FM:'Share Tech Mono',monospace;
+}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(0,232,255,.2) transparent}
+body{background:var(--void);color:var(--t1);font-family:var(--FB);overflow-x:hidden}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 3px)}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(0,232,255,.2)}
+
+#bg{position:fixed;inset:0;z-index:0}
+#bg-c{position:absolute;inset:0;width:100%;height:100%}
+#bg::before{content:'';position:absolute;inset:0;z-index:1;
+  background:radial-gradient(ellipse 70% 45% at 50% 8%,rgba(0,60,140,.12),transparent 50%),
+    radial-gradient(ellipse 35% 35% at 85% 70%,rgba(155,48,255,.06),transparent 45%),
+    radial-gradient(ellipse 35% 35% at 12% 55%,rgba(0,232,255,.05),transparent 45%)}
+
+.page{position:relative;z-index:1}
+
+/* ═══ HERO — full viewport cinematic ═══ */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:80px 24px 60px;position:relative;overflow:hidden}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;margin-bottom:20px;
+  border:1px solid rgba(0,232,255,.2);background:rgba(0,232,255,.03);
+  font-family:var(--FM);font-size:8px;letter-spacing:4px;color:var(--c);animation:fadeUp .7s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.hero-title{font-family:var(--FD);font-size:clamp(40px,8vw,80px);font-weight:900;
+  letter-spacing:clamp(6px,1.5vw,14px);line-height:1;margin-bottom:16px;animation:fadeUp .7s ease .15s both}
+.hero-title .gr{background:linear-gradient(90deg,var(--c),var(--m));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-family:var(--FB);font-size:clamp(16px,2.5vw,22px);color:var(--t2);max-width:580px;
+  line-height:1.7;animation:fadeUp .7s ease .3s both}
+.hero-year{position:absolute;bottom:80px;font-family:var(--FD);font-size:clamp(100px,20vw,200px);
+  font-weight:900;letter-spacing:10px;color:rgba(0,232,255,.03);pointer-events:none;
+  animation:fadeUp 1s ease .5s both}
+.scroll-cue{position:absolute;bottom:24px;display:flex;flex-direction:column;align-items:center;gap:6px;
+  animation:fadeUp .7s ease .6s both}
+.scroll-line{width:1px;height:28px;background:linear-gradient(180deg,var(--c),transparent);
+  animation:sPulse 2s ease-in-out infinite}
+@keyframes sPulse{0%,100%{opacity:.3;height:22px}50%{opacity:.8;height:32px}}
+.scroll-text{font-family:var(--FM);font-size:7px;letter-spacing:3px;color:var(--t3)}
+
+/* ═══ SECTION BASE ═══ */
+.sect{padding:80px 24px;position:relative}
+.sect-inner{max-width:900px;margin:0 auto}
+.sect-tag{font-family:var(--FM);font-size:8px;letter-spacing:4px;color:var(--c);
+  display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.sect-tag .dot{width:5px;height:5px;border-radius:50%;background:var(--c);box-shadow:0 0 6px var(--c);
+  animation:dotP 2.5s ease-in-out infinite}
+@keyframes dotP{0%,100%{opacity:.4;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+.sect-title{font-family:var(--FD);font-size:clamp(22px,3.5vw,32px);font-weight:900;letter-spacing:4px;margin-bottom:20px}
+.sect-text{font-family:var(--FB);font-size:17px;color:var(--t2);line-height:1.8;margin-bottom:16px}
+.sect-div{width:80px;height:1px;background:linear-gradient(90deg,var(--c),transparent);margin:48px 0}
+
+/* ═══ STORY — split layout ═══ */
+.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.story-accent{font-family:var(--FD);font-size:48px;font-weight:900;color:rgba(0,232,255,.08);
+  letter-spacing:6px;margin-bottom:12px}
+
+/* ═══ MISSION — centered dramatic ═══ */
+.mission{text-align:center;padding:100px 24px;position:relative}
+.mission::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(0,232,255,.03),transparent 60%)}
+.mission-text{font-family:var(--FB);font-size:clamp(18px,3vw,24px);color:var(--t1);line-height:1.8;
+  max-width:700px;margin:0 auto;font-weight:400}
+.mission-badge{display:inline-block;font-family:var(--FD);font-size:8px;letter-spacing:4px;
+  padding:5px 16px;border:1px solid rgba(212,79,255,.25);color:var(--m);
+  background:rgba(212,79,255,.04);margin-bottom:16px}
+
+/* ═══ VALUES — icon cards ═══ */
+.values-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.value-card{background:var(--glass);border:1px solid rgba(0,232,255,.06);backdrop-filter:blur(14px);
+  padding:24px 18px;text-align:center;position:relative;overflow:hidden;transition:all .3s;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%)}
+.value-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--vc,var(--c));transform:scaleX(0);transition:transform .4s;transform-origin:left}
+.value-card:hover::before{transform:scaleX(1)}
+.value-card:hover{border-color:rgba(0,232,255,.12);transform:translateY(-3px);
+  box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.vc-icon{font-size:28px;margin-bottom:10px;filter:drop-shadow(0 0 10px var(--vc,var(--c)))}
+.vc-name{font-family:var(--FD);font-size:9px;font-weight:700;letter-spacing:2px;
+  color:var(--vc,var(--c));margin-bottom:6px}
+.vc-desc{font-family:var(--FM);font-size:10px;letter-spacing:1px;color:var(--t3);line-height:1.5}
+
+/* ═══ TEAM — hologram cards ═══ */
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.team-card{background:var(--glass);border:1px solid rgba(0,232,255,.06);backdrop-filter:blur(14px);
+  padding:0;overflow:hidden;transition:all .3s;position:relative;text-align:center}
+.team-card:hover{border-color:rgba(0,232,255,.15);transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(0,0,0,.4),0 0 18px var(--tc-g,rgba(0,232,255,.06))}
+.tc-visual{height:140px;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at 50% 70%,var(--tc-bg,rgba(0,232,255,.04)),transparent 65%);
+  position:relative}
+.tc-avatar{font-size:56px;filter:drop-shadow(0 0 16px var(--tc-c,var(--c)));
+  animation:teamFloat 4s ease-in-out infinite;position:relative;z-index:2}
+@keyframes teamFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+/* Glow ring */
+.tc-visual::after{content:'';position:absolute;width:80px;height:80px;border-radius:50%;
+  border:1px solid var(--tc-b,rgba(0,232,255,.1));animation:ringB 3s ease-in-out infinite}
+@keyframes ringB{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.5;transform:scale(1.1)}}
+.tc-body{padding:18px}
+.tc-role{font-family:var(--FM);font-size:7px;letter-spacing:2.5px;color:var(--tc-c,var(--c));
+  text-transform:uppercase;margin-bottom:4px}
+.tc-name{font-family:var(--FD);font-size:13px;font-weight:900;letter-spacing:2px;color:var(--t1);
+  margin-bottom:8px}
+.tc-desc{font-family:var(--FM);font-size:10px;letter-spacing:.5px;color:var(--t3);line-height:1.5}
+.team-card:nth-child(1){--tc-c:var(--c);--tc-bg:rgba(0,232,255,.04);--tc-b:rgba(0,232,255,.1);--tc-g:rgba(0,232,255,.06)}
+.team-card:nth-child(2){--tc-c:var(--m);--tc-bg:rgba(212,79,255,.04);--tc-b:rgba(212,79,255,.1);--tc-g:rgba(212,79,255,.06)}
+.team-card:nth-child(3){--tc-c:var(--green);--tc-bg:rgba(0,255,153,.04);--tc-b:rgba(0,255,153,.1);--tc-g:rgba(0,255,153,.06)}
+
+/* ═══ TECH MATRIX ═══ */
+.tech-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.tech-item{display:flex;align-items:flex-start;gap:14px;padding:18px;
+  background:rgba(255,255,255,.02);border:1px solid rgba(0,232,255,.05);
+  transition:all .25s;cursor:default}
+.tech-item:hover{border-color:rgba(0,232,255,.12);background:rgba(0,232,255,.02);transform:translateX(4px)}
+.tech-icon{font-size:22px;flex-shrink:0;filter:drop-shadow(0 0 6px rgba(0,232,255,.3));margin-top:2px}
+.tech-name{font-family:var(--FD);font-size:10px;font-weight:700;letter-spacing:2px;color:var(--c);margin-bottom:4px}
+.tech-desc{font-family:var(--FM);font-size:10px;letter-spacing:.5px;color:var(--t3);line-height:1.5}
+
+/* ═══ FUTURE — cinematic centered ═══ */
+.future{text-align:center;padding:100px 24px;position:relative}
+.future::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 50% 45% at 50% 50%,rgba(212,79,255,.03),transparent 55%)}
+.future-text{font-family:var(--FB);font-size:clamp(16px,2.5vw,20px);color:var(--t2);
+  max-width:600px;margin:0 auto 24px;line-height:1.8}
+.future-items{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:24px}
+.future-chip{font-family:var(--FM);font-size:10px;letter-spacing:1.5px;padding:8px 18px;
+  border:1px solid rgba(212,79,255,.15);color:var(--t2);background:rgba(212,79,255,.03);
+  transition:all .2s}
+.future-chip:hover{border-color:var(--m);color:var(--m);background:rgba(212,79,255,.06)}
+
+/* ═══ CTA ═══ */
+.cta{text-align:center;padding:60px 24px 80px}
+.cta-btn{display:inline-block;font-family:var(--FD);font-size:11px;font-weight:700;letter-spacing:4px;
+  padding:14px 36px;border:1px solid var(--c);color:var(--c);background:rgba(0,232,255,.04);
+  text-decoration:none;position:relative;overflow:hidden;transition:all .3s;text-transform:uppercase;
+  clip-path:polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px)}
+.cta-btn::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(0,232,255,.08),transparent);animation:sweep 2.5s ease infinite}
+@keyframes sweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.cta-btn:hover{box-shadow:0 0 28px rgba(0,232,255,.2);background:rgba(0,232,255,.1);letter-spacing:6px}
+
+/* Footer */
+.ft{text-align:center;padding:30px 24px;border-top:1px solid rgba(0,232,255,.05)}
+.ft-brand{font-family:var(--FD);font-size:10px;letter-spacing:4px;color:var(--t4)}
+
+@media(max-width:768px){
+  .story-grid,.tech-grid{grid-template-columns:1fr}
+  .values-grid{grid-template-columns:repeat(2,1fr)}
+  .team-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="bg"><canvas id="bg-c"></canvas></div>
+
+<div class="page">
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-badge">⬡ KNOWLEDGE 'N DEVELOPMENT</div>
+  <h1 class="hero-title">ABOUT <span class="gr">KND</span></h1>
+  <p class="hero-sub">Born from a spark in 1995. Built into an expanding digital universe. We don't follow the map — we hack it.</p>
+  <div class="hero-year">1995</div>
+  <div class="scroll-cue"><div class="scroll-line"></div><div class="scroll-text">OUR STORY</div></div>
+</section>
+
+<!-- ═══ OUR STORY + KND MEANING ═══ -->
+<section class="sect">
+  <div class="sect-inner">
+    <div class="story-grid">
+      <div>
+        <div class="sect-tag"><span class="dot"></span> ORIGIN SIGNAL</div>
+        <div class="sect-title">Our Story</div>
+        <div class="story-accent">1995</div>
+        <p class="sect-text">KND Store wasn't born in an office. It was born in a mind. In 1995, while the world discovered Windows 95, a spark ignited at the core of a future impossible to ignore: fusing technology and gaming culture into a single intergalactic force.</p>
+        <p class="sect-text">Today, that spark is an expanding core. We are more than a store. We are a command station for those who don't follow the map — they hack it.</p>
+      </div>
+      <div>
+        <div class="sect-tag" style="color:var(--m)"><span class="dot" style="background:var(--m)"></span> DECODED</div>
+        <div class="sect-title" style="color:var(--m)">What does <span style="color:var(--c)">KND</span> mean?</div>
+        <p class="sect-text"><strong style="color:var(--c)">Knowledge 'N Development.</strong> Everything we build starts with a simple idea: turn real knowledge into constant development, smart solutions, and high-level digital experiences.</p>
+        <p class="sect-text">At KND, <em>knowledge</em> is not just theory — it's the base for builds, optimization, content, and services that solve real problems. <em>Development</em> is our second half: we never stand still.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MISSION ═══ -->
+<section class="mission">
+  <div class="mission-badge">⬡ GALACTIC MISSION</div>
+  <div class="sect-title" style="text-align:center;margin-bottom:20px">Our Mission</div>
+  <p class="mission-text">To be the most badass store in the galaxy. We don't just sell hardware and peripherals — we recruit true pilots of the metaverse, design gear for digital heroes, and unleash technology without borders.</p>
+</section>
+
+<!-- ═══ VALUES ═══ -->
+<section class="sect">
+  <div class="sect-inner">
+    <div class="sect-tag"><span class="dot"></span> CORE PROTOCOLS</div>
+    <div class="sect-title">Our Values</div>
+    <div style="margin-bottom:28px"></div>
+    <div class="values-grid">
+      <div class="value-card" style="--vc:var(--c)">
+        <div class="vc-icon">⚡</div>
+        <div class="vc-name">QUANTUM PRECISION</div>
+        <div class="vc-desc">Zero errors. Everything optimized to the byte.</div>
+      </div>
+      <div class="value-card" style="--vc:var(--m)">
+        <div class="vc-icon">🛡</div>
+        <div class="vc-name">USER LOYALTY</div>
+        <div class="vc-desc">We're not retail gods. We're service soldiers.</div>
+      </div>
+      <div class="value-card" style="--vc:var(--gold)">
+        <div class="vc-icon">✨</div>
+        <div class="vc-name">INTERSTELLAR AESTHETICS</div>
+        <div class="vc-desc">If it doesn't look brutal, it doesn't ship.</div>
+      </div>
+      <div class="value-card" style="--vc:var(--green)">
+        <div class="vc-icon">🔄</div>
+        <div class="vc-name">INFINITE ITERATION</div>
+        <div class="vc-desc">We never stop refining. Every system evolves.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TEAM ═══ -->
+<section class="sect">
+  <div class="sect-inner">
+    <div class="sect-tag"><span class="dot" style="background:var(--m)"></span><span style="color:var(--m)"> CREW MANIFEST</span></div>
+    <div class="sect-title">The Team</div>
+    <div style="margin-bottom:28px"></div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="tc-visual"><span class="tc-avatar">🤖</span></div>
+        <div class="tc-body">
+          <div class="tc-role">TACTICAL AI · LEAD STRATEGIST</div>
+          <div class="tc-name">KAEL</div>
+          <div class="tc-desc">Not an assistant. A copilot. Built to question everything and find truth in every line of code.</div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="tc-visual"><span class="tc-avatar">👤</span></div>
+        <div class="tc-body">
+          <div class="tc-role">VISION COMMANDER · MASTER PILOT</div>
+          <div class="tc-name">THE FOUNDER</div>
+          <div class="tc-desc">Classified name. Known to be born in 1995 and never accepted the limits of the solar system.</div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="tc-visual"><span class="tc-avatar">⚙</span></div>
+        <div class="tc-body">
+          <div class="tc-role">NOMAD TECHNOMANCERS</div>
+          <div class="tc-name">UNIT X-23</div>
+          <div class="tc-desc">A nomad crew of technomancers keeping the KND core running on hidden frequencies.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TECHNOLOGIES ═══ -->
+<section class="sect">
+  <div class="sect-inner">
+    <div class="sect-tag"><span class="dot"></span> TECH MATRIX</div>
+    <div class="sect-title">Technologies That Power Us</div>
+    <div style="margin-bottom:28px"></div>
+    <div class="tech-grid">
+      <div class="tech-item">
+        <div class="tech-icon">🤖</div>
+        <div><div class="tech-name">AUTONOMOUS AI (KAEL)</div><div class="tech-desc">Not an assistant. A copilot integrated into every system.</div></div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon">🎲</div>
+        <div><div class="tech-name">KND ARENA</div><div class="tech-desc">Mind Wars, LastRoll, Insight — real-time competitive games with KND Points economy.</div></div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon">💰</div>
+        <div><div class="tech-name">REWARDS SYSTEM</div><div class="tech-desc">Galactic logic. Because loyalty deserves rewards.</div></div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon">🧪</div>
+        <div><div class="tech-name">KND LABS</div><div class="tech-desc">AI image generation, 3D model creation, upscaling, background removal — all in one laboratory.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FUTURE ═══ -->
+<section class="future">
+  <div class="sect-tag" style="justify-content:center;color:var(--gold)"><span class="dot" style="background:var(--gold)"></span> TRANSMISSION FROM THE FUTURE</div>
+  <div class="sect-title" style="text-align:center;color:var(--gold);margin-bottom:20px">What's Next</div>
+  <p class="future-text">Community is our hyperfuel. We move through energy channels, navigate galactic events, and drop loot like ancient mission gods. The future? Let's just say we're building ships.</p>
+  <div class="future-items">
+    <span class="future-chip">⬡ NATIVE ECOSYSTEM</span>
+    <span class="future-chip">⬡ GLOBAL EXPANSION</span>
+    <span class="future-chip">⬡ AI EVOLUTION</span>
+    <span class="future-chip">⬡ COMMUNITY EVENTS</span>
+  </div>
+</section>
+
+<!-- ═══ CTA ═══ -->
+<div class="cta">
+  <a class="cta-btn" href="#">⚡ ENTER THE KND UNIVERSE</a>
+</div>
+
+<div class="ft"><div class="ft-brand">⬡ KND — KNOWLEDGE 'N DEVELOPMENT</div></div>
+
+</div>
+
+<script>
+(function(){var c=document.getElementById('bg-c'),x=c.getContext('2d'),S=[],N=150;
+function R(){c.width=innerWidth;c.height=innerHeight}addEventListener('resize',R);R();
+for(var i=0;i<N;i++)S.push({x:Math.random()*c.width,y:Math.random()*c.height,r:.3+Math.random()*1,a:.1+Math.random()*.4,s:.03+Math.random()*.04,p:Math.random()*6.28});
+(function d(){x.clearRect(0,0,c.width,c.height);var t=Date.now()*.001;
+S.forEach(function(s){x.fillStyle='rgba(180,220,255,'+(s.a*(.5+.5*Math.sin(t*s.s*10+s.p)))+')';x.beginPath();x.arc(s.x,s.y,s.r,0,6.28);x.fill()});
+requestAnimationFrame(d)})()})();
+
+document.querySelectorAll('.sect,.mission,.future,.cta').forEach(function(s){
+  s.style.opacity='0';s.style.transform='translateY(24px)';
+  s.style.transition='opacity .7s ease,transform .7s ease';
+  new IntersectionObserver(function(e){if(e[0].isIntersecting){s.style.opacity='1';s.style.transform='translateY(0)'}},{threshold:.08}).observe(s);
+});
+</script>
+</body>
+</html>

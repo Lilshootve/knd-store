@@ -1,0 +1,65 @@
+{
+  "2": {
+    "inputs": {
+      "model": "RMBG-2.0",
+      "sensitivity": 1,
+      "process_res": 1024,
+      "mask_blur": 3,
+      "mask_offset": 0,
+      "invert_output": false,
+      "refine_foreground": true,
+      "background": "Alpha",
+      "background_color": "#222222",
+      "image": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "RMBG",
+    "_meta": {
+      "title": "Remove Background (RMBG)"
+    }
+  },
+  "3": {
+    "inputs": {
+      "output_path": "C:\\AI\\Comfyui3d\\Comfyui3d\\ComfyUI_windows_portable\\ComfyUI\\output\\remove_bg/remove_bg_[time(%Y-%m-%d)]",
+      "filename_prefix": "rmbg",
+      "filename_delimiter": "_",
+      "filename_number_padding": 4,
+      "filename_number_start": "false",
+      "extension": "png",
+      "dpi": 72,
+      "quality": 100,
+      "optimize_image": "true",
+      "lossless_webp": "false",
+      "overwrite_mode": "false",
+      "show_history": "false",
+      "show_history_by_prefix": "true",
+      "embed_workflow": "false",
+      "show_previews": "true",
+      "images": [
+        "2",
+        0
+      ]
+    },
+    "class_type": "Image Save",
+    "_meta": {
+      "title": "Image Save"
+    }
+  },
+  "8": {
+    "inputs": {
+      "image_path_or_URL": "",
+      "image": "",
+      "upscale_method": "lanczos",
+      "megapixels": 0,
+      "scale_by": 1,
+      "resize_mode": "longest_side",
+      "size": 0
+    },
+    "class_type": "AILab_LoadImage",
+    "_meta": {
+      "title": "Load Image (RMBG) 🖼️"
+    }
+  }
+}

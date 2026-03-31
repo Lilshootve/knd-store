@@ -1,0 +1,678 @@
+/* Mind Wars battle-style avatar cards — shared with lobby collection (matches arena selector). */
+
+/*
+ * Avatar collection modal: needs an explicit height so flex:1 children get a real band
+ * (overlay uses align-items:center; max-height alone leaves ov-box shrink-wrapped → clips).
+ */
+#av-overlay .ov-collection-box {
+  width: min(98vw, 1040px);
+  height: min(92vh, 900px);
+  max-height: min(92vh, 900px);
+}
+
+/* One scroll container: grid grows with content; body takes remaining column space */
+#av-overlay .ov-collection-body {
+  padding: 0 4px 12px;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+#av-overlay .lavs-grid {
+  padding: 16px 14px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  align-content: start;
+  overflow: visible;
+}
+
+.lavs-grid {
+  padding: 14px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.lavs-grid::-webkit-scrollbar {
+  width: 4px;
+}
+
+.lavs-grid::-webkit-scrollbar-thumb {
+  background: rgba(0, 240, 255, 0.2);
+}
+
+.lavs-knd-card {
+  cursor: pointer;
+}
+
+.lavs-knd-card.mw-card-equipped {
+  box-shadow: 0 0 0 1px rgba(0, 232, 255, 0.35), 0 0 24px rgba(0, 232, 255, 0.12);
+}
+
+.lavs-knd-card.mw-card-equipped .inspect-btn {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* Collection overlay: taller art area + readable footer (cards were clipped by flex/overflow chain) */
+#av-overlay .avatar-card .card-thumb {
+  height: 220px;
+}
+
+#av-overlay .avatar-card .thumb-model {
+  width: 118px;
+  height: 162px;
+}
+
+#av-overlay .avatar-card .card-body {
+  padding: 14px 16px 16px;
+}
+
+#av-overlay .avatar-card .card-name {
+  font-size: 17.25px;
+}
+
+#av-overlay .avatar-card .card-tagline {
+  font-size: 12.65px;
+}
+
+#av-overlay .avatar-card .stat-label {
+  font-size: 9.2px;
+}
+
+#av-overlay .avatar-card .stat-value {
+  font-size: 12.65px;
+}
+
+#av-overlay .avatar-card:hover {
+  transform: translateY(-3px);
+}
+
+/* Colección: drop-shadow animado en la <img> duplica bordes alfa y parece “triple” */
+#av-overlay .avatar-card .thumb-model {
+  animation: none;
+}
+#av-overlay .avatar-card .thumb-model img {
+  animation: none;
+  filter: none;
+}
+
+/* Tarjeta EQUIPADA: el doble glow (card + PNG con halo) parecía “triple” sobre todo en Dracula */
+#av-overlay .lavs-knd-card.mw-card-equipped {
+  box-shadow: 0 0 0 1px rgba(0, 232, 255, 0.35);
+}
+
+/* Rayas de escaneo + sombras del contenedor encima del thumb; en PNGs con halo fuerte refuerzan el efecto */
+#av-overlay .avatar-card::after {
+  display: none;
+}
+#av-overlay .avatar-card .card-thumb {
+  filter: none;
+}
+
+.avatar-card {
+  position: relative;
+  background: #060e14;
+  border: 1px solid rgba(0, 229, 255, 0.12);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s, box-shadow 0.3s;
+}
+
+.avatar-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 229, 255, 0.45);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(0, 229, 255, 0.1),
+    0 0 40px rgba(0, 229, 255, 0.08);
+}
+
+.avatar-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--rarity-color, #00e5ff);
+  opacity: 0.85;
+  z-index: 2;
+}
+
+.avatar-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 229, 255, 0.03) 50%, transparent 100%);
+  background-size: 100% 8px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 3;
+  animation: mwScanSweep 2s linear infinite;
+}
+
+.avatar-card:hover::after {
+  opacity: 1;
+}
+
+@keyframes mwScanSweep {
+  0% {
+    background-position: 0 -100%;
+  }
+  100% {
+    background-position: 0 200%;
+  }
+}
+
+.card-thumb {
+  position: relative;
+  height: 170px;
+  background: radial-gradient(ellipse at center, rgba(0, 229, 255, 0.05) 0%, transparent 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(0, 229, 255, 0.08);
+}
+
+.thumb-model {
+  width: 100px;
+  height: 136px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: mwThumbFloat 4s ease-in-out infinite;
+}
+
+@keyframes mwThumbFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.thumb-model img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: mwGlowPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes mwGlowPulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 10px var(--rarity-glow, rgba(0, 229, 255, 0.4)));
+  }
+  50% {
+    filter: drop-shadow(0 0 22px var(--rarity-glow, rgba(0, 229, 255, 0.4)));
+  }
+}
+
+.thumb-silhouette {
+  width: 80px;
+  height: 120px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.thumb-sil-head {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(0, 229, 255, 0.05));
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.15), inset 0 0 15px rgba(0, 229, 255, 0.08);
+}
+
+.thumb-sil-body {
+  width: 56px;
+  height: 72px;
+  margin-top: 4px;
+  clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+  background: linear-gradient(180deg, rgba(0, 229, 255, 0.15), rgba(0, 229, 255, 0.04));
+  border: 1px solid rgba(0, 229, 255, 0.2);
+}
+
+.thumb-hex {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 82.8px;
+  color: rgba(0, 229, 255, 0.12);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.thumb-ring {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 229, 255, 0.4);
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.2);
+  animation: mwRingPulse 2s ease-in-out infinite;
+}
+
+@keyframes mwRingPulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: translateX(-50%) scaleX(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateX(-50%) scaleX(1.08);
+  }
+}
+
+.card-rarity-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-family: var(--FD);
+  font-size: 9.2px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 2px;
+  border: 1px solid var(--rarity-color, #00e5ff);
+  color: var(--rarity-color, #00e5ff);
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 4;
+  text-shadow: 0 0 8px var(--rarity-color, #00e5ff);
+}
+
+/* Level pill (uses .level-badge + .level-1…10 from assets/css/levels.css) */
+.card-thumb .card-level-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  z-index: 6;
+  pointer-events: none;
+  font-family: var(--FD, 'Orbitron', sans-serif);
+  letter-spacing: 0.06em;
+}
+
+.avatar-card--compact .card-thumb .card-level-badge {
+  bottom: 4px;
+  right: 4px;
+  font-size: 0.55rem;
+  padding: 1px 5px;
+}
+
+.card-id {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-family: var(--FD);
+  font-size: 9.2px;
+  letter-spacing: 1px;
+  color: var(--t3);
+  z-index: 4;
+}
+
+.card-body {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-name {
+  font-family: var(--FD);
+  font-size: 16.1px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--t1);
+  line-height: 1.15;
+}
+
+.card-tagline {
+  font-size: 11.5px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  color: var(--t2);
+  margin-top: -6px;
+}
+
+.card-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-label {
+  font-family: var(--FD);
+  font-size: 8.62px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--t3);
+}
+
+.stat-value {
+  font-family: var(--FD);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--t1);
+}
+
+.stat-bar {
+  height: 2px;
+  background: rgba(0, 229, 255, 0.1);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.stat-fill {
+  height: 100%;
+  background: var(--stat-color, #00e5ff);
+  border-radius: 1px;
+  box-shadow: 0 0 4px var(--stat-color, #00e5ff);
+  transition: width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 229, 255, 0.08);
+}
+
+.card-class {
+  font-size: 10.35px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--t3, rgba(90, 160, 185, 0.55));
+}
+
+/* Footer with only the action button (no class span): align right */
+.card-footer .inspect-btn:only-child {
+  margin-left: auto;
+}
+
+.inspect-btn {
+  background: transparent;
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  color: #00e5ff;
+  font-family: var(--FD);
+  font-size: 9.2px;
+  font-weight: 600;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.inspect-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 229, 255, 0.14);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.inspect-btn:hover::before {
+  opacity: 1;
+}
+
+.inspect-btn:hover {
+  border-color: #00e5ff;
+  box-shadow: 0 0 14px rgba(0, 229, 255, 0.25);
+  transform: scale(1.03);
+}
+
+.avatar-card.is-placeholder {
+  opacity: 0.75;
+  filter: saturate(0.75);
+}
+
+.avatar-card.is-placeholder:hover {
+  transform: none;
+}
+
+.avatar-card.is-placeholder .inspect-btn {
+  pointer-events: none;
+}
+
+/* Compact cards — preview strip under AVATAR panel */
+.avatar-card--compact .card-thumb {
+  height: 96px;
+}
+
+.avatar-card--compact .thumb-model {
+  width: 68px;
+  height: 88px;
+}
+
+.avatar-card--compact .card-body {
+  padding: 8px 10px 10px;
+  gap: 6px;
+}
+
+.avatar-card--compact .card-name {
+  font-size: 11.5px;
+  letter-spacing: 0.8px;
+}
+
+.avatar-card--compact .card-tagline {
+  font-size: 9.2px;
+  margin-top: -4px;
+}
+
+.avatar-card--compact .card-stats {
+  gap: 4px;
+}
+
+.avatar-card--compact .stat-label {
+  font-size: 7.47px;
+}
+
+.avatar-card--compact .stat-value {
+  font-size: 9.2px;
+}
+
+.avatar-card--compact .card-footer {
+  padding-top: 6px;
+}
+
+.avatar-card--compact .inspect-btn {
+  font-size: 8px;
+  padding: 4px 8px;
+}
+
+.avatar-card--compact:hover {
+  transform: translateY(-2px);
+}
+
+.avp-slots-scroll {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* EQUIPPED panel: solo el avatar seleccionado */
+.avp-slots-scroll--single {
+  justify-content: center;
+  overflow-x: visible;
+}
+
+.avp-slots-scroll--single .avp-slot-card-wrap {
+  width: min(100%, 168px);
+  max-width: 168px;
+}
+
+.avp-slots-scroll::-webkit-scrollbar {
+  height: 3px;
+}
+
+.avp-slots-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 232, 255, 0.2);
+}
+
+.avp-slot-card-wrap {
+  flex: 0 0 auto;
+  width: 148px;
+}
+
+.avp-slot-card-wrap .avatar-card {
+  width: 100%;
+}
+
+/* Narrow phones: overlay grid used minmax(300px) → horizontal scroll; cap track to viewport */
+@media (max-width: 520px) {
+  #av-overlay .lavs-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(160px, 100%), 1fr));
+  }
+}
+
+/* ── Squad select (Mind Wars): three large cards, full center column ───────── */
+.mw-squad-select #squad-slots {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  flex: 1;
+  min-height: 0;
+  align-items: stretch;
+  padding: 8px 12px 12px;
+  width: 100%;
+}
+
+.mw-squad-select .squad-slot-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.mw-squad-select .squad-slot-pos {
+  font-family: var(--FD, 'Orbitron', monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-align: center;
+  padding: 6px 4px 8px;
+  flex-shrink: 0;
+}
+
+.mw-squad-select .squad-slot-pos.pos-front {
+  color: #ff6644;
+}
+
+.mw-squad-select .squad-slot-pos.pos-mid {
+  color: #ffcc00;
+}
+
+.mw-squad-select .squad-slot-pos.pos-back {
+  color: #44ccff;
+}
+
+.mw-squad-select .squad-slot-card-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mw-squad-select .slot-card-root {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mw-squad-select .squad-slot-card-inner {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.mw-squad-select .squad-slot-card-inner .avatar-card {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mw-squad-select .squad-slot-card-inner .card-thumb {
+  flex: 1 1 auto;
+  min-height: clamp(220px, 32vh, 420px);
+  height: auto;
+}
+
+.mw-squad-select .squad-slot-card-inner .thumb-model {
+  width: min(200px, 58%);
+  height: min(260px, 58vh);
+}
+
+.mw-squad-select .squad-slot-card-inner .thumb-model img {
+  max-height: 100%;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.mw-squad-select .squad-slot-card-inner .card-body {
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .mw-squad-select #squad-slots {
+    grid-template-columns: 1fr;
+    grid-auto-rows: minmax(0, auto);
+    overflow-y: auto;
+  }
+
+  .mw-squad-select .squad-slot-card-inner .card-thumb {
+    min-height: clamp(200px, 28vh, 320px);
+  }
+}

@@ -1,0 +1,323 @@
+<!--
+  Design reference — production page: /contact (contact.php)
+  Styles: /assets/css/knd-contact.css  ·  JS: /assets/js/knd-contact.js  ·  Markup: sections/knd_contact.php
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KND — Open Transmission</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --void:#010508;--deep:#020a10;--surface:#04131c;
+  --glass:rgba(6,24,36,.72);
+  --c:#00e8ff;--c2:#00a8bb;--cg:rgba(0,232,255,.12);--cb:rgba(0,232,255,.22);
+  --m:#d44fff;--gold:#ffcc00;--green:#00ff99;--red:#ff2255;
+  --t1:rgba(220,248,255,.95);--t2:rgba(155,215,235,.62);--t3:rgba(90,165,190,.38);--t4:rgba(60,120,145,.2);
+  --FD:'Orbitron',monospace;--FB:'Rajdhani',sans-serif;--FM:'Share Tech Mono',monospace;
+}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(0,232,255,.2) transparent}
+body{background:var(--void);color:var(--t1);font-family:var(--FB);overflow-x:hidden;min-height:100vh}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 3px)}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:rgba(0,232,255,.2)}
+
+#bg{position:fixed;inset:0;z-index:0}
+#bg-c{position:absolute;inset:0;width:100%;height:100%}
+#bg::before{content:'';position:absolute;inset:0;z-index:1;
+  background:radial-gradient(ellipse 60% 40% at 30% 20%,rgba(0,60,140,.1),transparent 50%),
+    radial-gradient(ellipse 40% 40% at 80% 70%,rgba(155,48,255,.06),transparent 45%)}
+
+.page{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 24px}
+
+/* ═══ HERO — compact ═══ */
+.hero{padding:100px 0 40px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;margin-bottom:16px;
+  border:1px solid rgba(0,232,255,.2);background:rgba(0,232,255,.03);
+  font-family:var(--FM);font-size:8px;letter-spacing:4px;color:var(--c);
+  animation:fadeUp .7s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.hero-title{font-family:var(--FD);font-size:clamp(28px,6vw,48px);font-weight:900;
+  letter-spacing:clamp(4px,1vw,8px);margin-bottom:10px;animation:fadeUp .7s ease .1s both}
+.hero-title .gr{background:linear-gradient(90deg,var(--c),var(--m));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-family:var(--FB);font-size:17px;color:var(--t2);max-width:480px;margin:0 auto;
+  line-height:1.6;animation:fadeUp .7s ease .2s both}
+
+/* ═══ MAIN GRID — form left, channels right ═══ */
+.contact-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;padding:40px 0 60px}
+
+/* ═══ FORM CARD ═══ */
+.form-card{background:var(--glass);border:1px solid rgba(0,232,255,.08);backdrop-filter:blur(20px);
+  padding:28px;position:relative;overflow:hidden;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)}
+.form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--c),transparent)}
+.form-title{font-family:var(--FD);font-size:11px;font-weight:700;letter-spacing:3px;color:var(--c);
+  margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.form-title .dot{width:5px;height:5px;border-radius:50%;background:var(--c);box-shadow:0 0 6px var(--c);
+  animation:dotP 2.5s ease-in-out infinite}
+@keyframes dotP{0%,100%{opacity:.4;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+.form-sub{font-family:var(--FM);font-size:9px;letter-spacing:1.5px;color:var(--t3);margin-bottom:22px}
+
+.f-group{margin-bottom:16px}
+.f-label{font-family:var(--FM);font-size:7px;letter-spacing:2.5px;color:var(--t3);text-transform:uppercase;
+  margin-bottom:5px;display:block}
+.f-input,.f-textarea,.f-select{width:100%;padding:11px 14px;background:rgba(0,0,0,.3);
+  border:1px solid rgba(0,232,255,.08);color:var(--t1);font-family:var(--FM);font-size:13px;
+  letter-spacing:.5px;outline:none;transition:all .3s;border-radius:2px}
+.f-input:focus,.f-textarea:focus,.f-select:focus{border-color:var(--c);box-shadow:0 0 12px rgba(0,232,255,.1);
+  background:rgba(0,10,20,.5)}
+.f-input::placeholder,.f-textarea::placeholder{color:var(--t4);font-size:11px;letter-spacing:1.5px}
+.f-textarea{resize:vertical;min-height:120px;font-family:var(--FB);font-size:14px}
+.f-select{appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(0,232,255,.4)'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:30px;cursor:pointer}
+
+.send-btn{width:100%;padding:14px;font-family:var(--FD);font-size:10px;font-weight:900;
+  letter-spacing:4px;text-transform:uppercase;border:2px solid var(--c);color:var(--c);
+  background:linear-gradient(135deg,rgba(0,232,255,.06),rgba(0,232,255,.02));
+  cursor:pointer;position:relative;overflow:hidden;transition:all .3s;margin-top:4px;
+  clip-path:polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px)}
+.send-btn::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(0,232,255,.08),transparent);animation:sweep 2.5s ease infinite}
+@keyframes sweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.send-btn:hover{box-shadow:0 0 28px rgba(0,232,255,.2);background:rgba(0,232,255,.1);letter-spacing:6px}
+
+/* Success state */
+.send-btn.sent{border-color:var(--green);color:var(--green);letter-spacing:4px}
+.send-btn.sent::before{display:none}
+
+/* ═══ RIGHT COLUMN — channels + hours + urgent ═══ */
+.right-col{display:flex;flex-direction:column;gap:16px}
+
+/* Channel cards */
+.channel{background:var(--glass);border:1px solid rgba(0,232,255,.06);backdrop-filter:blur(14px);
+  padding:20px;position:relative;overflow:hidden;transition:all .3s;cursor:default}
+.channel::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--chc,var(--c));box-shadow:0 0 8px var(--chc,var(--c))}
+.channel:hover{border-color:rgba(0,232,255,.12);transform:translateX(4px)}
+.ch-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.ch-icon{font-size:20px;filter:drop-shadow(0 0 6px var(--chc,var(--c)))}
+.ch-label{font-family:var(--FM);font-size:7px;letter-spacing:2px;color:var(--t4);text-transform:uppercase}
+.ch-title{font-family:var(--FD);font-size:11px;font-weight:700;letter-spacing:2px;
+  color:var(--chc,var(--c));margin-bottom:4px}
+.ch-value{font-family:var(--FM);font-size:12px;letter-spacing:1px;color:var(--t2)}
+.ch-action{display:inline-block;margin-top:10px;font-family:var(--FD);font-size:7px;letter-spacing:2px;
+  padding:5px 14px;border:1px solid var(--chc,var(--c));color:var(--chc,var(--c));
+  background:transparent;text-decoration:none;transition:all .2s;text-transform:uppercase;cursor:pointer;
+  clip-path:polygon(3px 0,100% 0,100% calc(100% - 3px),calc(100% - 3px) 100%,0 100%,0 3px)}
+.ch-action:hover{box-shadow:0 0 12px rgba(0,232,255,.15);background:rgba(0,232,255,.05)}
+
+/* Operating hours */
+.hours-card{background:var(--glass);border:1px solid rgba(0,232,255,.06);backdrop-filter:blur(14px);padding:20px;
+  position:relative;overflow:hidden}
+.hours-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,232,255,.15),transparent)}
+.hours-title{font-family:var(--FD);font-size:9px;letter-spacing:3px;color:var(--c);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px}
+.hours-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;
+  border-bottom:1px solid rgba(0,232,255,.04)}
+.hours-row:last-child{border:none}
+.hr-name{font-family:var(--FM);font-size:10px;letter-spacing:1px;color:var(--t2)}
+.hr-time{font-family:var(--FM);font-size:10px;letter-spacing:1px}
+.hr-time.live{color:var(--green)}
+.hr-time.sched{color:var(--t3)}
+/* Status indicator */
+.status-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:6px}
+.status-dot.on{background:var(--green);box-shadow:0 0 6px var(--green);animation:statusPulse 2s ease-in-out infinite}
+.status-dot.off{background:var(--t4)}
+@keyframes statusPulse{0%,100%{opacity:.6}50%{opacity:1}}
+
+/* Urgent CTA */
+.urgent-card{background:linear-gradient(135deg,rgba(255,34,85,.04),rgba(212,79,255,.03));
+  border:1px solid rgba(255,34,85,.12);padding:20px;text-align:center;position:relative;overflow:hidden}
+.urgent-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--red),var(--m),transparent)}
+.urgent-title{font-family:var(--FD);font-size:10px;font-weight:700;letter-spacing:3px;
+  color:var(--red);margin-bottom:6px}
+.urgent-sub{font-family:var(--FM);font-size:10px;letter-spacing:1px;color:var(--t3);margin-bottom:14px}
+.urgent-btns{display:flex;gap:8px;justify-content:center}
+.urg-btn{font-family:var(--FD);font-size:8px;letter-spacing:2px;padding:8px 18px;
+  border:1px solid;color:inherit;background:transparent;text-decoration:none;
+  transition:all .25s;cursor:pointer;text-transform:uppercase;
+  clip-path:polygon(4px 0,100% 0,100% calc(100% - 4px),calc(100% - 4px) 100%,0 100%,0 4px)}
+.urg-btn.discord{border-color:rgba(114,137,218,.4);color:#7289da}
+.urg-btn.discord:hover{box-shadow:0 0 14px rgba(114,137,218,.2);background:rgba(114,137,218,.06)}
+.urg-btn.email{border-color:rgba(255,34,85,.3);color:var(--red)}
+.urg-btn.email:hover{box-shadow:0 0 14px rgba(255,34,85,.15);background:rgba(255,34,85,.04)}
+
+/* ═══ FOOTER ═══ */
+.ft{text-align:center;padding:40px 0 24px;border-top:1px solid rgba(0,232,255,.04);margin-top:20px}
+.ft-brand{font-family:var(--FD);font-size:10px;letter-spacing:4px;color:var(--t4)}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:768px){
+  .contact-grid{grid-template-columns:1fr}
+  .right-col{order:-1}
+}
+</style>
+</head>
+<body>
+
+<div id="bg"><canvas id="bg-c"></canvas></div>
+
+<div class="page">
+
+  <!-- ═══ HERO ═══ -->
+  <div class="hero">
+    <div class="hero-badge">⬡ OPEN FREQUENCY</div>
+    <h1 class="hero-title">OPEN <span class="gr">TRANSMISSION</span></h1>
+    <p class="hero-sub">Send a signal. Whether it's a project, a question, or a collaboration — we're listening on all frequencies.</p>
+  </div>
+
+  <!-- ═══ MAIN GRID ═══ -->
+  <div class="contact-grid">
+
+    <!-- ═══ LEFT — FORM ═══ -->
+    <div class="form-card">
+      <div class="form-title"><span class="dot"></span> SEND YOUR MESSAGE</div>
+      <div class="form-sub">ALL TRANSMISSIONS ARE ENCRYPTED AND RECEIVED WITHIN 24H</div>
+
+      <div class="f-group">
+        <label class="f-label">PILOT NAME</label>
+        <input class="f-input" type="text" placeholder="Your name or company">
+      </div>
+
+      <div class="f-group">
+        <label class="f-label">CONTACT EMAIL</label>
+        <input class="f-input" type="email" placeholder="you@domain.com">
+      </div>
+
+      <div class="f-group">
+        <label class="f-label">MISSION OBJECTIVE</label>
+        <select class="f-select">
+          <option value="" disabled selected>Select a topic...</option>
+          <option>Web Development Project</option>
+          <option>Branding / Logo Design</option>
+          <option>AI Integration / Consulting</option>
+          <option>KND Arena Support</option>
+          <option>KND Labs Issue</option>
+          <option>Order / Shipping Question</option>
+          <option>Partnership / Collaboration</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="f-group">
+        <label class="f-label">TRANSMISSION MESSAGE</label>
+        <textarea class="f-textarea" placeholder="Share what you need and any relevant details..."></textarea>
+      </div>
+
+      <button class="send-btn" id="send-btn">📡 SEND TRANSMISSION</button>
+    </div>
+
+    <!-- ═══ RIGHT — CHANNELS + HOURS + URGENT ═══ -->
+    <div class="right-col">
+
+      <!-- Email -->
+      <div class="channel" style="--chc:var(--c)">
+        <div class="ch-header">
+          <span class="ch-icon">✉</span>
+          <span class="ch-label">PRIMARY CHANNEL</span>
+        </div>
+        <div class="ch-title">OFFICIAL EMAIL</div>
+        <div class="ch-value">support@kndstore.com</div>
+        <a class="ch-action" href="mailto:support@kndstore.com">⬡ SEND EMAIL →</a>
+      </div>
+
+      <!-- Discord -->
+      <div class="channel" style="--chc:#7289da">
+        <div class="ch-header">
+          <span class="ch-icon">💬</span>
+          <span class="ch-label">REAL-TIME</span>
+        </div>
+        <div class="ch-title">DISCORD MOTHERSHIP</div>
+        <div class="ch-value">Priority response for urgent requests</div>
+        <a class="ch-action" href="#" style="border-color:#7289da;color:#7289da">⬡ JOIN DISCORD →</a>
+      </div>
+
+      <!-- Location -->
+      <div class="channel" style="--chc:var(--gold)">
+        <div class="ch-header">
+          <span class="ch-icon">📍</span>
+          <span class="ch-label">OPERATIONS BASE</span>
+        </div>
+        <div class="ch-title">MARACAIBO, VENEZUELA</div>
+        <div class="ch-value">Global response · GMT-4 timezone</div>
+      </div>
+
+      <!-- Operating Hours -->
+      <div class="hours-card">
+        <div class="hours-title">⏱ OPERATING HOURS</div>
+        <div class="hours-row">
+          <span class="hr-name"><span class="status-dot on"></span>Technical Support</span>
+          <span class="hr-time live">24/7 COVERAGE</span>
+        </div>
+        <div class="hours-row">
+          <span class="hr-name"><span class="status-dot on" id="sales-dot"></span>Sales & Projects</span>
+          <span class="hr-time sched" id="sales-time">MON-SUN 10:00-20:00</span>
+        </div>
+      </div>
+
+      <!-- Urgent -->
+      <div class="urgent-card">
+        <div class="urgent-title">⚠ NEED IMMEDIATE HELP?</div>
+        <div class="urgent-sub">Join Discord or email for priority response within minutes.</div>
+        <div class="urgent-btns">
+          <a class="urg-btn discord" href="#">💬 INSTANT DISCORD</a>
+          <a class="urg-btn email" href="mailto:support@kndstore.com">✉ URGENT EMAIL</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="ft"><div class="ft-brand">⬡ KND — KNOWLEDGE 'N DEVELOPMENT</div></div>
+</div>
+
+<script>
+/* Stars */
+(function(){var c=document.getElementById('bg-c'),x=c.getContext('2d'),S=[],N=120;
+function R(){c.width=innerWidth;c.height=innerHeight}addEventListener('resize',R);R();
+for(var i=0;i<N;i++)S.push({x:Math.random()*c.width,y:Math.random()*c.height,r:.3+Math.random()*1,a:.1+Math.random()*.4,s:.03+Math.random()*.04,p:Math.random()*6.28});
+(function d(){x.clearRect(0,0,c.width,c.height);var t=Date.now()*.001;
+S.forEach(function(s){x.fillStyle='rgba(180,220,255,'+(s.a*(.5+.5*Math.sin(t*s.s*10+s.p)))+')';x.beginPath();x.arc(s.x,s.y,s.r,0,6.28);x.fill()});
+requestAnimationFrame(d)})()})();
+
+/* Scroll reveal */
+document.querySelectorAll('.form-card,.channel,.hours-card,.urgent-card').forEach(function(el,i){
+  el.style.opacity='0';el.style.transform='translateY(16px)';
+  el.style.transition='opacity .5s ease '+(i*.08)+'s,transform .5s ease '+(i*.08)+'s';
+  new IntersectionObserver(function(e){if(e[0].isIntersecting){el.style.opacity='1';el.style.transform='translateY(0)'}},{threshold:.1}).observe(el);
+});
+
+/* Send button demo */
+document.getElementById('send-btn').addEventListener('click',function(){
+  var btn=this;
+  btn.textContent='📡 TRANSMITTING...';btn.style.borderColor='var(--gold)';btn.style.color='var(--gold)';
+  btn.disabled=true;
+  setTimeout(function(){
+    btn.textContent='✓ TRANSMISSION SENT';btn.classList.add('sent');
+    setTimeout(function(){
+      btn.textContent='📡 SEND TRANSMISSION';btn.classList.remove('sent');
+      btn.style.borderColor='';btn.style.color='';btn.disabled=false;
+    },2500);
+  },1500);
+});
+
+/* Live status check (simulated) */
+(function(){
+  var h=new Date().getUTCHours()-4; // GMT-4
+  var isOpen=h>=10&&h<20;
+  var dot=document.getElementById('sales-dot');
+  var time=document.getElementById('sales-time');
+  if(!isOpen){dot.className='status-dot off';time.textContent='OFFLINE — OPENS 10:00';time.style.color='var(--t4)'}
+  else{time.style.color='var(--green)';time.textContent='ONLINE NOW'}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,2396 @@
+{
+    "seed": 42,
+    "timestamp": "2026-03-19 07:44:24",
+    "battles": 100,
+    "results": [
+        {
+            "winner": "A",
+            "turns": 22,
+            "team_a": [
+                "Sigmund Freud",
+                "Joan of Arc"
+            ],
+            "team_b": [
+                "Leonidas",
+                "Miyamoto Musashi"
+            ],
+            "damage_by_char": {
+                "Sigmund Freud": 1624,
+                "Leonidas": 396,
+                "Miyamoto Musashi": 1121,
+                "Joan of Arc": 603
+            },
+            "effects_count": 4,
+            "cc_count": 3
+        },
+        {
+            "winner": "B",
+            "turns": 22,
+            "team_a": [
+                "Little Red Riding Hood",
+                "Clara Barton"
+            ],
+            "team_b": [
+                "Mad Hatter",
+                "Leonidas"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 2212,
+                "Little Red Riding Hood": 586,
+                "Clara Barton": 340
+            },
+            "effects_count": 14,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 16,
+            "team_a": [
+                "Corrupted Odin",
+                "Florence Nightingale"
+            ],
+            "team_b": [
+                "Corrupted Odin",
+                "Sigmund Freud"
+            ],
+            "damage_by_char": {
+                "Corrupted Odin": 2903,
+                "Florence Nightingale": 195
+            },
+            "effects_count": 11,
+            "cc_count": 4
+        },
+        {
+            "winner": "A",
+            "turns": 30,
+            "team_a": [
+                "Fenrir",
+                "Niccolo Machiavelli",
+                "Abraham Lincoln"
+            ],
+            "team_b": [
+                "Arthur King",
+                "Frankenstein",
+                "Dracula"
+            ],
+            "damage_by_char": {
+                "Fenrir": 740,
+                "Arthur King": 1494,
+                "Niccolo Machiavelli": 1215,
+                "Frankenstein": 793,
+                "Abraham Lincoln": 798,
+                "Dracula": 533
+            },
+            "effects_count": 9,
+            "cc_count": 3
+        },
+        {
+            "winner": "B",
+            "turns": 30,
+            "team_a": [
+                "Jack Frost",
+                "Sherlock Holmes",
+                "Isaac Newton"
+            ],
+            "team_b": [
+                "Puss in Boots",
+                "Genghis Khan",
+                "Miyamoto Musashi"
+            ],
+            "damage_by_char": {
+                "Puss in Boots": 1620,
+                "Jack Frost": 681,
+                "Sherlock Holmes": 844,
+                "Genghis Khan": 798,
+                "Isaac Newton": 1587,
+                "Miyamoto Musashi": 666
+            },
+            "effects_count": 9,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 30,
+            "team_a": [
+                "Headless Horseman",
+                "Rapunzel"
+            ],
+            "team_b": [
+                "Joan of Arc",
+                "Zeus"
+            ],
+            "damage_by_char": {
+                "Headless Horseman": 916,
+                "Joan of Arc": 1486,
+                "Rapunzel": 368,
+                "Zeus": 110
+            },
+            "effects_count": 13,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 23,
+            "team_a": [
+                "Napoleon Bonaparte",
+                "Edgar Allan Poe",
+                "Medusa"
+            ],
+            "team_b": [
+                "Queen Grimhilde",
+                "Albert Einstein",
+                "Abraham Lincoln"
+            ],
+            "damage_by_char": {
+                "Queen Grimhilde": 404,
+                "Napoleon Bonaparte": 1474,
+                "Albert Einstein": 954,
+                "Edgar Allan Poe": 1590,
+                "Abraham Lincoln": 914,
+                "Medusa": 261
+            },
+            "effects_count": 17,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 30,
+            "team_a": [
+                "Little Red Riding Hood",
+                "Rasputin",
+                "Achilles"
+            ],
+            "team_b": [
+                "Nikola Tesla",
+                "Benjamin Franklin",
+                "Wendigo"
+            ],
+            "damage_by_char": {
+                "Little Red Riding Hood": 642,
+                "Nikola Tesla": 2043,
+                "Rasputin": 699,
+                "Benjamin Franklin": 260,
+                "Achilles": 1135,
+                "Wendigo": 275
+            },
+            "effects_count": 14,
+            "cc_count": 4
+        },
+        {
+            "winner": "A",
+            "turns": 28,
+            "team_a": [
+                "Rasputin",
+                "Odin",
+                "Niccolo Machiavelli"
+            ],
+            "team_b": [
+                "Jack Frost",
+                "Ichabod Crane",
+                "Little Red Riding Hood"
+            ],
+            "damage_by_char": {
+                "Jack Frost": 887,
+                "Rasputin": 1249,
+                "Ichabod Crane": 969,
+                "Odin": 1479,
+                "Little Red Riding Hood": 792,
+                "Niccolo Machiavelli": 545
+            },
+            "effects_count": 10,
+            "cc_count": 4
+        },
+        {
+            "winner": "A",
+            "turns": 25,
+            "team_a": [
+                "Otto von Bismarck",
+                "Abraham Lincoln",
+                "George Washington"
+            ],
+            "team_b": [
+                "Hannibal Barca",
+                "Benjamin Franklin",
+                "Avicenna"
+            ],
+            "damage_by_char": {
+                "Hannibal Barca": 1104,
+                "Otto von Bismarck": 836,
+                "Abraham Lincoln": 2367,
+                "Benjamin Franklin": 224,
+                "Avicenna": 288
+            },
+            "effects_count": 21,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 16,
+            "team_a": [
+                "Puss in Boots",
+                "Fenrir"
+            ],
+            "team_b": [
+                "Hercules",
+                "Niccolo Machiavelli"
+            ],
+            "damage_by_char": {
+                "Puss in Boots": 880,
+                "Hercules": 1027,
+                "Fenrir": 866,
+                "Niccolo Machiavelli": 1068
+            },
+            "effects_count": 5,
+            "cc_count": 2
+        },
+        {
+            "winner": "A",
+            "turns": 26,
+            "team_a": [
+                "Sun Bin",
+                "Sigmund Freud",
+                "Hannibal Barca"
+            ],
+            "team_b": [
+                "Loki",
+                "Louis Pasteur",
+                "Clara Barton"
+            ],
+            "damage_by_char": {
+                "Sun Bin": 1606,
+                "Loki": 841,
+                "Louis Pasteur": 249,
+                "Sigmund Freud": 1928,
+                "Clara Barton": 416
+            },
+            "effects_count": 15,
+            "cc_count": 2
+        },
+        {
+            "winner": "A",
+            "turns": 20,
+            "team_a": [
+                "Anubis",
+                "El Cid"
+            ],
+            "team_b": [
+                "Rapunzel",
+                "Avicenna"
+            ],
+            "damage_by_char": {
+                "Anubis": 2386,
+                "Rapunzel": 159,
+                "Avicenna": 509
+            },
+            "effects_count": 12,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 27,
+            "team_a": [
+                "Clara Barton",
+                "Chanakya",
+                "Sherlock Holmes"
+            ],
+            "team_b": [
+                "El Cid",
+                "Napoleon Bonaparte",
+                "Albert Einstein"
+            ],
+            "damage_by_char": {
+                "El Cid": 1696,
+                "Clara Barton": 228,
+                "Chanakya": 1614,
+                "Napoleon Bonaparte": 815,
+                "Sherlock Holmes": 1436,
+                "Albert Einstein": 896
+            },
+            "effects_count": 15,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 30,
+            "team_a": [
+                "Sandman",
+                "Benjamin Franklin",
+                "Carl Jung"
+            ],
+            "team_b": [
+                "Hippocrates",
+                "Napoleon Bonaparte",
+                "Thor"
+            ],
+            "damage_by_char": {
+                "Sandman": 1664,
+                "Hippocrates": 305,
+                "Napoleon Bonaparte": 2003,
+                "Benjamin Franklin": 153,
+                "Carl Jung": 744,
+                "Thor": 850
+            },
+            "effects_count": 19,
+            "cc_count": 2
+        },
+        {
+            "winner": "B",
+            "turns": 19,
+            "team_a": [
+                "Pinocchio",
+                "Florence Nightingale",
+                "Clara Barton"
+            ],
+            "team_b": [
+                "Odin",
+                "Spartacus",
+                "Krampus"
+            ],
+            "damage_by_char": {
+                "Pinocchio": 595,
+                "Odin": 3387,
+                "Florence Nightingale": 135,
+                "Clara Barton": 150
+            },
+            "effects_count": 14,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 26,
+            "team_a": [
+                "Headless Horseman",
+                "Leonidas",
+                "Hercules"
+            ],
+            "team_b": [
+                "Alexander the Great",
+                "Ichabod Crane",
+                "Hannibal Barca"
+            ],
+            "damage_by_char": {
+                "Headless Horseman": 645,
+                "Alexander the Great": 1878,
+                "Leonidas": 436,
+                "Ichabod Crane": 1211,
+                "Hercules": 996,
+                "Hannibal Barca": 144
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 15,
+            "team_a": [
+                "Otto von Bismarck",
+                "Genghis Khan"
+            ],
+            "team_b": [
+                "Frankenstein",
+                "Zeus"
+            ],
+            "damage_by_char": {
+                "Otto von Bismarck": 1733,
+                "Frankenstein": 824,
+                "Zeus": 251,
+                "Genghis Khan": 479
+            },
+            "effects_count": 6,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "Paracelsus",
+                "Arthur King"
+            ],
+            "team_b": [
+                "Odin",
+                "Stephen Hawking"
+            ],
+            "damage_by_char": {
+                "Paracelsus": 389,
+                "Odin": 2096,
+                "Arthur King": 567
+            },
+            "effects_count": 8,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 16,
+            "team_a": [
+                "Napoleon Bonaparte",
+                "Atlas"
+            ],
+            "team_b": [
+                "Sigmund Freud",
+                "Sun Bin"
+            ],
+            "damage_by_char": {
+                "Napoleon Bonaparte": 1190,
+                "Sigmund Freud": 967,
+                "Sun Bin": 1193,
+                "Atlas": 627
+            },
+            "effects_count": 10,
+            "cc_count": 2
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "Ichabod Crane",
+                "Pericles"
+            ],
+            "team_b": [
+                "Anubis",
+                "Isaac Newton"
+            ],
+            "damage_by_char": {
+                "Anubis": 884,
+                "Ichabod Crane": 1282,
+                "Isaac Newton": 1453,
+                "Pericles": 679
+            },
+            "effects_count": 10,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 22,
+            "team_a": [
+                "Corrupted Loki",
+                "Florence Nightingale"
+            ],
+            "team_b": [
+                "Joan of Arc",
+                "Atlas"
+            ],
+            "damage_by_char": {
+                "Joan of Arc": 530,
+                "Corrupted Loki": 1422,
+                "Atlas": 1573,
+                "Florence Nightingale": 168
+            },
+            "effects_count": 11,
+            "cc_count": 1
+        },
+        {
+            "winner": "A",
+            "turns": 30,
+            "team_a": [
+                "Samson",
+                "Ragnar Lothbrok"
+            ],
+            "team_b": [
+                "William Wallace",
+                "Edgar Allan Poe"
+            ],
+            "damage_by_char": {
+                "William Wallace": 441,
+                "Samson": 1777,
+                "Edgar Allan Poe": 827,
+                "Ragnar Lothbrok": 120
+            },
+            "effects_count": 13,
+            "cc_count": 2
+        },
+        {
+            "winner": "A",
+            "turns": 30,
+            "team_a": [
+                "Rapunzel",
+                "Isaac Newton",
+                "Sandman"
+            ],
+            "team_b": [
+                "Alice",
+                "Hercules",
+                "Simon Bolivar"
+            ],
+            "damage_by_char": {
+                "Alice": 1791,
+                "Rapunzel": 326,
+                "Isaac Newton": 1494,
+                "Hercules": 525,
+                "Sandman": 1340,
+                "Simon Bolivar": 722
+            },
+            "effects_count": 20,
+            "cc_count": 3
+        },
+        {
+            "winner": "A",
+            "turns": 13,
+            "team_a": [
+                "Odin",
+                "Sun Tzu"
+            ],
+            "team_b": [
+                "Frankenstein",
+                "Julio César"
+            ],
+            "damage_by_char": {
+                "Odin": 2252,
+                "Frankenstein": 257,
+                "Julio César": 921,
+                "Sun Tzu": 81
+            },
+            "effects_count": 5,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 18,
+            "team_a": [
+                "Dorian Gray",
+                "Hercules"
+            ],
+            "team_b": [
+                "Hydra",
+                "Florence Nightingale"
+            ],
+            "damage_by_char": {
+                "Dorian Gray": 2128,
+                "Hydra": 497,
+                "Florence Nightingale": 327
+            },
+            "effects_count": 18,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 26,
+            "team_a": [
+                "Hippocrates",
+                "Edgar Allan Poe",
+                "Kraken"
+            ],
+            "team_b": [
+                "Sherlock Holmes",
+                "Samson",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "Sherlock Holmes": 2514,
+                "Hippocrates": 147,
+                "Edgar Allan Poe": 790,
+                "Kraken": 784,
+                "Samson": 900
+            },
+            "effects_count": 11,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "Zeus",
+                "Headless Horseman",
+                "William Wallace"
+            ],
+            "team_b": [
+                "Leonardo da Vinci",
+                "Hippocrates",
+                "George Washington"
+            ],
+            "damage_by_char": {
+                "Zeus": 151,
+                "Leonardo da Vinci": 3250,
+                "Headless Horseman": 522,
+                "William Wallace": 312
+            },
+            "effects_count": 10,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 26,
+            "team_a": [
+                "Beowulf",
+                "Ragnar Lothbrok"
+            ],
+            "team_b": [
+                "Leonidas",
+                "El Cid"
+            ],
+            "damage_by_char": {
+                "Beowulf": 2017,
+                "Leonidas": 376,
+                "El Cid": 1006,
+                "Ragnar Lothbrok": 125
+            },
+            "effects_count": 2,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 30,
+            "team_a": [
+                "Mad Hatter",
+                "Beowulf",
+                "Zeus"
+            ],
+            "team_b": [
+                "Sun Tzu",
+                "Avicenna",
+                "Wendigo"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 835,
+                "Sun Tzu": 1230,
+                "Beowulf": 1854,
+                "Avicenna": 315,
+                "Wendigo": 1284,
+                "Zeus": 382
+            },
+            "effects_count": 13,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 10,
+            "team_a": [
+                "Rapunzel",
+                "Spartacus"
+            ],
+            "team_b": [
+                "Confucius",
+                "Thor"
+            ],
+            "damage_by_char": {
+                "Confucius": 2146,
+                "Rapunzel": 131,
+                "Spartacus": 234
+            },
+            "effects_count": 7,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 19,
+            "team_a": [
+                "Medusa",
+                "Abraham Lincoln",
+                "Krampus"
+            ],
+            "team_b": [
+                "Niccolo Machiavelli",
+                "Florence Nightingale",
+                "Medusa"
+            ],
+            "damage_by_char": {
+                "Niccolo Machiavelli": 910,
+                "Medusa": 2328,
+                "Florence Nightingale": 140,
+                "Abraham Lincoln": 1888,
+                "Krampus": 188
+            },
+            "effects_count": 13,
+            "cc_count": 2
+        },
+        {
+            "winner": "A",
+            "turns": 21,
+            "team_a": [
+                "Abraham Lincoln",
+                "Spartacus"
+            ],
+            "team_b": [
+                "Nikola Tesla",
+                "Marie Curie"
+            ],
+            "damage_by_char": {
+                "Nikola Tesla": 967,
+                "Abraham Lincoln": 1231,
+                "Marie Curie": 177,
+                "Spartacus": 840
+            },
+            "effects_count": 16,
+            "cc_count": 1
+        },
+        {
+            "winner": "A",
+            "turns": 20,
+            "team_a": [
+                "Samson",
+                "Mad Hatter"
+            ],
+            "team_b": [
+                "Sigmund Freud",
+                "Queen Grimhilde"
+            ],
+            "damage_by_char": {
+                "Sigmund Freud": 1315,
+                "Samson": 722,
+                "Mad Hatter": 1411,
+                "Queen Grimhilde": 282
+            },
+            "effects_count": 11,
+            "cc_count": 2
+        },
+        {
+            "winner": "B",
+            "turns": 22,
+            "team_a": [
+                "Clara Barton",
+                "Loki"
+            ],
+            "team_b": [
+                "Puss in Boots",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "Puss in Boots": 1918,
+                "Clara Barton": 285,
+                "Loki": 1287,
+                "Wukong": 285
+            },
+            "effects_count": 10,
+            "cc_count": 2
+        },
+        {
+            "winner": "A",
+            "turns": 17,
+            "team_a": [
+                "Albert Einstein",
+                "Wukong"
+            ],
+            "team_b": [
+                "Hippocrates",
+                "Pinocchio"
+            ],
+            "damage_by_char": {
+                "Hippocrates": 302,
+                "Albert Einstein": 2000,
+                "Pinocchio": 914,
+                "Wukong": 233
+            },
+            "effects_count": 13,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "Spartacus",
+                "Hydra"
+            ],
+            "team_b": [
+                "Loki",
+                "Hydra"
+            ],
+            "damage_by_char": {
+                "Loki": 2082,
+                "Spartacus": 218,
+                "Hydra": 599
+            },
+            "effects_count": 5,
+            "cc_count": 3
+        },
+        {
+            "winner": "B",
+            "turns": 29,
+            "team_a": [
+                "Thor",
+                "Wendigo",
+                "Rapunzel"
+            ],
+            "team_b": [
+                "El Cid",
+                "Kraken",
+                "Wendigo"
+            ],
+            "damage_by_char": {
+                "Thor": 771,
+                "El Cid": 1310,
+                "Wendigo": 2070,
+                "Kraken": 1141,
+                "Rapunzel": 359
+            },
+            "effects_count": 8,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 26,
+            "team_a": [
+                "Ichabod Crane",
+                "Ragnar Lothbrok",
+                "Sun Bin"
+            ],
+            "team_b": [
+                "Dorian Gray",
+                "Hercules",
+                "Alexander the Great"
+            ],
+            "damage_by_char": {
+                "Dorian Gray": 839,
+                "Ichabod Crane": 1469,
+                "Hercules": 1503,
+                "Ragnar Lothbrok": 487,
+                "Sun Bin": 1568,
+                "Alexander the Great": 529
+            },
+            "effects_count": 15,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 12,
+            "team_a": [
+                "Miyamoto Musashi",
+                "Little Red Riding Hood"
+            ],
+            "team_b": [
+                "Morgana",
+                "Miyamoto Musashi"
+            ],
+            "damage_by_char": {
+                "Miyamoto Musashi": 576,
+                "Morgana": 2200,
+                "Little Red Riding Hood": 79
+            },
+            "effects_count": 4,
+            "cc_count": 2
+        },
+        {
+            "winner": "A",
+            "turns": 30,
+            "team_a": [
+                "Hippocrates",
+                "Confucius"
+            ],
+            "team_b": [
+                "Queen Grimhilde",
+                "Ichabod Crane"
+            ],
+            "damage_by_char": {
+                "Queen Grimhilde": 467,
+                "Hippocrates": 526
+            },
+            "effects_count": 51,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 19,
+            "team_a": [
+                "Headless Horseman",
+                "Leonidas",
+                "Jack Frost"
+            ],
+            "team_b": [
+                "Morgana",
+                "Confucius",
+                "Dracula"
+            ],
+            "damage_by_char": {
+                "Headless Horseman": 845,
+                "Morgana": 1415,
+                "Leonidas": 278,
+                "Confucius": 2079,
+                "Jack Frost": 439
+            },
+            "effects_count": 11,
+            "cc_count": 2
+        },
+        {
+            "winner": "A",
+            "turns": 16,
+            "team_a": [
+                "Albert Einstein",
+                "Headless Horseman"
+            ],
+            "team_b": [
+                "Mad Hatter",
+                "Pericles"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 1067,
+                "Albert Einstein": 965,
+                "Headless Horseman": 1219,
+                "Pericles": 817
+            },
+            "effects_count": 8,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "Chanakya",
+                "Sun Tzu"
+            ],
+            "team_b": [
+                "Edgar Allan Poe",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "Edgar Allan Poe": 1430,
+                "Chanakya": 823,
+                "Sun Tzu": 1194,
+                "Wukong": 677
+            },
+            "effects_count": 8,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 19,
+            "team_a": [
+                "Krampus",
+                "John Nash"
+            ],
+            "team_b": [
+                "Zeus",
+                "Corrupted Loki"
+            ],
+            "damage_by_char": {
+                "Zeus": 295,
+                "Krampus": 2052,
+                "Corrupted Loki": 822,
+                "John Nash": 243
+            },
+            "effects_count": 8,
+            "cc_count": 7
+        },
+        {
+            "winner": "B",
+            "turns": 29,
+            "team_a": [
+                "Clara Barton",
+                "Sandman",
+                "William Wallace"
+            ],
+            "team_b": [
+                "Pinocchio",
+                "Sun Bin",
+                "Nikola Tesla"
+            ],
+            "damage_by_char": {
+                "Pinocchio": 1608,
+                "Clara Barton": 158,
+                "Sandman": 1531,
+                "Sun Bin": 1881,
+                "William Wallace": 397
+            },
+            "effects_count": 14,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 18,
+            "team_a": [
+                "Atlas",
+                "Jack Frost"
+            ],
+            "team_b": [
+                "Krampus",
+                "Ichabod Crane"
+            ],
+            "damage_by_char": {
+                "Krampus": 1029,
+                "Atlas": 1001,
+                "Jack Frost": 517,
+                "Ichabod Crane": 1098
+            },
+            "effects_count": 8,
+            "cc_count": 3
+        },
+        {
+            "winner": "B",
+            "turns": 26,
+            "team_a": [
+                "Hercules",
+                "Spartacus",
+                "Albert Einstein"
+            ],
+            "team_b": [
+                "Stephen Hawking",
+                "Joan of Arc",
+                "Frankenstein"
+            ],
+            "damage_by_char": {
+                "Hercules": 891,
+                "Stephen Hawking": 1504,
+                "Spartacus": 472,
+                "Joan of Arc": 892,
+                "Albert Einstein": 1534,
+                "Frankenstein": 799
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 23,
+            "team_a": [
+                "Queen Grimhilde",
+                "Sigmund Freud"
+            ],
+            "team_b": [
+                "Hercules",
+                "Little Red Riding Hood"
+            ],
+            "damage_by_char": {
+                "Queen Grimhilde": 267,
+                "Hercules": 1661,
+                "Sigmund Freud": 2106,
+                "Little Red Riding Hood": 381
+            },
+            "effects_count": 15,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 13,
+            "team_a": [
+                "Sigmund Freud",
+                "William Wallace"
+            ],
+            "team_b": [
+                "Alan Turing",
+                "George Washington"
+            ],
+            "damage_by_char": {
+                "Alan Turing": 2122,
+                "Sigmund Freud": 450,
+                "William Wallace": 457
+            },
+            "effects_count": 4,
+            "cc_count": 3
+        },
+        {
+            "winner": "A",
+            "turns": 29,
+            "team_a": [
+                "Dorian Gray",
+                "Loki",
+                "Morgana"
+            ],
+            "team_b": [
+                "Rapunzel",
+                "Frankenstein",
+                "Florence Nightingale"
+            ],
+            "damage_by_char": {
+                "Dorian Gray": 2191,
+                "Rapunzel": 174,
+                "Frankenstein": 857,
+                "Loki": 1191,
+                "Florence Nightingale": 238
+            },
+            "effects_count": 22,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 15,
+            "team_a": [
+                "Alexander the Great",
+                "Otto von Bismarck"
+            ],
+            "team_b": [
+                "Florence Nightingale",
+                "Genghis Khan"
+            ],
+            "damage_by_char": {
+                "Alexander the Great": 2181,
+                "Florence Nightingale": 307,
+                "Genghis Khan": 507
+            },
+            "effects_count": 7,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "Avicenna",
+                "Loki"
+            ],
+            "team_b": [
+                "Thor",
+                "Nikola Tesla"
+            ],
+            "damage_by_char": {
+                "Thor": 1539,
+                "Avicenna": 336,
+                "Loki": 1226,
+                "Nikola Tesla": 625
+            },
+            "effects_count": 8,
+            "cc_count": 1
+        },
+        {
+            "winner": "A",
+            "turns": 13,
+            "team_a": [
+                "Morgana",
+                "Alexander the Great"
+            ],
+            "team_b": [
+                "Mad Hatter",
+                "Pericles"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 487,
+                "Morgana": 1553,
+                "Pericles": 862,
+                "Alexander the Great": 499
+            },
+            "effects_count": 8,
+            "cc_count": 2
+        },
+        {
+            "winner": "B",
+            "turns": 27,
+            "team_a": [
+                "Arthur King",
+                "Zeus",
+                "Medusa"
+            ],
+            "team_b": [
+                "Sandman",
+                "Abraham Lincoln",
+                "Medusa"
+            ],
+            "damage_by_char": {
+                "Sandman": 1162,
+                "Arthur King": 990,
+                "Zeus": 133,
+                "Abraham Lincoln": 2112,
+                "Medusa": 1066
+            },
+            "effects_count": 12,
+            "cc_count": 3
+        },
+        {
+            "winner": "B",
+            "turns": 30,
+            "team_a": [
+                "Joan of Arc",
+                "Little Red Riding Hood",
+                "Atlas"
+            ],
+            "team_b": [
+                "Jack Frost",
+                "El Cid",
+                "Abraham Lincoln"
+            ],
+            "damage_by_char": {
+                "Jack Frost": 1333,
+                "Joan of Arc": 547,
+                "Little Red Riding Hood": 1108,
+                "El Cid": 1248,
+                "Atlas": 605,
+                "Abraham Lincoln": 108
+            },
+            "effects_count": 4,
+            "cc_count": 2
+        },
+        {
+            "winner": "B",
+            "turns": 26,
+            "team_a": [
+                "Kraken",
+                "Sun Tzu",
+                "Samson"
+            ],
+            "team_b": [
+                "Pericles",
+                "Julio César",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "Kraken": 698,
+                "Pericles": 1050,
+                "Sun Tzu": 724,
+                "Julio César": 1694,
+                "Samson": 1166,
+                "Wukong": 413
+            },
+            "effects_count": 15,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 30,
+            "team_a": [
+                "Genghis Khan",
+                "Queen Grimhilde",
+                "Vlad the Impaler"
+            ],
+            "team_b": [
+                "Merlin",
+                "Spartacus",
+                "Wukong"
+            ],
+            "damage_by_char": {
+                "Genghis Khan": 2226,
+                "Merlin": 188,
+                "Spartacus": 754,
+                "Wukong": 845,
+                "Queen Grimhilde": 190
+            },
+            "effects_count": 15,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "Paracelsus",
+                "Morgana"
+            ],
+            "team_b": [
+                "Napoleon Bonaparte",
+                "Vlad the Impaler"
+            ],
+            "damage_by_char": {
+                "Paracelsus": 477,
+                "Napoleon Bonaparte": 1538,
+                "Morgana": 1055,
+                "Vlad the Impaler": 648
+            },
+            "effects_count": 12,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 20,
+            "team_a": [
+                "Hippocrates",
+                "Sun Bin",
+                "Hydra"
+            ],
+            "team_b": [
+                "Leonardo da Vinci",
+                "Morgana",
+                "Sun Tzu"
+            ],
+            "damage_by_char": {
+                "Leonardo da Vinci": 2006,
+                "Sun Bin": 1109,
+                "Morgana": 1262,
+                "Hydra": 522
+            },
+            "effects_count": 15,
+            "cc_count": 1
+        },
+        {
+            "winner": "A",
+            "turns": 22,
+            "team_a": [
+                "Beowulf",
+                "El Cid"
+            ],
+            "team_b": [
+                "Frankenstein",
+                "Albert Einstein"
+            ],
+            "damage_by_char": {
+                "Beowulf": 1431,
+                "Frankenstein": 699,
+                "Albert Einstein": 1075,
+                "El Cid": 917
+            },
+            "effects_count": 5,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 19,
+            "team_a": [
+                "Odin",
+                "Headless Horseman"
+            ],
+            "team_b": [
+                "Marie Curie",
+                "Pinocchio"
+            ],
+            "damage_by_char": {
+                "Marie Curie": 192,
+                "Odin": 2465,
+                "Pinocchio": 713
+            },
+            "effects_count": 8,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 18,
+            "team_a": [
+                "Sun Bin",
+                "Albert Einstein"
+            ],
+            "team_b": [
+                "Rasputin",
+                "Clara Barton"
+            ],
+            "damage_by_char": {
+                "Sun Bin": 2393,
+                "Rasputin": 635,
+                "Clara Barton": 161
+            },
+            "effects_count": 11,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 19,
+            "team_a": [
+                "Alan Turing",
+                "Simon Bolivar"
+            ],
+            "team_b": [
+                "Marie Curie",
+                "Nikola Tesla"
+            ],
+            "damage_by_char": {
+                "Alan Turing": 1524,
+                "Marie Curie": 498,
+                "Nikola Tesla": 1261,
+                "Simon Bolivar": 703
+            },
+            "effects_count": 8,
+            "cc_count": 2
+        },
+        {
+            "winner": "A",
+            "turns": 27,
+            "team_a": [
+                "George Washington",
+                "Florence Nightingale",
+                "Abraham Lincoln"
+            ],
+            "team_b": [
+                "Fenrir",
+                "Puss in Boots",
+                "Thor"
+            ],
+            "damage_by_char": {
+                "Fenrir": 388,
+                "George Washington": 1799,
+                "Puss in Boots": 1020,
+                "Florence Nightingale": 417,
+                "Thor": 1496,
+                "Abraham Lincoln": 1214
+            },
+            "effects_count": 12,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 30,
+            "team_a": [
+                "Thor",
+                "Marie Curie",
+                "Medusa"
+            ],
+            "team_b": [
+                "Merlin",
+                "Vlad the Impaler",
+                "Sun Tzu"
+            ],
+            "damage_by_char": {
+                "Thor": 1873,
+                "Merlin": 179,
+                "Vlad the Impaler": 2000,
+                "Marie Curie": 153,
+                "Medusa": 650,
+                "Sun Tzu": 455
+            },
+            "effects_count": 18,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 15,
+            "team_a": [
+                "Jack Frost",
+                "Wukong"
+            ],
+            "team_b": [
+                "Dracula",
+                "Albert Einstein"
+            ],
+            "damage_by_char": {
+                "Jack Frost": 667,
+                "Dracula": 2275,
+                "Wukong": 608
+            },
+            "effects_count": 3,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 22,
+            "team_a": [
+                "El Cid",
+                "Queen Grimhilde"
+            ],
+            "team_b": [
+                "Wukong",
+                "Stephen Hawking"
+            ],
+            "damage_by_char": {
+                "El Cid": 1211,
+                "Wukong": 498,
+                "Stephen Hawking": 1839,
+                "Queen Grimhilde": 255
+            },
+            "effects_count": 5,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 30,
+            "team_a": [
+                "William Wallace",
+                "Beowulf"
+            ],
+            "team_b": [
+                "Hannibal Barca",
+                "Hippocrates"
+            ],
+            "damage_by_char": {
+                "William Wallace": 344,
+                "Hannibal Barca": 1771,
+                "Beowulf": 1581,
+                "Hippocrates": 75
+            },
+            "effects_count": 12,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 19,
+            "team_a": [
+                "Arthur King",
+                "Bruce Lee"
+            ],
+            "team_b": [
+                "Louis Pasteur",
+                "Niccolo Machiavelli"
+            ],
+            "damage_by_char": {
+                "Arthur King": 2020,
+                "Louis Pasteur": 265,
+                "Niccolo Machiavelli": 793,
+                "Bruce Lee": 258
+            },
+            "effects_count": 11,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 30,
+            "team_a": [
+                "Napoleon Bonaparte",
+                "Beowulf",
+                "Rasputin"
+            ],
+            "team_b": [
+                "Bruce Lee",
+                "Thor",
+                "Atlas"
+            ],
+            "damage_by_char": {
+                "Bruce Lee": 920,
+                "Napoleon Bonaparte": 1155,
+                "Thor": 1744,
+                "Beowulf": 541,
+                "Rasputin": 907,
+                "Atlas": 552
+            },
+            "effects_count": 9,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 17,
+            "team_a": [
+                "Leonidas",
+                "Kraken"
+            ],
+            "team_b": [
+                "Pericles",
+                "Ragnar Lothbrok"
+            ],
+            "damage_by_char": {
+                "Pericles": 1505,
+                "Leonidas": 590,
+                "Kraken": 981,
+                "Ragnar Lothbrok": 566
+            },
+            "effects_count": 9,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 24,
+            "team_a": [
+                "Hydra",
+                "Corrupted Loki"
+            ],
+            "team_b": [
+                "Mad Hatter",
+                "Thor"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 1146,
+                "Hydra": 734,
+                "Corrupted Loki": 1416,
+                "Thor": 918
+            },
+            "effects_count": 7,
+            "cc_count": 4
+        },
+        {
+            "winner": "A",
+            "turns": 9,
+            "team_a": [
+                "John Nash",
+                "Krampus"
+            ],
+            "team_b": [
+                "Puss in Boots",
+                "Bruce Lee"
+            ],
+            "damage_by_char": {
+                "John Nash": 2173,
+                "Puss in Boots": 483,
+                "Bruce Lee": 315
+            },
+            "effects_count": 3,
+            "cc_count": 2
+        },
+        {
+            "winner": "B",
+            "turns": 23,
+            "team_a": [
+                "Sun Tzu",
+                "Marie Curie",
+                "Wukong"
+            ],
+            "team_b": [
+                "Alan Turing",
+                "John Nash",
+                "Louis Pasteur"
+            ],
+            "damage_by_char": {
+                "Sun Tzu": 934,
+                "Alan Turing": 2296,
+                "Wukong": 557,
+                "John Nash": 1187
+            },
+            "effects_count": 12,
+            "cc_count": 4
+        },
+        {
+            "winner": "A",
+            "turns": 16,
+            "team_a": [
+                "Fenrir",
+                "George Washington"
+            ],
+            "team_b": [
+                "Wukong",
+                "Pericles"
+            ],
+            "damage_by_char": {
+                "Fenrir": 1539,
+                "Wukong": 758,
+                "Pericles": 817,
+                "George Washington": 613
+            },
+            "effects_count": 6,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 20,
+            "team_a": [
+                "Beowulf",
+                "Sigmund Freud"
+            ],
+            "team_b": [
+                "Queen Grimhilde",
+                "Sun Bin"
+            ],
+            "damage_by_char": {
+                "Beowulf": 1915,
+                "Sun Bin": 1473,
+                "Sigmund Freud": 364
+            },
+            "effects_count": 13,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 28,
+            "team_a": [
+                "Hercules",
+                "Albert Einstein",
+                "Frankenstein"
+            ],
+            "team_b": [
+                "Edgar Allan Poe",
+                "Hercules",
+                "Dorian Gray"
+            ],
+            "damage_by_char": {
+                "Hercules": 1958,
+                "Edgar Allan Poe": 1439,
+                "Albert Einstein": 1088,
+                "Frankenstein": 758,
+                "Dorian Gray": 679
+            },
+            "effects_count": 10,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 26,
+            "team_a": [
+                "Benjamin Franklin",
+                "Corrupted Odin",
+                "Julio César"
+            ],
+            "team_b": [
+                "Leonardo da Vinci",
+                "Pericles",
+                "John Nash"
+            ],
+            "damage_by_char": {
+                "Benjamin Franklin": 239,
+                "Leonardo da Vinci": 1991,
+                "Corrupted Odin": 1043,
+                "Pericles": 779,
+                "Julio César": 1373,
+                "John Nash": 771
+            },
+            "effects_count": 20,
+            "cc_count": 3
+        },
+        {
+            "winner": "A",
+            "turns": 20,
+            "team_a": [
+                "Leonardo da Vinci",
+                "Stephen Hawking",
+                "Arthur King"
+            ],
+            "team_b": [
+                "Hannibal Barca",
+                "Loki",
+                "Frankenstein"
+            ],
+            "damage_by_char": {
+                "Leonardo da Vinci": 1094,
+                "Hannibal Barca": 843,
+                "Loki": 801,
+                "Stephen Hawking": 2118,
+                "Frankenstein": 610,
+                "Arthur King": 133
+            },
+            "effects_count": 10,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 30,
+            "team_a": [
+                "Florence Nightingale",
+                "Paracelsus",
+                "Carl Jung"
+            ],
+            "team_b": [
+                "Corrupted Odin",
+                "Albert Einstein",
+                "Leonardo da Vinci"
+            ],
+            "damage_by_char": {
+                "Corrupted Odin": 3223,
+                "Florence Nightingale": 219,
+                "Carl Jung": 1608,
+                "Albert Einstein": 338
+            },
+            "effects_count": 16,
+            "cc_count": 3
+        },
+        {
+            "winner": "A",
+            "turns": 11,
+            "team_a": [
+                "Loki",
+                "Leonardo da Vinci"
+            ],
+            "team_b": [
+                "Carl Jung",
+                "Alice"
+            ],
+            "damage_by_char": {
+                "Loki": 595,
+                "Carl Jung": 1328,
+                "Leonardo da Vinci": 1581,
+                "Alice": 734
+            },
+            "effects_count": 7,
+            "cc_count": 1
+        },
+        {
+            "winner": "A",
+            "turns": 16,
+            "team_a": [
+                "Sigmund Freud",
+                "Abraham Lincoln"
+            ],
+            "team_b": [
+                "Medusa",
+                "Pinocchio"
+            ],
+            "damage_by_char": {
+                "Medusa": 1028,
+                "Sigmund Freud": 880,
+                "Abraham Lincoln": 1196,
+                "Pinocchio": 739
+            },
+            "effects_count": 7,
+            "cc_count": 3
+        },
+        {
+            "winner": "A",
+            "turns": 30,
+            "team_a": [
+                "Mad Hatter",
+                "Zeus",
+                "Benjamin Franklin"
+            ],
+            "team_b": [
+                "Clara Barton",
+                "Louis Pasteur",
+                "Queen Grimhilde"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 3239,
+                "Clara Barton": 173,
+                "Louis Pasteur": 305,
+                "Queen Grimhilde": 281
+            },
+            "effects_count": 28,
+            "cc_count": 2
+        },
+        {
+            "winner": "B",
+            "turns": 30,
+            "team_a": [
+                "Sun Tzu",
+                "Chanakya",
+                "Kraken"
+            ],
+            "team_b": [
+                "Dracula",
+                "Pericles",
+                "Mad Hatter"
+            ],
+            "damage_by_char": {
+                "Dracula": 1633,
+                "Sun Tzu": 756,
+                "Chanakya": 1241,
+                "Pericles": 959,
+                "Kraken": 412,
+                "Mad Hatter": 600
+            },
+            "effects_count": 13,
+            "cc_count": 1
+        },
+        {
+            "winner": "A",
+            "turns": 27,
+            "team_a": [
+                "Hercules",
+                "Albert Einstein",
+                "Sun Bin"
+            ],
+            "team_b": [
+                "Kraken",
+                "Aladdín",
+                "Beowulf"
+            ],
+            "damage_by_char": {
+                "Hercules": 1440,
+                "Kraken": 474,
+                "Aladdín": 1200,
+                "Albert Einstein": 1319,
+                "Beowulf": 792,
+                "Sun Bin": 486
+            },
+            "effects_count": 14,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 30,
+            "team_a": [
+                "El Cid",
+                "Rapunzel",
+                "William Wallace"
+            ],
+            "team_b": [
+                "Bruce Lee",
+                "Leonidas",
+                "Hercules"
+            ],
+            "damage_by_char": {
+                "El Cid": 1800,
+                "Bruce Lee": 671,
+                "Leonidas": 862,
+                "Rapunzel": 230
+            },
+            "effects_count": 18,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 14,
+            "team_a": [
+                "Alan Turing",
+                "Mad Hatter"
+            ],
+            "team_b": [
+                "Bruce Lee",
+                "Mad Hatter"
+            ],
+            "damage_by_char": {
+                "Bruce Lee": 787,
+                "Alan Turing": 1545,
+                "Mad Hatter": 1261
+            },
+            "effects_count": 6,
+            "cc_count": 2
+        },
+        {
+            "winner": "A",
+            "turns": 18,
+            "team_a": [
+                "Medusa",
+                "Frankenstein"
+            ],
+            "team_b": [
+                "Paracelsus",
+                "Sandman"
+            ],
+            "damage_by_char": {
+                "Paracelsus": 403,
+                "Medusa": 1835,
+                "Sandman": 1226,
+                "Frankenstein": 447
+            },
+            "effects_count": 11,
+            "cc_count": 4
+        },
+        {
+            "winner": "B",
+            "turns": 20,
+            "team_a": [
+                "Clara Barton",
+                "Krampus"
+            ],
+            "team_b": [
+                "Mad Hatter",
+                "Alice"
+            ],
+            "damage_by_char": {
+                "Mad Hatter": 2216,
+                "Krampus": 989
+            },
+            "effects_count": 16,
+            "cc_count": 5
+        },
+        {
+            "winner": "A",
+            "turns": 28,
+            "team_a": [
+                "Medusa",
+                "Leonardo da Vinci",
+                "Little Red Riding Hood"
+            ],
+            "team_b": [
+                "Fenrir",
+                "Avicenna",
+                "Confucius"
+            ],
+            "damage_by_char": {
+                "Fenrir": 928,
+                "Medusa": 1376,
+                "Avicenna": 494,
+                "Leonardo da Vinci": 1586,
+                "Confucius": 1394,
+                "Little Red Riding Hood": 484
+            },
+            "effects_count": 9,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 18,
+            "team_a": [
+                "Spartacus",
+                "Hannibal Barca"
+            ],
+            "team_b": [
+                "Sherlock Holmes",
+                "Hercules"
+            ],
+            "damage_by_char": {
+                "Sherlock Holmes": 1541,
+                "Spartacus": 233,
+                "Hannibal Barca": 1609,
+                "Hercules": 564
+            },
+            "effects_count": 8,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 30,
+            "team_a": [
+                "Hippocrates",
+                "Simon Bolivar",
+                "Avicenna"
+            ],
+            "team_b": [
+                "Abraham Lincoln",
+                "Spartacus",
+                "Frankenstein"
+            ],
+            "damage_by_char": {
+                "Abraham Lincoln": 1780,
+                "Hippocrates": 134,
+                "Simon Bolivar": 1512,
+                "Spartacus": 480,
+                "Avicenna": 851,
+                "Frankenstein": 552
+            },
+            "effects_count": 18,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 30,
+            "team_a": [
+                "Wendigo",
+                "Krampus",
+                "Sandman"
+            ],
+            "team_b": [
+                "Hippocrates",
+                "Corrupted Loki",
+                "Sun Tzu"
+            ],
+            "damage_by_char": {
+                "Wendigo": 1948,
+                "Hippocrates": 89,
+                "Corrupted Loki": 1522,
+                "Krampus": 1353,
+                "Sun Tzu": 951,
+                "Sandman": 237
+            },
+            "effects_count": 12,
+            "cc_count": 6
+        },
+        {
+            "winner": "A",
+            "turns": 27,
+            "team_a": [
+                "Leonidas",
+                "Frankenstein"
+            ],
+            "team_b": [
+                "Alexander the Great",
+                "Joan of Arc"
+            ],
+            "damage_by_char": {
+                "Alexander the Great": 1211,
+                "Leonidas": 837,
+                "Frankenstein": 1237,
+                "Joan of Arc": 456
+            },
+            "effects_count": 13,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 20,
+            "team_a": [
+                "Dracula",
+                "Aladdín"
+            ],
+            "team_b": [
+                "Hippocrates",
+                "Thor"
+            ],
+            "damage_by_char": {
+                "Dracula": 1296,
+                "Hippocrates": 167,
+                "Thor": 1738,
+                "Aladdín": 872
+            },
+            "effects_count": 6,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 12,
+            "team_a": [
+                "John Nash",
+                "Corrupted Loki"
+            ],
+            "team_b": [
+                "Alexander the Great",
+                "Chanakya"
+            ],
+            "damage_by_char": {
+                "Alexander the Great": 496,
+                "John Nash": 2063,
+                "Chanakya": 728,
+                "Corrupted Loki": 141
+            },
+            "effects_count": 7,
+            "cc_count": 0
+        },
+        {
+            "winner": "A",
+            "turns": 13,
+            "team_a": [
+                "Confucius",
+                "Isaac Newton"
+            ],
+            "team_b": [
+                "Queen Grimhilde",
+                "Krampus"
+            ],
+            "damage_by_char": {
+                "Queen Grimhilde": 417,
+                "Confucius": 1843,
+                "Krampus": 896,
+                "Isaac Newton": 667
+            },
+            "effects_count": 7,
+            "cc_count": 1
+        },
+        {
+            "winner": "B",
+            "turns": 30,
+            "team_a": [
+                "Simon Bolivar",
+                "Avicenna",
+                "Benjamin Franklin"
+            ],
+            "team_b": [
+                "Alan Turing",
+                "Wukong",
+                "Julio César"
+            ],
+            "damage_by_char": {
+                "Simon Bolivar": 1941,
+                "Alan Turing": 491,
+                "Wukong": 625,
+                "Avicenna": 416,
+                "Julio César": 2033,
+                "Benjamin Franklin": 292
+            },
+            "effects_count": 22,
+            "cc_count": 0
+        },
+        {
+            "winner": "B",
+            "turns": 24,
+            "team_a": [
+                "Thor",
+                "Ichabod Crane",
+                "Hydra"
+            ],
+            "team_b": [
+                "Loki",
+                "George Washington",
+                "Thor"
+            ],
+            "damage_by_char": {
+                "Thor": 1305,
+                "Loki": 1266,
+                "Ichabod Crane": 860,
+                "George Washington": 1712,
+                "Hydra": 529
+            },
+            "effects_count": 12,
+            "cc_count": 2
+        }
+    ],
+    "stats": {
+        "team_a_wins": 53,
+        "team_b_wins": 47,
+        "draws": 0,
+        "avg_duration": 22.09,
+        "avg_cc_per_combat": 1.23
+    },
+    "team_stats": {
+        "team_a_wins": 53,
+        "team_b_wins": 47,
+        "draws": 0,
+        "team_a_avg_duration": 21.94,
+        "team_b_avg_duration": 22.26,
+        "team_a_total_damage": 224651,
+        "team_b_total_damage": 211096
+    },
+    "char_winrate": {
+        "Sigmund Freud": 7,
+        "Joan of Arc": 4,
+        "Mad Hatter": 6,
+        "Leonidas": 2,
+        "Corrupted Odin": 2,
+        "Fenrir": 2,
+        "Niccolo Machiavelli": 3,
+        "Abraham Lincoln": 9,
+        "Puss in Boots": 2,
+        "Genghis Khan": 3,
+        "Miyamoto Musashi": 2,
+        "Zeus": 2,
+        "Napoleon Bonaparte": 4,
+        "Edgar Allan Poe": 3,
+        "Medusa": 6,
+        "Little Red Riding Hood": 2,
+        "Rasputin": 2,
+        "Achilles": 1,
+        "Odin": 5,
+        "Otto von Bismarck": 3,
+        "George Washington": 6,
+        "Hercules": 5,
+        "Sun Bin": 6,
+        "Hannibal Barca": 2,
+        "Anubis": 2,
+        "El Cid": 6,
+        "Albert Einstein": 7,
+        "Hippocrates": 3,
+        "Thor": 6,
+        "Spartacus": 3,
+        "Krampus": 6,
+        "Alexander the Great": 3,
+        "Ichabod Crane": 3,
+        "Stephen Hawking": 4,
+        "Isaac Newton": 3,
+        "Atlas": 2,
+        "Samson": 3,
+        "Ragnar Lothbrok": 4,
+        "Rapunzel": 2,
+        "Sandman": 3,
+        "Sun Tzu": 3,
+        "Dorian Gray": 3,
+        "Sherlock Holmes": 2,
+        "Wukong": 7,
+        "Leonardo da Vinci": 7,
+        "Beowulf": 4,
+        "Avicenna": 1,
+        "Wendigo": 3,
+        "Confucius": 4,
+        "Loki": 4,
+        "Hydra": 2,
+        "Kraken": 1,
+        "Morgana": 5,
+        "Dracula": 4,
+        "Headless Horseman": 2,
+        "John Nash": 5,
+        "Pinocchio": 1,
+        "Nikola Tesla": 2,
+        "Frankenstein": 4,
+        "Queen Grimhilde": 2,
+        "Alan Turing": 5,
+        "Jack Frost": 1,
+        "Pericles": 4,
+        "Julio César": 2,
+        "Vlad the Impaler": 2,
+        "Simon Bolivar": 1,
+        "Florence Nightingale": 1,
+        "Marie Curie": 1,
+        "William Wallace": 2,
+        "Arthur King": 2,
+        "Bruce Lee": 2,
+        "Corrupted Loki": 2,
+        "Louis Pasteur": 1,
+        "Benjamin Franklin": 1,
+        "Alice": 1,
+        "Aladdín": 1
+    },
+    "char_appearances": {
+        "Hercules": 12,
+        "Mad Hatter": 11,
+        "Frankenstein": 11,
+        "Albert Einstein": 11,
+        "Thor": 11,
+        "Wukong": 11,
+        "Abraham Lincoln": 10,
+        "Hippocrates": 10,
+        "Sigmund Freud": 9,
+        "Clara Barton": 9,
+        "Florence Nightingale": 9,
+        "Medusa": 9,
+        "Queen Grimhilde": 9,
+        "Sun Tzu": 9,
+        "Leonidas": 8,
+        "Sun Bin": 8,
+        "Loki": 8,
+        "El Cid": 8,
+        "Spartacus": 8,
+        "Krampus": 8,
+        "Pericles": 8,
+        "Little Red Riding Hood": 7,
+        "Rapunzel": 7,
+        "Zeus": 7,
+        "Ichabod Crane": 7,
+        "Avicenna": 7,
+        "Leonardo da Vinci": 7,
+        "Beowulf": 7,
+        "Joan of Arc": 6,
+        "Jack Frost": 6,
+        "Headless Horseman": 6,
+        "Napoleon Bonaparte": 6,
+        "Benjamin Franklin": 6,
+        "George Washington": 6,
+        "Hannibal Barca": 6,
+        "Sandman": 6,
+        "Alexander the Great": 6,
+        "William Wallace": 6,
+        "Hydra": 6,
+        "Kraken": 6,
+        "Morgana": 6,
+        "Fenrir": 5,
+        "Niccolo Machiavelli": 5,
+        "Arthur King": 5,
+        "Dracula": 5,
+        "Puss in Boots": 5,
+        "Edgar Allan Poe": 5,
+        "Nikola Tesla": 5,
+        "Wendigo": 5,
+        "Odin": 5,
+        "Pinocchio": 5,
+        "Atlas": 5,
+        "Corrupted Loki": 5,
+        "Confucius": 5,
+        "Marie Curie": 5,
+        "John Nash": 5,
+        "Alan Turing": 5,
+        "Bruce Lee": 5,
+        "Miyamoto Musashi": 4,
+        "Corrupted Odin": 4,
+        "Sherlock Holmes": 4,
+        "Isaac Newton": 4,
+        "Genghis Khan": 4,
+        "Rasputin": 4,
+        "Louis Pasteur": 4,
+        "Chanakya": 4,
+        "Paracelsus": 4,
+        "Stephen Hawking": 4,
+        "Samson": 4,
+        "Ragnar Lothbrok": 4,
+        "Simon Bolivar": 4,
+        "Julio César": 4,
+        "Dorian Gray": 4,
+        "Otto von Bismarck": 3,
+        "Carl Jung": 3,
+        "Alice": 3,
+        "Vlad the Impaler": 3,
+        "Anubis": 2,
+        "Merlin": 2,
+        "Aladdín": 2,
+        "Achilles": 1
+    },
+    "char_damage": {
+        "Mad Hatter": 14474,
+        "Abraham Lincoln": 13608,
+        "Thor": 12234,
+        "Sun Bin": 11709,
+        "Odin": 11679,
+        "Leonardo da Vinci": 11508,
+        "Hercules": 10565,
+        "Albert Einstein": 10169,
+        "Beowulf": 10131,
+        "Sigmund Freud": 9634,
+        "Loki": 9289,
+        "El Cid": 9188,
+        "Medusa": 8544,
+        "Napoleon Bonaparte": 8175,
+        "Alan Turing": 7978,
+        "Frankenstein": 7833,
+        "Morgana": 7485,
+        "Pericles": 7468,
+        "Confucius": 7462,
+        "Corrupted Odin": 7169,
+        "Sandman": 7160,
+        "Ichabod Crane": 6889,
+        "Alexander the Great": 6794,
+        "Krampus": 6507,
+        "John Nash": 6437,
+        "Sherlock Holmes": 6335,
+        "Sun Tzu": 6325,
+        "Edgar Allan Poe": 6076,
+        "Julio César": 6021,
+        "Puss in Boots": 5921,
+        "Dorian Gray": 5837,
+        "Dracula": 5737,
+        "Wendigo": 5577,
+        "Wukong": 5499,
+        "Hannibal Barca": 5471,
+        "Stephen Hawking": 5461,
+        "Corrupted Loki": 5323,
+        "Arthur King": 5204,
+        "Isaac Newton": 5201,
+        "Nikola Tesla": 4896,
+        "Simon Bolivar": 4878,
+        "Pinocchio": 4569,
+        "Samson": 4565,
+        "Niccolo Machiavelli": 4531,
+        "Jack Frost": 4524,
+        "Joan of Arc": 4514,
+        "Kraken": 4490,
+        "Fenrir": 4461,
+        "Chanakya": 4406,
+        "Atlas": 4358,
+        "Headless Horseman": 4147,
+        "George Washington": 4124,
+        "Little Red Riding Hood": 4072,
+        "Genghis Khan": 4010,
+        "Leonidas": 3775,
+        "Carl Jung": 3680,
+        "Rasputin": 3490,
+        "Anubis": 3270,
+        "Spartacus": 3231,
+        "Avicenna": 3209,
+        "Bruce Lee": 2951,
+        "Hydra": 2881,
+        "Vlad the Impaler": 2648,
+        "Otto von Bismarck": 2569,
+        "Queen Grimhilde": 2563,
+        "Alice": 2525,
+        "Miyamoto Musashi": 2363,
+        "Florence Nightingale": 2146,
+        "Aladdín": 2072,
+        "William Wallace": 1951,
+        "Clara Barton": 1911,
+        "Rapunzel": 1747,
+        "Hippocrates": 1745,
+        "Zeus": 1322,
+        "Ragnar Lothbrok": 1298,
+        "Paracelsus": 1269,
+        "Benjamin Franklin": 1168,
+        "Achilles": 1135,
+        "Marie Curie": 1020,
+        "Louis Pasteur": 819,
+        "Merlin": 367
+    }
+}

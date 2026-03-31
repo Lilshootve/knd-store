@@ -1,0 +1,266 @@
+<!--
+  Design reference — production page: /support-credits.php
+  Styles: /assets/css/knd-support-credits.css  ·  JS: /assets/js/knd-support-credits.js  ·  Markup: sections/knd_support_credits.php
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KND POINTS — Fuel Your Universe</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --void:#010508;--deep:#020a10;--surface:#04131c;
+  --glass:rgba(6,24,36,.72);
+  --c:#00e8ff;--cb:rgba(0,232,255,.22);
+  --gold:#ffcc00;--green:#00ff99;--red:#ff2255;
+  --t1:rgba(220,248,255,.97);--t2:rgba(155,215,235,.7);--t3:rgba(90,165,190,.42);--t4:rgba(60,120,145,.22);
+  --FD:'Orbitron',monospace;--FB:'Rajdhani',sans-serif;--FM:'Share Tech Mono',monospace;
+}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:rgba(0,232,255,.15) transparent}
+body{background:var(--void);color:var(--t1);font-family:var(--FB);overflow-x:hidden;font-size:20px;line-height:1.65}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.025) 2px,rgba(0,0,0,.025) 3px)}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:rgba(0,232,255,.15)}
+
+#bg{position:fixed;inset:0;z-index:0}
+#bg-c{position:absolute;inset:0;width:100%;height:100%}
+#bg::before{content:'';position:absolute;inset:0;z-index:1;
+  background:radial-gradient(ellipse 55% 35% at 50% 12%,rgba(0,50,120,.1),transparent 50%)}
+
+.page{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:0 24px}
+
+/* ═══ HERO ═══ */
+.hero{padding:100px 0 28px;text-align:center}
+.hero-badge{display:inline-flex;padding:4px 16px;margin-bottom:16px;
+  border:1px solid rgba(0,232,255,.15);background:rgba(0,232,255,.03);
+  font-family:var(--FM);font-size:9px;letter-spacing:4px;color:var(--c);
+  animation:fadeUp .7s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.hero-title{font-family:var(--FD);font-size:clamp(30px,6vw,48px);font-weight:900;
+  letter-spacing:clamp(4px,1vw,8px);margin-bottom:10px;color:var(--t1);animation:fadeUp .7s ease .1s both}
+.hero-sub{font-size:clamp(17px,2.2vw,21px);color:var(--t2);max-width:480px;margin:0 auto;
+  animation:fadeUp .7s ease .2s both}
+
+/* ═══ BALANCE ═══ */
+.balance-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:32px 0 40px}
+.bal-card{background:var(--glass);border:1px solid rgba(0,232,255,.06);backdrop-filter:blur(14px);
+  padding:18px 14px;text-align:center;transition:all .3s}
+.bal-card:hover{border-color:rgba(0,232,255,.1);transform:translateY(-2px)}
+.bal-label{font-family:var(--FM);font-size:8px;letter-spacing:2.5px;color:var(--t3);
+  text-transform:uppercase;margin-bottom:5px}
+.bal-value{font-family:var(--FD);font-size:clamp(20px,3.5vw,28px);font-weight:900;
+  color:var(--c);letter-spacing:2px}
+
+/* ═══ PURCHASE CARD ═══ */
+.purchase-card{background:var(--glass);border:1px solid rgba(0,232,255,.08);backdrop-filter:blur(20px);
+  padding:32px;position:relative;overflow:hidden;margin-bottom:28px;
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%)}
+.purchase-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--c),transparent)}
+.pc-title{font-family:var(--FD);font-size:13px;font-weight:900;letter-spacing:4px;color:var(--c);margin-bottom:24px}
+
+.field-label{font-family:var(--FM);font-size:9px;letter-spacing:3px;color:var(--t3);
+  text-transform:uppercase;margin-bottom:8px;display:block}
+
+/* Amount chips */
+.amount-grid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.amount-chip{font-family:var(--FD);font-size:14px;font-weight:700;letter-spacing:1px;
+  padding:14px 0;flex:1;min-width:70px;text-align:center;
+  border:1px solid rgba(0,232,255,.1);color:var(--t3);background:transparent;
+  cursor:pointer;transition:all .25s}
+.amount-chip:hover{border-color:rgba(0,232,255,.2);color:var(--t1)}
+.amount-chip.active{border-color:var(--c);color:var(--c);background:rgba(0,232,255,.05)}
+.amount-chip .chip-kp{display:block;font-family:var(--FM);font-size:8px;letter-spacing:1px;
+  color:var(--t4);margin-top:3px}
+.amount-chip.active .chip-kp{color:var(--t3)}
+
+/* Custom amount row */
+.custom-row{display:flex;align-items:center;gap:10px;margin-bottom:26px}
+.custom-prefix{font-family:var(--FD);font-size:16px;color:var(--t2)}
+.custom-input{width:100px;padding:9px 12px;background:rgba(0,0,0,.3);
+  border:1px solid rgba(0,232,255,.08);color:var(--t1);font-family:var(--FD);font-size:15px;
+  letter-spacing:2px;outline:none;transition:all .3s;border-radius:2px}
+.custom-input:focus{border-color:var(--c);box-shadow:0 0 8px rgba(0,232,255,.08)}
+.custom-eq{font-family:var(--FM);font-size:12px;color:var(--t3)}
+.custom-eq strong{color:var(--gold);font-family:var(--FD);font-size:15px}
+
+/* Payment methods */
+.method-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:22px}
+.method-card{padding:14px 6px;text-align:center;border:1px solid rgba(0,232,255,.06);
+  background:transparent;cursor:pointer;transition:all .25s;position:relative}
+.method-card:hover{border-color:rgba(0,232,255,.12)}
+.method-card.active{border-color:var(--c);background:rgba(0,232,255,.04)}
+.method-card.active::after{content:'✓';position:absolute;top:3px;right:5px;font-size:9px;color:var(--c)}
+.mc-icon{font-size:20px;margin-bottom:5px}
+.mc-name{font-family:var(--FM);font-size:7px;letter-spacing:1.5px;color:var(--t3)}
+.method-card.active .mc-name{color:var(--c)}
+
+/* Notes */
+.notes-input{width:100%;padding:9px 14px;background:rgba(0,0,0,.2);
+  border:1px solid rgba(0,232,255,.06);color:var(--t2);font-family:var(--FM);font-size:12px;
+  outline:none;transition:all .3s;border-radius:2px;margin-bottom:20px}
+.notes-input:focus{border-color:var(--c);box-shadow:0 0 6px rgba(0,232,255,.06)}
+.notes-input::placeholder{color:var(--t4);font-size:11px;letter-spacing:1.5px}
+
+/* Submit */
+.submit-btn{width:100%;padding:15px;font-family:var(--FD);font-size:12px;font-weight:900;
+  letter-spacing:5px;text-transform:uppercase;border:2px solid var(--c);color:var(--c);
+  background:transparent;cursor:pointer;position:relative;overflow:hidden;transition:all .3s;
+  clip-path:polygon(7px 0,100% 0,100% calc(100% - 7px),calc(100% - 7px) 100%,0 100%,0 7px)}
+.submit-btn::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(0,232,255,.06),transparent);animation:sweep 3s ease infinite}
+@keyframes sweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.submit-btn:hover{box-shadow:0 0 24px rgba(0,232,255,.15);background:rgba(0,232,255,.05);letter-spacing:7px}
+.submit-btn.success{border-color:var(--green);color:var(--green)}
+.submit-btn.success::before{display:none}
+
+/* ═══ INFO CARD ═══ */
+.info-card{background:var(--glass);border:1px solid rgba(0,232,255,.06);backdrop-filter:blur(14px);
+  padding:28px;margin-bottom:28px;position:relative;overflow:hidden}
+.info-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(0,232,255,.12),transparent)}
+.info-title{font-family:var(--FD);font-size:11px;letter-spacing:3px;color:var(--c);margin-bottom:16px}
+
+.steps{display:flex;flex-direction:column;gap:12px;margin-bottom:22px}
+.step{display:flex;align-items:flex-start;gap:14px}
+.step-num{width:30px;height:30px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--FD);font-size:11px;font-weight:900;color:var(--c);
+  border:1px solid rgba(0,232,255,.15);background:rgba(0,232,255,.03)}
+.step-text{font-size:17px;color:var(--t2);padding-top:3px}
+
+.legal{padding-top:18px;border-top:1px solid rgba(0,232,255,.05)}
+.legal-title{font-family:var(--FM);font-size:9px;letter-spacing:3px;color:var(--t3);margin-bottom:10px;text-transform:uppercase}
+.legal-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+.legal-list li{font-family:var(--FM);font-size:12px;color:var(--t3);
+  display:flex;align-items:baseline;gap:8px;line-height:1.6}
+.legal-list li::before{content:'·';font-size:14px;color:var(--t4);flex-shrink:0}
+
+/* ═══ HISTORY ═══ */
+.history-card{background:var(--glass);border:1px solid rgba(0,232,255,.06);backdrop-filter:blur(14px);
+  padding:28px;margin-bottom:40px;position:relative;overflow:hidden}
+.hist-title{font-family:var(--FD);font-size:11px;letter-spacing:3px;color:var(--c);margin-bottom:14px}
+.hist-table{width:100%;border-collapse:collapse}
+.hist-table thead th{font-family:var(--FM);font-size:8px;letter-spacing:2px;color:var(--t4);
+  text-transform:uppercase;padding:8px;border-bottom:1px solid rgba(0,232,255,.05);text-align:left}
+.hist-table tbody td{font-family:var(--FM);font-size:13px;color:var(--t2);
+  padding:10px 8px;border-bottom:1px solid rgba(0,232,255,.03)}
+.hist-table tbody tr:hover{background:rgba(0,232,255,.015)}
+.hist-kp{color:var(--gold);font-family:var(--FD)}
+.hist-status{font-family:var(--FM);font-size:8px;letter-spacing:1.5px;padding:2px 8px;display:inline-block}
+.hist-status.pending{color:var(--t3);border:1px solid rgba(0,232,255,.1)}
+.hist-status.confirmed{color:var(--green);border:1px solid rgba(0,255,153,.15)}
+
+.ft{text-align:center;padding:28px 0 20px;border-top:1px solid rgba(0,232,255,.04)}
+.ft-brand{font-family:var(--FD);font-size:9px;letter-spacing:4px;color:var(--t4)}
+
+@media(max-width:768px){
+  .balance-strip{grid-template-columns:repeat(2,1fr)}
+  .method-grid{grid-template-columns:repeat(3,1fr)}
+  .amount-chip{min-width:calc(50% - 5px);flex:none}
+}
+@media(max-width:480px){.method-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div id="bg"><canvas id="bg-c"></canvas></div>
+<div class="page">
+  <div class="hero">
+    <div class="hero-badge">⬡ KND ECONOMY</div>
+    <h1 class="hero-title">KND POINTS</h1>
+    <p class="hero-sub">Get points, unlock rewards. Fuel your entire KND universe — Arena, Labs, Drops, and more.</p>
+  </div>
+  <div class="balance-strip">
+    <div class="bal-card"><div class="bal-label">PENDING</div><div class="bal-value">2,500</div></div>
+    <div class="bal-card"><div class="bal-label">AVAILABLE</div><div class="bal-value">44,174</div></div>
+    <div class="bal-card"><div class="bal-label">TOTAL SPENT</div><div class="bal-value">145,757</div></div>
+    <div class="bal-card"><div class="bal-label">EXPIRING SOON</div><div class="bal-value">0</div></div>
+  </div>
+  <div class="purchase-card">
+    <div class="pc-title">GET POINTS</div>
+    <label class="field-label">SELECT AMOUNT (USD)</label>
+    <div class="amount-grid">
+      <button class="amount-chip" data-usd="5">$5<span class="chip-kp">500 KP</span></button>
+      <button class="amount-chip" data-usd="10">$10<span class="chip-kp">1,000 KP</span></button>
+      <button class="amount-chip active" data-usd="25">$25<span class="chip-kp">2,500 KP</span></button>
+      <button class="amount-chip" data-usd="50">$50<span class="chip-kp">5,000 KP</span></button>
+      <button class="amount-chip" data-usd="100">$100<span class="chip-kp">10,000 KP</span></button>
+    </div>
+    <div class="custom-row">
+      <span class="custom-prefix">$</span>
+      <input class="custom-input" type="number" id="custom-amount" value="25" min="1" max="500">
+      <span class="custom-eq">= <strong id="kp-preview">2,500</strong> KP</span>
+    </div>
+    <label class="field-label">PAYMENT METHOD</label>
+    <div class="method-grid">
+      <div class="method-card active" data-method="paypal"><div class="mc-icon">🅿️</div><div class="mc-name">PAYPAL</div></div>
+      <div class="method-card" data-method="binance"><div class="mc-icon">🪙</div><div class="mc-name">BINANCE</div></div>
+      <div class="method-card" data-method="zinli"><div class="mc-icon">💳</div><div class="mc-name">ZINLI</div></div>
+      <div class="method-card" data-method="pago_movil"><div class="mc-icon">📱</div><div class="mc-name">PAGO MÓVIL</div></div>
+      <div class="method-card" data-method="ach"><div class="mc-icon">🏦</div><div class="mc-name">ACH</div></div>
+    </div>
+    <input class="notes-input" type="text" placeholder="Notes (optional) — reference number, instructions...">
+    <button class="submit-btn" id="submit-btn">⚡ SUBMIT PURCHASE</button>
+  </div>
+  <div class="info-card">
+    <div class="info-title">HOW IT WORKS</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text">Choose an amount and your preferred payment method.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Submit your purchase. Points appear as Pending.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">After admin confirms payment, points become Available.</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text">Use your points in Rewards, Arena, Labs, and more.</div></div>
+    </div>
+    <div class="legal">
+      <div class="legal-title">Important Notice</div>
+      <ul class="legal-list">
+        <li>KND Points are internal, non-cash, and non-transferable.</li>
+        <li>Points are non-refundable once processed.</li>
+        <li>Hold period: 7–10 business days (Monday–Friday).</li>
+        <li>Points expire 12 months after becoming available.</li>
+        <li>We may revoke points in case of fraud or dispute.</li>
+        <li>This system is in BETA. Terms may change.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="history-card">
+    <div class="hist-title">MY PURCHASES</div>
+    <table class="hist-table">
+      <thead><tr><th>#</th><th>METHOD</th><th>AMOUNT</th><th>KP</th><th>STATUS</th><th>DATE</th></tr></thead>
+      <tbody>
+        <tr><td>3</td><td>PayPal</td><td>$25.00</td><td class="hist-kp">2,500</td><td><span class="hist-status pending">PENDING</span></td><td>Mar 14, 2026</td></tr>
+        <tr><td>2</td><td>Pago Móvil</td><td>$100.00</td><td class="hist-kp">10,000</td><td><span class="hist-status confirmed">CONFIRMED</span></td><td>Mar 02, 2026</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ft"><div class="ft-brand">⬡ KND — KNOWLEDGE 'N DEVELOPMENT</div></div>
+</div>
+<script>
+(function(){var c=document.getElementById('bg-c'),x=c.getContext('2d'),S=[],N=80;
+function R(){c.width=innerWidth;c.height=innerHeight}addEventListener('resize',R);R();
+for(var i=0;i<N;i++)S.push({x:Math.random()*c.width,y:Math.random()*c.height,r:.3+Math.random()*.8,a:.08+Math.random()*.3,s:.03+Math.random()*.04,p:Math.random()*6.28});
+(function d(){x.clearRect(0,0,c.width,c.height);var t=Date.now()*.001;
+S.forEach(function(s){x.fillStyle='rgba(180,220,255,'+(s.a*(.5+.5*Math.sin(t*s.s*10+s.p)))+')';x.beginPath();x.arc(s.x,s.y,s.r,0,6.28);x.fill()});
+requestAnimationFrame(d)})()})();
+var ci=document.getElementById('custom-amount'),kp=document.getElementById('kp-preview');
+document.querySelectorAll('.amount-chip').forEach(function(c){c.addEventListener('click',function(){
+  document.querySelectorAll('.amount-chip').forEach(function(x){x.classList.remove('active')});
+  c.classList.add('active');ci.value=c.dataset.usd;kp.textContent=(c.dataset.usd*100).toLocaleString()})});
+ci.addEventListener('input',function(){var v=parseInt(this.value)||0;kp.textContent=(v*100).toLocaleString();
+  document.querySelectorAll('.amount-chip').forEach(function(c){c.classList.toggle('active',parseInt(c.dataset.usd)===v)})});
+document.querySelectorAll('.method-card').forEach(function(c){c.addEventListener('click',function(){
+  document.querySelectorAll('.method-card').forEach(function(x){x.classList.remove('active')});c.classList.add('active')})});
+document.getElementById('submit-btn').addEventListener('click',function(){var b=this;b.textContent='PROCESSING...';b.disabled=true;
+  setTimeout(function(){b.textContent='✓ SUBMITTED';b.classList.add('success');
+    setTimeout(function(){b.textContent='⚡ SUBMIT PURCHASE';b.classList.remove('success');b.disabled=false},2500)},1500)});
+document.querySelectorAll('.bal-value').forEach(function(el){var t=el.textContent.trim(),n=parseInt(t.replace(/,/g,''))||0;if(!n)return;el.textContent='0';
+  setTimeout(function(){var t0=performance.now();(function tick(){var p=Math.min((performance.now()-t0)/900,1);
+    el.textContent=Math.round(n*(1-Math.pow(1-p,3))).toLocaleString();if(p<1)requestAnimationFrame(tick)})()},200)});
+document.querySelectorAll('.purchase-card,.info-card,.history-card,.bal-card').forEach(function(el,i){
+  el.style.opacity='0';el.style.transform='translateY(14px)';
+  el.style.transition='opacity .5s ease '+(i*.05)+'s,transform .5s ease '+(i*.05)+'s';
+  new IntersectionObserver(function(e){if(e[0].isIntersecting){el.style.opacity='1';el.style.transform='translateY(0)'}},{threshold:.05}).observe(el)});
+</script>
+</body>
+</html>
