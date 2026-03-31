@@ -107,6 +107,12 @@
   var busy = false;
   var rafId = 0;
 
+  /** Session totals + HUD (AAA-style yield panel) */
+  var hudEl = null;
+  var totals = { xp: 0, ke: 0, knd_points: 0 };
+  var hudAnimRaf = { xp: 0, ke: 0, knd_points: 0 };
+  var hudDisplay = { xp: 0, ke: 0, knd_points: 0 };
+
   function ensureRoot() {
     if (root) return root;
     root = document.createElement("div");
@@ -114,6 +120,132 @@
     root.setAttribute("aria-hidden", "true");
     document.body.appendChild(root);
     return root;
+  }
+
+  function hudKeyForRewardType(rt) {
+    if (rt === "ke") return "ke";
+    if (rt === "knd_points") return "knd_points";
+    return "xp";
+  }
+
+  function formatHudNum(n) {
+    n = Math.round(n);
+    if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+    if (n >= 10000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+    return String(n);
+  }
+
+  function ensureHud() {
+    if (hudEl) return hudEl;
+    ensureRoot();
+    hudEl = document.createElement("div");
+    hudEl.className = "knd-holo-hud knd-holo-hud--dormant";
+    hudEl.setAttribute("aria-hidden", "true");
+    hudEl.innerHTML =
+      '<div class="knd-holo-hud__scan" aria-hidden="true"></div>' +
+      '<div class="knd-holo-hud__ring" aria-hidden="true"></div>' +
+      '<div class="knd-holo-hud__inner">' +
+      '<div class="knd-holo-hud__head">' +
+      '<span class="knd-holo-hud__glyph" aria-hidden="true"></span>' +
+      "<span class=\"knd-holo-hud__title\">HOLO YIELD</span>" +
+      '<span class="knd-holo-hud__live" aria-hidden="true">LIVE</span>' +
+      "</div>" +
+      '<div class="knd-holo-hud__grid">' +
+      '<div class="knd-holo-hud__cell knd-holo-hud__cell--xp">' +
+      '<span class="knd-holo-hud__label">XP</span>' +
+      '<span class="knd-holo-hud__value" data-knd-hud="xp">0</span>' +
+      "</div>" +
+      '<div class="knd-holo-hud__cell knd-holo-hud__cell--ke">' +
+      '<span class="knd-holo-hud__label">KE</span>' +
+      '<span class="knd-holo-hud__value" data-knd-hud="ke">0</span>' +
+      "</div>" +
+      '<div class="knd-holo-hud__cell knd-holo-hud__cell--kp">' +
+      '<span class="knd-holo-hud__label">KP</span>' +
+      '<span class="knd-holo-hud__value" data-knd-hud="knd_points">0</span>' +
+      "</div>" +
+      "</div>" +
+      '<div class="knd-holo-hud__last" data-knd-hud-last></div>' +
+      "</div>";
+    root.appendChild(hudEl);
+    return hudEl;
+  }
+
+  function cancelHudAnim(key) {
+    if (hudAnimRaf[key]) {
+      cancelAnimationFrame(hudAnimRaf[key]);
+      hudAnimRaf[key] = 0;
+    }
+  }
+
+  function runHudCountUp(key, targetTotal) {
+    ensureHud();
+    var el = hudEl.querySelector('[data-knd-hud="' + key + '"]');
+    if (!el) return;
+    var start = hudDisplay[key];
+    var end = targetTotal;
+    if (start === end) {
+      el.textContent = formatHudNum(end);
+      return;
+    }
+    cancelHudAnim(key);
+    var t0 = performance.now();
+    var dur = 420;
+    function step(now) {
+      var t = Math.min(1, (now - t0) / dur);
+      var e = 1 - Math.pow(1 - t, 3);
+      var v = start + (end - start) * e;
+      hudDisplay[key] = v;
+      el.textContent = formatHudNum(Math.round(v));
+      if (t < 1) hudAnimRaf[key] = requestAnimationFrame(step);
+      else {
+        hudDisplay[key] = end;
+        el.textContent = formatHudNum(end);
+        hudAnimRaf[key] = 0;
+      }
+    }
+    hudAnimRaf[key] = requestAnimationFrame(step);
+  }
+
+  function flashHudLast(rt, amt) {
+    ensureHud();
+    var last = hudEl.querySelector("[data-knd-hud-last]");
+    if (!last) return;
+    last.className = "knd-holo-hud__last knd-holo-hud__last--show";
+    if (rt === "ke") last.classList.add("knd-holo-hud__last--ke");
+    else if (rt === "knd_points") last.classList.add("knd-holo-hud__last--kp");
+    else last.classList.add("knd-holo-hud__last--xp");
+    last.textContent = labelForReward(rt, amt);
+    window.clearTimeout(flashHudLast._t);
+    flashHudLast._t = window.setTimeout(function () {
+      last.className = "knd-holo-hud__last";
+      last.textContent = "";
+    }, 1400);
+  }
+
+  function pulseHudCell(key) {
+    if (!hudEl) return;
+    var cell = hudEl.querySelector(".knd-holo-hud__cell--" + (key === "knd_points" ? "kp" : key));
+    if (!cell) return;
+    cell.classList.remove("knd-holo-hud__cell--bump");
+    void cell.offsetWidth;
+    cell.classList.add("knd-holo-hud__cell--bump");
+  }
+
+  function onOrbClaimed(rt, amt) {
+    var key = hudKeyForRewardType(rt);
+    totals[key] += amt;
+    ensureHud();
+    hudEl.classList.remove("knd-holo-hud--dormant");
+    hudEl.classList.add("knd-holo-hud--active");
+    hudEl.classList.remove("knd-holo-hud--surge");
+    void hudEl.offsetWidth;
+    hudEl.classList.add("knd-holo-hud--surge");
+    window.setTimeout(function () {
+      if (hudEl) hudEl.classList.remove("knd-holo-hud--surge");
+    }, 600);
+    runHudCountUp(key, totals[key]);
+    pulseHudCell(key);
+    flashHudLast(rt, amt);
   }
 
   function postJson(url) {
@@ -200,6 +332,9 @@
               busy = false;
               return;
             }
+            try {
+              onOrbClaimed(rt, amt);
+            } catch (e) { /* ignore */ }
             var float = document.createElement("div");
             float.className = "knd-holo-orb-float";
             if (rt === "ke") float.classList.add("knd-float--ke");
@@ -252,6 +387,7 @@
   function boot() {
     if (!isOrbEnvironment()) return;
     ensureRoot();
+    ensureHud();
     scheduleLoop();
   }
 
