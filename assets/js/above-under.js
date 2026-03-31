@@ -2,16 +2,6 @@
     'use strict';
 
     var CSRF = window.AU_CSRF || '';
-    if (!CSRF) {
-        var entryBar = document.getElementById('au-entry-bar');
-        if (entryBar) {
-            CSRF = entryBar.getAttribute('data-csrf') || '';
-        }
-    }
-    if (!CSRF) {
-        var csrfInput = document.querySelector('input[name="csrf_token"]');
-        if (csrfInput) CSRF = csrfInput.value || '';
-    }
     var TICK_MS = 60;
     var ROLL_DURATION_MS = 2200;
     var PAYOUT_RATIO = 1.7;

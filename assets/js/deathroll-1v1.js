@@ -2,17 +2,6 @@
 (function () {
     'use strict';
 
-    // Defensive fallbacks: keep lobby/game usable even if inline globals are unavailable.
-    var CSRF = (typeof window.CSRF !== 'undefined' && window.CSRF) ? String(window.CSRF) : '';
-    if (!CSRF) {
-        var csrfInput = document.querySelector('#form-create-room input[name="csrf_token"], #form-join-code input[name="csrf_token"], input[name="csrf_token"]');
-        if (csrfInput) CSRF = csrfInput.value || '';
-    }
-    var MY_USERNAME = (typeof window.MY_USERNAME !== 'undefined' && window.MY_USERNAME) ? String(window.MY_USERNAME) : '';
-    var MY_KP_BALANCE = (typeof window.MY_KP_BALANCE !== 'undefined' && !isNaN(window.MY_KP_BALANCE))
-        ? Number(window.MY_KP_BALANCE)
-        : 0;
-
     /* ── Inject game-over animation CSS ── */
     var _lrStyle = document.createElement('style');
     _lrStyle.textContent = [
