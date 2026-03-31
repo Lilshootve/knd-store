@@ -909,16 +909,58 @@ a.tb-icon-btn{text-decoration:none;color:inherit;box-sizing:border-box}
 .mc-badge.new{background:rgba(0,255,153,.08);border:1px solid rgba(0,255,153,.2);color:var(--green)}
 .mc-badge.ranked{background:rgba(255,204,0,.08);border:1px solid rgba(255,204,0,.2);color:var(--gold)}
 
-/* Knowledge orbs (optional classed nodes) */
+/* Knowledge orbs — single horizontal row (narrow panel used to wrap orbs into a column) */
 .knowledge-row{
-  display:flex;align-items:center;justify-content:space-between;
+  display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
   padding:8px 10px;
   background:rgba(0,0,0,0.2);
   border-radius:var(--r);
 }
-.knowledge-label{font-family:var(--FM);font-size:8px;color:var(--t3);letter-spacing:0.15em}
-.orbs{display:flex;gap:4px;flex-wrap:wrap}
+.knowledge-label{
+  font-family:var(--FM);font-size:8px;color:var(--t3);letter-spacing:0.12em;
+  white-space:nowrap;
+  flex-shrink:0;
+  line-height:1.2;
+}
+.knowledge-orbs-wrap{
+  display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;
+  align-items:center;
+  gap:8px;
+  flex:1;
+  min-width:0;
+  justify-content:flex-end;
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+}
+.knowledge-orbs-wrap::-webkit-scrollbar{height:2px}
+.knowledge-orbs-wrap::-webkit-scrollbar-thumb{background:rgba(0,232,255,0.2);border-radius:1px}
+.knowledge-next-txt{
+  font-family:var(--FM);
+  font-size:9px;
+  color:var(--green);
+  flex-shrink:0;
+  white-space:nowrap;
+  line-height:1.2;
+}
+.orbs{
+  display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;
+  align-items:center;
+  gap:4px;
+  flex-shrink:0;
+}
 .orb{
+  flex-shrink:0;
   width:13px;height:13px;border-radius:50%;
   background:radial-gradient(circle at 35% 35%, rgba(0,232,255,0.9), rgba(0,120,180,0.7));
   border:1px solid var(--c);

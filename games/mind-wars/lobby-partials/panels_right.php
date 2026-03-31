@@ -70,9 +70,9 @@ $online = (int) ($L['online_hint'] ?? 0);
       </div>
       <div class="knowledge-row" style="margin-top:8px">
         <span class="knowledge-label">KNOWLEDGE</span>
-        <div style="display:flex;align-items:center;gap:10px;flex:1;justify-content:flex-end;min-width:0">
+        <div class="knowledge-orbs-wrap">
           <div class="orbs" id="energy-orbs-display"></div>
-          <span style="font-family:var(--FM);font-size:10px;color:var(--green);flex-shrink:0" id="knowledge-next-label">—</span>
+          <span class="knowledge-next-txt" id="knowledge-next-label">—</span>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;height:252px">
