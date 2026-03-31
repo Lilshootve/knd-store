@@ -34,14 +34,25 @@ $kpCostVertex = isset($kpCostVertex) ? (int) $kpCostVertex : 20;
           </div>
         </div>
         <div class="ln-t2i-canvas-zone">
-          <div class="knd-canvas knd-panel-soft ln-t2i-preview-wrap" id="labs-result-wrapper">
-            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview" style="min-height:380px;">
-              <div class="labs-placeholder-tips">
-                <i class="fas fa-cube ln-t2i-placeholder-icon"></i>
-                <p class="text-white-50 mb-1 small">Upload an image to generate a textured 3D model.</p>
-                <p class="text-white-50 mb-0 small">Best results: single subject, clean silhouette, plain background.</p>
-              </div>
-            </div>
+          <div class="knd-canvas knd-panel-soft ln-t2i-preview-wrap knd-labs-preview-with-deco" id="labs-result-wrapper">
+            <?php require __DIR__ . '/studio_canvas_deco.php'; ?>
+            <?php
+            $labsStudioPhTitle = t('labs.studio.3d_empty_title', '¿Listo para un nuevo modelo 3D?');
+            $labsStudioPhSub = t('labs.studio.3d_empty_sub', 'Genera 3D al instante desde imagen o texto');
+            $labsStudioTipsIcon = 'fa-cube';
+            $labsStudioTipsLine1 = t('labs.studio.3d_tip1', 'Upload an image to generate a textured 3D model.');
+            $labsStudioTipsLine2 = t('labs.studio.3d_tip2', 'Best results: single subject, clean silhouette, plain background.');
+            $labsStudioGradientSuffix = '';
+            ob_start();
+            require __DIR__ . '/studio_canvas_placeholder_inner.php';
+            $kndLabsPlaceholderHtml = ob_get_clean();
+            $labsStudioGradientSuffix = '_tmpl';
+            ob_start();
+            require __DIR__ . '/studio_canvas_placeholder_inner.php';
+            $kndLabsPlaceholderTmplHtml = ob_get_clean();
+            ?>
+            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview" style="min-height:380px;"><?php echo $kndLabsPlaceholderHtml; ?></div>
+            <template id="knd-labs-studio-placeholder-tmpl"><?php echo $kndLabsPlaceholderTmplHtml; ?></template>
           </div>
           <div class="ln-t2i-gen-area">
             <button type="submit" form="labs-comfy-form" class="ln-t2i-cta" id="labs-submit-btn" disabled>

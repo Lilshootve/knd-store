@@ -233,29 +233,6 @@ body.knd-labs-next .ln-app {
   box-shadow: 0 0 0 1px rgba(124, 92, 255, 0.3);
 }
 
-/* Full-page static tool (e.g. knd-labs/knd-3d-studio.html) — opens in new tab */
-a.ln-tool--external {
-  text-decoration: none;
-}
-
-a.ln-tool--external span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-a.ln-tool--external span::after {
-  content: "";
-  display: inline-block;
-  width: 0.45rem;
-  height: 0.45rem;
-  margin-left: 0.1rem;
-  opacity: 0.45;
-  background: currentColor;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23000' d='M432 320H400a16 16 0 0 0-16 16V448H64V128H208a16 16 0 0 0 16-16V80a16 16 0 0 0-16-16H48a48 48 0 0 0-48 48V464a48 48 0 0 0 48 48H400a48 48 0 0 0 48-48V336a16 16 0 0 0-16-16zM488 0h-128c-21.4 0-32.1 25.9-17 41l35.7 35.7L135 320.4a24 24 0 0 0 0 34L177 396.4a24 24 0 0 0 34 0L435.3 172.1 471 208c15 15 41 4.5 41-17V48a48 48 0 0 0-48-48z'/%3E%3C/svg%3E") center / contain no-repeat;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23000' d='M432 320H400a16 16 0 0 0-16 16V448H64V128H208a16 16 0 0 0 16-16V80a16 16 0 0 0-16-16H48a48 48 0 0 0-48 48V464a48 48 0 0 0 48 48H400a48 48 0 0 0 48-48V336a16 16 0 0 0-16-16zM488 0h-128c-21.4 0-32.1 25.9-17 41l35.7 35.7L135 320.4a24 24 0 0 0 0 34L177 396.4a24 24 0 0 0 34 0L435.3 172.1 471 208c15 15 41 4.5 41-17V48a48 48 0 0 0-48-48z'/%3E%3C/svg%3E") center / contain no-repeat;
-}
-
 /* Texture Lab mode chips */
 .texture-mode-chip.active,
 .texture-mode-chip.is-active {

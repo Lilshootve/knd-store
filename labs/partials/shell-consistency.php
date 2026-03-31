@@ -31,14 +31,25 @@ $balance = isset($balance) ? (int) $balance : 0;
           <textarea name="scene_prompt" id="labs-scene-prompt" class="knd-textarea form-control text-white" rows="2" maxlength="500" placeholder="Scene / variation for this generation..."><?php echo htmlspecialchars($preloadFromJob['scene_prompt'] ?? ''); ?></textarea>
         </div>
         <div class="ln-t2i-canvas-zone">
-          <div class="knd-canvas knd-panel-soft ln-t2i-preview-wrap" id="labs-result-wrapper">
-            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview" style="min-height:380px;">
-              <div id="labs-placeholder-tips" class="labs-placeholder-tips">
-                <i class="fas fa-lock ln-t2i-placeholder-icon"></i>
-                <p class="text-white-50 mb-1 small"><?php echo t('labs.consistency.tip1', 'Use a reference image from Canvas or Upload.'); ?></p>
-                <p class="text-white-50 mb-0 small"><?php echo t('labs.consistency.tip2', 'Base prompt = persistent style/identity, Scene prompt = variation.'); ?></p>
-              </div>
-            </div>
+          <div class="knd-canvas knd-panel-soft ln-t2i-preview-wrap knd-labs-preview-with-deco" id="labs-result-wrapper">
+            <?php require __DIR__ . '/studio_canvas_deco.php'; ?>
+            <?php
+            $labsStudioPhTitle = t('labs.studio.consistency_empty_title', 'Consistency');
+            $labsStudioPhSub = t('labs.studio.consistency_empty_sub', 'Mantén estilo o personaje entre generaciones');
+            $labsStudioTipsIcon = 'fa-lock';
+            $labsStudioTipsLine1 = t('labs.consistency.tip1', 'Use a reference image from Canvas or Upload.');
+            $labsStudioTipsLine2 = t('labs.consistency.tip2', 'Base prompt = persistent style/identity, Scene prompt = variation.');
+            $labsStudioGradientSuffix = '';
+            ob_start();
+            require __DIR__ . '/studio_canvas_placeholder_inner.php';
+            $kndLabsPlaceholderHtml = ob_get_clean();
+            $labsStudioGradientSuffix = '_tmpl';
+            ob_start();
+            require __DIR__ . '/studio_canvas_placeholder_inner.php';
+            $kndLabsPlaceholderTmplHtml = ob_get_clean();
+            ?>
+            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview" style="min-height:380px;"><?php echo $kndLabsPlaceholderHtml; ?></div>
+            <template id="knd-labs-studio-placeholder-tmpl"><?php echo $kndLabsPlaceholderTmplHtml; ?></template>
           </div>
           <div class="ln-t2i-gen-area">
             <button type="submit" form="labs-comfy-form" class="ln-t2i-cta" id="generateBtn">

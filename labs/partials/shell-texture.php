@@ -57,13 +57,25 @@ $texturePresets = [
         </div>
 
         <div class="ln-t2i-canvas-zone">
-          <div class="knd-canvas knd-panel-soft ln-t2i-preview-wrap" id="labs-result-wrapper">
-            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview" style="min-height:380px;">
-              <div class="labs-placeholder-tips">
-                <i class="fas fa-border-all ln-t2i-placeholder-icon"></i>
-                <p class="text-white-50 mb-1 small"><?php echo t('labs.no_result_yet', 'Submit to generate'); ?></p>
-              </div>
-            </div>
+          <div class="knd-canvas knd-panel-soft ln-t2i-preview-wrap knd-labs-preview-with-deco" id="labs-result-wrapper">
+            <?php require __DIR__ . '/studio_canvas_deco.php'; ?>
+            <?php
+            $labsStudioPhTitle = t('labs.studio.texture_empty_title', 'Texture Lab');
+            $labsStudioPhSub = t('labs.studio.texture_empty_sub', 'Texturas seamless para 3D y juegos');
+            $labsStudioTipsIcon = 'fa-border-all';
+            $labsStudioTipsLine1 = t('labs.no_result_yet', 'Submit to generate');
+            $labsStudioTipsLine2 = null;
+            $labsStudioGradientSuffix = '';
+            ob_start();
+            require __DIR__ . '/studio_canvas_placeholder_inner.php';
+            $kndLabsPlaceholderHtml = ob_get_clean();
+            $labsStudioGradientSuffix = '_tmpl';
+            ob_start();
+            require __DIR__ . '/studio_canvas_placeholder_inner.php';
+            $kndLabsPlaceholderTmplHtml = ob_get_clean();
+            ?>
+            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview" style="min-height:380px;"><?php echo $kndLabsPlaceholderHtml; ?></div>
+            <template id="knd-labs-studio-placeholder-tmpl"><?php echo $kndLabsPlaceholderTmplHtml; ?></template>
           </div>
           <div class="ln-t2i-gen-area">
             <button type="submit" form="labs-texture-form" class="ln-t2i-cta" id="labs-submit-btn">

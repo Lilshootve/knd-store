@@ -33,13 +33,25 @@ $balance = isset($balance) ? (int) $balance : 0;
           </div>
         </div>
         <div class="ln-t2i-canvas-zone">
-          <div class="knd-canvas knd-panel-soft ln-t2i-preview-wrap" id="labs-result-wrapper">
-            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview" style="min-height:380px;">
-              <div id="labs-upscale-empty" class="labs-placeholder-tips">
-                <i class="fas fa-search-plus ln-t2i-placeholder-icon"></i>
-                <p class="text-white-50 mb-1 small"><?php echo t('labs.no_result_yet', 'Submit to generate'); ?></p>
-              </div>
-            </div>
+          <div class="knd-canvas knd-panel-soft ln-t2i-preview-wrap knd-labs-preview-with-deco" id="labs-result-wrapper">
+            <?php require __DIR__ . '/studio_canvas_deco.php'; ?>
+            <?php
+            $labsStudioPhTitle = t('labs.studio.upscale_empty_title', 'Upscale');
+            $labsStudioPhSub = t('labs.studio.upscale_empty_sub', 'Sube una imagen y mejora resolución y detalle');
+            $labsStudioTipsIcon = 'fa-search-plus';
+            $labsStudioTipsLine1 = t('labs.no_result_yet', 'Submit to generate');
+            $labsStudioTipsLine2 = null;
+            $labsStudioGradientSuffix = '';
+            ob_start();
+            require __DIR__ . '/studio_canvas_placeholder_inner.php';
+            $kndLabsPlaceholderHtml = ob_get_clean();
+            $labsStudioGradientSuffix = '_tmpl';
+            ob_start();
+            require __DIR__ . '/studio_canvas_placeholder_inner.php';
+            $kndLabsPlaceholderTmplHtml = ob_get_clean();
+            ?>
+            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview" style="min-height:380px;"><?php echo $kndLabsPlaceholderHtml; ?></div>
+            <template id="knd-labs-studio-placeholder-tmpl"><?php echo $kndLabsPlaceholderTmplHtml; ?></template>
           </div>
           <div class="ln-t2i-gen-area">
             <button type="submit" form="labs-comfy-form" class="ln-t2i-cta" id="labs-submit-btn" disabled>

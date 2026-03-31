@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KND Labs — 3D Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Chakra+Petch:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* =============================================
+   KND LABS — 3D STUDIO · Tripo-style Layout
+   ============================================= */
+:root {
+  --bg-deep:        #03050e;
+  --bg-surface:     #080c1a;
+  --bg-panel:       rgba(9, 13, 26, 0.72);
+  --bg-card:        rgba(12, 18, 36, 0.65);
+  --bg-input:       rgba(5, 8, 20, 0.8);
+  --border:         rgba(255,255,255,0.06);
+  --border-accent:  rgba(124,92,255,0.3);
+  --border-cyan:    rgba(37,156,174,0.3);
+  --accent:         #7c5cff;
+  --accent-glow:    rgba(124,92,255,0.4);
+  --cyan:           #259cae;
+  --cyan-bright:    #00d4ff;
+  --cyan-glow:      rgba(0,212,255,0.35);
+  --pink:           #ae2565;
+  --text:           rgba(255,255,255,0.92);
+  --text-muted:     rgba(255,255,255,0.55);
+  --text-dim:       rgba(255,255,255,0.30);
+  --sidebar-w:      220px;
+  --controls-w:     260px;
+  --recent-w:       190px;
+  --radius:         10px;
+  --radius-sm:      6px;
+  --transition:     0.18s ease;
+  --font-brand:     'Orbitron', sans-serif;
+  --font-ui:        'Chakra Petch', sans-serif;
+  --font-mono:      'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  overflow: hidden;
+}
+
+/* ── TOPBAR ────────────────────────────────── */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 52px;
+  background: rgba(5,7,18,0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 24px;
+  z-index: 1000;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.03), 0 4px 24px rgba(0,0,0,0.4);
+}
+
+.topbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.logo-icon {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), var(--cyan));
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.logo-text {
+  font-family: var(--font-brand);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--text);
+  text-transform: uppercase;
+}
+.logo-text span { color: var(--cyan-bright); }
+
+.topbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  list-style: none;
+}
+
+.topbar-nav li a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  letter-spacing: 0.02em;
+}
+.topbar-nav li a:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+.topbar-nav li a.active { color: var(--cyan-bright); background: rgba(0,212,255,0.06); }
+
+.topbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.credits-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(124,92,255,0.1);
+  border: 1px solid rgba(124,92,255,0.2);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.credits-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.btn-upgrade {
+  background: linear-gradient(135deg, var(--accent), #5b3dd4);
+  border: none;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-family: var(--font-brand);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #fff;
+  cursor: pointer;
+  text-transform: uppercase;
+  box-shadow: 0 0 14px var(--accent-glow);
+  transition: var(--transition);
+}
+.btn-upgrade:hover { box-shadow: 0 0 22px var(--accent-glow); transform: translateY(-1px); }
+
+.avatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--cyan));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid rgba(124,92,255,0.4);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* ── APP SHELL ─────────────────────────────── */
+.app-shell {
+  display: flex;
+  height: 100vh;
+  padding-top: 52px;
+}
+
+/* ── LEFT ICON SIDEBAR ─────────────────────── */
+.icon-sidebar {
+  width: 52px;
+  flex-shrink: 0;
+  background: rgba(6,10,22,0.7);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0;
+  gap: 4px;
+}
+
+.icon-btn {
+  width: 38px; height: 38px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-dim);
+  gap: 2px;
+  border: none;
+  background: transparent;
+  position: relative;
+}
+.icon-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-muted); }
+.icon-btn.active {
+  background: rgba(124,92,255,0.12);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px rgba(124,92,255,0.2);
+}
+.icon-btn svg { width: 18px; height: 18px; }
+.icon-btn span {
+  font-size: 8px;
+  font-family: var(--font-brand);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.icon-sidebar-sep {
+  width: 28px;
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+/* ── CONTROLS PANEL ────────────────────────── */
+.controls-panel {
+  width: var(--controls-w);
+  flex-shrink: 0;
+  background: var(--bg-panel);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.controls-panel::-webkit-scrollbar { width: 3px; }
+.controls-panel::-webkit-scrollbar-track { background: transparent; }
+.controls-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+.panel-header {
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-title {
+  font-family: var(--font-brand);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.panel-title-accent { color: var(--cyan-bright); }
+
+/* ── Mode Tabs ── */
+.mode-tabs {
+  display: flex;
+  padding: 10px 10px 0;
+  gap: 6px;
+}
+
+.mode-tab {
+  flex: 1;
+  padding: 7px 6px;
+  text-align: center;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-brand);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+.mode-tab:hover { border-color: var(--border-accent); color: var(--text); }
+.mode-tab.active {
+  background: rgba(124,92,255,0.12);
+  border-color: rgba(124,92,255,0.3);
+  color: var(--accent);
+  box-shadow: 0 0 10px rgba(124,92,255,0.1);
+}
+
+/* ── Input type selector ── */
+.input-type-row {
+  padding: 10px 10px 8px;
+  display: flex;
+  gap: 6px;
+}
+
+.input-type-btn {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-muted);
+}
+.input-type-btn:hover { border-color: var(--border-accent); color: var(--text); }
+.input-type-btn.active {
+  border-color: var(--border-accent);
+  background: rgba(124,92,255,0.1);
+  color: var(--accent);
+  box-shadow: 0 0 8px rgba(124,92,255,0.1);
+}
+.input-type-btn svg { width: 16px; height: 16px; }
+
+/* ── Upload Zone ── */
+.upload-zone {
+  margin: 0 10px 10px;
+  border: 1.5px dashed rgba(124,92,255,0.25);
+  border-radius: var(--radius);
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+  background: rgba(124,92,255,0.03);
+  position: relative;
+  overflow: hidden;
+}
+.upload-zone::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 100%, rgba(124,92,255,0.06) 0%, transparent 70%);
+}
+.upload-zone:hover {
+  border-color: rgba(124,92,255,0.5);
+  background: rgba(124,92,255,0.06);
+}
+.upload-zone svg { width: 28px; height: 28px; color: rgba(124,92,255,0.5); }
+.upload-zone-text { font-size: 11px; color: var(--text-dim); text-align: center; line-height: 1.5; }
+.upload-zone-sub { font-size: 9px; color: rgba(255,255,255,0.2); font-family: var(--font-mono); }
+
+/* ── Controls Section ── */
+.ctrl-section {
+  padding: 10px 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ctrl-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ctrl-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ctrl-label-hint {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 1px solid var(--border-accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: var(--text-dim);
+  cursor: help;
+}
+
+/* Toggle */
+.toggle {
+  width: 36px; height: 20px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.1);
+  position: relative;
+  cursor: pointer;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.toggle.on { background: linear-gradient(90deg, var(--accent), var(--cyan)); box-shadow: 0 0 8px var(--accent-glow); }
+.toggle::after {
+  content: '';
+  position: absolute;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  top: 3px; left: 3px;
+  transition: var(--transition);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+.toggle.on::after { left: 19px; }
+
+/* Quality Tabs */
+.quality-tabs {
+  display: flex;
+  background: rgba(0,0,0,0.3);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+  gap: 2px;
+}
+.quality-tab {
+  flex: 1;
+  padding: 5px 8px;
+  text-align: center;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  font-family: var(--font-brand);
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-dim);
+  border: none;
+  background: transparent;
+}
+.quality-tab.active {
+  background: linear-gradient(135deg, rgba(124,92,255,0.6), rgba(37,156,174,0.5));
+  color: #fff;
+  box-shadow: 0 0 10px rgba(124,92,255,0.25);
+}
+
+/* Divider */
+.ctrl-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+/* Privacy row */
+.privacy-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* Model selector */
+.model-selector {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+  margin: 0 10px 4px;
+}
+.model-selector:hover { border-color: var(--border-accent); }
+.model-icon {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--accent), var(--cyan));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.model-info { flex: 1; min-width: 0; }
+.model-name { font-size: 11px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.model-sub { font-size: 9px; color: #f59e0b; font-family: var(--font-mono); }
+
+/* Generate Button */
+.btn-generate {
+  margin: 12px 10px 14px;
+  width: calc(100% - 20px);
+  padding: 11px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--accent) 0%, #5b3dd4 50%, var(--cyan) 100%);
+  color: #fff;
+  font-family: var(--font-brand);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(124,92,255,0.3), 0 4px 12px rgba(0,0,0,0.3);
+}
+.btn-generate::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+.btn-generate:hover::before { transform: translateX(100%); }
+.btn-generate:hover { box-shadow: 0 0 30px rgba(124,92,255,0.5), 0 4px 16px rgba(0,0,0,0.4); transform: translateY(-1px); }
+.btn-generate:active { transform: scale(0.98); }
+
+.btn-credits {
+  background: rgba(0,0,0,0.25);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+/* ── MAIN CANVAS ───────────────────────────── */
+.main-canvas {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  position: relative;
+  background: transparent;
+}
+
+.canvas-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated grid background */
+.canvas-area::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(124,92,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,92,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 40%, transparent 100%);
+}
+
+/* Radial glow */
+.canvas-glow {
+  position: absolute;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,92,255,0.06) 0%, rgba(0,212,255,0.03) 40%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: glow-breathe 4s ease-in-out infinite;
+}
+
+.canvas-empty {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  user-select: none;
+}
+
+.canvas-logo-mark {
+  width: 56px; height: 56px;
+  position: relative;
+}
+
+.canvas-logo-mark svg {
+  width: 56px; height: 56px;
+  filter: drop-shadow(0 0 16px var(--accent-glow));
+  animation: logo-pulse 3s ease-in-out infinite;
+}
+
+.canvas-title {
+  font-family: var(--font-brand);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+
+.canvas-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+/* Orbiting ring decoration */
+.canvas-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  transform: translate(-50%, -50%);
+}
+.canvas-ring-1 {
+  width: 120px; height: 120px;
+  border-color: rgba(124,92,255,0.12);
+  animation: ring-rotate 8s linear infinite;
+}
+.canvas-ring-2 {
+  width: 200px; height: 200px;
+  border-color: rgba(0,212,255,0.08);
+  animation: ring-rotate 14s linear infinite reverse;
+}
+.canvas-ring-3 {
+  width: 300px; height: 300px;
+  border-style: dashed;
+  border-color: rgba(124,92,255,0.05);
+  animation: ring-rotate 20s linear infinite;
+}
+
+/* Canvas toolbar */
+.canvas-toolbar {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(8,12,26,0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 5px 10px;
+  z-index: 10;
+}
+
+.toolbar-btn {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.toolbar-btn:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+.toolbar-sep { width: 1px; height: 16px; background: var(--border); }
+
+/* Status bar */
+.status-bar {
+  height: 36px;
+  border-top: 1px solid var(--border);
+  background: rgba(6,10,20,0.6);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 16px;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+}
+
+.status-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+}
+.status-dot.idle { background: rgba(255,255,255,0.2); }
+.status-dot.ready { background: #4ade80; box-shadow: 0 0 6px #4ade80; animation: pulse 2s ease-in-out infinite; }
+
+/* ── RIGHT RECENT PANEL ─────────────────────── */
+.recent-panel {
+  width: var(--recent-w);
+  flex-shrink: 0;
+  background: var(--bg-panel);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.recent-header {
+  padding: 12px 10px 8px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.recent-title {
+  font-family: var(--font-brand);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.recent-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.recent-action {
+  width: 24px; height: 24px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.recent-action:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+.recent-action svg { width: 13px; height: 13px; }
+
+.recent-grid {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  align-content: start;
+}
+
+.recent-grid::-webkit-scrollbar { width: 3px; }
+.recent-grid::-webkit-scrollbar-track { background: transparent; }
+.recent-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+
+.recent-item {
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.recent-item:hover {
+  border-color: rgba(124,92,255,0.35);
+  box-shadow: 0 0 12px rgba(124,92,255,0.12);
+  transform: scale(1.03);
+}
+
+.recent-item-inner {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+
+/* Simulated 3D character silhouettes */
+.char-silhouette {
+  width: 55px; height: 65px;
+  position: relative;
+}
+
+.char-body {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px; height: 40px;
+  background: var(--grad);
+  border-radius: 3px;
+  opacity: 0.85;
+}
+
+.char-head {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--grad);
+  opacity: 0.9;
+}
+
+.char-glow-ring {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px; height: 6px;
+  border-radius: 50%;
+  background: var(--glow);
+  filter: blur(4px);
+}
+
+.recent-item-badge {
+  position: absolute;
+  bottom: 4px; left: 4px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0,0,0,0.4);
+}
+
+/* ── RIGHT TOOLS SIDEBAR ───────────────────── */
+.tools-sidebar {
+  width: 42px;
+  flex-shrink: 0;
+  background: rgba(6,10,22,0.7);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0;
+  gap: 3px;
+}
+
+.tool-btn {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.tool-btn:hover { background: rgba(255,255,255,0.05); color: var(--text-muted); }
+.tool-btn.active {
+  background: rgba(0,212,255,0.1);
+  color: var(--cyan-bright);
+}
+.tool-btn svg { width: 14px; height: 14px; }
+
+/* ── ANIMATIONS ────────────────────────────── */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes logo-pulse {
+  0%, 100% { filter: drop-shadow(0 0 10px rgba(124,92,255,0.5)); }
+  50% { filter: drop-shadow(0 0 22px rgba(124,92,255,0.9)) drop-shadow(0 0 40px rgba(0,212,255,0.4)); }
+}
+
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+@keyframes ring-rotate {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Gradient chars for recent panel */
+.recent-item:nth-child(1) .char-body,
+.recent-item:nth-child(1) .char-head { --grad: linear-gradient(135deg, #6366f1, #8b5cf6); background: var(--grad); }
+.recent-item:nth-child(1) .char-glow-ring { --glow: rgba(99,102,241,0.7); background: var(--glow); }
+
+.recent-item:nth-child(2) .char-body,
+.recent-item:nth-child(2) .char-head { background: linear-gradient(135deg, #e879f9, #a21caf); }
+.recent-item:nth-child(2) .char-glow-ring { background: rgba(232,121,249,0.6); }
+
+.recent-item:nth-child(3) .char-body,
+.recent-item:nth-child(3) .char-head { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
+.recent-item:nth-child(3) .char-glow-ring { background: rgba(14,165,233,0.7); }
+
+.recent-item:nth-child(4) .char-body,
+.recent-item:nth-child(4) .char-head { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.recent-item:nth-child(4) .char-glow-ring { background: rgba(245,158,11,0.7); }
+
+.recent-item:nth-child(5) .char-body,
+.recent-item:nth-child(5) .char-head { background: linear-gradient(135deg, #10b981, #059669); }
+.recent-item:nth-child(5) .char-glow-ring { background: rgba(16,185,129,0.7); }
+
+.recent-item:nth-child(6) .char-body,
+.recent-item:nth-child(6) .char-head { background: linear-gradient(135deg, #f43f5e, #be123c); }
+.recent-item:nth-child(6) .char-glow-ring { background: rgba(244,63,94,0.7); }
+
+.recent-item:nth-child(7) .char-body,
+.recent-item:nth-child(7) .char-head { background: linear-gradient(135deg, #7c5cff, #259cae); }
+.recent-item:nth-child(7) .char-glow-ring { background: rgba(124,92,255,0.7); }
+
+.recent-item:nth-child(8) .char-body,
+.recent-item:nth-child(8) .char-head { background: linear-gradient(135deg, #f97316, #ea580c); }
+.recent-item:nth-child(8) .char-glow-ring { background: rgba(249,115,22,0.7); }
+
+.recent-item:nth-child(9) .char-body,
+.recent-item:nth-child(9) .char-head { background: linear-gradient(135deg, #a3e635, #65a30d); }
+.recent-item:nth-child(9) .char-glow-ring { background: rgba(163,230,53,0.6); }
+
+.recent-item:nth-child(10) .char-body,
+.recent-item:nth-child(10) .char-head { background: linear-gradient(135deg, #38bdf8, #0284c7); }
+.recent-item:nth-child(10) .char-glow-ring { background: rgba(56,189,248,0.7); }
+
+.recent-item:nth-child(11) .char-body,
+.recent-item:nth-child(11) .char-head { background: linear-gradient(135deg, #c084fc, #7c3aed); }
+.recent-item:nth-child(11) .char-glow-ring { background: rgba(192,132,252,0.7); }
+
+.recent-item:nth-child(12) .char-body,
+.recent-item:nth-child(12) .char-head { background: linear-gradient(135deg, #2dd4bf, #0d9488); }
+.recent-item:nth-child(12) .char-glow-ring { background: rgba(45,212,191,0.7); }
+
+/* Badge colors */
+.badge-purple { background: #7c5cff; }
+.badge-pink   { background: #e879f9; }
+.badge-blue   { background: #0ea5e9; }
+.badge-gold   { background: #f59e0b; }
+.badge-green  { background: #10b981; }
+.badge-red    { background: #f43f5e; }
+.badge-cyan   { background: var(--cyan-bright); }
+.badge-orange { background: #f97316; }
+.badge-lime   { background: #a3e635; }
+.badge-sky    { background: #38bdf8; }
+.badge-violet { background: #c084fc; }
+.badge-teal   { background: #2dd4bf; }
+
+/* Tooltips */
+.has-tooltip { position: relative; }
+.has-tooltip:hover::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: 110%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(10,14,28,0.95);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 100;
+  font-family: var(--font-ui);
+}
+
+/* Notification dot */
+.notif-dot {
+  position: absolute;
+  top: 5px; right: 5px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #f43f5e;
+  box-shadow: 0 0 6px rgba(244,63,94,0.8);
+}
+
+/* Inline svg icons helper */
+.ic { display: inline-flex; align-items: center; justify-content: center; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════
+     TOP BAR
+═══════════════════════════════════ -->
+<header class="topbar">
+  <a href="#" class="topbar-logo">
+    <div class="logo-icon">⬡</div>
+    <span class="logo-text">KND<span> Labs</span></span>
+  </a>
+
+  <nav>
+    <ul class="topbar-nav">
+      <li><a href="#">Inicio</a></li>
+      <li><a href="#" class="active">Activos</a></li>
+      <li><a href="#">Programa de afiliados</a></li>
+    </ul>
+  </nav>
+
+  <div class="topbar-right">
+    <div class="credits-badge">
+      <div class="credits-dot"></div>
+      2,845 créditos
+    </div>
+    <button class="btn-upgrade">⚡ Actualizar</button>
+    <div class="avatar" title="Mi cuenta">K</div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════
+     APP SHELL
+═══════════════════════════════════ -->
+<div class="app-shell">
+
+  <!-- ── LEFT ICON NAV ── -->
+  <aside class="icon-sidebar">
+    <button class="icon-btn has-tooltip" data-tip="Imagen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <rect x="3" y="3" width="18" height="18" rx="3"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <path d="M21 15l-5-5L5 21"/>
+      </svg>
+      <span>Imagen</span>
+    </button>
+
+    <button class="icon-btn active has-tooltip" data-tip="Modelo 3D">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+        <path d="M2 17l10 5 10-5"/>
+        <path d="M2 12l10 5 10-5"/>
+      </svg>
+      <span>Modelo</span>
+    </button>
+
+    <div class="icon-sidebar-sep"></div>
+
+    <button class="icon-btn has-tooltip" data-tip="Diseñar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M12 20h9"/>
+        <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+      </svg>
+      <span>Diseñar</span>
+    </button>
+
+    <button class="icon-btn has-tooltip" data-tip="Retexturizar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+      </svg>
+      <span>Retexture</span>
+    </button>
+
+    <button class="icon-btn has-tooltip" data-tip="Textura">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+      </svg>
+      <span>Textura</span>
+    </button>
+
+    <div class="icon-sidebar-sep"></div>
+
+    <button class="icon-btn has-tooltip" data-tip="Animar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="10"/>
+        <polygon points="10,8 16,12 10,16"/>
+      </svg>
+      <span>Animar</span>
+    </button>
+  </aside>
+
+  <!-- ── CONTROLS PANEL ── -->
+  <aside class="controls-panel">
+    <div class="panel-header">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent);flex-shrink:0">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+      </svg>
+      <span class="panel-title">Generar <span class="panel-title-accent">Modelo</span></span>
+    </div>
+
+    <!-- Mode tabs -->
+    <div class="mode-tabs">
+      <button class="mode-tab active">Modelo HD</button>
+      <button class="mode-tab">Malla Smart ⚡</button>
+    </div>
+
+    <!-- Input type selector -->
+    <div class="input-type-row">
+      <button class="input-type-btn active" title="Imagen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <path d="M21 15l-5-5L5 21"/>
+        </svg>
+      </button>
+      <button class="input-type-btn" title="Texto">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 6h16M4 12h16M4 18h10"/>
+        </svg>
+      </button>
+      <button class="input-type-btn" title="Multi-vista">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="8" height="8" rx="1"/>
+          <rect x="13" y="3" width="8" height="8" rx="1"/>
+          <rect x="3" y="13" width="8" height="8" rx="1"/>
+          <rect x="13" y="13" width="8" height="8" rx="1"/>
+        </svg>
+      </button>
+      <button class="input-type-btn" title="Sketch">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Upload zone -->
+    <div class="upload-zone" onclick="this.querySelector('input').click()">
+      <input type="file" accept="image/*" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+        <polyline points="17 8 12 3 7 8"/>
+        <line x1="12" y1="3" x2="12" y2="15"/>
+      </svg>
+      <div class="upload-zone-text">Subir imagen<br><span style="color:var(--text-dim);font-size:9px">JPG · PNG · WebP · Máx. 10MB</span></div>
+    </div>
+
+    <!-- Controls -->
+    <div class="ctrl-section">
+
+      <div class="ctrl-row">
+        <div class="ctrl-label">
+          Mejorar imagen
+          <span class="ctrl-label-hint">?</span>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+
+      <div class="ctrl-divider"></div>
+
+      <div class="ctrl-label" style="margin-bottom:4px">Calidad de la malla</div>
+      <div class="quality-tabs">
+        <button class="quality-tab active">Ultra</button>
+        <button class="quality-tab">Estándar</button>
+      </div>
+
+      <div class="ctrl-divider"></div>
+
+      <div class="ctrl-row">
+        <div class="ctrl-label">
+          <svg width="8" height="8" viewBox="0 0 8 8" style="margin-right:2px"><circle cx="4" cy="4" r="4" fill="var(--accent)"/></svg>
+          Generar en Partes
+          <span class="ctrl-label-hint">?</span>
+        </div>
+        <div class="toggle" onclick="this.classList.toggle('on')"></div>
+      </div>
+
+      <div class="ctrl-divider"></div>
+
+      <div class="ctrl-row">
+        <div class="privacy-row">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0110 0v4"/>
+          </svg>
+          Privacidad
+        </div>
+        <span style="font-size:10px;color:var(--text-muted);font-weight:500">Solo para compartir</span>
+      </div>
+
+      <div class="ctrl-divider"></div>
+
+      <div class="ctrl-row">
+        <div class="ctrl-label">
+          Textura
+          <span class="ctrl-label-hint">?</span>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+
+      <div class="ctrl-divider"></div>
+
+      <div class="ctrl-label" style="font-size:10px;opacity:0.7;margin-bottom:2px">Ajustes de textura ›</div>
+      <div class="ctrl-label" style="font-size:10px;opacity:0.7;margin-bottom:6px">Configuración de topología ›</div>
+
+      <div class="ctrl-divider"></div>
+
+      <div class="ctrl-label" style="margin-bottom:4px">AI Modelo</div>
+    </div>
+
+    <!-- Model selector -->
+    <div class="model-selector">
+      <div class="model-icon">🧠</div>
+      <div class="model-info">
+        <div class="model-name">v3.1 – Máx. calidad</div>
+        <div class="model-sub">⏱ Mayor tiempo de espera</div>
+      </div>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text-dim)">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+
+    <!-- Generate button -->
+    <button class="btn-generate">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+      </svg>
+      Generar modelo
+      <span class="btn-credits">● 50</span>
+    </button>
+  </aside>
+
+  <!-- ── MAIN CANVAS ── -->
+  <main class="main-canvas">
+
+    <!-- Canvas toolbar -->
+    <div class="canvas-toolbar">
+      <button class="toolbar-btn" title="Vista frontal">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+      </button>
+      <div class="toolbar-sep"></div>
+      <button class="toolbar-btn" title="Zoom +">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+      </button>
+      <button class="toolbar-btn" title="Zoom −">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+      </button>
+      <div class="toolbar-sep"></div>
+      <button class="toolbar-btn" title="Resetear vista">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      </button>
+      <button class="toolbar-btn" title="Cuadrícula">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>
+      </button>
+    </div>
+
+    <!-- Canvas empty state -->
+    <div class="canvas-area">
+      <div class="canvas-glow"></div>
+
+      <!-- Decorative rings -->
+      <div class="canvas-ring canvas-ring-1"></div>
+      <div class="canvas-ring canvas-ring-2"></div>
+      <div class="canvas-ring canvas-ring-3"></div>
+
+      <!-- Empty state content -->
+      <div class="canvas-empty">
+        <div class="canvas-logo-mark">
+          <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="30,4 54,18 54,42 30,56 6,42 6,18" stroke="url(#hexGrad)" stroke-width="2" fill="rgba(124,92,255,0.06)"/>
+            <polygon points="30,12 46,21 46,39 30,48 14,39 14,21" stroke="url(#hexGrad2)" stroke-width="1.5" fill="rgba(0,212,255,0.04)" opacity="0.6"/>
+            <polygon points="30,20 38,24.5 38,33.5 30,38 22,33.5 22,24.5" fill="url(#hexGrad3)" opacity="0.9"/>
+            <defs>
+              <linearGradient id="hexGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#7c5cff"/>
+                <stop offset="100%" stop-color="#00d4ff"/>
+              </linearGradient>
+              <linearGradient id="hexGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00d4ff"/>
+                <stop offset="100%" stop-color="#7c5cff"/>
+              </linearGradient>
+              <linearGradient id="hexGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#7c5cff"/>
+                <stop offset="100%" stop-color="#00d4ff"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="canvas-title">¿Listo para un nuevo modelo 3D?</div>
+        <div class="canvas-subtitle">Genera 3D al instante desde imagen o texto</div>
+      </div>
+    </div>
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <div class="status-item">
+        <div class="status-dot ready"></div>
+        Sistema listo
+      </div>
+      <div class="status-item" style="opacity:0.5">·</div>
+      <div class="status-item">GPU: Disponible</div>
+      <div class="status-item" style="opacity:0.5">·</div>
+      <div class="status-item">Cola: 0 trabajos</div>
+      <div class="status-item" style="margin-left:auto">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        v3.1-ultra
+      </div>
+    </div>
+  </main>
+
+  <!-- ── RIGHT TOOLS SIDEBAR ── -->
+  <aside class="tools-sidebar">
+    <button class="tool-btn active" title="Activos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    </button>
+    <button class="tool-btn" title="Favoritos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    </button>
+    <button class="tool-btn" title="Filtrar" style="position:relative">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+    </button>
+    <button class="tool-btn" title="Gestionar" style="margin-top:auto">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+    </button>
+  </aside>
+
+  <!-- ── RECENT PANEL ── -->
+  <aside class="recent-panel">
+    <div class="recent-header">
+      <span class="recent-title">Historial</span>
+      <div class="recent-actions">
+        <button class="recent-action" title="Ver todo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        <button class="recent-action" title="Subir modelo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </button>
+        <button class="recent-action" title="Configurar" style="position:relative">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>
+          <div class="notif-dot"></div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Thumbnail grid -->
+    <div class="recent-grid">
+      <!-- 12 simulated 3D model thumbnails -->
+      <div class="recent-item"><div class="recent-item-inner"><div class="char-silhouette"><div class="char-head"></div><div class="char-body"></div><div class="char-glow-ring"></div></div></div><div class="recent-item-badge badge-purple"></div></div>
+      <div class="recent-item"><div class="recent-item-inner"><div class="char-silhouette"><div class="char-head"></div><div class="char-body"></div><div class="char-glow-ring"></div></div></div><div class="recent-item-badge badge-pink"></div></div>
+      <div class="recent-item"><div class="recent-item-inner"><div class="char-silhouette"><div class="char-head"></div><div class="char-body"></div><div class="char-glow-ring"></div></div></div><div class="recent-item-badge badge-blue"></div></div>
+      <div class="recent-item"><div class="recent-item-inner"><div class="char-silhouette"><div class="char-head"></div><div class="char-body"></div><div class="char-glow-ring"></div></div></div><div class="recent-item-badge badge-gold"></div></div>
+      <div class="recent-item"><div class="recent-item-inner"><div class="char-silhouette"><div class="char-head"></div><div class="char-body"></div><div class="char-glow-ring"></div></div></div><div class="recent-item-badge badge-green"></div></div>
+      <div class="recent-item"><div class="recent-item-inner"><div class="char-silhouette"><div class="char-head"></div><div class="char-body"></div><div class="char-glow-ring"></div></div></div><div class="recent-item-badge badge-red"></div></div>
+      <div class="recent-item"><div class="recent-item-inner"><div class="char-silhouette"><div class="char-head"></div><div class="char-body"></div><div class="char-glow-ring"></div></div></div><div class="recent-item-badge badge-cyan"></div></div>
+      <div class="recent-item"><div class="recent-item-inner"><div class="char-silhouette"><div class="char-head"></div><div class="char-body"></div><div class="char-glow-ring"></div></div></div><div class="recent-item-badge badge-orange"></div></div>
+      <div class="recent-item"><div class="recent-item-inner"><div class="char-silhouette"><div class="char-head"></div><div class="char-body"></div><div class="char-glow-ring"></div></div></div><div class="recent-item-badge badge-lime"></div></div>
+      <div class="recent-item"><div class="recent-item-inner"><div class="char-silhouette"><div class="char-head"></div><div class="char-body"></div><div class="char-glow-ring"></div></div></div><div class="recent-item-badge badge-sky"></div></div>
+      <div class="recent-item"><div class="recent-item-inner"><div class="char-silhouette"><div class="char-head"></div><div class="char-body"></div><div class="char-glow-ring"></div></div></div><div class="recent-item-badge badge-violet"></div></div>
+      <div class="recent-item"><div class="recent-item-inner"><div class="char-silhouette"><div class="char-head"></div><div class="char-body"></div><div class="char-glow-ring"></div></div></div><div class="recent-item-badge badge-teal"></div></div>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+// Interactive toggle for mode tabs
+document.querySelectorAll('.mode-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    tab.closest('.mode-tabs').querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+// Interactive toggle for quality tabs
+document.querySelectorAll('.quality-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    tab.closest('.quality-tabs').querySelectorAll('.quality-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+// Interactive toggle for input type
+document.querySelectorAll('.input-type-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.closest('.input-type-row').querySelectorAll('.input-type-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// Icon sidebar
+document.querySelectorAll('.icon-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.icon-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+// Recent items click
+document.querySelectorAll('.recent-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.recent-item').forEach(i => i.style.borderColor = '');
+    item.style.borderColor = 'rgba(124,92,255,0.6)';
+    item.style.boxShadow = '0 0 16px rgba(124,92,255,0.2)';
+  });
+});
+
+// Generate button interaction
+document.querySelector('.btn-generate').addEventListener('click', function() {
+  const original = this.innerHTML;
+  this.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg> Generando… <span class="btn-credits">● 50</span>';
+  this.disabled = true;
+  setTimeout(() => {
+    this.innerHTML = original;
+    this.disabled = false;
+  }, 3000);
+});
+</script>
+</body>
+</html>

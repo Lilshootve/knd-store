@@ -19,14 +19,25 @@ $providerFilter = isset($providerFilter) ? $providerFilter : '';
       <div class="ln-t2i-main-col">
         <?php require __DIR__ . '/shell-text2img-form-main.php'; ?>
         <div class="ln-t2i-canvas-zone">
-          <div class="knd-canvas knd-panel-soft ln-t2i-preview-wrap" id="labs-result-wrapper">
-            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview" style="min-height:380px;">
-              <div id="labs-placeholder-tips" class="labs-placeholder-tips">
-                <i class="fas fa-wand-magic-sparkles ln-t2i-placeholder-icon"></i>
-                <p class="text-white-50 mb-1 small"><?php echo t('labs.tip_prompt', 'Use 1 subject + 1 style + 1 lighting'); ?></p>
-                <p class="text-white-50 mb-0 small"><?php echo t('labs.tip_example', 'e.g. "Warrior, oil painting, golden hour"'); ?></p>
-              </div>
-            </div>
+          <div class="knd-canvas knd-panel-soft ln-t2i-preview-wrap knd-labs-preview-with-deco" id="labs-result-wrapper">
+            <?php require __DIR__ . '/studio_canvas_deco.php'; ?>
+            <?php
+            $labsStudioPhTitle = t('labs.studio.canvas_empty_title', '¿Listo para crear?');
+            $labsStudioPhSub = t('labs.studio.canvas_empty_sub', 'Describe tu imagen y pulsa Generar');
+            $labsStudioTipsIcon = 'fa-wand-magic-sparkles';
+            $labsStudioTipsLine1 = t('labs.tip_prompt', 'Use 1 subject + 1 style + 1 lighting');
+            $labsStudioTipsLine2 = t('labs.tip_example', 'e.g. "Warrior, oil painting, golden hour"');
+            $labsStudioGradientSuffix = '';
+            ob_start();
+            require __DIR__ . '/studio_canvas_placeholder_inner.php';
+            $kndLabsPlaceholderHtml = ob_get_clean();
+            $labsStudioGradientSuffix = '_tmpl';
+            ob_start();
+            require __DIR__ . '/studio_canvas_placeholder_inner.php';
+            $kndLabsPlaceholderTmplHtml = ob_get_clean();
+            ?>
+            <div id="labs-result-preview" class="labs-result-preview ln-t2i-preview" style="min-height:380px;"><?php echo $kndLabsPlaceholderHtml; ?></div>
+            <template id="knd-labs-studio-placeholder-tmpl"><?php echo $kndLabsPlaceholderTmplHtml; ?></template>
           </div>
           <div class="ln-t2i-gen-area">
             <button type="submit" form="labs-comfy-form" class="ln-t2i-cta" id="generateBtn">

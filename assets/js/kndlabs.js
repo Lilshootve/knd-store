@@ -331,6 +331,22 @@
       if (state === 'done') preview.classList.add('labs-result-ready');
     },
 
+    /**
+     * Restore empty-state HTML from <template id="knd-labs-studio-placeholder-tmpl"> when present (per-tool copy from PHP).
+     */
+    restorePlaceholderPreview: function() {
+      var preview = document.getElementById('labs-result-preview');
+      if (!preview) return;
+      var tmpl = document.getElementById('knd-labs-studio-placeholder-tmpl');
+      if (tmpl && tmpl.innerHTML && String(tmpl.innerHTML).trim() !== '') {
+        preview.innerHTML = tmpl.innerHTML;
+      } else {
+        preview.innerHTML = '<div id="labs-placeholder-tips" class="labs-placeholder-tips"><i class="fas fa-lightbulb fa-2x text-white-50 mb-2"></i><p class="text-white-50 mb-1 small">Use 1 subject + 1 style + 1 lighting</p><p class="text-white-50 mb-0 small">e.g. &quot;Warrior, oil painting, golden hour&quot;</p></div>';
+      }
+      this.setPreviewState('idle');
+      this.setUiState('idle');
+    },
+
     updateStepper: function(stage) {
       var dots = document.querySelectorAll('.labs-stepper-dot');
       var steps = ['queued', 'picked', 'generating', 'done'];
@@ -438,8 +454,7 @@
             var msg = (d.error && d.error.message) ? d.error.message : 'Error';
             if (typeof kndToast !== 'undefined') kndToast(msg, 'error');
             else alert(msg);
-            var prev = document.getElementById('labs-result-preview');
-            if (prev) prev.innerHTML = '<div id="labs-placeholder-tips" class="labs-placeholder-tips"><i class="fas fa-lightbulb fa-2x text-white-50 mb-2"></i><p class="text-white-50 mb-1 small">Use 1 subject + 1 style + 1 lighting</p><p class="text-white-50 mb-0 small">e.g. &quot;Warrior, oil painting, golden hour&quot;</p></div>';
+            self.restorePlaceholderPreview();
             var errEl = document.getElementById('labs-error-msg');
             if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
           }
@@ -447,6 +462,7 @@
         .catch(function(err) {
           if (submitBtn) submitBtn.disabled = false;
           self._submitting = false;
+          self.restorePlaceholderPreview();
           var msg = (err && err.message) ? err.message : 'Network error. Check console.';
           if (typeof kndToast !== 'undefined') kndToast(msg, 'error');
           else alert(msg);
@@ -1172,12 +1188,12 @@
     },
 
     bindRetry: function() {
+      var self = this;
       var retryBtn = document.getElementById('labs-retry-btn');
       if (!retryBtn) return;
       retryBtn.addEventListener('click', function() {
-        var preview = document.getElementById('labs-result-preview');
         var actions = document.getElementById('labs-result-actions');
-        if (preview) preview.innerHTML = '<div id="labs-placeholder-tips" class="labs-placeholder-tips"><i class="fas fa-lightbulb fa-2x text-white-50 mb-2"></i><p class="text-white-50 mb-1 small">Use 1 subject + 1 style + 1 lighting</p><p class="text-white-50 mb-0 small">e.g. &quot;Warrior, oil painting, golden hour&quot;</p></div>';
+        self.restorePlaceholderPreview();
         if (actions) actions.style.display = 'none';
       });
     },
