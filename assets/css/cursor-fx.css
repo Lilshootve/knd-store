@@ -5,7 +5,8 @@
  */
 
 :root {
-  --knd-cfx-disc: 304px;
+  /* Compact lens (~40% of previous — reads as cursor-adjacent, not a hubcap) */
+  --knd-cfx-disc: 118px;
   --knd-cfx-cyan: rgb(62, 239, 255);
   --knd-cfx-violet: rgb(196, 92, 255);
   --knd-cfx-ember: rgb(255, 160, 72);
@@ -115,7 +116,7 @@ html.knd-cursor-fx--disabled #knd-cursor-fx-root {
     rgba(255, 100, 60, 0.04) 48%,
     transparent 68%
   );
-  filter: blur(32px);
+  filter: blur(18px);
   opacity: 0.75;
   mix-blend-mode: screen;
   pointer-events: none;
@@ -175,9 +176,9 @@ html.knd-cursor-fx--disabled #knd-cursor-fx-root {
   border-radius: 50%;
   box-shadow:
     0 0 0 0.5px rgba(62, 239, 255, 0.45),
-    0 0 20px rgba(62, 239, 255, 0.18),
-    0 0 48px rgba(196, 92, 255, 0.12),
-    inset 0 0 24px rgba(0, 0, 0, 0.35);
+    0 0 10px rgba(62, 239, 255, 0.2),
+    0 0 22px rgba(196, 92, 255, 0.14),
+    inset 0 0 12px rgba(0, 0, 0, 0.35);
   pointer-events: none;
   opacity: 0.9;
 }
@@ -254,7 +255,7 @@ html.knd-cursor-fx--disabled #knd-cursor-fx-root {
   border: 1px solid transparent;
   border-top-color: rgba(62, 239, 255, 0.55);
   border-right-color: rgba(196, 92, 255, 0.35);
-  filter: drop-shadow(0 0 6px rgba(62, 239, 255, 0.35));
+  filter: drop-shadow(0 0 4px rgba(62, 239, 255, 0.4));
   animation: knd-cfx-arc-ccw 16s linear infinite;
 }
 
@@ -269,9 +270,9 @@ html.knd-cursor-fx--disabled #knd-cursor-fx-root {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 5px;
-  height: 5px;
-  margin: -2.5px 0 0 -2.5px;
+  width: 3px;
+  height: 3px;
+  margin: -1.5px 0 0 -1.5px;
   border-radius: 50%;
   background: radial-gradient(
     circle at 35% 35%,
