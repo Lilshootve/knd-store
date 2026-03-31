@@ -38,13 +38,14 @@ html.knd-cursor-fx--disabled #knd-cursor-fx-root {
 }
 
 /**
- * Mount: fixed full viewport, same stack level as #bg / #bg-layer so backdrop samples
- * only the animated background — not lobby shell, nav, or cards (Mind Wars).
+ * Mount: above Mind Wars shell / arena playfield so the void + rim stay visible.
+ * Below modals (~100+), toasts, loading, portrait gate; pointer-events none.
+ * Backdrop warp samples the composited scene under the lens (mostly bg + chrome).
  */
 #knd-cursor-fx-root.knd-cursor-fx-root {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: 45;
   pointer-events: none;
   overflow: hidden;
   contain: layout;
