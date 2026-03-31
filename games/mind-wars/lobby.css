@@ -161,6 +161,9 @@ body{background:var(--void);color:var(--t1);font-family:var(--FR);font-size:18.4
   height:100vh;
   overflow:hidden;
 }
+.lobby-shell.lobby-shell--no-bottom-nav{
+  grid-template-rows:64px 1fr;
+}
 
 /* ═══════════════════════════════════════════════════════════
    TOP BAR
@@ -944,8 +947,10 @@ a.tb-icon-btn{text-decoration:none;color:inherit;box-sizing:border-box}
 .knowledge-orbs-wrap::-webkit-scrollbar{height:2px}
 .knowledge-orbs-wrap::-webkit-scrollbar-thumb{background:rgba(0,232,255,0.2);border-radius:1px}
 .knowledge-next-txt{
-  font-family:var(--FM);
+  /* Digits must not use a broken/missing subset of the mono font */
+  font-family:var(--FR),var(--FB),system-ui,Segoe UI,sans-serif;
   font-size:9px;
+  font-variant-numeric:tabular-nums;
   color:var(--green);
   flex-shrink:0;
   white-space:nowrap;

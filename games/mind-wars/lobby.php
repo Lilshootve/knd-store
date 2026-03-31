@@ -42,4 +42,5 @@ $levelsCssV = file_exists($levelsCss) ? filemtime($levelsCss) : 0;
 $LOBBY_PAGE_TITLE = 'KND Games — Mind Wars Lobby';
 $LOBBY_CENTER_PARTIAL = __DIR__ . '/lobby-partials/avatar_stage.php';
 $LOBBY_SHELL_GAME = 'mind-wars';
+$LOBBY_BOTTOM_NAV = false;
 require __DIR__ . '/lobby-frame.php';

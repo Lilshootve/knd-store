@@ -1,8 +1,9 @@
 <?php
 /**
- * Shared Mind Wars–style shell (loading, bg, overlays, topbar, 3 columns, bottom nav).
+ * Shared Mind Wars–style shell (loading, bg, overlays, topbar, 3 columns, optional bottom nav).
  * Caller must set $LOBBY_CENTER_PARTIAL (path to PHP partial for center column) and
  * $csrfToken, $L, $cssV, $jsV, $mwCardCssV, $mwCardJsV, $levelsCssV before including.
+ * Set $LOBBY_BOTTOM_NAV = false before include to hide the bottom nav (Mind Wars lobby).
  */
 require_once __DIR__ . '/../../includes/favicon_links.php';
 if (empty($LOBBY_CENTER_PARTIAL) || !is_readable($LOBBY_CENTER_PARTIAL)) {
@@ -15,6 +16,7 @@ $pageTitle = $LOBBY_PAGE_TITLE ?? 'KND Games — Lobby';
 $loadingLogo = $LOBBY_LOADING_LOGO ?? 'MIND WARS';
 $shellGame = $LOBBY_SHELL_GAME ?? 'mind-wars';
 $extraHead = $LOBBY_EXTRA_HEAD_HTML ?? '';
+$showLobbyBottomNav = ($LOBBY_BOTTOM_NAV ?? true);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -206,14 +208,15 @@ if (is_file($cfxCss)) { ?>
   </div>
 </div>
 
-<div class="lobby-shell">
+<div class="lobby-shell<?php echo $showLobbyBottomNav ? '' : ' lobby-shell--no-bottom-nav'; ?>">
 <?php require __DIR__ . '/lobby-partials/topbar.php'; ?>
   <div class="lobby-content">
 <?php require __DIR__ . '/lobby-partials/panels_left.php'; ?>
 <?php require $LOBBY_CENTER_PARTIAL; ?>
 <?php $mwShellGame = $shellGame; require __DIR__ . '/lobby-partials/panels_right.php'; ?>
   </div>
-  <nav class="bottom-nav">
+<?php if ($showLobbyBottomNav): ?>
+  <nav class="bottom-nav" aria-label="Lobby navigation">
     <div class="bnav-item active" data-nav="lobby">
       <div class="bnav-icon">🏠</div>
       <div class="bnav-label">LOBBY</div>
@@ -235,6 +238,7 @@ if (is_file($cfxCss)) { ?>
       <div class="bnav-label">BAG</div>
     </div>
   </nav>
+<?php endif; ?>
 </div>
 
 <script>
