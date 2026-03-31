@@ -670,9 +670,22 @@
     grid-template-columns: 1fr;
     grid-auto-rows: minmax(0, auto);
     overflow-y: auto;
+    max-height: min(52vh, 520px);
   }
 
   .mw-squad-select .squad-slot-card-inner .card-thumb {
-    min-height: clamp(200px, 28vh, 320px);
+    min-height: clamp(160px, 22vh, 280px);
+  }
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+  .mw-squad-select #squad-slots {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-height: none;
+    overflow: visible;
+  }
+
+  .mw-squad-select .squad-slot-card-inner .card-thumb {
+    min-height: clamp(140px, 36vh, 260px);
   }
 }

@@ -27,7 +27,7 @@ require_once __DIR__ . '/../../includes/favicon_links.php';
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>MIND WARS — Battle Arena</title>
 <?php echo generateFaviconLinks(); ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -531,9 +531,36 @@ body{background:var(--void);color:var(--t1);font-family:var(--FB);min-height:100
 /* ── RESPONSIVE ── */
 @media(max-width:800px){.bcard{width:230px}.vs-glyph{font-size:42.32px}.vs-col{padding:0 13.8px}.abar{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:644px){.bcard{width:201.25px}.vs-col{padding:0 6.9px}.sgrid{grid-template-columns:1fr}.mbody{grid-template-columns:1fr}.mport{height:184px}body{min-height:100vh;min-height:100dvh;padding-left:max(0px,env(safe-area-inset-left,0px));padding-right:max(0px,env(safe-area-inset-right,0px));padding-bottom:max(0px,env(safe-area-inset-bottom,0px))}.lavs-grid{grid-template-columns:repeat(auto-fill,minmax(min(160px,100%),1fr))}}
+/* Full-page arena: ask for landscape on phones in portrait (embed iframes skip this) */
+.mw-portrait-gate{display:none;position:fixed;inset:0;z-index:20000;flex-direction:column;align-items:center;justify-content:center;padding:max(24px,env(safe-area-inset-top,0)) max(20px,env(safe-area-inset-right,0)) max(24px,env(safe-area-inset-bottom,0)) max(20px,env(safe-area-inset-left,0));background:radial-gradient(ellipse 80% 60% at 50% 20%,rgba(0,240,255,.12) 0%,transparent 55%),radial-gradient(ellipse 70% 50% at 80% 80%,rgba(212,0,255,.08) 0%,transparent 50%),rgba(1,5,10,.97);backdrop-filter:blur(12px);text-align:center;box-sizing:border-box}
+.mw-portrait-gate-inner{max-width:340px}
+.mw-portrait-gate-phone{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:20px;font-size:42px;line-height:1;filter:drop-shadow(0 0 20px rgba(0,240,255,.35))}
+.mw-portrait-gate-arrow{display:inline-block;animation:mwArenaPortraitSpin 2.2s ease-in-out infinite;font-size:36px;color:var(--c)}
+@keyframes mwArenaPortraitSpin{0%,100%{transform:rotate(0)}35%,65%{transform:rotate(-90deg)}}
+.mw-portrait-gate-title{font-family:var(--FD);font-size:15px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--t1);margin-bottom:10px;text-shadow:0 0 24px rgba(0,240,255,.25)}
+.mw-portrait-gate-sub{font-family:var(--FB);font-size:14px;line-height:1.5;color:var(--t2);font-weight:500}
+.mw-portrait-gate-skip{margin-top:22px;padding:10px 18px;font-family:var(--FB);font-size:13px;font-weight:600;color:var(--t2);background:rgba(255,255,255,.06);border:1px solid rgba(0,240,255,.22);border-radius:4px;cursor:pointer}
+.mw-portrait-gate-skip:hover{color:var(--t1);border-color:var(--cb);background:rgba(0,240,255,.08)}
+html.mw-portrait-dismissed body:not(.arena-embed) .mw-portrait-gate{display:none!important}
+@media (orientation:portrait) and (max-width:926px){body:not(.arena-embed) .mw-portrait-gate{display:flex}}
+@media (orientation:landscape) and (max-height:420px){
+  .arena{padding:10px 12px;gap:10px;min-height:calc(100dvh - 48px)}
+  .azone{height:auto;min-height:200px;max-height:42vh}
+  .stage{flex-wrap:wrap;justify-content:center;gap:8px}
+}
 </style>
 </head>
 <body<?php echo $embed ? ' class="arena-embed mind-wars-arena-context"' : ''; ?>>
+<?php if (!$embed): ?>
+<div id="mw-portrait-gate" class="mw-portrait-gate" role="dialog" aria-modal="true" aria-labelledby="mw-arena-portrait-title">
+  <div class="mw-portrait-gate-inner">
+    <div class="mw-portrait-gate-phone" aria-hidden="true"><span>📱</span><span class="mw-portrait-gate-arrow">↻</span></div>
+    <p id="mw-arena-portrait-title" class="mw-portrait-gate-title">Rotate your device</p>
+    <p class="mw-portrait-gate-sub">The battle arena is laid out for landscape. Turn your device sideways for the full view.</p>
+    <button type="button" class="mw-portrait-gate-skip" onclick="document.documentElement.classList.add('mw-portrait-dismissed')">Continue in portrait</button>
+  </div>
+</div>
+<?php endif; ?>
 <?php if ($embed): ?><div class="arena-embed-inner"><?php endif; ?>
 <div id="bg"></div>
 <div id="floor"></div>

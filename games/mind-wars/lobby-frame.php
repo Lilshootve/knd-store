@@ -20,7 +20,7 @@ $extraHead = $LOBBY_EXTRA_HEAD_HTML ?? '';
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title><?php echo htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8'); ?></title>
 <?php echo generateFaviconLinks(); ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,6 +31,18 @@ $extraHead = $LOBBY_EXTRA_HEAD_HTML ?? '';
 <?php echo $extraHead; ?>
 </head>
 <body>
+
+<div id="mw-portrait-gate" class="mw-portrait-gate" role="dialog" aria-modal="true" aria-labelledby="mw-portrait-gate-title">
+  <div class="mw-portrait-gate-inner">
+    <div class="mw-portrait-gate-phone" aria-hidden="true">
+      <span class="mw-portrait-gate-icon">📱</span>
+      <span class="mw-portrait-gate-arrow">↻</span>
+    </div>
+    <p id="mw-portrait-gate-title" class="mw-portrait-gate-title">Rotate your device</p>
+    <p class="mw-portrait-gate-sub">Mind Wars is built for landscape. Turn your phone sideways to see the full lobby and battle HUD.</p>
+    <button type="button" class="mw-portrait-gate-skip" onclick="document.documentElement.classList.add('mw-portrait-dismissed')">Continue in portrait</button>
+  </div>
+</div>
 
 <div id="loading-screen">
   <div class="ls-logo"><?php echo htmlspecialchars($loadingLogo, ENT_QUOTES, 'UTF-8'); ?></div>

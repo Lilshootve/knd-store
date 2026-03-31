@@ -14,7 +14,7 @@ $levelsCssV = is_file($levelsCss) ? filemtime($levelsCss) : 0;
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Mind Wars Squad — Squad Select</title>
 <link rel="stylesheet" href="/assets/css/levels.css?v=<?php echo (int) $levelsCssV; ?>">
 <link rel="stylesheet" href="/games/mind-wars/mw-avatar-cards.css?v=<?php echo (int) $mwCardCssV; ?>">
@@ -194,7 +194,8 @@ body::before {
 #roster-list .roster-entry.selected { border-color:var(--cyan); background:rgba(0,30,65,0.95); }
 #roster-list .roster-entry.in-squad { opacity:0.4; pointer-events:none; }
 #roster-list .roster-entry[draggable="true"] { cursor:grab; }
-#roster-list .roster-entry.dragging-source { opacity:0.45; cursor:grabbing; }
+#roster-list .roster-entry.dragging-source { opacity:0.45; cursor:grabbing; touch-action:none; }
+#roster-list .roster-entry[draggable="true"]{ touch-action:manipulation; }
 .squad-slot-column.slot-drag-over .squad-slot-card-wrap {
   outline:2px solid var(--cyan);
   outline-offset:4px;
@@ -386,9 +387,77 @@ body::before {
   transition:opacity .3s; pointer-events:none;
 }
 #toast.show { opacity:1; }
+
+/* Portrait: full-screen hint (same idea as Mind Wars lobby) */
+.mw-portrait-gate{
+  display:none; position:fixed; inset:0; z-index:30000;
+  flex-direction:column; align-items:center; justify-content:center;
+  padding:max(24px, env(safe-area-inset-top,0)) max(20px, env(safe-area-inset-right,0)) max(24px, env(safe-area-inset-bottom,0)) max(20px, env(safe-area-inset-left,0));
+  background:radial-gradient(ellipse 80% 60% at 50% 20%, rgba(0,229,255,.12) 0%, transparent 55%), radial-gradient(ellipse 70% 50% at 80% 80%, rgba(193,88,255,.08) 0%, transparent 50%), rgba(1,4,12,.97);
+  backdrop-filter:blur(12px); text-align:center; box-sizing:border-box;
+}
+.mw-portrait-gate-inner{ max-width:340px; }
+.mw-portrait-gate-phone{ display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:18px; font-size:40px; line-height:1; filter:drop-shadow(0 0 18px rgba(0,229,255,.35)); }
+.mw-portrait-gate-arrow{ display:inline-block; animation:squadPortraitSpin 2.2s ease-in-out infinite; font-size:34px; color:var(--cyan); }
+@keyframes squadPortraitSpin{ 0%,100%{ transform:rotate(0); } 35%,65%{ transform:rotate(-90deg); } }
+.mw-portrait-gate-title{ font-family:'Orbitron',monospace; font-size:14px; font-weight:800; letter-spacing:3px; color:#e8f4ff; margin-bottom:8px; text-transform:uppercase; }
+.mw-portrait-gate-sub{ font-size:12px; letter-spacing:1px; color:var(--text-dim); line-height:1.5; }
+.mw-portrait-gate-skip{ margin-top:18px; padding:9px 16px; font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:1px; color:var(--text-dim); background:rgba(0,20,40,.8); border:1px solid var(--border); cursor:pointer; clip-path:polygon(4px 0,100% 0,100% calc(100% - 4px),calc(100% - 4px) 100%,0 100%,0 4px); }
+.mw-portrait-gate-skip:hover{ color:var(--cyan); border-color:var(--border-hot); }
+html.mw-portrait-dismissed .mw-portrait-gate{ display:none !important; }
+@media (orientation:portrait) and (max-width:926px){ .mw-portrait-gate{ display:flex; } }
+
+/* Mobile / narrow: stack columns, scroll main */
+@media (max-width:900px){
+  #app{ min-height:100vh; min-height:100dvh; height:auto; max-height:none; }
+  #header{ flex-wrap:wrap; padding:10px 14px; gap:8px; }
+  #header-right{ display:none; }
+  #title-block{ order:3; width:100%; text-align:center; }
+  #page-title{ font-size:12px; letter-spacing:3px; }
+  #steps{ padding:8px 6px; flex-wrap:wrap; justify-content:center; }
+  .step-label{ font-size:7px; margin:0 6px; }
+  .step-connector{ width:24px; }
+  #main{
+    flex:1 1 auto;
+    flex-direction:column;
+    overflow-x:hidden;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    min-height:0;
+  }
+  #center-panel{ order:-1; flex:0 0 auto; padding:6px 10px 8px; overflow:visible; }
+  #squad-slots{ padding:4px 6px 8px; }
+  #roster-panel{
+    width:100%; min-width:0; max-height:min(38vh,320px);
+    border-right:none; border-bottom:1px solid var(--border);
+    flex-shrink:0;
+  }
+  #preview-panel{
+    width:100%; min-width:0; max-height:min(36vh,280px);
+    border-left:none; border-top:1px solid var(--border);
+    flex-direction:column; min-height:0;
+  }
+  #big-viewer-wrap{ height:min(28vh,160px); flex-shrink:0; }
+  #preview-info{ flex:1; min-height:80px; overflow-y:auto; }
+  #formation-hint{ flex-wrap:wrap; gap:8px; padding:6px 10px; }
+  #bottom-bar{
+    flex-wrap:wrap; justify-content:center; gap:10px;
+    padding:max(10px, env(safe-area-inset-bottom,0)) 12px 12px;
+  }
+  .bar-sep{ display:none; }
+  #engage-btn{ padding:10px 22px; font-size:10px; letter-spacing:2px; }
+}
 </style>
 </head>
 <body>
+<div id="mw-portrait-gate" class="mw-portrait-gate" role="dialog" aria-modal="true" aria-labelledby="squad-portrait-title">
+  <div class="mw-portrait-gate-inner">
+    <div class="mw-portrait-gate-phone" aria-hidden="true"><span>📱</span><span class="mw-portrait-gate-arrow">↻</span></div>
+    <p id="squad-portrait-title" class="mw-portrait-gate-title">Rotate for squad select</p>
+    <p class="mw-portrait-gate-sub">Formation and roster are easier in landscape. Turn your device, or continue below with scrolling.</p>
+    <button type="button" class="mw-portrait-gate-skip" onclick="document.documentElement.classList.add('mw-portrait-dismissed')">Continue in portrait</button>
+  </div>
+</div>
 <div id="app" class="mw-squad-select">
   <div id="bg-layer"></div>
   <div id="bg-grid"></div>
@@ -642,6 +711,7 @@ async function init() {
   initBigViewer();
   renderAllSquadSlots();
   initSquadSlotDnD();
+  initRosterPointerDnD();
   // Expose globals for HTML onclick handlers
   window.handleSlotClick = handleSlotClick;
   window.removeFromSlot = removeFromSlot;
@@ -677,6 +747,7 @@ function buildRoster(filter = 'all', search = '') {
     d.className = 'roster-entry' + (inSquad ? ' in-squad' : '') + (selectedCard?.id === av.id ? ' selected' : '');
     d.id = 'acard-' + av.id;
     d.style.cssText = `--rarity-color:${RARITY_HEX[rar] || RARITY_HEX.common};animation:fadeSlideIn .3s ease both;animation-delay:${i*0.04}s`;
+    d.dataset.avatarId = String(av.id);
     d.onclick = () => selectCard(av);
     if (!inSquad) {
       d.setAttribute('draggable', 'true');
@@ -738,7 +809,7 @@ function selectCard(av) {
     assignToSlot(activeSlot, av);
     activeSlot = null;
   }
-  showToast(`${av.name} SELECTED — CLICK A SLOT OR DRAG TO FORMATION`);
+  showToast(`${av.name} SELECTED — TAP SLOT, DRAG, OR LONG-PRESS & DRAG ON TOUCH`);
 }
 
 // ═══ SLOT LOGIC ══════════════════════════════════
@@ -832,6 +903,90 @@ function assignToSlot(slotIdx, av) {
   updateEngageButton();
   buildRoster(currentFilter, document.getElementById('roster-search').value);
   showToast(`${av.name} → ${SLOT_POS[slotIdx]} POSITION`);
+}
+
+const ROSTER_DRAG_SLOP_PX = 14;
+let rosterPointerState = null;
+let rosterSuppressClickUntil = 0;
+
+function clearSlotDragHighlights() {
+  document.querySelectorAll('.squad-slot-column.slot-drag-over').forEach(function (c) {
+    c.classList.remove('slot-drag-over');
+  });
+}
+
+function rosterDocPointerMove(e) {
+  if (!rosterPointerState || e.pointerId !== rosterPointerState.pointerId) return;
+  const st = rosterPointerState;
+  const dx = e.clientX - st.startX;
+  const dy = e.clientY - st.startY;
+  if (!st.activated) {
+    if (dx * dx + dy * dy < ROSTER_DRAG_SLOP_PX * ROSTER_DRAG_SLOP_PX) return;
+    st.activated = true;
+    st.row.classList.add('dragging-source');
+  }
+  e.preventDefault();
+  clearSlotDragHighlights();
+  const under = document.elementFromPoint(e.clientX, e.clientY);
+  const col = under && under.closest('.squad-slot-column');
+  if (col) col.classList.add('slot-drag-over');
+}
+
+function rosterDocPointerEnd(e) {
+  if (!rosterPointerState || e.pointerId !== rosterPointerState.pointerId) return;
+  const st = rosterPointerState;
+  rosterPointerState = null;
+  document.removeEventListener('pointermove', rosterDocPointerMove);
+  document.removeEventListener('pointerup', rosterDocPointerEnd);
+  document.removeEventListener('pointercancel', rosterDocPointerEnd);
+
+  st.row.classList.remove('dragging-source');
+  clearSlotDragHighlights();
+
+  if (!st.activated) return;
+
+  const under = document.elementFromPoint(e.clientX, e.clientY);
+  const col = under && under.closest('.squad-slot-column');
+  if (!col) return;
+  const slotIdx = parseInt(col.getAttribute('data-slot-index'), 10);
+  if (Number.isNaN(slotIdx)) return;
+  const av = AVATARS.find(function (a) { return String(a.id) === String(st.avatarId); });
+  if (!av) return;
+  assignToSlot(slotIdx, av);
+  showBigPreview(av);
+  rosterSuppressClickUntil = Date.now() + 450;
+}
+
+function rosterListPointerDown(e) {
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  const row = e.target.closest('.roster-entry');
+  if (!row || row.classList.contains('in-squad')) return;
+  const aid = row.dataset.avatarId;
+  if (!aid) return;
+  rosterPointerState = {
+    pointerId: e.pointerId,
+    avatarId: aid,
+    row: row,
+    startX: e.clientX,
+    startY: e.clientY,
+    activated: false
+  };
+  document.addEventListener('pointermove', rosterDocPointerMove, { passive: false });
+  document.addEventListener('pointerup', rosterDocPointerEnd);
+  document.addEventListener('pointercancel', rosterDocPointerEnd);
+}
+
+function initRosterPointerDnD() {
+  const list = document.getElementById('roster-list');
+  if (!list || list.dataset.kndRosterPointer === '1') return;
+  list.dataset.kndRosterPointer = '1';
+  list.addEventListener('pointerdown', rosterListPointerDown, { passive: true });
+  document.addEventListener('click', function rosterClickSuppress(ev) {
+    if (Date.now() >= rosterSuppressClickUntil) return;
+    if (!ev.target.closest('#roster-list .roster-entry')) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+  }, true);
 }
 
 function initSquadSlotDnD() {
