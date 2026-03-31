@@ -126,16 +126,11 @@ function generateScripts() {
 
     $phpSelfNav = $_SERVER['PHP_SELF'] ?? '';
     $isAdminScripts = (strpos($phpSelfNav, '/admin') !== false || strpos($phpSelfNav, 'admin/') === 0);
-    $orbJs = __DIR__ . '/../assets/js/knd-holo-orbs.js';
-    if (!$isAdminScripts && session_status() === PHP_SESSION_ACTIVE && !empty($_SESSION['dr_user_id']) && is_file($orbJs)) {
-        require_once __DIR__ . '/csrf.php';
-        $orbPayload = [
-            'csrf'     => csrf_token(),
-            'offerUrl' => '/api/orb/offer.php',
-            'claimUrl' => '/api/orb/claim.php',
-        ];
-        $scripts .= '<script>window.__KND_HOLO_ORB__=' . json_encode($orbPayload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ';</script>' . "\n";
-        $scripts .= '<script src="/assets/js/knd-holo-orbs.js?v=' . (int) filemtime($orbJs) . '" defer></script>' . "\n";
+    if (!$isAdminScripts && session_status() === PHP_SESSION_ACTIVE && !empty($_SESSION['dr_user_id'])) {
+        require_once __DIR__ . '/holo_orb_assets.php';
+        ob_start();
+        holo_orb_emit_init_script();
+        $scripts .= ob_get_clean();
     }
 
     // Level-up y badge (defer para no bloquear render)

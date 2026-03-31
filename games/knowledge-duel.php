@@ -103,6 +103,10 @@ if (!$embed) {
 <link rel="stylesheet" href="/games/mind-wars/lobby.css?v=<?php echo $vLo; ?>">
 <link rel="stylesheet" href="/games/mind-wars/mw-avatar-cards.css?v=<?php echo $vMw; ?>">
 <link rel="stylesheet" href="/assets/css/knowledge-duel.css?v=<?php echo $vKd; ?>">
+<?php
+require_once __DIR__ . '/../includes/holo_orb_assets.php';
+holo_orb_emit_stylesheet_link();
+?>
 </head>
 <body>
 <div id="toast-container"></div>
@@ -567,5 +571,6 @@ window.KnowledgeDuelConfig = {
 };
 </script>
 <script src="/assets/js/knowledge-duel.js?v=<?php echo file_exists(__DIR__ . '/../assets/js/knowledge-duel.js') ? filemtime(__DIR__ . '/../assets/js/knowledge-duel.js') : time(); ?>" defer></script>
+<?php holo_orb_emit_init_script(); ?>
 </body>
 </html>

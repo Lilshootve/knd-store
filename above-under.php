@@ -157,6 +157,10 @@ require_once __DIR__ . '/includes/favicon_links.php';
 <link rel="stylesheet" href="/games/mind-wars/mw-avatar-cards.css?v=<?php echo (int) $vMw; ?>">
 <link rel="stylesheet" href="/assets/css/knd-insight-arena.css?v=<?php echo (int) $vArena; ?>">
 <link rel="stylesheet" href="/assets/css/insight-lobby.css?v=<?php echo (int) $vLobbyShell; ?>">
+<?php
+require_once __DIR__ . '/includes/holo_orb_assets.php';
+holo_orb_emit_stylesheet_link();
+?>
 </head>
 <body>
 <div id="toast-container"></div>
@@ -207,5 +211,6 @@ var AU_CSRF = <?php echo json_encode($csrfToken); ?>;
 <script src="/games/mind-wars/mw-avatar-card.js?v=<?php echo (int) $vMwJ; ?>"></script>
 <script src="/games/mind-wars/kd-lobby-shell.js?v=<?php echo (int) $vKs; ?>"></script>
 <script src="/assets/js/above-under.js?v=<?php echo @filemtime(__DIR__ . '/assets/js/above-under.js'); ?>"></script>
+<?php holo_orb_emit_init_script(); ?>
 </body>
 </html>

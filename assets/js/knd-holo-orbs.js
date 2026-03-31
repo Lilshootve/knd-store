@@ -22,6 +22,7 @@
 
   var BAD_SELECTORS = [
     "header",
+    ".topbar",
     ".site-header",
     ".navbar",
     ".sc-nav-badge",
@@ -30,6 +31,11 @@
     ".knd-chat-panel",
     ".knd-chat-btn",
     ".modal.show",
+    ".bottom-nav",
+    ".bnav-item",
+    ".settings-drawer",
+    ".overlay-panel",
+    ".mw-portrait-gate",
     "[data-no-holo-orb]",
   ];
 

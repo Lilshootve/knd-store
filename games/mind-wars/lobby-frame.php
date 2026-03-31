@@ -5,6 +5,7 @@
  * $csrfToken, $L, $cssV, $jsV, $mwCardCssV, $mwCardJsV, $levelsCssV before including.
  */
 require_once __DIR__ . '/../../includes/favicon_links.php';
+require_once __DIR__ . '/../../includes/holo_orb_assets.php';
 if (empty($LOBBY_CENTER_PARTIAL) || !is_readable($LOBBY_CENTER_PARTIAL)) {
     http_response_code(500);
     header('Content-Type: text/html; charset=utf-8');
@@ -33,6 +34,7 @@ $cfxCss = __DIR__ . '/../../assets/css/cursor-fx.css';
 if (is_file($cfxCss)) { ?>
 <link rel="stylesheet" href="/assets/css/cursor-fx.css?v=<?php echo (int) filemtime($cfxCss); ?>">
 <?php } ?>
+<?php holo_orb_emit_stylesheet_link(); ?>
 <?php echo $extraHead; ?>
 </head>
 <body>
@@ -229,5 +231,6 @@ if (is_file($cfxJs)) { ?>
 <?php if (!empty($LOBBY_EXTRA_SCRIPTS_AFTER_LOBBY_JS)) {
     echo $LOBBY_EXTRA_SCRIPTS_AFTER_LOBBY_JS;
 } ?>
+<?php holo_orb_emit_init_script(); ?>
 </body>
 </html>
