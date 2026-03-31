@@ -99,6 +99,13 @@ try {
         $kpCostVertex = 20;
     }
 
+    /** Standalone 3D workspace (reference UI: knd-labs/knd-3d-studio.html) */
+    $labs3dStudioHref = '';
+    $labs3dStudioFile = __DIR__ . '/knd-labs/knd-3d-studio.html';
+    if (is_file($labs3dStudioFile)) {
+        $labs3dStudioHref = '/knd-labs/knd-3d-studio.html?v=' . (int) filemtime($labs3dStudioFile);
+    }
+
     $providerFilter = ($currentTool === 'text2img' && isset($_GET['provider'])) ? trim($_GET['provider']) : '';
 
     $labsNextCss = __DIR__ . '/assets/css/labs-next.css';
@@ -119,7 +126,7 @@ try {
     $extraHead .= '<link rel="stylesheet" href="/assets/css/knd-labs-concept-theme.css?v=' . (file_exists($labsConceptTheme) ? filemtime($labsConceptTheme) : time()) . '">';
 
     $seoTitle = t('labs.meta.title', 'KND Labs | KND Store');
-    $seoDesc = t('labs.meta.desc', 'AI-powered asset creation: Text to Image, Upscale, Character Lab, Texture Lab, Image→3D.');
+    $seoDesc = t('labs.meta.desc', 'AI-powered asset creation: Text to Image, Upscale, Character Lab, Texture Lab, Image→3D, and the 3D Studio workspace.');
     echo generateHeader($seoTitle, $seoDesc, $extraHead);
 ?>
 <script>document.body.classList.add('ln-page', 'knd-labs-next', 'knd-labs-concept');</script>
@@ -150,6 +157,9 @@ try {
         <li class="ln-nav-section-label"><?php echo t('labs.sidebar.3d_tools', '3D TOOLS'); ?></li>
         <li><a href="/labs?tool=3d_vertex" class="ln-tool<?php echo $currentTool === '3d_vertex' ? ' ln-tool-active' : ''; ?>"<?php echo $currentTool === '3d_vertex' ? ' aria-current="page"' : ''; ?>><i class="fas fa-cube"></i><span>3D Vertex</span></a></li>
         <li><a href="/labs?tool=model_viewer" class="ln-tool<?php echo $currentTool === 'model_viewer' ? ' ln-tool-active' : ''; ?>"<?php echo $currentTool === 'model_viewer' ? ' aria-current="page"' : ''; ?>><i class="fas fa-cube"></i><span>Model Viewer</span></a></li>
+        <?php if ($labs3dStudioHref !== ''): ?>
+        <li><a href="<?php echo htmlspecialchars($labs3dStudioHref, ENT_QUOTES, 'UTF-8'); ?>" class="ln-tool ln-tool--external" target="_blank" rel="noopener noreferrer" title="<?php echo htmlspecialchars(t('labs.sidebar.3d_studio_hint', 'Full 3D workspace — opens in a new tab')); ?>"><i class="fas fa-vr-cardboard" aria-hidden="true"></i><span><?php echo htmlspecialchars(t('labs.sidebar.3d_studio', '3D Studio')); ?></span></a></li>
+        <?php endif; ?>
         <li><button type="button" class="ln-tool-viewer-link" id="ln-open-viewer" aria-label="Open job details viewer"><i class="fas fa-external-link-alt"></i><span>View job details</span></button></li>
       </ul>
     </nav>
