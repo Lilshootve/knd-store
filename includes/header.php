@@ -48,6 +48,11 @@ function generateHeader($title = 'KND Store - Tienda Galáctica', $description =
         $header .= '    <link rel="stylesheet" href="/assets/css/cursor-fx.css?v=' . (int) filemtime($cursorFxCss) . '">' . "\n";
         $header .= '    <script src="/assets/js/cursor-fx.js?v=' . (int) filemtime($cursorFxJs) . '" defer></script>' . "\n";
     }
+    /* Holo orbs (logged-in, non-admin, full layout) */
+    $orbCss = __DIR__ . '/../assets/css/knd-holo-orbs.css';
+    if (!$isAdmin && !$lightweight && is_file($orbCss) && session_status() === PHP_SESSION_ACTIVE && !empty($_SESSION['dr_user_id'])) {
+        $header .= '    <link rel="stylesheet" href="/assets/css/knd-holo-orbs.css?v=' . (int) filemtime($orbCss) . '">' . "\n";
+    }
     $header .= '</head>' . "\n";
     $bodyClass = 'knd-skin';
     if ($lightweight) {

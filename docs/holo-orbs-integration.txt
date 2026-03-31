@@ -1,0 +1,29 @@
+KND Holo Orbs — integration checklist
+======================================
+
+1) Database
+   Run once (MySQL):
+   source sql/migrations/add_users_last_orb_claim_at.sql
+   Or paste the ALTER TABLE from that file in phpMyAdmin.
+
+2) Already wired
+   - CSS: includes/header.php (logged-in users, non-admin, full layout).
+   - JS + config: includes/footer.php → window.__KND_HOLO_ORB__ + knd-holo-orbs.js (defer).
+
+3) API
+   POST /api/orb/offer.php  — creates server-side pending orb (session).
+   POST /api/orb/claim.php  — applies reward, sets last_orb_claim_at, clears pending.
+   Both require session cookie + header X-CSRF-Token (same as other JSON APIs).
+
+4) Response shape
+   { "ok": true, "data": { "success": true, "reward_type": "xp|ke|knd_points", "amount": N, ... } }
+
+5) Testing
+   - Log in on desktop (width >= 1024, fine pointer).
+   - Wait 2–5 minutes (30% chance per window); orb should appear.
+   - Click orb → Network: claim.php → data matches float label.
+   - Second claim within 2 minutes → 429 COOLDOWN.
+
+6) Optional
+   - localStorage knd_orb_sound = "0" disables pickup beep.
+   - Add data-no-holo-orb on containers that must never be covered.

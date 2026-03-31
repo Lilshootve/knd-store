@@ -1,0 +1,148 @@
+/**
+ * KND Holo Orbs — floating micro-reward spheres (desktop only).
+ * Root: pointer-events none; orb child re-enables clicks.
+ */
+
+#knd-holo-orb-root {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.knd-holo-orb {
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.2, 0.9, 0.2, 1);
+  will-change: transform, opacity;
+  box-shadow:
+    0 0 20px rgba(0, 232, 255, 0.35),
+    0 0 48px rgba(155, 48, 255, 0.2),
+    inset 0 0 14px rgba(255, 255, 255, 0.15);
+}
+
+.knd-holo-orb.knd-holo-orb--visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Inner glow core */
+.knd-holo-orb::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.55), transparent 55%);
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+.knd-holo-orb::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 40%, currentColor 100%);
+  opacity: 0.25;
+  filter: blur(8px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Rarity / type skins */
+.knd-holo-orb.knd-orb--xp {
+  color: rgba(0, 232, 255, 0.9);
+  background: radial-gradient(circle at 30% 25%, rgba(180, 250, 255, 0.45), rgba(0, 40, 60, 0.75) 60%, rgba(0, 20, 40, 0.9));
+  border: 1px solid rgba(0, 232, 255, 0.45);
+}
+
+.knd-holo-orb.knd-orb--ke {
+  color: rgba(155, 48, 255, 0.95);
+  background: radial-gradient(circle at 30% 25%, rgba(230, 200, 255, 0.4), rgba(40, 0, 60, 0.8) 55%, rgba(20, 0, 35, 0.92));
+  border: 1px solid rgba(200, 120, 255, 0.5);
+  box-shadow:
+    0 0 22px rgba(155, 48, 255, 0.4),
+    0 0 50px rgba(0, 232, 255, 0.12),
+    inset 0 0 14px rgba(255, 255, 255, 0.12);
+}
+
+.knd-holo-orb.knd-orb--knd_points {
+  color: rgba(255, 214, 0, 0.85);
+  background: radial-gradient(circle at 30% 25%, rgba(255, 240, 180, 0.5), rgba(60, 45, 0, 0.82) 55%, rgba(30, 22, 0, 0.95));
+  border: 1px solid rgba(255, 214, 0, 0.55);
+  box-shadow:
+    0 0 24px rgba(255, 214, 0, 0.35),
+    0 0 40px rgba(0, 232, 255, 0.15),
+    inset 0 0 14px rgba(255, 255, 255, 0.18);
+}
+
+.knd-holo-orb.knd-orb--pop {
+  pointer-events: none;
+  animation: kndOrbPop 0.55s ease forwards;
+}
+
+@keyframes kndOrbPop {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    filter: brightness(1);
+  }
+  40% {
+    transform: scale(1.35);
+    opacity: 1;
+    filter: brightness(1.4);
+  }
+  100% {
+    transform: scale(0.2);
+    opacity: 0;
+    filter: brightness(2);
+  }
+}
+
+.knd-holo-orb-float {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-family: "Orbitron", "Rajdhani", system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #00e8ff;
+  text-shadow: 0 0 12px rgba(0, 232, 255, 0.7);
+  pointer-events: none;
+  white-space: nowrap;
+  opacity: 0;
+  animation: kndOrbFloatTxt 1.1s ease-out forwards;
+}
+
+.knd-holo-orb-float.knd-float--ke {
+  color: #d8a8ff;
+  text-shadow: 0 0 14px rgba(155, 48, 255, 0.8);
+}
+
+.knd-holo-orb-float.knd-float--knd_points {
+  color: #ffe566;
+  text-shadow: 0 0 14px rgba(255, 214, 0, 0.65);
+}
+
+@keyframes kndOrbFloatTxt {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.8);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%, -8px) scale(1.05);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -48px) scale(0.9);
+  }
+}
