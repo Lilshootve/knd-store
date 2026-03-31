@@ -1,0 +1,174 @@
+/**
+ * KND Cursor FX — premium halo / ripple layer (no pointer capture)
+ * Companion: /assets/js/cursor-fx.js
+ *
+ * Stack: fixed overlay, pointer-events: none, blend + backdrop for “interaction”
+ * with the page background without blocking clicks.
+ */
+
+/* ── Root: tune brand colors (cyan / violet gaming) ───────────────── */
+:root {
+  --knd-cfx-cyan: rgba(0, 232, 255, 0.55);
+  --knd-cfx-violet: rgba(180, 80, 255, 0.35);
+  --knd-cfx-core: rgba(255, 255, 255, 0.14);
+  --knd-cfx-size: 420px; /* outer glow diameter */
+  --knd-cfx-ring: 180px;
+}
+
+/**
+ * Disabled via JS (touch / reduced motion / data attribute) or media query fallback.
+ */
+html.knd-cursor-fx--disabled #knd-cursor-fx,
+html.knd-cursor-fx--disabled .knd-cursor-fx {
+  display: none !important;
+}
+
+/* Respect system preference even before JS runs */
+@media (prefers-reduced-motion: reduce) {
+  #knd-cursor-fx,
+  .knd-cursor-fx {
+    display: none !important;
+  }
+}
+
+/**
+ * Full-viewport shell: never intercepts events.
+ * z-index: above starfield/bg, below Bootstrap modals (~1055) and most app UI.
+ */
+#knd-cursor-fx.knd-cursor-fx {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  overflow: hidden;
+  /* layout only — strict would clip large click ripples at the viewport edge */
+  contain: layout;
+}
+
+/* Inner tracker: positioned in JS (left/top in px), centered with transform */
+.knd-cursor-fx__track {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+
+/**
+ * Large soft bloom — blends with dark backgrounds (screen / plus-lighter).
+ */
+.knd-cursor-fx__glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--knd-cfx-size);
+  height: var(--knd-cfx-size);
+  margin-left: calc(var(--knd-cfx-size) / -2);
+  margin-top: calc(var(--knd-cfx-size) / -2);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 45% 40%,
+    color-mix(in srgb, var(--knd-cfx-cyan) 50%, transparent) 0%,
+    color-mix(in srgb, var(--knd-cfx-violet) 25%, transparent) 38%,
+    transparent 68%
+  );
+  mix-blend-mode: screen;
+  opacity: 0.42;
+  filter: blur(2px);
+}
+
+/**
+ * Mid ring: subtle “lens” on whatever is behind (glow lift, not true WebGL warp).
+ */
+.knd-cursor-fx__lens {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--knd-cfx-ring);
+  height: var(--knd-cfx-ring);
+  margin-left: calc(var(--knd-cfx-ring) / -2);
+  margin-top: calc(var(--knd-cfx-ring) / -2);
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--knd-cfx-cyan) 35%, transparent);
+  box-shadow:
+    0 0 24px color-mix(in srgb, var(--knd-cfx-cyan) 30%, transparent),
+    inset 0 0 20px color-mix(in srgb, var(--knd-cfx-cyan) 12%, transparent);
+  backdrop-filter: brightness(1.12) saturate(1.15);
+  -webkit-backdrop-filter: brightness(1.12) saturate(1.15);
+  opacity: 0.55;
+}
+
+/* Thin rotating accent (CSS only, low cost) */
+.knd-cursor-fx__lens::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  border-top-color: color-mix(in srgb, var(--knd-cfx-violet) 55%, transparent);
+  border-right-color: color-mix(in srgb, var(--knd-cfx-cyan) 25%, transparent);
+  opacity: 0.45;
+  animation: knd-cfx-spin 10s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes knd-cfx-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/**
+ * Bright core dot — readable “cursor anchor” without custom cursor image.
+ */
+.knd-cursor-fx__core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff, var(--knd-cfx-cyan));
+  box-shadow: 0 0 12px var(--knd-cfx-cyan), 0 0 28px var(--knd-cfx-violet);
+  opacity: 0.85;
+}
+
+/**
+ * Click ripples: spawned by JS, removed after animation.
+ */
+.knd-cursor-fx__ripple {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--knd-cfx-cyan) 70%, transparent);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--knd-cfx-cyan) 40%, transparent);
+  animation: knd-cfx-ripple 0.65s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.35);
+  opacity: 0.9;
+}
+
+@keyframes knd-cfx-ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0.35);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(14);
+    opacity: 0;
+  }
+}
+
+/* Coarse pointers: hide via CSS if JS misses */
+@media (pointer: coarse) {
+  #knd-cursor-fx,
+  .knd-cursor-fx {
+    display: none !important;
+  }
+}

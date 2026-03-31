@@ -41,6 +41,13 @@ function generateHeader($title = 'KND Store - Tienda Galáctica', $description =
     $header .= '    <link rel="preload" href="/assets/js/knd-starfield.js" as="script">' . "\n";
     $header .= '    <link rel="preload" href="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" as="script">' . "\n";
     $header .= '    <script src="/assets/js/knd-toast.js" defer></script>' . "\n";
+    /* Premium cursor halo (CSS + vanilla JS); skipped on admin / lightweight shells */
+    $cursorFxCss = __DIR__ . '/../assets/css/cursor-fx.css';
+    $cursorFxJs = __DIR__ . '/../assets/js/cursor-fx.js';
+    if (!$isAdmin && !$lightweight && is_file($cursorFxCss) && is_file($cursorFxJs)) {
+        $header .= '    <link rel="stylesheet" href="/assets/css/cursor-fx.css?v=' . (int) filemtime($cursorFxCss) . '">' . "\n";
+        $header .= '    <script src="/assets/js/cursor-fx.js?v=' . (int) filemtime($cursorFxJs) . '" defer></script>' . "\n";
+    }
     $header .= '</head>' . "\n";
     $bodyClass = 'knd-skin';
     if ($lightweight) {
