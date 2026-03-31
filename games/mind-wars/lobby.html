@@ -1185,10 +1185,10 @@ a.mode-card.mode-card--link:focus-visible{
     </div>
 
     <div class="tb-currency">
-      <div class="currency-chip gold-chip" onclick="showToast('💰 Coins: 12,480','info')">
+      <a class="currency-chip gold-chip" id="cc-coins-chip" href="/support-credits.php" title="KND Points">
         <span class="cc-icon">💰</span>
         <span id="cc-coins">12,480</span>
-      </div>
+      </a>
       <div class="currency-chip gem-chip" onclick="showToast('💎 Premium currency purchased in Shop','info')">
         <span class="cc-icon">💎</span>
         <span id="cc-gems">340</span>
@@ -1205,7 +1205,7 @@ a.mode-card.mode-card--link:focus-visible{
         <div class="notif-badge" id="notif-badge">3</div>
       </div>
       <div class="tb-icon-btn" onclick="openSettings()" title="Settings">⚙️</div>
-      <div class="tb-icon-btn" onclick="showToast('📋 Profile coming soon','info')" title="Profile">👤</div>
+      <a class="tb-icon-btn" id="profile-btn" href="/my-profile.php" title="Profile">👤</a>
     </div>
   </header>
 

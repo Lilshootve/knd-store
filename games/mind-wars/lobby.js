@@ -1265,9 +1265,6 @@
     document.getElementById('settings-close').addEventListener('click', function () {
       document.getElementById('settings-drawer').classList.remove('open');
     });
-    document.getElementById('profile-btn').addEventListener('click', function () {
-      showToast('Profile coming soon', 'info');
-    });
     var qaInv = document.getElementById('qa-inventory');
     if (qaInv) {
       qaInv.addEventListener('click', function () {

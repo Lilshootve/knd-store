@@ -202,6 +202,7 @@ body{background:var(--void);color:var(--t1);font-family:var(--FB);font-size:18.4
   font-family:var(--FM);font-size:12.65px;color:var(--t1);
   cursor:pointer;transition:all .2s;
 }
+a.currency-chip{text-decoration:none;box-sizing:border-box}
 .currency-chip:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15)}
 .currency-chip .cc-icon{font-size:17.25px}
 .currency-chip.gold-chip{border-color:rgba(255,204,0,.2);color:var(--gold)}
@@ -219,6 +220,7 @@ body{background:var(--void);color:var(--t1);font-family:var(--FB);font-size:18.4
   cursor:pointer;font-size:17.25px;
   transition:all .2s;position:relative;
 }
+a.tb-icon-btn{text-decoration:none;color:inherit;box-sizing:border-box}
 .tb-icon-btn:hover{background:var(--cg);border-color:var(--cb);box-shadow:0 0 12px rgba(0,232,255,.15)}
 .notif-badge{
   position:absolute;top:-4px;right:-4px;

@@ -32,10 +32,10 @@ $rankLabel = $pos !== null ? '#' . (int) $pos : '—';
   </div>
 
   <div class="tb-currency">
-    <div class="currency-chip gold-chip" id="cc-coins-chip" title="KND Points">
+    <a class="currency-chip gold-chip" id="cc-coins-chip" href="/support-credits.php" title="KND Points">
       <span class="cc-icon">💰</span>
       <span id="cc-coins"><?php echo number_format($kp); ?></span>
-    </div>
+    </a>
     <div class="currency-chip gem-chip" id="cc-gems-chip" title="Fragments">
       <span class="cc-icon">💎</span>
       <span id="cc-gems"><?php echo number_format($fr); ?></span>
@@ -51,6 +51,6 @@ $rankLabel = $pos !== null ? '#' . (int) $pos : '—';
       <div class="notif-badge hidden" id="notif-badge">0</div>
     </div>
     <div class="tb-icon-btn" id="settings-btn" title="Settings">⚙️</div>
-    <div class="tb-icon-btn" id="profile-btn" title="Profile">👤</div>
+    <a class="tb-icon-btn" id="profile-btn" href="/my-profile.php" title="Profile">👤</a>
   </div>
 </header>

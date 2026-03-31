@@ -451,8 +451,6 @@
     if (notif) notif.addEventListener('click', function () { showToast('Notifications — open Mind Wars lobby', 'info'); });
     var settings = document.getElementById('settings-btn');
     if (settings) settings.addEventListener('click', function () { showToast('Settings — open Mind Wars lobby', 'info'); });
-    var profile = document.getElementById('profile-btn');
-    if (profile) profile.addEventListener('click', function () { showToast('Profile — open Mind Wars lobby', 'info'); });
   }
 
   function finishLoading() {
