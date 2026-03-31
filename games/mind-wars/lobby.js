@@ -114,7 +114,7 @@
         if (e.target.closest('#sfx-toggle, [data-sd-toggle]')) return;
         if (
           e.target.closest(
-            'button,.bnav-item,.mission-card,.mode-card,.currency-chip,.tb-icon-btn,.event-banner,.ms-option,.lb-row,.tb-avatar,.tb-logo,.lavs-knd-card,.inspect-btn,[data-open-mm]'
+            'button,.mission-card,.mode-card,.currency-chip,.tb-icon-btn,.event-banner,.ms-option,.lb-row,.tb-avatar,.tb-logo,.lavs-knd-card,.inspect-btn,[data-open-mm]'
           )
         ) {
           playUiClick();
@@ -1463,24 +1463,6 @@
     document.querySelectorAll('.overlay-panel').forEach(function (el) {
       el.addEventListener('click', function (e) {
         if (e.target === el) closeOverlay(el.id);
-      });
-    });
-
-    document.querySelectorAll('.bnav-item').forEach(function (item) {
-      item.addEventListener('click', function () {
-        var nav = item.getAttribute('data-nav');
-        if (nav === 'avatars') {
-          window.location.assign('/tools/cards/index.html');
-          return;
-        }
-        if (nav === 'neural-link') {
-          window.location.assign('/games/knd-neural-link/drops.php');
-          return;
-        }
-        document.querySelectorAll('.bnav-item').forEach(function (b) { b.classList.remove('active'); });
-        item.classList.add('active');
-        if (nav === 'leaderboard') openOverlay('lb-overlay');
-        else if (nav === 'inventory') showToast('Coming soon', 'info');
       });
     });
 

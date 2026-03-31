@@ -157,12 +157,9 @@ body{background:var(--void);color:var(--t1);font-family:var(--FR);font-size:18.4
 .lobby-shell{
   position:relative;z-index:1;
   display:grid;
-  grid-template-rows:64px 1fr 76px;
+  grid-template-rows:64px 1fr;
   height:100vh;
   overflow:hidden;
-}
-.lobby-shell.lobby-shell--no-bottom-nav{
-  grid-template-rows:64px 1fr;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1519,7 +1516,7 @@ a.bnav-item{text-decoration:none;color:inherit}
     min-height:100dvh;
     height:100vh;
     height:100dvh;
-    grid-template-rows:auto minmax(0,1fr) auto;
+    grid-template-rows:auto minmax(0,1fr);
   }
   .lobby-content{
     display:flex;
@@ -1623,10 +1620,6 @@ a.bnav-item{text-decoration:none;color:inherit}
     padding-bottom:6px;
     padding-left:max(12px, env(safe-area-inset-left, 0px));
   }
-  .bottom-nav{
-    padding-bottom:max(8px, env(safe-area-inset-bottom, 0px));
-  }
-  .bnav-label{font-size:8.5px;letter-spacing:1px}
 }
 @media(max-width:480px){
   .topbar{
