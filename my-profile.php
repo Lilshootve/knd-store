@@ -321,7 +321,7 @@ $tierTag = strtoupper($levelTier) . ' ' . t('profile.tier', 'TIER');
       </div>
 
       <div class="back-link">
-        <a href="/knd-arena.php"><i class="fas fa-arrow-left me-1"></i><?php echo t('profile.back_arena', 'Back to Arena'); ?></a>
+        <a href="/games/mind-wars/lobby.php"><i class="fas fa-arrow-left me-1"></i><?php echo t('profile.back_arena', 'Back to Arena'); ?></a>
       </div>
 
       </div><!-- /.knd-profile-neural -->
