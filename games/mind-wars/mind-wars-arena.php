@@ -44,6 +44,10 @@ if (!$embed) {
 ?>
 <?php if ($embed): ?>
 <link rel="stylesheet" href="/assets/css/arena-embed.css?v=<?php echo $arenaEmbedCssV; ?>">
+<?php
+require_once __DIR__ . '/../../includes/holo_orb_assets.php';
+holo_orb_emit_stylesheet_link();
+?>
 <?php endif; ?>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -848,6 +852,10 @@ if (!$embed) {
 <script src="/assets/js/cursor-fx.js?v=<?php echo (int) filemtime($cfxJs); ?>" defer></script>
 <?php
     }
+}
+if ($embed) {
+    require_once __DIR__ . '/../../includes/holo_orb_assets.php';
+    holo_orb_emit_init_script();
 }
 ?>
 </body>

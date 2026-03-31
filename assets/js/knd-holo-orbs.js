@@ -31,6 +31,7 @@
     ".knd-chat-panel",
     ".knd-chat-btn",
     ".modal.show",
+    ".swal2-container",
     ".bottom-nav",
     ".bnav-item",
     ".settings-drawer",

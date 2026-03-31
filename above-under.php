@@ -113,6 +113,10 @@ if ($embed) {
     <link rel="stylesheet" href="/assets/css/knd-ui.css?v=<?php echo file_exists(__DIR__ . '/assets/css/knd-ui.css') ? filemtime(__DIR__ . '/assets/css/knd-ui.css') : 0; ?>">
     <link rel="stylesheet" href="/assets/css/knd-insight-arena.css?v=<?php echo $vArena; ?>">
     <link rel="stylesheet" href="/assets/css/arena-embed.css?v=<?php echo file_exists(__DIR__ . '/assets/css/arena-embed.css') ? filemtime(__DIR__ . '/assets/css/arena-embed.css') : 0; ?>">
+<?php
+require_once __DIR__ . '/includes/holo_orb_assets.php';
+holo_orb_emit_stylesheet_link();
+?>
 </head>
 <body class="arena-embed insight-context insight-page">
 <div class="arena-embed-inner">
@@ -134,6 +138,7 @@ if ($embed) {
 <script src="/assets/js/above-under.js?v=<?php echo @filemtime(__DIR__ . '/assets/js/above-under.js'); ?>"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<?php holo_orb_emit_init_script(); ?>
 </div></body></html>
 <?php
     exit;

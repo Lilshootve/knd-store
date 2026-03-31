@@ -64,6 +64,10 @@ if ($embed) {
     <link rel="stylesheet" href="/assets/css/knd-ui.css?v=<?php echo file_exists(__DIR__ . '/assets/css/knd-ui.css') ? filemtime(__DIR__ . '/assets/css/knd-ui.css') : 0; ?>">
     <link rel="stylesheet" href="/assets/css/lastroll-holo.css?v=<?php echo $holoV; ?>">
     <link rel="stylesheet" href="/assets/css/arena-embed.css?v=<?php echo file_exists(__DIR__ . '/assets/css/arena-embed.css') ? filemtime(__DIR__ . '/assets/css/arena-embed.css') : 0; ?>">
+<?php
+require_once __DIR__ . '/includes/holo_orb_assets.php';
+holo_orb_emit_stylesheet_link();
+?>
 </head>
 <body class="arena-embed lastroll-context lastroll-game">
 <div class="arena-embed-inner">
@@ -103,6 +107,7 @@ const lobbyUrl = <?php echo json_encode($lobbyUrl); ?>;
 </script>
 <script src="/assets/js/lastroll-sfx.js?v=<?php echo $sfxV; ?>" defer></script>
 <script src="/assets/js/deathroll-1v1.js?v=<?php echo $drJsV; ?>" defer></script>
+<?php holo_orb_emit_init_script(); ?>
 </div></body></html>
 <?php
     exit;
