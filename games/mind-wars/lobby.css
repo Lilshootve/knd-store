@@ -1184,12 +1184,13 @@ a.bnav-item{text-decoration:none;color:inherit}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 /* responsive */
-@media(max-width:1100px){
-  .lobby-content{grid-template-columns:240px 1fr 240px;gap:10px}
-  .hero-avatar-wrap{width:160px;height:230px}
-}
-@media(max-width:820px){
-  /* Let the middle row shrink so inner scroll works (grid default min-height:auto) */
+/*
+ * Compact lobby: phones in landscape often exceed 820px width — 3-column layout
+ * crushed the center. Use width OR short viewport height.
+ * Stack columns: hero first, then rank/missions/events (scroll), no display:none sidebars.
+ */
+@media (max-width:1100px),
+       screen and (max-height:560px) and (max-width:1360px){
   .lobby-shell{
     min-height:100vh;
     min-height:100dvh;
@@ -1198,57 +1199,111 @@ a.bnav-item{text-decoration:none;color:inherit}
     grid-template-rows:auto minmax(0,1fr) auto;
   }
   .lobby-content{
+    display:flex;
+    flex-direction:column;
     grid-template-columns:1fr;
     min-height:0;
     overflow-x:hidden;
     overflow-y:auto;
     -webkit-overflow-scrolling:touch;
     align-content:start;
-    padding:12px 12px max(10px, env(safe-area-inset-bottom, 0px));
-    gap:10px;
+    padding:10px 12px max(10px, env(safe-area-inset-bottom, 0px));
+    gap:12px;
   }
-  .left-col,.right-col{display:none}
-  .tb-currency{display:none}
   .center-col{
-    flex:0 1 auto;
+    order:-1;
+    flex:0 0 auto;
     min-height:0;
     justify-content:flex-start;
+    gap:8px;
+    overflow:visible;
+    width:100%;
+  }
+  .left-col,.right-col{
+    display:flex;
+    flex-direction:column;
     gap:10px;
+    width:100%;
+    min-width:0;
+    flex-shrink:0;
+  }
+  .panel{
+    height:auto;
+    min-height:0;
+    max-height:min(42vh, 340px);
+  }
+  .right-col > .panel:nth-child(2){
+    height:auto;
+    max-height:min(48vh, 420px);
+  }
+  .panel-body{
+    margin-bottom:0;
+    max-height:min(28vh, 220px);
+  }
+  .tb-currency{
+    display:flex;
+    flex-shrink:0;
+    gap:6px;
+  }
+  .currency-chip{
+    padding:3px 8px;
+    font-size:11px;
+  }
+  .currency-chip .cc-icon{font-size:14px}
+  .tb-identity{max-width:min(200px, 38vw);min-width:0}
+  .hero-stage{
+    flex:0 0 auto;
+    min-height:min(120px, 22dvh);
+    max-height:none;
     overflow:visible;
   }
-  .hero-stage{
-    flex:0 1 auto;
-    min-height:200px;
-    max-height:min(42vh, 320px);
-  }
   .hero-avatar-wrap{
-    max-height:min(38vh, 280px);
+    width:min(78vw, 260px);
+    max-height:min(48vmin, 300px);
+    height:auto;
   }
-  .hero-holo-projector-inner{max-height:min(38vh, 280px)}
-  .hero-hologram-iframe{min-height:min(36vh, 240px)}
-  .hero-name{font-size:clamp(16px, 5vw, 22px);letter-spacing:2px;margin-top:6px}
+  .hero-holo-projector-inner{max-height:min(48vmin, 300px)}
+  .hero-hologram-iframe{min-height:min(36vmin, 220px)}
+  .hero-rarity-tag{margin-bottom:10px;font-size:9px;padding:3px 10px}
+  .hero-name{font-size:clamp(15px, 4.2vw, 22px);letter-spacing:2px;margin-top:4px}
+  .hero-class{font-size:10px}
   .battle-zone{
     height:auto;
     min-height:0;
     flex-shrink:0;
-    padding-bottom:max(8px, env(safe-area-inset-bottom, 0px));
+    padding-bottom:max(6px, env(safe-area-inset-bottom, 0px));
   }
   .battle-btn{
-    width:min(92vw, 240px);
+    width:min(94vw, 260px);
     padding:14px 0;
-    font-size:clamp(13px, 3.8vw, 16px);
+    font-size:clamp(14px, 3.6vw, 17px);
     letter-spacing:3px;
   }
-  .quick-actions{width:100%;max-width:min(92vw, 360px)}
+  .quick-actions{
+    width:100%;
+    max-width:min(94vw, 400px);
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:6px;
+  }
+  .qa-btn{
+    flex:1 1 auto;
+    min-width:min(100px, 30vw);
+    padding:9px 6px;
+    font-size:8px;
+  }
   .topbar{
+    flex-wrap:wrap;
+    row-gap:6px;
     padding-top:max(0px, env(safe-area-inset-top, 0px));
-    padding-right:max(20px, env(safe-area-inset-right, 0px));
-    padding-bottom:0;
-    padding-left:max(20px, env(safe-area-inset-left, 0px));
+    padding-right:max(12px, env(safe-area-inset-right, 0px));
+    padding-bottom:6px;
+    padding-left:max(12px, env(safe-area-inset-left, 0px));
   }
   .bottom-nav{
     padding-bottom:max(8px, env(safe-area-inset-bottom, 0px));
   }
+  .bnav-label{font-size:8.5px;letter-spacing:1px}
 }
 @media(max-width:480px){
   .topbar{
