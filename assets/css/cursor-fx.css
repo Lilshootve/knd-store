@@ -1,18 +1,16 @@
 /**
- * KND Cursor FX — “black hole” lens: distorts live backdrop (SVG displacement),
- * dark void core (no suction — pure optics), thin accretion rim.
+ * KND Cursor FX — “Singularity lens”: cinematic gravitational read,
+ * backdrop warp + layered photon rings, bloom, obsidian core.
  * Companion: /assets/js/cursor-fx.js
- *
- * Uses backdrop-filter + url(#filter) where supported; falls back to blur/contrast.
- * pointer-events: none — never blocks clicks.
  */
 
 :root {
-  /* Warp disc diameter (px) */
-  --knd-cfx-disc: 280px;
-  /* Subtle animated spin for photon ring (disabled if prefers-reduced-motion) */
-  --knd-cfx-rim-cyan: rgba(0, 232, 255, 0.55);
-  --knd-cfx-rim-violet: rgba(200, 100, 255, 0.45);
+  --knd-cfx-disc: 304px;
+  --knd-cfx-cyan: rgb(62, 239, 255);
+  --knd-cfx-violet: rgb(196, 92, 255);
+  --knd-cfx-ember: rgb(255, 160, 72);
+  --knd-cfx-void-core: #010306;
+  --knd-cfx-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html.knd-cursor-fx--disabled #knd-cursor-fx,
@@ -37,11 +35,6 @@ html.knd-cursor-fx--disabled #knd-cursor-fx-root {
   }
 }
 
-/**
- * Mount: above Mind Wars shell / arena playfield so the void + rim stay visible.
- * Below modals (~100+), toasts, loading, portrait gate; pointer-events none.
- * Backdrop warp samples the composited scene under the lens (mostly bg + chrome).
- */
 #knd-cursor-fx-root.knd-cursor-fx-root {
   position: fixed;
   inset: 0;
@@ -51,7 +44,6 @@ html.knd-cursor-fx--disabled #knd-cursor-fx-root {
   contain: layout;
 }
 
-/* Inside mount (Mind Wars lobby / arena): fills parent */
 #knd-cursor-fx.knd-cursor-fx--in-root {
   position: absolute;
   inset: 0;
@@ -63,7 +55,6 @@ html.knd-cursor-fx--disabled #knd-cursor-fx-root {
   contain: layout;
 }
 
-/* Store shell (no mount): overlay above page chrome, below typical modals */
 #knd-cursor-fx.knd-cursor-fx--floating {
   position: fixed;
   inset: 0;
@@ -73,7 +64,7 @@ html.knd-cursor-fx--disabled #knd-cursor-fx-root {
   contain: layout;
 }
 
-/* Follows pointer (JS positions left/top) */
+/* Position only — pulse anim lives on .__lens */
 .knd-cursor-fx__track {
   position: absolute;
   left: 0;
@@ -85,10 +76,52 @@ html.knd-cursor-fx--disabled #knd-cursor-fx-root {
   isolation: isolate;
 }
 
-/**
- * Layer 1 — geometric warp of pixels behind this circle (Chrome/Safari; Firefox may fall back).
- * SVG filter #knd-cfx-backdrop-warp is injected once by JS (feTurbulence + feDisplacementMap).
- */
+.knd-cursor-fx__lens {
+  position: relative;
+  width: 0;
+  height: 0;
+  transform-origin: center center;
+}
+
+.knd-cursor-fx__lens--ping {
+  animation: knd-cfx-lens-ping 0.55s var(--knd-cfx-ease-out) forwards;
+}
+
+@keyframes knd-cfx-lens-ping {
+  0% {
+    transform: scale(1);
+  }
+  28% {
+    transform: scale(1.085);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Soft chromatic bloom — sits under warp */
+.knd-cursor-fx__bloom {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--knd-cfx-disc) * 1.45);
+  height: calc(var(--knd-cfx-disc) * 1.45);
+  margin: calc(var(--knd-cfx-disc) * -0.725) 0 0 calc(var(--knd-cfx-disc) * -0.725);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 45% 42%,
+    rgba(62, 239, 255, 0.22) 0%,
+    rgba(120, 80, 255, 0.1) 28%,
+    rgba(255, 100, 60, 0.04) 48%,
+    transparent 68%
+  );
+  filter: blur(32px);
+  opacity: 0.75;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* Live backdrop warp */
 .knd-cursor-fx__warp {
   position: absolute;
   left: 50%;
@@ -97,24 +130,19 @@ html.knd-cursor-fx--disabled #knd-cursor-fx-root {
   height: var(--knd-cfx-disc);
   margin: calc(var(--knd-cfx-disc) / -2) 0 0 calc(var(--knd-cfx-disc) / -2);
   border-radius: 50%;
-  /* Primary: warp backdrop; WebKit prefix for Safari */
   -webkit-backdrop-filter: url(#knd-cfx-backdrop-warp);
   backdrop-filter: url(#knd-cfx-backdrop-warp);
+  opacity: 0.92;
 }
 
-/**
- * Browsers without url() backdrop support: still get a “lensing” + void read.
- */
 @supports not (backdrop-filter: url(#knd-cfx-backdrop-warp)) {
   .knd-cursor-fx__warp {
-    -webkit-backdrop-filter: blur(1.5px) brightness(0.88) saturate(1.12);
-    backdrop-filter: blur(1.5px) brightness(0.88) saturate(1.12);
+    -webkit-backdrop-filter: blur(2px) saturate(1.15) brightness(0.92);
+    backdrop-filter: blur(2px) saturate(1.15) brightness(0.92);
   }
 }
 
-/**
- * Layer 2 — event horizon: near-black center, transparent outward (does not “pull” content).
- */
+/* Deep void + subtle accretion haze */
 .knd-cursor-fx__void {
   position: absolute;
   left: 50%;
@@ -123,21 +151,21 @@ html.knd-cursor-fx--disabled #knd-cursor-fx-root {
   height: var(--knd-cfx-disc);
   margin: calc(var(--knd-cfx-disc) / -2) 0 0 calc(var(--knd-cfx-disc) / -2);
   border-radius: 50%;
-  background: radial-gradient(
-    circle at 48% 45%,
-    rgba(0, 0, 0, 0.97) 0%,
-    rgba(0, 4, 12, 0.82) 14%,
-    rgba(0, 12, 28, 0.35) 32%,
-    transparent 56%
-  );
-  mix-blend-mode: multiply;
+  background:
+    radial-gradient(ellipse 95% 88% at 44% 40%, var(--knd-cfx-void-core) 0%, transparent 52%),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(0, 0, 0, 0.94) 0%,
+      rgba(4, 14, 32, 0.55) 28%,
+      rgba(12, 28, 56, 0.18) 48%,
+      transparent 64%
+    );
+  mix-blend-mode: normal;
   pointer-events: none;
 }
 
-/**
- * Layer 3 — thin tech rim / accretion hint (no physics sim).
- */
-.knd-cursor-fx__rim {
+/* Ionized rim — thin energy line */
+.knd-cursor-fx__ion {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -146,48 +174,113 @@ html.knd-cursor-fx--disabled #knd-cursor-fx-root {
   margin: calc(var(--knd-cfx-disc) / -2) 0 0 calc(var(--knd-cfx-disc) / -2);
   border-radius: 50%;
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--knd-cfx-rim-cyan) 35%, transparent),
-    0 0 28px color-mix(in srgb, var(--knd-cfx-rim-cyan) 22%, transparent),
-    0 0 60px color-mix(in srgb, var(--knd-cfx-rim-violet) 12%, transparent),
-    inset 0 0 40px rgba(0, 0, 0, 0.25);
+    0 0 0 0.5px rgba(62, 239, 255, 0.45),
+    0 0 20px rgba(62, 239, 255, 0.18),
+    0 0 48px rgba(196, 92, 255, 0.12),
+    inset 0 0 24px rgba(0, 0, 0, 0.35);
   pointer-events: none;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
-.knd-cursor-fx__rim::after {
-  content: "";
+/* Einstein / photon ring — conic wash, masked to annulus */
+.knd-cursor-fx__photon {
   position: absolute;
-  inset: 10%;
+  left: 50%;
+  top: 50%;
+  width: var(--knd-cfx-disc);
+  height: var(--knd-cfx-disc);
+  margin: calc(var(--knd-cfx-disc) / -2) 0 0 calc(var(--knd-cfx-disc) / -2);
   border-radius: 50%;
-  border: 1px solid transparent;
-  border-top-color: var(--knd-cfx-rim-cyan);
-  border-right-color: color-mix(in srgb, var(--knd-cfx-rim-violet) 60%, transparent);
-  opacity: 0.35;
-  animation: knd-cfx-rim-drift 14s linear infinite;
+  background: conic-gradient(
+    from 210deg,
+    transparent 0deg,
+    rgba(62, 239, 255, 0) 32deg,
+    rgba(62, 239, 255, 0.35) 76deg,
+    rgba(196, 92, 255, 0.28) 118deg,
+    rgba(255, 160, 72, 0.22) 152deg,
+    rgba(62, 239, 255, 0.15) 198deg,
+    transparent 260deg,
+    rgba(196, 92, 255, 0.2) 300deg,
+    transparent 360deg
+  );
+  -webkit-mask: radial-gradient(
+    circle,
+    transparent 0,
+    transparent 56%,
+    #000 57.5%,
+    #000 63%,
+    transparent 64.5%
+  );
+  mask: radial-gradient(
+    circle,
+    transparent 0,
+    transparent 56%,
+    #000 57.5%,
+    #000 63%,
+    transparent 64.5%
+  );
+  mix-blend-mode: screen;
+  opacity: 0.72;
+  pointer-events: none;
+  animation: knd-cfx-photon-spin 22s linear infinite;
 }
 
-@keyframes knd-cfx-rim-drift {
+@keyframes knd-cfx-photon-spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .knd-cursor-fx__rim::after {
-    animation: none;
-  }
-}
-
-/* Optional 2px singularity glint (not a second cursor) */
-.knd-cursor-fx__singularity {
+/* Counter-rotating hairline arc */
+.knd-cursor-fx__arc {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 3px;
-  height: 3px;
-  margin: -1.5px 0 0 -1.5px;
+  width: var(--knd-cfx-disc);
+  height: var(--knd-cfx-disc);
+  margin: calc(var(--knd-cfx-disc) / -2) 0 0 calc(var(--knd-cfx-disc) / -2);
   border-radius: 50%;
-  background: radial-gradient(circle, #fff 0%, var(--knd-cfx-rim-cyan) 55%, transparent 70%);
-  opacity: 0.35;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px transparent;
   pointer-events: none;
+  opacity: 0.55;
+}
+
+.knd-cursor-fx__arc::before {
+  content: "";
+  position: absolute;
+  inset: 11%;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  border-top-color: rgba(62, 239, 255, 0.55);
+  border-right-color: rgba(196, 92, 255, 0.35);
+  filter: drop-shadow(0 0 6px rgba(62, 239, 255, 0.35));
+  animation: knd-cfx-arc-ccw 16s linear infinite;
+}
+
+@keyframes knd-cfx-arc-ccw {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+/* Specular glint — not a second cursor, reads as lens caustic */
+.knd-cursor-fx__caustic {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(255, 255, 255, 0.95) 0%,
+    var(--knd-cfx-cyan) 42%,
+    transparent 72%
+  );
+  opacity: 0.55;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  filter: blur(0.3px);
 }

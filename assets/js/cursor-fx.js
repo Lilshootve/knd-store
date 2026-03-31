@@ -1,15 +1,14 @@
 /**
- * KND Cursor FX — black-hole style backdrop warp (SVG displacement on backdrop),
- * smooth follow via requestAnimationFrame. Touch / reduced-motion safe.
- *
+ * KND Cursor FX — singularity lens: SVG backdrop warp, smooth rAF follow,
+ * optional click “lensing” pulse. Touch / reduced-motion safe.
  * Opt out: <html data-knd-cursor-fx="off">
- * No preventDefault; pointer-events stay on underlying UI.
  */
 (function () {
   'use strict';
 
-  var EASE = 0.13;
+  var EASE = 0.165;
   var FILTER_ID = 'knd-cfx-backdrop-warp';
+  var PING_MS = 520;
 
   function isOptOut() {
     var v = document.documentElement.getAttribute('data-knd-cursor-fx');
@@ -39,10 +38,7 @@
     }
   }
 
-  /**
-   * SVG filter used by CSS backdrop-filter: url(#id).
-   * feDisplacementMap warps the backdrop using fractal noise (subtle, premium).
-   */
+  /** Smoother warp: blurred turbulence before displacement */
   function injectSvgFilter() {
     if (document.getElementById('knd-cfx-svg-defs')) return;
 
@@ -63,19 +59,25 @@
 
     var turb = document.createElementNS(ns, 'feTurbulence');
     turb.setAttribute('type', 'fractalNoise');
-    turb.setAttribute('baseFrequency', '0.013');
+    turb.setAttribute('baseFrequency', '0.009');
     turb.setAttribute('numOctaves', '2');
-    turb.setAttribute('seed', '17');
-    turb.setAttribute('result', 'turb');
+    turb.setAttribute('seed', '23');
+    turb.setAttribute('result', 'raw');
+
+    var blur = document.createElementNS(ns, 'feGaussianBlur');
+    blur.setAttribute('in', 'raw');
+    blur.setAttribute('stdDeviation', '1.1');
+    blur.setAttribute('result', 'smooth');
 
     var disp = document.createElementNS(ns, 'feDisplacementMap');
     disp.setAttribute('in', 'SourceGraphic');
-    disp.setAttribute('in2', 'turb');
-    disp.setAttribute('scale', '14');
+    disp.setAttribute('in2', 'smooth');
+    disp.setAttribute('scale', '11');
     disp.setAttribute('xChannelSelector', 'R');
     disp.setAttribute('yChannelSelector', 'G');
 
     filter.appendChild(turb);
+    filter.appendChild(blur);
     filter.appendChild(disp);
     defs.appendChild(filter);
     svg.appendChild(defs);
@@ -93,26 +95,42 @@
     var track = document.createElement('div');
     track.className = 'knd-cursor-fx__track';
 
+    var lens = document.createElement('div');
+    lens.className = 'knd-cursor-fx__lens';
+
+    var bloom = document.createElement('div');
+    bloom.className = 'knd-cursor-fx__bloom';
+
     var warp = document.createElement('div');
     warp.className = 'knd-cursor-fx__warp';
 
     var voidEl = document.createElement('div');
     voidEl.className = 'knd-cursor-fx__void';
 
-    var rim = document.createElement('div');
-    rim.className = 'knd-cursor-fx__rim';
+    var ion = document.createElement('div');
+    ion.className = 'knd-cursor-fx__ion';
 
-    var sing = document.createElement('div');
-    sing.className = 'knd-cursor-fx__singularity';
+    var photon = document.createElement('div');
+    photon.className = 'knd-cursor-fx__photon';
 
-    track.appendChild(warp);
-    track.appendChild(voidEl);
-    track.appendChild(rim);
-    track.appendChild(sing);
+    var arc = document.createElement('div');
+    arc.className = 'knd-cursor-fx__arc';
+
+    var caustic = document.createElement('div');
+    caustic.className = 'knd-cursor-fx__caustic';
+
+    lens.appendChild(bloom);
+    lens.appendChild(warp);
+    lens.appendChild(voidEl);
+    lens.appendChild(ion);
+    lens.appendChild(photon);
+    lens.appendChild(arc);
+    lens.appendChild(caustic);
+    track.appendChild(lens);
     root.appendChild(track);
     (mount || document.body).appendChild(root);
 
-    return { root: root, track: track };
+    return { root: root, track: track, lens: lens };
   }
 
   function init() {
@@ -139,6 +157,7 @@
     var currentY = targetY;
     var rafId = null;
     var visible = false;
+    var pingTimer = null;
 
     function applyPosition() {
       dom.track.style.left = currentX + 'px';
@@ -149,7 +168,7 @@
     function tick() {
       var dx = targetX - currentX;
       var dy = targetY - currentY;
-      if (Math.abs(dx) < 0.06 && Math.abs(dy) < 0.06) {
+      if (Math.abs(dx) < 0.05 && Math.abs(dy) < 0.05) {
         currentX = targetX;
         currentY = targetY;
         applyPosition();
@@ -179,6 +198,18 @@
       dom.root.style.opacity = '0';
     }
 
+    function lensPing() {
+      if (prefersReducedMotion()) return;
+      dom.lens.classList.remove('knd-cursor-fx__lens--ping');
+      void dom.lens.offsetWidth;
+      dom.lens.classList.add('knd-cursor-fx__lens--ping');
+      if (pingTimer) clearTimeout(pingTimer);
+      pingTimer = setTimeout(function () {
+        dom.lens.classList.remove('knd-cursor-fx__lens--ping');
+        pingTimer = null;
+      }, PING_MS);
+    }
+
     window.addEventListener('pointermove', onMove, { passive: true });
     document.documentElement.addEventListener('mouseleave', onLeave, { passive: true });
     window.addEventListener('blur', onLeave, { passive: true });
@@ -188,6 +219,16 @@
         if (e.pointerType === 'mouse') visible = true;
       },
       { passive: true }
+    );
+
+    window.addEventListener(
+      'pointerdown',
+      function (e) {
+        if (e.pointerType && e.pointerType !== 'mouse') return;
+        if (e.button !== 0) return;
+        lensPing();
+      },
+      true
     );
 
     applyPosition();
