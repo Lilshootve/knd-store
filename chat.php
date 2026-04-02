@@ -339,6 +339,6 @@
 
   // Load conversation on page load
   loadConversation();
-</body>
+</script>
 
 </html>
