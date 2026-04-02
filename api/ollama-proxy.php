@@ -11,7 +11,7 @@ if ($body === false) {
     exit;
 }
 
-$ch = curl_init('https://romantic-stewart-phone-stat.trycloudflare.com/api/chat');
+$ch = curl_init('https://ai.kndstore.com/api/chat');
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
 curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
