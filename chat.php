@@ -110,7 +110,7 @@ form.addEventListener('submit', async (e) => {
   conversation.push({ role: 'user', content: text });
 
   try {
-    const resp = await fetch('http://localhost:11434/api/chat', {
+    const resp = await fetch('https://romantic-stewart-phone-stat.trycloudflare.com/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
