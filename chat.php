@@ -266,10 +266,12 @@
               if (!line.trim()) continue;
               try {
                 const obj = JSON.parse(line);
-                if (obj.message && obj.message.content) {
-                  botDiv.textContent += obj.message.content;
-                  botDiv.classList.add('typing');
-                  messages.scrollTop = messages.scrollHeight;
+                if (obj.done) { done = true; break; }
+if (obj.message && obj.message.content) {
+  botDiv.textContent += obj.message.content;
+  botDiv.classList.add('typing');
+  messages.scrollTop = messages.scrollHeight;
+}
                 }
               } catch (_) { }
             }

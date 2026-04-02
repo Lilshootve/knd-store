@@ -2,7 +2,7 @@
 
 ## CRITICAL RULES — NEVER BREAK THESE
 - This is a PHP procedural project. NEVER create Node.js, Python, or any non-PHP backend files.
-- NEVER use frameworks (no Laravel, no Express, no Symfony).
+- NEVER use absolute URLs with domain in chat.php. Always use relative URLs like /api/ollama-proxy.php
 - NEVER create package.json, composer.json, or requirements.txt.
 - Backend: PHP procedural only, PDO only, MySQL only.
 - Frontend: Vanilla JS, Bootstrap 5.3, jQuery 3.6.
