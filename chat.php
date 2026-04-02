@@ -279,7 +279,11 @@
         botDiv.classList.remove('typing');
         conversation.push({ role: 'assistant', content: botDiv.textContent });
       } catch (err) {
-        botDiv.textContent = 'Error: ' + err.message;
+        // Remove last user message to avoid duplicate on retry
+        if (conversation.length && conversation[conversation.length-1].role === 'user') {
+          conversation.pop();
+        }
+        botDiv.textContent = err.message;
         botDiv.classList.remove('typing');
       }
 
