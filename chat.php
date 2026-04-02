@@ -110,7 +110,7 @@ form.addEventListener('submit', async (e) => {
   conversation.push({ role: 'user', content: text });
 
   try {
-    const resp = await fetch('https://kndstore.com/api/ollama-proxy.php', {
+    const resp = await fetch('/api/ollama-proxy.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
