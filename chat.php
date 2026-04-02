@@ -278,6 +278,7 @@
         }
         botDiv.classList.remove('typing');
         conversation.push({ role: 'assistant', content: botDiv.textContent });
+    saveConversation();
       } catch (err) {
         // Remove last user message to avoid duplicate on retry
         if (conversation.length && conversation[conversation.length-1].role === 'user') {
@@ -295,7 +296,49 @@
 
     send.addEventListener('click', sendMessage);
     input.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
-  </script>
+    
+
+  // Persistence functions
+  function loadConversation() {
+    const stored = localStorage.getItem('knd_chat_history');
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          conversation = parsed;
+          for (const msg of conversation) {
+            const roleClass = msg.role === 'assistant' ? 'bot' : msg.role;
+            addMessage(msg.content, roleClass);
+          }
+        }
+      } catch (_) {}
+    }
+  }
+
+  function saveConversation() {
+    const toStore = conversation.slice(-20);
+    localStorage.setItem('knd_chat_history', JSON.stringify(toStore));
+  }
+
+  function clearChat() {
+    localStorage.removeItem('knd_chat_history');
+    conversation = [];
+    messages.innerHTML = '';
+    input.disabled = false;
+    send.disabled = false;
+    status.textContent = 'ONLINE · slekrem/gpt-oss-claude-code-32k';
+  }
+
+  // Create Clear Chat button
+  const clearBtn = document.createElement('button');
+  clearBtn.id = 'clear-chat';
+  clearBtn.textContent = 'Clear Chat';
+  clearBtn.style = 'margin-left:10px;padding:0 10px;background:rgba(0,232,255,.08);border:1px solid rgba(0,232,255,.25);border-radius:6px;color:#00e8ff;font-family:\'Orbitron\',sans-serif;font-size:10px;font-weight:700;letter-spacing:.15em;cursor:pointer;transition:all .2s;';
+  document.getElementById('header').appendChild(clearBtn);
+  clearBtn.addEventListener('click', clearChat);
+
+  // Load conversation on page load
+  loadConversation();
 </body>
 
 </html>
