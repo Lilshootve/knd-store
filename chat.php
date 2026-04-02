@@ -293,7 +293,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        model: 'slekrem/gpt-oss-claude-code-32k',
+                        model: 'qwen3-coder:latest',
                         messages: conversation,
                         stream: true
                     })
