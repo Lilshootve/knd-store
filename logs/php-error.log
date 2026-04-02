@@ -1,0 +1,486 @@
+[17-Dec-2025 14:44:41 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 18
+[17-Dec-2025 14:45:48 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:18
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 18
+[17-Dec-2025 14:47:52 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 17
+[17-Dec-2025 14:48:00 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 17
+[17-Dec-2025 14:51:34 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[17-Dec-2025 14:54:42 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/order.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/order.php on line 7
+[17-Dec-2025 14:54:54 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/products.php:62
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/products.php on line 62
+[17-Dec-2025 14:55:20 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[17-Dec-2025 14:58:38 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[17-Dec-2025 15:27:47 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/about.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/about.php on line 8
+[17-Dec-2025 16:32:50 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[17-Dec-2025 16:58:52 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/products.php:62
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/products.php on line 62
+[17-Dec-2025 17:31:31 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[17-Dec-2025 17:31:31 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[17-Dec-2025 20:24:23 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[17-Dec-2025 20:24:43 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[17-Dec-2025 21:09:08 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[17-Dec-2025 23:34:23 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[17-Dec-2025 23:35:09 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 00:24:25 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 00:24:29 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 00:54:29 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 01:13:27 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function current_lang() in /home/u354862096/domains/kndstore.com/public_html/includes/header.php:24
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/producto.php(26): generateHeader()
+#1 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/header.php on line 24
+[18-Dec-2025 01:15:04 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function current_lang() in /home/u354862096/domains/kndstore.com/public_html/includes/header.php:24
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/producto.php(26): generateHeader()
+#1 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/header.php on line 24
+[18-Dec-2025 01:28:43 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 01:36:04 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 01:48:34 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function current_lang() in /home/u354862096/domains/kndstore.com/public_html/includes/header.php:24
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/producto.php(26): generateHeader()
+#1 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/header.php on line 24
+[18-Dec-2025 03:04:44 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function current_lang() in /home/u354862096/domains/kndstore.com/public_html/includes/header.php:24
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/producto.php(26): generateHeader()
+#1 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/header.php on line 24
+[18-Dec-2025 03:48:36 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/apparel.php:25
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/apparel.php on line 25
+[18-Dec-2025 03:56:38 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 03:56:50 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 05:17:11 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function current_lang() in /home/u354862096/domains/kndstore.com/public_html/includes/header.php:24
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/producto.php(26): generateHeader()
+#1 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/header.php on line 24
+[18-Dec-2025 05:32:42 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function current_lang() in /home/u354862096/domains/kndstore.com/public_html/includes/header.php:24
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/producto.php(26): generateHeader()
+#1 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/header.php on line 24
+[18-Dec-2025 05:53:38 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function current_lang() in /home/u354862096/domains/kndstore.com/public_html/includes/header.php:24
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/producto.php(26): generateHeader()
+#1 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/header.php on line 24
+[18-Dec-2025 05:55:22 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function current_lang() in /home/u354862096/domains/kndstore.com/public_html/includes/header.php:24
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/producto.php(26): generateHeader()
+#1 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/header.php on line 24
+[18-Dec-2025 06:51:08 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 06:51:12 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 07:54:02 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 08:50:50 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 11:15:52 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function current_lang() in /home/u354862096/domains/kndstore.com/public_html/includes/header.php:24
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/producto.php(26): generateHeader()
+#1 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/header.php on line 24
+[18-Dec-2025 11:17:35 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function current_lang() in /home/u354862096/domains/kndstore.com/public_html/includes/header.php:24
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/producto.php(26): generateHeader()
+#1 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/header.php on line 24
+[18-Dec-2025 11:36:15 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 11:36:15 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 11:36:17 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 11:36:19 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 11:45:59 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function current_lang() in /home/u354862096/domains/kndstore.com/public_html/includes/header.php:24
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/producto.php(26): generateHeader()
+#1 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/header.php on line 24
+[18-Dec-2025 12:02:46 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 12:14:28 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/products.php:62
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/products.php on line 62
+[18-Dec-2025 13:03:40 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 13:03:44 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 13:20:30 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 13:22:08 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function current_lang() in /home/u354862096/domains/kndstore.com/public_html/includes/header.php:24
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/producto.php(26): generateHeader()
+#1 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/header.php on line 24
+[18-Dec-2025 13:23:52 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/order.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/order.php on line 7
+[18-Dec-2025 15:38:20 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 15:38:20 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 19:03:31 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 19:06:39 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 19:06:39 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 19:09:03 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 19:09:12 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 19:11:46 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 19:17:25 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 19:17:36 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:15
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 15
+[18-Dec-2025 19:19:37 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:20
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 20
+[18-Dec-2025 19:19:55 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/test.php:25
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/test.php on line 25
+[18-Dec-2025 19:28:58 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:20
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 20
+[18-Dec-2025 19:36:08 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:20
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 20
+[18-Dec-2025 19:39:56 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:20
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 20
+[18-Dec-2025 19:40:39 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:20
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 20
+[18-Dec-2025 19:40:57 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/apparel.php:25
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/apparel.php on line 25
+[18-Dec-2025 19:43:38 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:33
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 33
+[18-Dec-2025 19:45:48 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:33
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 33
+[18-Dec-2025 19:49:49 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/apparel.php:25
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/apparel.php on line 25
+[18-Dec-2025 19:51:04 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:33
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/err.php(9): require()
+#1 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 33
+[18-Dec-2025 19:52:08 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/producto.php:40
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/producto.php on line 40
+[18-Dec-2025 19:55:36 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/producto.php:40
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/producto.php on line 40
+[18-Dec-2025 20:04:17 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to undefined function t() in /home/u354862096/domains/kndstore.com/public_html/index.php:33
+Stack trace:
+#0 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/index.php on line 33
+[18-Dec-2025 20:05:47 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/index.php(302): generateFooter()
+#2 /home/u354862096/domains/kndstore.com/public_html/err.php(9): require('/home/u35486209...')
+#3 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:06:18 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/index.php(302): generateFooter()
+#2 /home/u354862096/domains/kndstore.com/public_html/err.php(9): require('/home/u35486209...')
+#3 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:06:58 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/apparel.php(538): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:07:07 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/index.php(302): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:07:12 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/index.php(302): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:12:53 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/products.php(308): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:15:05 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/index.php(302): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:30:59 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/contact.php(301): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:31:18 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/index.php(302): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:32:16 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/index.php(302): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:33:33 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/apparel.php(538): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:34:00 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/custom-design.php(216): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:34:07 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/contact.php(301): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:34:49 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/index.php(302): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:39:20 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/index.php(302): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:39:26 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/products.php(308): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:39:28 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/custom-design.php(216): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:39:43 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/about.php(412): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:39:53 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/apparel.php(538): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:40:40 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/index.php(302): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:40:56 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/index.php(302): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[18-Dec-2025 20:42:04 America/Mexico_City] PHP Fatal error:  Uncaught TypeError: t(): Argument #2 ($fallback) must be of type ?string, array given, called in /home/u354862096/domains/kndstore.com/public_html/includes/footer.php on line 90 and defined in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php:7
+Stack trace:
+#0 /home/u354862096/domains/kndstore.com/public_html/includes/footer.php(90): t()
+#1 /home/u354862096/domains/kndstore.com/public_html/index.php(302): generateFooter()
+#2 {main}
+  thrown in /home/u354862096/domains/kndstore.com/public_html/includes/functions-i18n.php on line 7
+[05-Mar-2026 14:30:26 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'u354862096_lilshoot'@'185.75.211.64' (using password: YES)
+[05-Mar-2026 14:39:25 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'u354862096_lilshoot'@'185.75.211.64' (using password: YES)
+[05-Mar-2026 14:41:22 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'u354862096_lilshoot'@'185.75.211.64' (using password: YES)
+[05-Mar-2026 14:45:34 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'u354862096_lilshoot'@'185.75.211.64' (using password: YES)
+[05-Mar-2026 14:48:07 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'u354862096_lilshoot'@'185.75.211.64' (using password: YES)
+[05-Mar-2026 14:59:33 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'u354862096_lilshoot'@'185.75.211.64' (using password: YES)
+[06-Mar-2026 12:22:36 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'u354862096_lilshoot'@'185.75.211.64' (using password: YES)
+[06-Mar-2026 12:22:36 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to a member function exec() on bool in E:\repo\kndstore\temp_alter.php:7
+Stack trace:
+#0 {main}
+  thrown in E:\repo\kndstore\temp_alter.php on line 7
+[06-Mar-2026 12:22:49 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'u354862096_lilshoot'@'185.75.211.64' (using password: YES)
+[06-Mar-2026 12:22:49 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to a member function query() on bool in E:\repo\kndstore\temp_check.php:4
+Stack trace:
+#0 {main}
+  thrown in E:\repo\kndstore\temp_check.php on line 4
+[06-Mar-2026 12:22:57 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'u354862096_lilshoot'@'185.75.211.64' (using password: YES)
+[06-Mar-2026 12:22:57 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to a member function query() on bool in E:\repo\kndstore\temp_check.php:4
+Stack trace:
+#0 {main}
+  thrown in E:\repo\kndstore\temp_check.php on line 4
+[06-Mar-2026 12:23:24 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'u354862096_lilshoot'@'185.75.211.64' (using password: YES)
+[06-Mar-2026 12:23:24 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to a member function query() on bool in E:\repo\kndstore\temp_check2.php:5
+Stack trace:
+#0 {main}
+  thrown in E:\repo\kndstore\temp_check2.php on line 5
+[06-Mar-2026 12:26:24 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'u354862096_lilshoot'@'185.75.211.64' (using password: YES)
+[06-Mar-2026 12:26:24 America/Mexico_City] PHP Fatal error:  Uncaught Error: Call to a member function exec() on bool in E:\repo\kndstore\api\avatar\migrate_fav.php:5
+Stack trace:
+#0 {main}
+  thrown in E:\repo\kndstore\api\avatar\migrate_fav.php on line 5
