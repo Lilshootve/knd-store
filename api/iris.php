@@ -225,6 +225,21 @@ if ($confirmMode && $isLoggedIn && $clientConvId !== null) {
     }
 }
 
+// ── Retail business context (optional enrichment) ─────────────────────────────
+
+$retailBiz = null;
+if ($isLoggedIn && !empty($pdo) && $userId !== null) {
+    try {
+        $retailAuthFile = dirname(__DIR__) . '/retail/auth.php';
+        if (file_exists($retailAuthFile)) {
+            require_once $retailAuthFile;
+            $retailBiz = retail_resolve_business_for_gateway($pdo, $userId);
+        }
+    } catch (Throwable $e) {
+        iris_log('retail business resolve failed: ' . $e->getMessage());
+    }
+}
+
 // ── Build payload for Next.js ─────────────────────────────────────────────────
 
 $nextPayload = [
@@ -234,6 +249,9 @@ $nextPayload = [
     'iris_mode'            => $irisMode,
     'user_id'              => $userId !== null ? (string)$userId : null,
     'user_memory'          => empty($userMemory) ? null : $userMemory,
+    'business_type'        => $retailBiz ? 'retail' : null,
+    'business_id'          => $retailBiz ? (int)($retailBiz['id'] ?? 0) : null,
+    'business_currency'    => $retailBiz ? ($retailBiz['base_currency'] ?? null) : null,
 ];
 
 if ($confirmMode && $confirmId !== null) {

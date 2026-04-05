@@ -76,9 +76,27 @@ if (!is_array($body)) {
     agent_respond('error', '', null, 'INVALID_JSON: Body must be a JSON object.', [], false, 400);
 }
 
+$businessType = null;
+if (isset($body['business_type']) && is_string($body['business_type'])
+    && preg_match('/^[a-z0-9_]+$/', $body['business_type'])) {
+    $businessType = $body['business_type'];
+}
+
 // ── Natural language → tool call mapping ──────────────────────────────────────
 if (isset($body['message']) && !isset($body['tool'])) {
-    $mapped = intent_map((string)$body['message']);
+    $mapped = null;
+    if ($businessType === 'retail') {
+        $intentsFile = __DIR__ . '/../../modules/retail/intents.php';
+        if (is_file($intentsFile)) {
+            require_once $intentsFile;
+            if (function_exists('retail_module_resolve_message')) {
+                $mapped = retail_module_resolve_message((string) $body['message']);
+            }
+        }
+    }
+    if ($mapped === null) {
+        $mapped = intent_map((string) $body['message']);
+    }
     if ($mapped === null) {
         agent_respond(
             'error', '', null,
@@ -88,7 +106,7 @@ if (isset($body['message']) && !isset($body['tool'])) {
         );
     }
     $body['tool']  = $mapped['tool'];
-    $body['input'] = $mapped['input'];
+    $body['input'] = array_merge((array) ($body['input'] ?? []), $mapped['input'] ?? []);
     $body['_intent_mapped'] = true;
 }
 
@@ -100,6 +118,41 @@ $iris_mode   = in_array($body['mode'] ?? '', ['admin', 'public'], true)
 $req_user_id    = isset($body['user_id'])    ? (string)$body['user_id']    : null;
 $req_confirm_id = isset($body['confirm_id']) ? (string)$body['confirm_id'] : null;
 $req_memory_used = !empty($body['memory_used']);
+
+// ── Module tool registry (multi-tenant) ───────────────────────────────────────
+$moduleTools = [];
+if ($businessType !== null) {
+    $modulePath = __DIR__ . '/../../modules/' . $businessType . '/tools.php';
+    if (is_file($modulePath)) {
+        require_once $modulePath;
+        if (function_exists('get_module_tools')) {
+            $moduleTools = get_module_tools();
+        }
+    }
+}
+$isModuleTool = isset($moduleTools[$tool]);
+
+// ── Retail: resolve tenant server-side (never trust client business_id) ──────
+if ($businessType === 'retail' && $isModuleTool) {
+    require_once __DIR__ . '/../../retail/auth.php';
+    $pdoRetail = getDBConnection();
+    if (!$pdoRetail) {
+        agent_respond('error', $tool, null, 'DB_CONNECTION_FAILED.', [], $simulate, 500);
+    }
+    $gatewayUserId = $req_user_id !== null && $req_user_id !== '' ? (int) $req_user_id : 0;
+    if ($gatewayUserId <= 0) {
+        agent_log_entry($tool, $input, null, 'blocked', $iris_mode, $req_user_id, $req_confirm_id, $req_memory_used);
+        agent_respond('blocked', $tool, null, 'AUTH_REQUIRED: user_id is required for retail module tools.', [], $simulate, 403);
+    }
+    if (!retail_resolve_business_for_gateway($pdoRetail, $gatewayUserId)) {
+        agent_log_entry($tool, $input, null, 'blocked', $iris_mode, $req_user_id, $req_confirm_id, $req_memory_used);
+        agent_respond('blocked', $tool, null, 'NO_BUSINESS: User is not assigned to an active business.', [], $simulate, 403);
+    }
+    if (!empty($body['currency']) && empty($input['currency']) && is_string($body['currency'])) {
+        $input['currency'] = $body['currency'];
+    }
+    $input['business_id'] = retail_business_id();
+}
 
 if ($tool === '') {
     agent_respond('error', '', null, 'MISSING_TOOL: "tool" field is required.', [], $simulate, 400);
@@ -119,12 +172,75 @@ if ($iris_mode === 'public' && $tool !== 'db_query') {
 }
 
 // ── Validate ──────────────────────────────────────────────────────────────────
-$validation = validate_tool_call($tool, $input);
+$validation = validate_tool_call($tool, $input, $businessType);
 
 if (!$validation['safe']) {
     $msg = 'VALIDATION_FAILED: ' . implode(' | ', $validation['issues']);
     agent_log_entry($tool, $input, null, 'blocked', $iris_mode, $req_user_id, $req_confirm_id, $req_memory_used);
     agent_respond('blocked', $tool, null, $msg, $validation['warnings'], $simulate, 422);
+}
+
+// ── Retail: role + confirmation (parity with former api/retail/execute.php) ───
+if ($businessType === 'retail' && $isModuleTool) {
+    require_once __DIR__ . '/../../retail/auth.php';
+    $adminOnlyTools = ['adjust_stock', 'update_exchange_rate'];
+    if (in_array($tool, $adminOnlyTools, true) && !retail_is_admin()) {
+        agent_log_entry($tool, $input, null, 'blocked', $iris_mode, $req_user_id, $req_confirm_id, $req_memory_used);
+        agent_respond(
+            'blocked',
+            $tool,
+            null,
+            'INSUFFICIENT_ROLE: This operation requires admin role.',
+            $validation['warnings'],
+            $simulate,
+            403
+        );
+    }
+
+    $confirmationTools = ['adjust_stock', 'update_exchange_rate', 'create_credit_sale'];
+    $requiresConfirm   = in_array($tool, $confirmationTools, true) && retail_is_admin();
+
+    if ($requiresConfirm && !$simulate) {
+        $secret         = getenv('KND_WORKER_TOKEN') ?: 'fallback';
+        $expectedConfirm = hash_hmac(
+            'sha256',
+            json_encode(['tool' => $tool, 'input' => $input, 'biz' => retail_business_id()]),
+            $secret
+        );
+
+        if ($req_confirm_id === null || $req_confirm_id === '') {
+            $preview = build_simulate_preview($tool, $input);
+            agent_log_entry($tool, $input, $preview, 'blocked', $iris_mode, $req_user_id, $req_confirm_id, $req_memory_used);
+            agent_respond(
+                'blocked',
+                $tool,
+                $preview,
+                'REQUIRES_CONFIRMATION: Resend with confirm_id to execute.',
+                $validation['warnings'],
+                false,
+                200,
+                [
+                    'confirm_id' => $expectedConfirm,
+                    'preview'    => $preview,
+                    'message'    => 'This operation requires confirmation. Resend with confirm_id to execute.',
+                ]
+            );
+        }
+
+        $irisConfirmOk = $iris_mode === 'admin' && strlen($req_confirm_id) >= 32;
+        if (!hash_equals($expectedConfirm, $req_confirm_id) && !$irisConfirmOk) {
+            agent_log_entry($tool, $input, null, 'blocked', $iris_mode, $req_user_id, $req_confirm_id, $req_memory_used);
+            agent_respond(
+                'blocked',
+                $tool,
+                null,
+                'INVALID_CONFIRM_ID: confirm_id is invalid or expired.',
+                $validation['warnings'],
+                false,
+                400
+            );
+        }
+    }
 }
 
 // ── Simulate mode (dry run) ───────────────────────────────────────────────────
@@ -163,14 +279,38 @@ try {
             break;
 
         default:
-            $status = 'error';
-            $error  = "UNKNOWN_TOOL: '{$tool}' is not registered.";
+            if (isset($moduleTools[$tool])) {
+                $data = $moduleTools[$tool]($input);
+                if (isset($data['error'])) {
+                    $status = 'error';
+                    $errVal = $data['error'];
+                    $error  = is_string($errVal) ? $errVal : (string) json_encode($errVal);
+                }
+            } else {
+                $status = 'error';
+                $error  = "UNKNOWN_TOOL: '{$tool}' is not registered.";
+            }
             break;
     }
 } catch (Throwable $e) {
     $status = 'error';
     $error  = $e->getMessage();
     error_log('[knd/agent/execute] ' . $tool . ' exception: ' . $e->getMessage());
+}
+
+// ── Retail gateway audit (mutations only — skip read-only reporting tools) ──
+$retailGatewayAuditSkip = [
+    'get_product', 'search_product', 'get_inventory_low', 'get_sales_today',
+    'get_top_products', 'get_sales_summary', 'list_customer_balances',
+];
+if (
+    $status === 'success'
+    && $businessType === 'retail'
+    && $isModuleTool
+    && is_array($data)
+    && !in_array($tool, $retailGatewayAuditSkip, true)
+) {
+    knd_retail_gateway_audit_log($tool, $data);
 }
 
 // ── Log ───────────────────────────────────────────────────────────────────────
@@ -505,6 +645,10 @@ function build_simulate_preview(string $tool, array $input): array
         case 'iris_chat':
             $preview['message_length'] = strlen($input['message'] ?? '');
             break;
+
+        default:
+            $preview['note'] = 'Simulation mode — module or extended tool preview (no side effects executed).';
+            break;
     }
 
     return $preview;
@@ -514,6 +658,34 @@ function build_simulate_preview(string $tool, array $input): array
 // ══════════════════════════════════════════════════════════════════════════════
 // LOGGING
 // ══════════════════════════════════════════════════════════════════════════════
+
+/** Best-effort retail_audit_logs row for module tools (former retail execute.php gateway). */
+function knd_retail_gateway_audit_log(string $tool, array $result): void
+{
+    try {
+        if (!function_exists('retail_business_id')) {
+            return;
+        }
+        $pdo = getDBConnection();
+        if (!$pdo) {
+            return;
+        }
+        $ok = !isset($result['error']);
+        $logStmt = $pdo->prepare(
+            'INSERT INTO retail_audit_logs (business_id, user_id, action, entity_type, after_json, ip_address)
+             VALUES (?, ?, ?, "gateway_call", ?, ?)'
+        );
+        $logStmt->execute([
+            retail_business_id(),
+            function_exists('retail_user_id') ? (retail_user_id() ?: null) : null,
+            'gateway_' . $tool,
+            json_encode(['status' => $ok, 'tool' => $tool], JSON_UNESCAPED_UNICODE),
+            $_SERVER['REMOTE_ADDR'] ?? null,
+        ]);
+    } catch (Throwable $e) {
+        error_log('[knd/agent/execute] retail gateway audit failed: ' . $e->getMessage());
+    }
+}
 
 function agent_log_entry(
     string  $tool,
@@ -616,10 +788,11 @@ function agent_respond(
     ?string $error,
     array   $warnings = [],
     bool    $simulate = false,
-    int     $code = 200
+    int     $code = 200,
+    ?array  $extraFields = null
 ): never {
     http_response_code($code);
-    echo json_encode([
+    $payload = [
         'status'   => $status,
         'tool'     => $tool,
         'data'     => $data,
@@ -628,6 +801,10 @@ function agent_respond(
         'simulate' => $simulate,
         'logged'   => true,
         'ts'       => date('c'),
-    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    ];
+    if (is_array($extraFields) && $extraFields !== []) {
+        $payload = array_merge($payload, $extraFields);
+    }
+    echo json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 }

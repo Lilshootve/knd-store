@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 if (!function_exists('validate_tool_call')) {
 
-function validate_tool_call(string $tool, array $input): array
+function validate_tool_call(string $tool, array $input, ?string $businessType = null): array
 {
     $issues   = [];
     $warnings = [];
@@ -166,6 +166,14 @@ function validate_tool_call(string $tool, array $input): array
             break;
 
         default:
+            if ($businessType === 'retail') {
+                if (!function_exists('validate_retail_tool_call')) {
+                    require_once __DIR__ . '/../../retail/validate.php';
+                }
+                if (function_exists('validate_retail_tool_call')) {
+                    return validate_retail_tool_call($tool, $input);
+                }
+            }
             $issues[] = "Unknown tool: '{$tool}'. Available: db_query, db_execute, file_manager, kael_dispatch, iris_chat.";
             break;
     }
@@ -219,9 +227,16 @@ if (basename($_SERVER['SCRIPT_FILENAME'] ?? '') === basename(__FILE__)) {
         json_error('INVALID_JSON', 'Expected JSON with "tool" and "input" fields.', 400);
     }
 
+    $businessType = null;
+    if (isset($body['business_type']) && is_string($body['business_type'])
+        && preg_match('/^[a-z0-9_]+$/', $body['business_type'])) {
+        $businessType = $body['business_type'];
+    }
+
     $result = validate_tool_call(
         (string)($body['tool']  ?? ''),
-        (array) ($body['input'] ?? [])
+        (array) ($body['input'] ?? []),
+        $businessType
     );
 
     json_success($result);
