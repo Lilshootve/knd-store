@@ -1,0 +1,201 @@
+/* Iris — scoped under .iris-page */
+
+.iris-page {
+  --iris-bg: #03050e;
+  --iris-bg-mid: #080c1a;
+  --iris-accent: #7c5cff;
+  --iris-cyan: #00d4ff;
+  --iris-glow: rgba(124, 92, 255, 0.45);
+  --iris-glow-cyan: rgba(0, 212, 255, 0.35);
+  --iris-text: rgba(255, 255, 255, 0.92);
+  --iris-text-muted: rgba(255, 255, 255, 0.55);
+  --iris-text-dim: rgba(255, 255, 255, 0.35);
+  --iris-border-soft: rgba(255, 255, 255, 0.06);
+
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: min(100dvh, calc(100vh - 120px));
+  color: var(--iris-text);
+  background: var(--iris-bg);
+  background-image:
+    radial-gradient(ellipse 100% 70% at 50% 35%, rgba(124, 92, 255, 0.14), transparent 55%),
+    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(0, 212, 255, 0.07), transparent 50%),
+    linear-gradient(180deg, var(--iris-bg) 0%, var(--iris-bg-mid) 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.iris-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-size: 48px 48px;
+  background-image:
+    linear-gradient(var(--iris-border-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--iris-border-soft) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse 65% 55% at 50% 38%, black 15%, transparent 72%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.iris-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+}
+
+/* Hex core */
+.iris-core {
+  width: min(280px, 72vw);
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iris-hex-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.iris-hex-glow {
+  filter: drop-shadow(0 0 20px var(--iris-glow)) drop-shadow(0 0 40px rgba(124, 92, 255, 0.2));
+  transform-origin: 100px 100px;
+  transition: filter 0.45s ease;
+}
+
+.iris-core.idle .iris-hex-glow {
+  animation: iris-hex-breathe 4s ease-in-out infinite;
+}
+
+.iris-core.thinking .iris-hex-glow {
+  animation: iris-hex-pulse 1.4s ease-in-out infinite;
+  filter: drop-shadow(0 0 28px var(--iris-glow)) drop-shadow(0 0 48px rgba(0, 212, 255, 0.25));
+}
+
+.iris-core.responding .iris-hex-glow {
+  animation: iris-hex-pulse-fast 0.85s ease-in-out infinite;
+  filter: drop-shadow(0 0 36px var(--iris-glow-cyan)) drop-shadow(0 0 56px var(--iris-glow))
+    drop-shadow(0 0 80px rgba(124, 92, 255, 0.35));
+}
+
+@keyframes iris-hex-breathe {
+  0%,
+  100% {
+    opacity: 0.88;
+    filter: drop-shadow(0 0 16px var(--iris-glow)) drop-shadow(0 0 32px rgba(124, 92, 255, 0.15));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 28px var(--iris-glow)) drop-shadow(0 0 44px rgba(0, 212, 255, 0.2));
+  }
+}
+
+@keyframes iris-hex-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes iris-hex-pulse-fast {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 0.94;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iris-core.idle .iris-hex-glow,
+  .iris-core.thinking .iris-hex-glow,
+  .iris-core.responding .iris-hex-glow {
+    animation: none;
+  }
+}
+
+/* Status + message */
+.iris-status {
+  margin: 2rem 0 0;
+  text-align: center;
+  font-family: "Rajdhani", system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--iris-text-muted);
+  max-width: 24rem;
+}
+
+.iris-message {
+  margin-top: 1rem;
+  text-align: center;
+  font-family: "Rajdhani", system-ui, sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--iris-text-muted);
+  max-width: 28rem;
+  white-space: pre-wrap;
+}
+
+.iris-message[hidden] {
+  display: none !important;
+}
+
+/* Form + input */
+.iris-form {
+  width: 100%;
+  max-width: 32rem;
+  margin-top: 2.75rem;
+}
+
+.iris-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  border-radius: 9999px;
+  padding: 0.85rem 1.35rem;
+  font-family: "Rajdhani", system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--iris-text);
+  background: rgba(12, 18, 36, 0.55);
+  box-shadow:
+    0 0 0 1px rgba(124, 92, 255, 0.08),
+    0 0 24px rgba(124, 92, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.iris-input::placeholder {
+  color: var(--iris-text-dim);
+}
+
+.iris-input:focus {
+  box-shadow:
+    0 0 0 1px rgba(124, 92, 255, 0.22),
+    0 0 32px rgba(124, 92, 255, 0.22),
+    0 0 48px rgba(0, 212, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.iris-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
