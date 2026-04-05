@@ -3,7 +3,7 @@
  * KND Retail — Tool Registry
  * GET  /api/retail/tools.php          → todos los tools
  * GET  /api/retail/tools.php?name=X   → tool específico
- * Protegido por KND_WORKER_TOKEN.
+ * Protegido por KND_AGENTS_TOKEN (legacy: KND_WORKER_TOKEN).
  */
 
 header('Content-Type: application/json; charset=utf-8');
@@ -15,7 +15,7 @@ require_once KND_ROOT . '/includes/config.php';
 
 // Auth: Bearer or ?token= (same visibility fixes as agent/execute.php)
 $authHeader = knd_request_authorization_header();
-$token      = trim((string) (knd_env('KND_WORKER_TOKEN') ?? ''));
+$token      = knd_agents_token();
 $provided   = '';
 if (str_starts_with($authHeader, 'Bearer ')) {
     $provided = trim(substr($authHeader, 7));

@@ -122,7 +122,7 @@ function retail_require_admin(): void
 }
 
 /**
- * Resuelve business_id para api/agent/execute.php cuando usa KND_WORKER_TOKEN y user_id en el body.
+ * Resuelve business_id para api/agent/execute.php cuando usa KND_AGENTS_TOKEN y user_id en el body.
  * En ese caso el user_id puede venir en el body del request.
  * NUNCA acepta business_id del cliente — siempre lo resuelve desde user_id.
  */

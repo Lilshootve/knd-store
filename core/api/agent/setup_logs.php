@@ -1,7 +1,7 @@
 <?php
 /**
  * KND Agent — One-time DB setup for knd_agent_logs table.
- * GET /api/agent/setup_logs.php?token=<KND_WORKER_TOKEN>
+ * GET /api/agent/setup_logs.php?token=<KND_AGENTS_TOKEN>
  *
  * Run once after deployment to ensure the log table exists.
  * Safe to run multiple times (CREATE TABLE IF NOT EXISTS).
@@ -15,7 +15,7 @@ require_once __DIR__ . '/../../../includes/json.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
-$token    = trim((string) (knd_env('KND_WORKER_TOKEN') ?? ''));
+$token    = knd_agents_token();
 $provided = $_GET['token'] ?? '';
 if ($token !== '' && !hash_equals($token, $provided)) {
     json_error('UNAUTHORIZED', 'Invalid or missing token.', 401);

@@ -8,7 +8,7 @@
  *   - API endpoints (/api/**)
  *   - Database tables (via PDO SHOW TABLES)
  *
- * Protected by KND_WORKER_TOKEN (Authorization: Bearer <token>)
+ * Protected by KND_AGENTS_TOKEN (Authorization: Bearer <token>; legacy: KND_WORKER_TOKEN)
  */
 
 declare(strict_types=1);
@@ -21,7 +21,7 @@ header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
-$token = trim((string) (knd_env('KND_WORKER_TOKEN') ?? ''));
+$token = knd_agents_token();
 $provided = '';
 
 $auth = knd_request_authorization_header();

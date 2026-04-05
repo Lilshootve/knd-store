@@ -7,7 +7,7 @@
  * Returns the full tool registry or a single tool definition.
  * Tools are used by the Kael/Iris agent system to know what actions are available.
  *
- * Protected by KND_WORKER_TOKEN
+ * Protected by KND_AGENTS_TOKEN (legacy: KND_WORKER_TOKEN)
  */
 
 declare(strict_types=1);
@@ -19,7 +19,7 @@ header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
-$token    = trim((string) (knd_env('KND_WORKER_TOKEN') ?? ''));
+$token    = knd_agents_token();
 $provided = $_GET['token'] ?? knd_request_authorization_header();
 if (str_starts_with($provided, 'Bearer ')) {
     $provided = substr($provided, 7);

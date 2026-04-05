@@ -1,7 +1,7 @@
 <?php
 /**
  * Server-side forwarder to POST /api/agent/execute.php.
- * Uses KND_WORKER_TOKEN from the environment (never sent to the browser).
+ * Uses KND_AGENTS_TOKEN from the environment (never sent to the browser; legacy: KND_WORKER_TOKEN).
  */
 
 declare(strict_types=1);
@@ -47,13 +47,13 @@ if (!function_exists('knd_agent_execute_forward')) {
         }
         knd_load_env();
 
-        $token = trim((string) (knd_env('KND_WORKER_TOKEN') ?? ''));
+        $token = knd_agents_token();
         if ($token === '') {
             return [
                 'http_code'   => 503,
                 'raw'         => '',
                 'json'        => null,
-                'curl_error'  => 'KND_WORKER_TOKEN is not configured.',
+                'curl_error'  => 'KND_AGENTS_TOKEN (or legacy KND_WORKER_TOKEN) is not configured.',
             ];
         }
 

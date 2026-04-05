@@ -138,4 +138,20 @@ if (!function_exists('knd_request_authorization_header')) {
     }
 }
 
+if (!function_exists('knd_agents_token')) {
+    /**
+     * Bearer/API token for KND Agents: execute.php, /api/agent/*, Iris retail catalog, panel bridge.
+     * Prefer KND_AGENTS_TOKEN (Iris/Kael); falls back to KND_WORKER_TOKEN only for legacy .env.
+     * ComfyUI/labs HTTP workers use KND_WORKER_TOKEN via worker_auth.php — keep tokens separate in production.
+     */
+    function knd_agents_token(): string
+    {
+        $primary = trim((string) (knd_env('KND_AGENTS_TOKEN') ?? ''));
+        if ($primary !== '') {
+            return $primary;
+        }
+        return trim((string) (knd_env('KND_WORKER_TOKEN') ?? ''));
+    }
+}
+
 knd_load_env();
