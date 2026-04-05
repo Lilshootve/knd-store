@@ -9,10 +9,10 @@ require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/footer.php';
 
 /**
- * Same-origin API only. Do not use http://localhost:3000 on production — browsers call the visitor's machine, not your server, and CORS will block cross-origin.
- * Local Next.js: temporarily set to 'http://localhost:3000/api/iris' or run the store and use this PHP endpoint.
+ * KND Agents Iris backend (must allow CORS from this site if origins differ).
+ * Deploy: point to your reachable Agents URL (e.g. reverse proxy same-origin).
  */
-$irisApiUrl = '/api/iris.php';
+$irisApiUrl = 'http://127.0.0.1:3000/api/iris/chat';
 
 $irisCss = __DIR__ . '/assets/css/iris.css';
 $irisJs = __DIR__ . '/assets/js/iris.js';

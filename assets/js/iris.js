@@ -4,6 +4,7 @@
   var IDLE_STATUS = "Iris is ready";
   var RESPONDING_STATUS = "Receiving...";
   var MSG_IDLE_MS = 1000;
+  var FALLBACK_MSG = "System unavailable";
 
   var container = document.getElementById("iris-container");
   var core = document.getElementById("iris-core");
@@ -72,13 +73,13 @@
   }
 
   async function sendToIris() {
-    var value = (input.value || "").trim();
-    if (!value) {
+    var prompt = (input.value || "").trim();
+    if (!prompt) {
       return;
     }
 
     if (!apiUrl) {
-      showMessage("Configuration error: missing API URL.");
+      showMessage(FALLBACK_MSG);
       return;
     }
 
@@ -92,7 +93,13 @@
       var res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ input: value }),
+        body: JSON.stringify({
+          message: prompt,
+          context: {
+            includeLastRun: true,
+          },
+          conversation_history: [],
+        }),
         mode: "cors",
         credentials: creds,
       });
@@ -101,41 +108,46 @@
       try {
         data = await res.json();
       } catch (parseErr) {
-        console.error(parseErr);
-        showMessage("Something went wrong.");
+        showMessage(FALLBACK_MSG);
         setState("idle");
         return;
       }
 
       if (!res.ok) {
-        showMessage("Something went wrong.");
+        showMessage(FALLBACK_MSG);
         setState("idle");
         return;
       }
 
       if (!data || typeof data.type !== "string") {
-        showMessage("Something went wrong.");
+        showMessage(FALLBACK_MSG);
         setState("idle");
         return;
       }
 
       if (data.type === "redirect") {
-        if (typeof data.target === "string" && data.target.length > 0) {
-          window.location.href = data.target;
+        var target =
+          data.redirect &&
+          typeof data.redirect === "object" &&
+          typeof data.redirect.target === "string"
+            ? data.redirect.target
+            : "";
+        if (target.length > 0) {
+          window.location.href = target;
           return;
         }
-        showMessage("Something went wrong.");
+        showMessage(FALLBACK_MSG);
         setState("idle");
         return;
       }
 
-      if (data.type === "message") {
-        if (typeof data.message !== "string") {
-          showMessage("Something went wrong.");
+      if (data.type === "chat") {
+        if (typeof data.response !== "string") {
+          showMessage(FALLBACK_MSG);
           setState("idle");
           return;
         }
-        showMessage(data.message);
+        showMessage(data.response);
         setState("responding");
         clearIdleTimer();
         idleTimer = window.setTimeout(function () {
@@ -146,11 +158,10 @@
         return;
       }
 
-      showMessage("Something went wrong.");
+      showMessage(FALLBACK_MSG);
       setState("idle");
     } catch (err) {
-      console.error(err);
-      showMessage("Something went wrong.");
+      showMessage(FALLBACK_MSG);
       setState("idle");
     } finally {
       setInputLocked(false);
