@@ -17,6 +17,7 @@
 declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/includes/env.php';
+require_once dirname(__DIR__) . '/includes/session.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -59,11 +60,15 @@ if (isset($body['conversation_history']) && is_array($body['conversation_history
     $history = $body['conversation_history'];
 }
 
+// Determine mode from session — admins get full access, everyone else is public/safe
+$irisMode = !empty($_SESSION['admin_logged_in']) ? 'admin' : 'public';
+
 try {
     $payload = json_encode([
-        'message' => $message,
-        'context' => $context,
+        'message'              => $message,
+        'context'              => $context,
         'conversation_history' => $history,
+        'iris_mode'            => $irisMode,
     ], JSON_THROW_ON_ERROR);
 } catch (Throwable $e) {
     iris_fail(400, 'payload encode failed: ' . $e->getMessage());

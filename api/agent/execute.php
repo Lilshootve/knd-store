@@ -95,6 +95,8 @@ if (isset($body['message']) && !isset($body['tool'])) {
 $tool     = (string)($body['tool']    ?? '');
 $input    = (array) ($body['input']   ?? []);
 $simulate = (bool)  ($body['simulate'] ?? false);
+$iris_mode = in_array($body['mode'] ?? '', ['admin', 'public'], true)
+    ? (string)$body['mode'] : 'public';
 
 if ($tool === '') {
     agent_respond('error', '', null, 'MISSING_TOOL: "tool" field is required.', [], $simulate, 400);
@@ -105,14 +107,14 @@ $validation = validate_tool_call($tool, $input);
 
 if (!$validation['safe']) {
     $msg = 'VALIDATION_FAILED: ' . implode(' | ', $validation['issues']);
-    agent_log_entry($tool, $input, null, 'blocked');
+    agent_log_entry($tool, $input, null, 'blocked', $iris_mode);
     agent_respond('blocked', $tool, null, $msg, $validation['warnings'], $simulate, 422);
 }
 
 // ── Simulate mode (dry run) ───────────────────────────────────────────────────
 if ($simulate) {
     $preview = build_simulate_preview($tool, $input);
-    agent_log_entry($tool, $input, $preview, 'simulated');
+    agent_log_entry($tool, $input, $preview, 'simulated', $iris_mode);
     agent_respond('simulated', $tool, $preview, null, $validation['warnings'], true);
 }
 
@@ -156,7 +158,7 @@ try {
 }
 
 // ── Log ───────────────────────────────────────────────────────────────────────
-agent_log_entry($tool, $input, $data, $status);
+agent_log_entry($tool, $input, $data, $status, $iris_mode);
 
 // ── Respond ───────────────────────────────────────────────────────────────────
 agent_respond($status, $tool, $data, $error, $validation['warnings'], false);
@@ -468,7 +470,7 @@ function build_simulate_preview(string $tool, array $input): array
 // LOGGING
 // ══════════════════════════════════════════════════════════════════════════════
 
-function agent_log_entry(string $tool, array $input, ?array $result, string $status): void
+function agent_log_entry(string $tool, array $input, ?array $result, string $status, string $mode = 'public'): void
 {
     try {
         $pdo = getDBConnection();
@@ -483,24 +485,33 @@ function agent_log_entry(string $tool, array $input, ?array $result, string $sta
                 action     TEXT,
                 result     MEDIUMTEXT,
                 status     VARCHAR(50)     NOT NULL DEFAULT 'ok',
+                mode       VARCHAR(20)     NOT NULL DEFAULT 'public',
                 ip         VARCHAR(45)              DEFAULT NULL,
                 INDEX idx_tool      (tool),
                 INDEX idx_status    (status),
+                INDEX idx_mode      (mode),
                 INDEX idx_timestamp (timestamp)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
 
+        // Add mode column to existing tables that pre-date this schema change
+        try {
+            $pdo->exec("ALTER TABLE knd_agent_logs ADD COLUMN mode VARCHAR(20) NOT NULL DEFAULT 'public' AFTER status");
+            $pdo->exec("ALTER TABLE knd_agent_logs ADD INDEX idx_mode (mode)");
+        } catch (Throwable) { /* column already exists — ignore */ }
+
         $action_str = @json_encode($input, JSON_UNESCAPED_UNICODE);
         $result_str = @json_encode($result, JSON_UNESCAPED_UNICODE);
         $ip         = $_SERVER['REMOTE_ADDR'] ?? null;
+        $safe_mode  = in_array($mode, ['admin', 'public'], true) ? $mode : 'public';
 
         // Truncate to column limits
         $action_str = $action_str ? substr($action_str, 0, 65535) : null;
         $result_str = $result_str ? substr($result_str, 0, 65535) : null;
 
         $pdo->prepare(
-            'INSERT INTO knd_agent_logs (tool, action, result, status, ip) VALUES (?, ?, ?, ?, ?)'
-        )->execute([$tool, $action_str, $result_str, $status, $ip]);
+            'INSERT INTO knd_agent_logs (tool, action, result, status, mode, ip) VALUES (?, ?, ?, ?, ?, ?)'
+        )->execute([$tool, $action_str, $result_str, $status, $safe_mode, $ip]);
 
     } catch (Throwable $e) {
         error_log('[knd/agent/execute] log failed: ' . $e->getMessage());
