@@ -27,11 +27,10 @@ if (!is_logged_in()) {
 
 $userId = (int) current_user_id();
 
-function mem_db(): PDO
+function mem_db(): ?PDO
 {
     $pdo = getDBConnection();
-    if (!$pdo) throw new RuntimeException('DB unavailable');
-    return $pdo;
+    return $pdo ?: null;
 }
 
 function mem_ensure_table(PDO $pdo): void
@@ -54,6 +53,15 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 try {
     $pdo = mem_db();
+
+    // ── DB unavailable → return empty/no-op responses instead of 500 ──────────
+    if ($pdo === null) {
+        error_log('[iris-mem-api] DB unavailable');
+        if ($method === 'GET')    { echo json_encode(['facts' => []]); exit; }
+        if ($method === 'DELETE') { echo json_encode(['deleted' => false, 'error' => 'db_unavailable']); exit; }
+        if ($method === 'POST')   { echo json_encode(['saved' => false, 'error' => 'db_unavailable']); exit; }
+    }
+
     mem_ensure_table($pdo);
 
     // ── GET ───────────────────────────────────────────────────────────────────

@@ -27,11 +27,10 @@ if (!is_logged_in()) {
 
 $userId = (int) current_user_id();
 
-function conv_db(): PDO
+function conv_db(): ?PDO
 {
     $pdo = getDBConnection();
-    if (!$pdo) throw new RuntimeException('DB unavailable');
-    return $pdo;
+    return $pdo ?: null;
 }
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -39,6 +38,16 @@ $id     = isset($_GET['id']) && ctype_digit($_GET['id']) ? (int)$_GET['id'] : nu
 
 try {
     $pdo = conv_db();
+
+    // ── DB unavailable → return empty responses instead of 500 ───────────────
+    if ($pdo === null) {
+        error_log('[iris-conv-api] DB unavailable');
+        if ($method === 'GET') {
+            echo json_encode($id !== null ? ['error' => 'db_unavailable'] : ['conversations' => []]);
+            exit;
+        }
+        if ($method === 'DELETE') { echo json_encode(['deleted' => false, 'error' => 'db_unavailable']); exit; }
+    }
 
     // ── GET ───────────────────────────────────────────────────────────────────
     if ($method === 'GET') {
