@@ -1,27 +1,24 @@
 <?php
 /**
  * KND Agent — Validation Layer
+ *
+ * Two modes:
+ *   A) Included by execute.php  → only validate_tool_call() runs
+ *   B) Called directly via HTTP → full JSON API
+ *
  * POST /api/agent/validate.php
- *
- * Validates a proposed tool call BEFORE execution.
- * Returns { ok: true, data: { safe: bool, issues: [], warnings: [] } }
- *
- * Body (JSON):
- *   { "tool": "db_execute", "input": { "sql": "...", "params": [] } }
- *
- * Also exposed as an internal PHP function validate_tool_call() for use by execute.php.
+ * Body: { "tool": "db_execute", "input": { "sql": "...", "params": [] } }
  *
  * Protected by KND_WORKER_TOKEN
  */
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../../includes/env.php';
-require_once __DIR__ . '/../../includes/json.php';
+// ──────────────────────────────────────────────────────────────────────────────
+// validate_tool_call() — pure function, no side-effects, safe to include
+// ──────────────────────────────────────────────────────────────────────────────
 
-// ──────────────────────────────────────────────────────────────────────────────
-// Core validation function (reusable by execute.php)
-// ──────────────────────────────────────────────────────────────────────────────
+if (!function_exists('validate_tool_call')) {
 
 function validate_tool_call(string $tool, array $input): array
 {
@@ -32,120 +29,144 @@ function validate_tool_call(string $tool, array $input): array
 
         // ── db_query ──────────────────────────────────────────────────────────
         case 'db_query':
-            $sql = strtoupper(trim($input['sql'] ?? ''));
+            $sql    = trim($input['sql'] ?? '');
+            $sqlUp  = strtoupper($sql);
 
-            if (!str_starts_with($sql, 'SELECT')) {
+            if ($sql === '') {
+                $issues[] = 'sql is required.';
+                break;
+            }
+
+            // Must start with SELECT (after stripping comments)
+            $stripped = preg_replace('/\/\*.*?\*\//s', '', $sql);
+            $stripped = preg_replace('/--[^\n]*/', '', $stripped);
+            if (!preg_match('/^\s*SELECT\b/i', $stripped)) {
                 $issues[] = 'db_query only allows SELECT statements.';
             }
 
+            // Disallow any mutation keywords even inside subqueries
             foreach (['INSERT', 'UPDATE', 'DELETE', 'DROP', 'TRUNCATE', 'ALTER', 'CREATE', 'REPLACE'] as $kw) {
-                if (str_contains($sql, $kw)) {
-                    $issues[] = "Keyword '{$kw}' is not allowed in db_query.";
+                if (preg_match('/\b' . $kw . '\b/i', $stripped)) {
+                    $issues[] = "Keyword '{$kw}' is not permitted in db_query.";
                 }
             }
 
-            // Warn if no LIMIT
-            if (!str_contains($sql, 'LIMIT')) {
-                $warnings[] = 'No LIMIT clause — a maximum of 500 rows will be enforced.';
+            if (!preg_match('/\bLIMIT\b/i', $sql)) {
+                $warnings[] = 'No LIMIT clause — 500 rows maximum will be enforced automatically.';
             }
             break;
 
         // ── db_execute ────────────────────────────────────────────────────────
         case 'db_execute':
-            $sql     = strtoupper(trim($input['sql'] ?? ''));
-            $sqlRaw  = trim($input['sql'] ?? '');
+            $sql    = trim($input['sql'] ?? '');
+            $sqlUp  = strtoupper($sql);
 
-            // Hard blocks
-            if (preg_match('/\b(DROP\s+(TABLE|DATABASE|INDEX|VIEW)|TRUNCATE)\b/i', $sqlRaw)) {
-                $issues[] = 'DROP TABLE, DROP DATABASE and TRUNCATE are unconditionally blocked.';
+            if ($sql === '') {
+                $issues[] = 'sql is required.';
+                break;
             }
 
-            // DELETE without WHERE
-            if (preg_match('/^\s*DELETE\s+FROM\s+\w+\s*$/i', $sqlRaw)) {
-                $issues[] = 'DELETE without a WHERE clause is blocked (would delete entire table).';
+            // Absolute blocks
+            if (preg_match('/\b(DROP\s+(TABLE|DATABASE|INDEX|VIEW|PROCEDURE|FUNCTION)|TRUNCATE)\b/i', $sql)) {
+                $issues[] = 'DROP and TRUNCATE operations are unconditionally blocked.';
             }
 
-            // ALTER requires confirmation
-            if (preg_match('/\bALTER\s+TABLE\b/i', $sqlRaw)) {
+            // DELETE without WHERE = full table wipe
+            if (preg_match('/^\s*DELETE\s+FROM\s+\S+\s*$/i', $sql)) {
+                $issues[] = 'DELETE without WHERE clause is blocked — it would delete all rows.';
+            }
+
+            // ALTER needs explicit confirmation
+            if (preg_match('/\bALTER\s+TABLE\b/i', $sql)) {
                 if (empty($input['confirm_alter'])) {
-                    $issues[] = 'ALTER TABLE requires confirm_alter: true in the input payload.';
+                    $issues[] = 'ALTER TABLE requires confirm_alter: true in the input.';
                 } else {
-                    $warnings[] = 'ALTER TABLE operation — confirmed by caller.';
+                    $warnings[] = 'ALTER TABLE confirmed by caller.';
                 }
             }
 
-            // Warn about bulk updates (no WHERE)
-            if (preg_match('/^\s*UPDATE\s+\w+\s+SET\b/i', $sqlRaw) && !preg_match('/\bWHERE\b/i', $sqlRaw)) {
-                $warnings[] = 'UPDATE without WHERE clause will affect all rows.';
+            // Bulk UPDATE without WHERE
+            if (preg_match('/^\s*UPDATE\s+\S+\s+SET\b/i', $sql) && !preg_match('/\bWHERE\b/i', $sql)) {
+                $warnings[] = 'UPDATE without WHERE will affect every row in the table.';
             }
 
-            // Block raw SELECT in db_execute (use db_query instead)
-            if (str_starts_with($sql, 'SELECT')) {
-                $warnings[] = 'SELECT statements should use the db_query tool, not db_execute.';
+            // SELECT belongs in db_query
+            if (preg_match('/^\s*SELECT\b/i', $sql)) {
+                $warnings[] = 'Use db_query (not db_execute) for SELECT statements.';
             }
             break;
 
         // ── file_manager ──────────────────────────────────────────────────────
         case 'file_manager':
-            $action  = $input['action'] ?? '';
-            $path    = $input['path']   ?? '';
+            $action = $input['action'] ?? '';
+            $path   = $input['path']   ?? '';
 
-            // Path traversal
-            if (str_contains($path, '..')) {
-                $issues[] = 'Path traversal (../) is not allowed.';
+            $allowed_actions = ['read', 'write', 'delete', 'list', 'exists'];
+            if (!in_array($action, $allowed_actions, true)) {
+                $issues[] = "Unknown action '{$action}'. Allowed: " . implode(', ', $allowed_actions);
             }
 
-            // Allowed base paths
+            if ($path === '' && $action !== '') {
+                $issues[] = 'path is required.';
+            }
+
+            // Path traversal
+            $normalised = str_replace('\\', '/', $path);
+            if (str_contains($normalised, '..')) {
+                $issues[] = 'Path traversal sequences (../) are not allowed.';
+            }
+
+            // Must be inside an allowed base
             $allowed_bases = ['uploads/', 'storage/generated/', 'storage/labs/', 'storage/tmp/'];
             $path_ok = false;
             foreach ($allowed_bases as $base) {
-                if (str_starts_with($path, $base)) {
+                if (str_starts_with($normalised, $base)) {
                     $path_ok = true;
                     break;
                 }
             }
             if (!$path_ok && $path !== '') {
-                $issues[] = "Path '{$path}' is outside the allowed base directories: " . implode(', ', $allowed_bases);
+                $issues[] = "Path must start with one of: " . implode(', ', $allowed_bases);
             }
 
-            // Block executable writes
+            // Block executable file writes
             if ($action === 'write') {
                 $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-                $blocked_exts = ['php', 'phtml', 'phar', 'sh', 'bash', 'exe', 'py', 'rb'];
-                if (in_array($ext, $blocked_exts, true)) {
-                    $issues[] = "Writing files with extension '.{$ext}' is blocked.";
+                $blocked = ['php', 'phtml', 'phar', 'sh', 'bash', 'exe', 'bat', 'cmd', 'py', 'rb', 'pl'];
+                if (in_array($ext, $blocked, true)) {
+                    $issues[] = "Writing '.{$ext}' files is blocked for security.";
+                }
+                if (empty($input['content'])) {
+                    $warnings[] = 'content is empty — an empty file will be written.';
+                }
+                if (!empty($input['confirm_overwrite'])) {
+                    $warnings[] = 'Overwrite confirmed — existing file will be replaced.';
                 }
             }
 
-            // Overwrite protection
-            if ($action === 'write' && empty($input['confirm_overwrite'])) {
-                $warnings[] = 'If the file already exists it will NOT be overwritten unless confirm_overwrite: true is set.';
-            }
-
-            // Delete warning
             if ($action === 'delete') {
-                $warnings[] = 'Delete action will permanently remove the file — this is logged.';
+                $warnings[] = 'Delete is permanent and logged.';
             }
             break;
 
-        // ── agent tools (kael_dispatch, iris_chat) ────────────────────────────
+        // ── kael_dispatch ─────────────────────────────────────────────────────
         case 'kael_dispatch':
             if (empty($input['task'])) {
                 $issues[] = 'task is required for kael_dispatch.';
             }
             break;
 
+        // ── iris_chat ─────────────────────────────────────────────────────────
         case 'iris_chat':
             if (empty($input['message'])) {
                 $issues[] = 'message is required for iris_chat.';
-            }
-            if (isset($input['message']) && strlen($input['message']) > 16000) {
-                $issues[] = 'message exceeds maximum length of 16 000 characters.';
+            } elseif (strlen($input['message']) > 16000) {
+                $issues[] = 'message exceeds the 16 000 character limit.';
             }
             break;
 
         default:
-            $issues[] = "Unknown tool: '{$tool}'.";
+            $issues[] = "Unknown tool: '{$tool}'. Available: db_query, db_execute, file_manager, kael_dispatch, iris_chat.";
             break;
     }
 
@@ -157,43 +178,51 @@ function validate_tool_call(string $tool, array $input): array
     ];
 }
 
+} // end if (!function_exists)
+
 // ──────────────────────────────────────────────────────────────────────────────
-// HTTP endpoint
+// HTTP handler — only runs when this file is called DIRECTLY (not included)
 // ──────────────────────────────────────────────────────────────────────────────
 
-header('Content-Type: application/json; charset=utf-8');
-header('Cache-Control: no-store');
+if (basename($_SERVER['SCRIPT_FILENAME'] ?? '') === basename(__FILE__)) {
 
-// Auth
-$token    = getenv('KND_WORKER_TOKEN') ?: '';
-$provided = '';
-$auth = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
-if (str_starts_with($auth, 'Bearer ')) {
-    $provided = substr($auth, 7);
-} elseif (!empty($_GET['token'])) {
-    $provided = $_GET['token'];
+    require_once __DIR__ . '/../../includes/env.php';
+    require_once __DIR__ . '/../../includes/json.php';
+
+    header('Content-Type: application/json; charset=utf-8');
+    header('Cache-Control: no-store');
+
+    // Auth
+    $token    = getenv('KND_WORKER_TOKEN') ?: '';
+    $provided = '';
+    $auth = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+    if (str_starts_with($auth, 'Bearer ')) {
+        $provided = substr($auth, 7);
+    } elseif (!empty($_GET['token'])) {
+        $provided = $_GET['token'];
+    }
+    if ($token !== '' && !hash_equals($token, $provided)) {
+        json_error('UNAUTHORIZED', 'Invalid or missing token.', 401);
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        json_error('METHOD_NOT_ALLOWED', 'POST only.', 405);
+    }
+
+    $raw = file_get_contents('php://input');
+    if (!$raw) {
+        json_error('EMPTY_BODY', 'Request body is required.', 400);
+    }
+
+    $body = json_decode($raw, true);
+    if (!is_array($body) || !isset($body['tool'])) {
+        json_error('INVALID_JSON', 'Expected JSON with "tool" and "input" fields.', 400);
+    }
+
+    $result = validate_tool_call(
+        (string)($body['tool']  ?? ''),
+        (array) ($body['input'] ?? [])
+    );
+
+    json_success($result);
 }
-if ($token !== '' && !hash_equals($token, $provided)) {
-    json_error('UNAUTHORIZED', 'Invalid or missing token.', 401);
-}
-
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    json_error('METHOD_NOT_ALLOWED', 'POST only.', 405);
-}
-
-$raw = file_get_contents('php://input');
-if (!$raw) {
-    json_error('EMPTY_BODY', 'Request body is required.', 400);
-}
-
-$body = json_decode($raw, true);
-if (!is_array($body) || !isset($body['tool'])) {
-    json_error('INVALID_JSON', 'Expected JSON with "tool" and "input" fields.', 400);
-}
-
-$tool  = (string)($body['tool']  ?? '');
-$input = (array) ($body['input'] ?? []);
-
-$result = validate_tool_call($tool, $input);
-
-json_success($result);
