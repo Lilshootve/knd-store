@@ -92,11 +92,14 @@ if (isset($body['message']) && !isset($body['tool'])) {
     $body['_intent_mapped'] = true;
 }
 
-$tool     = (string)($body['tool']    ?? '');
-$input    = (array) ($body['input']   ?? []);
-$simulate = (bool)  ($body['simulate'] ?? false);
-$iris_mode = in_array($body['mode'] ?? '', ['admin', 'public'], true)
+$tool        = (string)($body['tool']    ?? '');
+$input       = (array) ($body['input']   ?? []);
+$simulate    = (bool)  ($body['simulate'] ?? false);
+$iris_mode   = in_array($body['mode'] ?? '', ['admin', 'public'], true)
     ? (string)$body['mode'] : 'public';
+$req_user_id    = isset($body['user_id'])    ? (string)$body['user_id']    : null;
+$req_confirm_id = isset($body['confirm_id']) ? (string)$body['confirm_id'] : null;
+$req_memory_used = !empty($body['memory_used']);
 
 if ($tool === '') {
     agent_respond('error', '', null, 'MISSING_TOOL: "tool" field is required.', [], $simulate, 400);
@@ -107,7 +110,7 @@ if ($tool === '') {
 // blocked dangerous calls, but we enforce here too so the rule holds even if
 // execute.php is called directly (e.g. from other scripts or future integrations).
 if ($iris_mode === 'public' && $tool !== 'db_query') {
-    agent_log_entry($tool, $input, null, 'blocked', $iris_mode);
+    agent_log_entry($tool, $input, null, 'blocked', $iris_mode, $req_user_id, $req_confirm_id, $req_memory_used);
     agent_respond(
         'blocked', $tool, null,
         'PUBLIC_MODE_BLOCK: Only db_query is permitted in public mode.',
@@ -120,14 +123,14 @@ $validation = validate_tool_call($tool, $input);
 
 if (!$validation['safe']) {
     $msg = 'VALIDATION_FAILED: ' . implode(' | ', $validation['issues']);
-    agent_log_entry($tool, $input, null, 'blocked', $iris_mode);
+    agent_log_entry($tool, $input, null, 'blocked', $iris_mode, $req_user_id, $req_confirm_id, $req_memory_used);
     agent_respond('blocked', $tool, null, $msg, $validation['warnings'], $simulate, 422);
 }
 
 // ── Simulate mode (dry run) ───────────────────────────────────────────────────
 if ($simulate) {
     $preview = build_simulate_preview($tool, $input);
-    agent_log_entry($tool, $input, $preview, 'simulated', $iris_mode);
+    agent_log_entry($tool, $input, $preview, 'simulated', $iris_mode, $req_user_id, $req_confirm_id, $req_memory_used);
     agent_respond('simulated', $tool, $preview, null, $validation['warnings'], true);
 }
 
@@ -171,7 +174,7 @@ try {
 }
 
 // ── Log ───────────────────────────────────────────────────────────────────────
-agent_log_entry($tool, $input, $data, $status, $iris_mode);
+agent_log_entry($tool, $input, $data, $status, $iris_mode, $req_user_id, $req_confirm_id, $req_memory_used);
 
 // ── Respond ───────────────────────────────────────────────────────────────────
 agent_respond($status, $tool, $data, $error, $validation['warnings'], false);
@@ -183,6 +186,8 @@ agent_respond($status, $tool, $data, $error, $validation['warnings'], false);
 
 /**
  * db_query — read-only SELECT
+ * Task 5: On "table doesn't exist" error, auto-recover by running SHOW TABLES
+ *         and returning the list as suggestions.
  */
 function run_db_query(array $input): array
 {
@@ -198,25 +203,52 @@ function run_db_query(array $input): array
         $sql .= ' LIMIT ' . $cap;
     }
 
-    $t0   = microtime(true);
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $ms   = round((microtime(true) - $t0) * 1000, 2);
+    $t0 = microtime(true);
 
-    // Truncate if payload exceeds 1 MB
-    $truncated = false;
-    if (strlen(json_encode($rows)) > 1_048_576) {
-        $rows      = array_slice($rows, 0, 100);
-        $truncated = true;
+    try {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $ms   = round((microtime(true) - $t0) * 1000, 2);
+
+        // Truncate if payload exceeds 1 MB
+        $truncated = false;
+        if (strlen(json_encode($rows)) > 1_048_576) {
+            $rows      = array_slice($rows, 0, 100);
+            $truncated = true;
+        }
+
+        return [
+            'rows'         => $rows,
+            'row_count'    => count($rows),
+            'truncated'    => $truncated,
+            'execution_ms' => $ms,
+        ];
+
+    } catch (PDOException $e) {
+        $msg = $e->getMessage();
+
+        // Task 5: detect "table doesn't exist" and return helpful suggestions
+        $isTableMissing =
+            stripos($msg, "doesn't exist") !== false ||
+            stripos($msg, 'no such table')  !== false ||
+            stripos($msg, "Table '")        !== false;
+
+        if ($isTableMissing) {
+            try {
+                $tables = $pdo->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN) ?: [];
+            } catch (Throwable) {
+                $tables = [];
+            }
+            throw new RuntimeException(
+                $msg . ' — Available tables: ' . (
+                    empty($tables) ? '(none found)' : implode(', ', $tables)
+                )
+            );
+        }
+
+        throw $e;   // re-throw any other PDO error unchanged
     }
-
-    return [
-        'rows'         => $rows,
-        'row_count'    => count($rows),
-        'truncated'    => $truncated,
-        'execution_ms' => $ms,
-    ];
 }
 
 /**
@@ -483,8 +515,16 @@ function build_simulate_preview(string $tool, array $input): array
 // LOGGING
 // ══════════════════════════════════════════════════════════════════════════════
 
-function agent_log_entry(string $tool, array $input, ?array $result, string $status, string $mode = 'public'): void
-{
+function agent_log_entry(
+    string  $tool,
+    array   $input,
+    ?array  $result,
+    string  $status,
+    string  $mode       = 'public',
+    ?string $user_id    = null,
+    ?string $confirm_id = null,
+    bool    $memory_used = false
+): void {
     try {
         $pdo = getDBConnection();
         if (!$pdo) return;
@@ -492,26 +532,36 @@ function agent_log_entry(string $tool, array $input, ?array $result, string $sta
         // Create table if it doesn't exist yet (idempotent, cheap after first run)
         $pdo->exec("
             CREATE TABLE IF NOT EXISTS knd_agent_logs (
-                id         BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                timestamp  DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                tool       VARCHAR(100)    NOT NULL DEFAULT '',
-                action     TEXT,
-                result     MEDIUMTEXT,
-                status     VARCHAR(50)     NOT NULL DEFAULT 'ok',
-                mode       VARCHAR(20)     NOT NULL DEFAULT 'public',
-                ip         VARCHAR(45)              DEFAULT NULL,
-                INDEX idx_tool      (tool),
-                INDEX idx_status    (status),
-                INDEX idx_mode      (mode),
-                INDEX idx_timestamp (timestamp)
+                id           BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                timestamp    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                tool         VARCHAR(100)    NOT NULL DEFAULT '',
+                action       TEXT,
+                result       MEDIUMTEXT,
+                status       VARCHAR(50)     NOT NULL DEFAULT 'ok',
+                mode         VARCHAR(20)     NOT NULL DEFAULT 'public',
+                user_id      VARCHAR(191)             DEFAULT NULL,
+                confirm_id   VARCHAR(191)             DEFAULT NULL,
+                memory_used  TINYINT(1)      NOT NULL DEFAULT 0,
+                ip           VARCHAR(45)              DEFAULT NULL,
+                INDEX idx_tool       (tool),
+                INDEX idx_status     (status),
+                INDEX idx_mode       (mode),
+                INDEX idx_user_id    (user_id),
+                INDEX idx_timestamp  (timestamp)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
 
-        // Add mode column to existing tables that pre-date this schema change
-        try {
-            $pdo->exec("ALTER TABLE knd_agent_logs ADD COLUMN mode VARCHAR(20) NOT NULL DEFAULT 'public' AFTER status");
-            $pdo->exec("ALTER TABLE knd_agent_logs ADD INDEX idx_mode (mode)");
-        } catch (Throwable) { /* column already exists — ignore */ }
+        // Auto-migrate: add columns to existing tables (silent if already present)
+        foreach ([
+            "ALTER TABLE knd_agent_logs ADD COLUMN mode        VARCHAR(20)  NOT NULL DEFAULT 'public' AFTER status",
+            "ALTER TABLE knd_agent_logs ADD COLUMN user_id     VARCHAR(191)          DEFAULT NULL AFTER mode",
+            "ALTER TABLE knd_agent_logs ADD COLUMN confirm_id  VARCHAR(191)          DEFAULT NULL AFTER user_id",
+            "ALTER TABLE knd_agent_logs ADD COLUMN memory_used TINYINT(1)   NOT NULL DEFAULT 0   AFTER confirm_id",
+            "ALTER TABLE knd_agent_logs ADD INDEX idx_mode    (mode)",
+            "ALTER TABLE knd_agent_logs ADD INDEX idx_user_id (user_id)",
+        ] as $ddl) {
+            try { $pdo->exec($ddl); } catch (Throwable) { /* already exists — ignore */ }
+        }
 
         $action_str = @json_encode($input, JSON_UNESCAPED_UNICODE);
         $result_str = @json_encode($result, JSON_UNESCAPED_UNICODE);
@@ -523,8 +573,20 @@ function agent_log_entry(string $tool, array $input, ?array $result, string $sta
         $result_str = $result_str ? substr($result_str, 0, 65535) : null;
 
         $pdo->prepare(
-            'INSERT INTO knd_agent_logs (tool, action, result, status, mode, ip) VALUES (?, ?, ?, ?, ?, ?)'
-        )->execute([$tool, $action_str, $result_str, $status, $safe_mode, $ip]);
+            'INSERT INTO knd_agent_logs
+                (tool, action, result, status, mode, user_id, confirm_id, memory_used, ip)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        )->execute([
+            $tool,
+            $action_str,
+            $result_str,
+            $status,
+            $safe_mode,
+            $user_id,
+            $confirm_id,
+            $memory_used ? 1 : 0,
+            $ip,
+        ]);
 
     } catch (Throwable $e) {
         error_log('[knd/agent/execute] log failed: ' . $e->getMessage());
