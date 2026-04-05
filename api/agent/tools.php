@@ -20,7 +20,7 @@ header('Cache-Control: no-store');
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 $token    = trim((string) (knd_env('KND_WORKER_TOKEN') ?? ''));
-$provided = $_GET['token'] ?? ($_SERVER['HTTP_AUTHORIZATION'] ?? '');
+$provided = $_GET['token'] ?? knd_request_authorization_header();
 if (str_starts_with($provided, 'Bearer ')) {
     $provided = substr($provided, 7);
 }

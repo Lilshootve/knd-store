@@ -49,12 +49,12 @@ header('X-Content-Type-Options: nosniff');
 // ── Auth ──────────────────────────────────────────────────────────────────────
 $_knd_token    = trim((string) (knd_env('KND_WORKER_TOKEN') ?? ''));
 $_knd_provided = '';
-$_knd_auth     = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+$_knd_auth     = knd_request_authorization_header();
 
 if (str_starts_with($_knd_auth, 'Bearer ')) {
-    $_knd_provided = substr($_knd_auth, 7);
+    $_knd_provided = trim(substr($_knd_auth, 7));
 } elseif (!empty($_GET['token'])) {
-    $_knd_provided = $_GET['token'];
+    $_knd_provided = trim((string) $_GET['token']);
 }
 
 if ($_knd_token !== '' && !hash_equals($_knd_token, $_knd_provided)) {

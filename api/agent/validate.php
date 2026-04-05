@@ -203,7 +203,7 @@ if (basename($_SERVER['SCRIPT_FILENAME'] ?? '') === basename(__FILE__)) {
     // Auth
     $token    = trim((string) (knd_env('KND_WORKER_TOKEN') ?? ''));
     $provided = '';
-    $auth = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+    $auth = knd_request_authorization_header();
     if (str_starts_with($auth, 'Bearer ')) {
         $provided = substr($auth, 7);
     } elseif (!empty($_GET['token'])) {

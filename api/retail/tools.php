@@ -13,10 +13,16 @@ defined('KND_ROOT') or define('KND_ROOT', dirname(__DIR__, 2));
 require_once KND_ROOT . '/includes/env.php';
 require_once KND_ROOT . '/includes/config.php';
 
-// Auth: Bearer token
-$authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
-$token      = knd_env('KND_WORKER_TOKEN', '');
-if (!$token || trim(str_replace('Bearer ', '', $authHeader)) !== $token) {
+// Auth: Bearer or ?token= (same visibility fixes as agent/execute.php)
+$authHeader = knd_request_authorization_header();
+$token      = trim((string) (knd_env('KND_WORKER_TOKEN') ?? ''));
+$provided   = '';
+if (str_starts_with($authHeader, 'Bearer ')) {
+    $provided = trim(substr($authHeader, 7));
+} elseif (!empty($_GET['token'])) {
+    $provided = trim((string) $_GET['token']);
+}
+if ($token === '' || !hash_equals($token, $provided)) {
     http_response_code(401);
     echo json_encode(['error' => 'Unauthorized']);
     exit;

@@ -107,4 +107,35 @@ if (!function_exists('knd_env_required')) {
     }
 }
 
+if (!function_exists('knd_request_authorization_header')) {
+    /**
+     * Raw Authorization header as PHP sees it.
+     *
+     * On Apache + mod_rewrite, the client header is often copied to
+     * REDIRECT_HTTP_AUTHORIZATION while HTTP_AUTHORIZATION stays empty — same token in
+     * Postman, but hash_equals fails if only HTTP_AUTHORIZATION is read.
+     */
+    function knd_request_authorization_header(): string
+    {
+        if (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
+            return (string) $_SERVER['HTTP_AUTHORIZATION'];
+        }
+        if (!empty($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+            return (string) $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+        }
+        if (function_exists('apache_request_headers')) {
+            $headers = apache_request_headers();
+            if (is_array($headers)) {
+                foreach ($headers as $name => $value) {
+                    if (strcasecmp((string) $name, 'Authorization') === 0) {
+                        return (string) $value;
+                    }
+                }
+            }
+        }
+
+        return '';
+    }
+}
+
 knd_load_env();
