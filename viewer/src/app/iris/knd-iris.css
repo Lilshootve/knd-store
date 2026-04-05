@@ -1,0 +1,168 @@
+/* Scoped Iris shell — KND Labs palette (deep navy, violet, cyan) */
+
+.knd-iris {
+  --knd-iris-bg-deep: #03050e;
+  --knd-iris-bg-mid: #080c1a;
+  --knd-iris-accent: #7c5cff;
+  --knd-iris-cyan: #00d4ff;
+  --knd-iris-glow: rgba(124, 92, 255, 0.45);
+  --knd-iris-glow-cyan: rgba(0, 212, 255, 0.35);
+  --knd-iris-text: rgba(255, 255, 255, 0.92);
+  --knd-iris-text-muted: rgba(255, 255, 255, 0.55);
+  --knd-iris-text-dim: rgba(255, 255, 255, 0.35);
+  --knd-iris-border-soft: rgba(255, 255, 255, 0.06);
+  color: var(--knd-iris-text);
+}
+
+.knd-iris-bg {
+  min-height: 100dvh;
+  background-color: var(--knd-iris-bg-deep);
+  background-image:
+    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(124, 92, 255, 0.18), transparent 55%),
+    radial-gradient(ellipse 90% 60% at 50% 100%, rgba(0, 212, 255, 0.08), transparent 50%),
+    linear-gradient(180deg, var(--knd-iris-bg-deep) 0%, var(--knd-iris-bg-mid) 100%);
+}
+
+.knd-iris-grid {
+  background-size: 48px 48px;
+  background-image:
+    linear-gradient(var(--knd-iris-border-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--knd-iris-border-soft) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 20%, transparent 75%);
+}
+
+/* Hexagon core */
+.knd-iris-hex-wrap {
+  position: relative;
+  width: min(280px, 72vw);
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.knd-iris-hex-wrap svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.knd-iris-hex-glow {
+  filter: drop-shadow(0 0 20px var(--knd-iris-glow))
+    drop-shadow(0 0 40px rgba(124, 92, 255, 0.2));
+  transition: filter 0.5s ease;
+}
+
+.knd-iris-core.idle .knd-iris-hex-wrap .knd-iris-hex-glow {
+  animation: knd-iris-hex-breathe 4s ease-in-out infinite;
+}
+
+.knd-iris-core.thinking .knd-iris-hex-wrap .knd-iris-hex-glow {
+  animation: knd-iris-hex-spin 12s linear infinite;
+  filter: drop-shadow(0 0 28px var(--knd-iris-glow))
+    drop-shadow(0 0 48px rgba(0, 212, 255, 0.25));
+}
+
+.knd-iris-core.responding .knd-iris-hex-wrap .knd-iris-hex-glow {
+  animation: knd-iris-hex-pulse-fast 0.9s ease-in-out infinite;
+  filter: drop-shadow(0 0 36px var(--knd-iris-glow-cyan))
+    drop-shadow(0 0 56px var(--knd-iris-glow))
+    drop-shadow(0 0 80px rgba(124, 92, 255, 0.35));
+}
+
+@keyframes knd-iris-hex-breathe {
+  0%,
+  100% {
+    opacity: 0.85;
+    filter: drop-shadow(0 0 16px var(--knd-iris-glow))
+      drop-shadow(0 0 32px rgba(124, 92, 255, 0.15));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 28px var(--knd-iris-glow))
+      drop-shadow(0 0 44px rgba(0, 212, 255, 0.2));
+  }
+}
+
+@keyframes knd-iris-hex-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes knd-iris-hex-pulse-fast {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 0.95;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .knd-iris-core.idle .knd-iris-hex-wrap .knd-iris-hex-glow,
+  .knd-iris-core.thinking .knd-iris-hex-wrap .knd-iris-hex-glow,
+  .knd-iris-core.responding .knd-iris-hex-wrap .knd-iris-hex-glow {
+    animation: none;
+  }
+  .knd-iris-core.thinking .knd-iris-hex-wrap .knd-iris-hex-glow {
+    filter: drop-shadow(0 0 24px var(--knd-iris-glow));
+  }
+}
+
+/* Input pill */
+.knd-iris-input-wrap {
+  width: 100%;
+  max-width: 32rem;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 9999px;
+  background: rgba(12, 18, 36, 0.55);
+  border: 1px solid var(--knd-iris-border-soft);
+  box-shadow:
+    0 0 0 1px rgba(124, 92, 255, 0.08),
+    0 0 24px rgba(124, 92, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.knd-iris-input-wrap:focus-within {
+  border-color: rgba(124, 92, 255, 0.35);
+  box-shadow:
+    0 0 0 1px rgba(124, 92, 255, 0.2),
+    0 0 32px rgba(124, 92, 255, 0.22),
+    0 0 48px rgba(0, 212, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.knd-iris-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--knd-iris-text);
+  font-size: 0.95rem;
+  padding: 0.85rem 1.25rem;
+}
+
+.knd-iris-input::placeholder {
+  color: var(--knd-iris-text-dim);
+}
+
+.knd-iris-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.knd-iris-input-wrap--locked {
+  opacity: 0.85;
+  pointer-events: none;
+}
