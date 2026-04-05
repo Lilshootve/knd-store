@@ -63,12 +63,17 @@ if (isset($body['conversation_history']) && is_array($body['conversation_history
 // Determine mode from session — admins get full access, everyone else is public/safe
 $irisMode = !empty($_SESSION['admin_logged_in']) ? 'admin' : 'public';
 
+// Pass the platform user ID so Next.js can load/save per-user memory.
+// Cast to string — MySQL IDs are typically integers; JS expects a string key.
+$userId = isset($_SESSION['user_id']) ? (string)$_SESSION['user_id'] : null;
+
 try {
     $payload = json_encode([
         'message'              => $message,
         'context'              => $context,
         'conversation_history' => $history,
         'iris_mode'            => $irisMode,
+        'user_id'              => $userId,          // null for unauthenticated requests
     ], JSON_THROW_ON_ERROR);
 } catch (Throwable $e) {
     iris_fail(400, 'payload encode failed: ' . $e->getMessage());

@@ -102,6 +102,19 @@ if ($tool === '') {
     agent_respond('error', '', null, 'MISSING_TOOL: "tool" field is required.', [], $simulate, 400);
 }
 
+// ── Task 5: Safe mode hard block ──────────────────────────────────────────────
+// execute.php is a second line of defence. The Next.js layer should have already
+// blocked dangerous calls, but we enforce here too so the rule holds even if
+// execute.php is called directly (e.g. from other scripts or future integrations).
+if ($iris_mode === 'public' && $tool !== 'db_query') {
+    agent_log_entry($tool, $input, null, 'blocked', $iris_mode);
+    agent_respond(
+        'blocked', $tool, null,
+        'PUBLIC_MODE_BLOCK: Only db_query is permitted in public mode.',
+        [], false, 403
+    );
+}
+
 // ── Validate ──────────────────────────────────────────────────────────────────
 $validation = validate_tool_call($tool, $input);
 
