@@ -9,10 +9,9 @@ require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/footer.php';
 
 /**
- * KND Agents Iris backend (must allow CORS from this site if origins differ).
- * Deploy: point to your reachable Agents URL (e.g. reverse proxy same-origin).
+ * Same-origin proxy → KND Agents (see api/iris.php). Set IRIS_AGENTS_CHAT_URL on the server for the real upstream.
  */
-$irisApiUrl = 'http://127.0.0.1:3000/api/iris/chat';
+$irisApiUrl = '/api/iris.php';
 
 $irisCss = __DIR__ . '/assets/css/iris.css';
 $irisJs = __DIR__ . '/assets/js/iris.js';

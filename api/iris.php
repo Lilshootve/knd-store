@@ -1,98 +1,110 @@
 <?php
 /**
- * Iris API — same-origin JSON endpoint for iris.php (KAEL-lite mock).
- * POST body: { "input": "..." } or { "prompt": "..." }
+ * Iris — same-origin proxy to KND Agents (avoids browser CORS / mixed content).
+ * Browser POSTs JSON; PHP forwards to IRIS_AGENTS_CHAT_URL (default http://127.0.0.1:3000/api/iris/chat).
+ *
+ * .env (optional):
+ *   IRIS_AGENTS_CHAT_URL=https://internal-host/api/iris/chat
+ *   IRIS_AGENTS_API_KEY=...   (sent as X-API-Key if set)
  */
 
 declare(strict_types=1);
+
+require_once dirname(__DIR__) . '/includes/env.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['type' => 'message', 'message' => 'Invalid request']);
+    echo json_encode(['type' => 'chat', 'response' => 'System unavailable']);
     exit;
 }
 
-function iris_invalid(): void
+function iris_fail(int $code): void
 {
-    http_response_code(400);
-    echo json_encode(['type' => 'message', 'message' => 'Invalid request']);
+    http_response_code($code);
+    echo json_encode(['type' => 'chat', 'response' => 'System unavailable']);
     exit;
 }
 
-function iris_unavailable(): void
-{
-    http_response_code(500);
-    echo json_encode(['type' => 'message', 'message' => 'System unavailable']);
-    exit;
+$raw = file_get_contents('php://input');
+if ($raw === false || $raw === '') {
+    iris_fail(400);
 }
 
-function iris_read_input(array $body): ?string
-{
-    $prompt = $body['prompt'] ?? null;
-    $input = $body['input'] ?? null;
-    if (is_string($prompt) && trim($prompt) !== '') {
-        return trim($prompt);
-    }
-    if (is_string($input) && trim($input) !== '') {
-        return trim($input);
-    }
-    return null;
+$body = json_decode($raw, true);
+if (!is_array($body) || !isset($body['message']) || !is_string($body['message']) || trim($body['message']) === '') {
+    iris_fail(400);
 }
 
-/**
- * @return array{type: string, message?: string, target?: string}
- */
-function iris_mock_decision(string $text): array
-{
-    $lower = strtolower($text);
-
-    foreach (['image', 'draw', 'generate', 'art'] as $k) {
-        if (str_contains($lower, $k)) {
-            return [
-                'type' => 'redirect',
-                'target' => '/knd-labs?prompt=' . rawurlencode($text),
-            ];
-        }
-    }
-    foreach (['play', 'game', 'battle'] as $k) {
-        if (str_contains($lower, $k)) {
-            return ['type' => 'redirect', 'target' => '/knd-games'];
-        }
-    }
-    foreach (['buy', 'product', 'store'] as $k) {
-        if (str_contains($lower, $k)) {
-            return [
-                'type' => 'redirect',
-                'target' => '/store?search=' . rawurlencode($text),
-            ];
-        }
-    }
-
-    return [
-        'type' => 'message',
-        'message' => 'Iris understood your request but no direct action was triggered.',
-    ];
+$message = mb_substr(trim($body['message']), 0, 16000);
+$context = ['includeLastRun' => true];
+if (isset($body['context']) && is_array($body['context'])) {
+    $context = $body['context'];
+}
+$history = [];
+if (isset($body['conversation_history']) && is_array($body['conversation_history'])) {
+    $history = $body['conversation_history'];
 }
 
+$payload = json_encode([
+    'message' => $message,
+    'context' => $context,
+    'conversation_history' => $history,
+], JSON_THROW_ON_ERROR);
+
+$upstream = knd_env('IRIS_AGENTS_CHAT_URL', 'http://127.0.0.1:3000/api/iris/chat') ?? 'http://127.0.0.1:3000/api/iris/chat';
+$upstream = trim($upstream);
+if ($upstream === '') {
+    $upstream = 'http://127.0.0.1:3000/api/iris/chat';
+}
+
+$headers = ['Content-Type: application/json'];
+$apiKey = knd_env('IRIS_AGENTS_API_KEY', null);
+if ($apiKey !== null && trim($apiKey) !== '') {
+    $headers[] = 'X-API-Key: ' . trim($apiKey);
+}
+
+$ch = curl_init($upstream);
+if ($ch === false) {
+    iris_fail(503);
+}
+
+curl_setopt_array($ch, [
+    CURLOPT_POST => true,
+    CURLOPT_POSTFIELDS => $payload,
+    CURLOPT_HTTPHEADER => $headers,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_TIMEOUT => 120,
+    CURLOPT_CONNECTTIMEOUT => 15,
+]);
+
+$response = curl_exec($ch);
+$errno = curl_errno($ch);
+$httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
+
+if ($errno !== 0 || $response === false || $response === '') {
+    iris_fail(503);
+}
+
+// Pass through valid JSON; normalize failures to generic message for the UI
 try {
-    $raw = file_get_contents('php://input');
-    if ($raw === false || $raw === '') {
-        iris_invalid();
-    }
-
-    $body = json_decode($raw, true);
-    if (!is_array($body)) {
-        iris_invalid();
-    }
-
-    $trimmed = iris_read_input($body);
-    if ($trimmed === null) {
-        iris_invalid();
-    }
-
-    echo json_encode(iris_mock_decision($trimmed));
+    $decoded = json_decode($response, true, 512, JSON_THROW_ON_ERROR);
 } catch (Throwable $e) {
-    iris_unavailable();
+    iris_fail(503);
 }
+
+if (!is_array($decoded) || !isset($decoded['type']) || !is_string($decoded['type'])) {
+    iris_fail(503);
+}
+
+$outCode = $httpCode >= 200 && $httpCode < 600 ? $httpCode : 200;
+if ($outCode < 200 || $outCode >= 300) {
+    iris_fail(503);
+}
+
+http_response_code($outCode);
+echo json_encode($decoded, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+exit;
