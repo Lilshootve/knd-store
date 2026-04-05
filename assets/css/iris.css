@@ -199,3 +199,124 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* ── Data state (core animation) ─────────────────────────────────────────── */
+.iris-core.data .iris-hex-glow {
+  animation: iris-hex-data 2.4s ease-in-out infinite;
+  filter: drop-shadow(0 0 24px rgba(0, 212, 255, 0.5)) drop-shadow(0 0 48px rgba(124, 92, 255, 0.3));
+}
+
+@keyframes iris-hex-data {
+  0%,
+  100% {
+    opacity: 0.9;
+    filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.4)) drop-shadow(0 0 40px rgba(124, 92, 255, 0.2));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 32px rgba(0, 212, 255, 0.65)) drop-shadow(0 0 60px rgba(124, 92, 255, 0.35));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iris-core.data .iris-hex-glow {
+    animation: none;
+  }
+}
+
+/* ── Data table output ────────────────────────────────────────────────────── */
+.iris-message .iris-data-wrap {
+  text-align: left;
+  width: min(90vw, 28rem);
+  margin: 0 auto;
+}
+
+.iris-data-summary {
+  font-size: 0.875rem;
+  color: var(--iris-text-muted);
+  margin: 0 0 0.6rem;
+  letter-spacing: 0.03em;
+}
+
+.iris-data-empty {
+  font-size: 0.875rem;
+  color: var(--iris-text-dim);
+  font-style: italic;
+  margin: 0;
+}
+
+.iris-data-scroll {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid rgba(124, 92, 255, 0.18);
+  background: rgba(8, 12, 26, 0.6);
+  box-shadow: 0 0 24px rgba(124, 92, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.iris-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Rajdhani", system-ui, sans-serif;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+
+.iris-data-table thead {
+  background: rgba(124, 92, 255, 0.12);
+  border-bottom: 1px solid rgba(124, 92, 255, 0.22);
+}
+
+.iris-data-table th {
+  padding: 0.45rem 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  color: var(--iris-cyan);
+  white-space: nowrap;
+}
+
+.iris-data-table td {
+  padding: 0.4rem 0.75rem;
+  color: var(--iris-text);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.iris-data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.iris-data-table tbody tr:hover td {
+  background: rgba(124, 92, 255, 0.06);
+}
+
+/* Scrollbar styling for data scroll container */
+.iris-data-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+.iris-data-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.iris-data-scroll::-webkit-scrollbar-thumb {
+  background: rgba(124, 92, 255, 0.35);
+  border-radius: 2px;
+}
+
+/* Non-table JSON dump */
+.iris-data-json {
+  font-family: "Courier New", monospace;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--iris-text-muted);
+  background: rgba(8, 12, 26, 0.6);
+  border: 1px solid rgba(124, 92, 255, 0.18);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+  text-align: left;
+  white-space: pre;
+  max-height: 14rem;
+  margin: 0;
+}
