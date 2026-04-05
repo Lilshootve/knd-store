@@ -7,8 +7,9 @@ import {
 } from "@/lib/iris-types";
 import { useCallback, useRef, useState } from "react";
 
-const REDIRECT_DELAY_MS = 700;
+const IRIS_CHAT_URL = "http://127.0.0.1:3000/api/iris/chat";
 const RESPONDING_TO_IDLE_MS = 1200;
+const FALLBACK = "System unavailable";
 
 export type IrisSendResult = "cleared" | "kept";
 
@@ -50,15 +51,11 @@ export function useIris() {
   const handleIrisResponse = useCallback(
     (data: IrisSuccessResponse) => {
       if (data.type === "redirect") {
-        applyState("responding", "Redirecting...");
-        timerRef.current = setTimeout(() => {
-          timerRef.current = null;
-          window.location.href = data.target;
-        }, REDIRECT_DELAY_MS);
+        window.location.href = data.target;
         return;
       }
-      if (data.type === "message") {
-        applyState("responding", data.message);
+      if (data.type === "chat") {
+        applyState("responding", data.response);
         timerRef.current = setTimeout(() => {
           timerRef.current = null;
           applyState("idle");
@@ -78,32 +75,34 @@ export function useIris() {
       setInputLocked(true);
 
       try {
-        const res = await fetch("/api/iris", {
+        const res = await fetch(IRIS_CHAT_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt }),
+          body: JSON.stringify({
+            message: prompt,
+            context: { includeLastRun: true },
+            conversation_history: [],
+          }),
         });
 
         let data: unknown;
         try {
           data = await res.json();
-        } catch (err) {
-          console.error(err);
-          applyState("idle", "Unexpected response");
+        } catch {
+          applyState("idle", FALLBACK);
           return "kept";
         }
 
         const parsed = parseIrisResponse(data);
-        if (parsed) {
+        if (parsed && res.ok) {
           handleIrisResponse(parsed);
           return "cleared";
         }
 
-        applyState("idle", "Unexpected response");
+        applyState("idle", FALLBACK);
         return "kept";
-      } catch (err) {
-        console.error(err);
-        applyState("idle", "System error");
+      } catch {
+        applyState("idle", FALLBACK);
         return "kept";
       } finally {
         setInputLocked(false);
