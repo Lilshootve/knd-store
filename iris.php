@@ -8,8 +8,11 @@ require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/footer.php';
 
-/** Dev: Next viewer Iris API. Production: e.g. '/api/iris' or '/api/iris.php' on same host. */
-$irisApiUrl = 'http://localhost:3000/api/iris';
+/**
+ * Same-origin API only. Do not use http://localhost:3000 on production — browsers call the visitor's machine, not your server, and CORS will block cross-origin.
+ * Local Next.js: temporarily set to 'http://localhost:3000/api/iris' or run the store and use this PHP endpoint.
+ */
+$irisApiUrl = '/api/iris.php';
 
 $irisCss = __DIR__ . '/assets/css/iris.css';
 $irisJs = __DIR__ . '/assets/js/iris.js';
