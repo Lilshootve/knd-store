@@ -47,7 +47,7 @@ header('Cache-Control: no-store, no-cache, must-revalidate');
 header('X-Content-Type-Options: nosniff');
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
-$_knd_token    = getenv('KND_WORKER_TOKEN') ?: '';
+$_knd_token    = trim((string) (knd_env('KND_WORKER_TOKEN') ?? ''));
 $_knd_provided = '';
 $_knd_auth     = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
 
@@ -201,7 +201,7 @@ if ($businessType === 'retail' && $isModuleTool) {
     $requiresConfirm   = in_array($tool, $confirmationTools, true) && retail_is_admin();
 
     if ($requiresConfirm && !$simulate) {
-        $secret         = getenv('KND_WORKER_TOKEN') ?: 'fallback';
+        $secret         = trim((string) (knd_env('KND_WORKER_TOKEN') ?? '')) ?: 'fallback';
         $expectedConfirm = hash_hmac(
             'sha256',
             json_encode(['tool' => $tool, 'input' => $input, 'biz' => retail_business_id()]),
@@ -546,7 +546,7 @@ function run_kael_dispatch(array $input): array
 
     [$body, $code, $err] = _http_post($kael_url, $payload, [
         'Content-Type: application/json',
-        'X-API-Key: ' . (getenv('KND_WORKER_TOKEN') ?: ''),
+        'X-API-Key: ' . trim((string) (knd_env('KND_WORKER_TOKEN') ?? '')),
     ], 30);
 
     if ($err) throw new RuntimeException("Kael dispatch error: {$err}");

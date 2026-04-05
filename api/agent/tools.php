@@ -19,7 +19,7 @@ header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
-$token    = getenv('KND_WORKER_TOKEN') ?: '';
+$token    = trim((string) (knd_env('KND_WORKER_TOKEN') ?? ''));
 $provided = $_GET['token'] ?? ($_SERVER['HTTP_AUTHORIZATION'] ?? '');
 if (str_starts_with($provided, 'Bearer ')) {
     $provided = substr($provided, 7);

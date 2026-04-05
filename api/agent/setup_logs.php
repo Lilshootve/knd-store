@@ -15,7 +15,7 @@ require_once __DIR__ . '/../../includes/json.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
-$token    = getenv('KND_WORKER_TOKEN') ?: '';
+$token    = trim((string) (knd_env('KND_WORKER_TOKEN') ?? ''));
 $provided = $_GET['token'] ?? '';
 if ($token !== '' && !hash_equals($token, $provided)) {
     json_error('UNAUTHORIZED', 'Invalid or missing token.', 401);

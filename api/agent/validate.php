@@ -201,7 +201,7 @@ if (basename($_SERVER['SCRIPT_FILENAME'] ?? '') === basename(__FILE__)) {
     header('Cache-Control: no-store');
 
     // Auth
-    $token    = getenv('KND_WORKER_TOKEN') ?: '';
+    $token    = trim((string) (knd_env('KND_WORKER_TOKEN') ?? ''));
     $provided = '';
     $auth = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
     if (str_starts_with($auth, 'Bearer ')) {

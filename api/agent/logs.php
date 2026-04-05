@@ -16,7 +16,7 @@ require_once __DIR__ . '/../../includes/json.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
-$token    = getenv('KND_WORKER_TOKEN') ?: '';
+$token    = trim((string) (knd_env('KND_WORKER_TOKEN') ?? ''));
 $provided = $_GET['token'] ?? '';
 $auth = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
 if (str_starts_with($auth, 'Bearer ')) $provided = substr($auth, 7);
