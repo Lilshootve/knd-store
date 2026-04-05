@@ -5,7 +5,7 @@
  * Incluir este archivo al inicio de cualquier endpoint retail.
  */
 
-defined('KND_ROOT') or define('KND_ROOT', dirname(__DIR__));
+defined('KND_ROOT') or define('KND_ROOT', dirname(__DIR__, 2));
 
 // Core del sistema KND (ya existentes)
 require_once KND_ROOT . '/includes/env.php';

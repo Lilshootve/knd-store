@@ -12,9 +12,9 @@
  *   idempotency_key     string opcional
  */
 
-defined('KND_ROOT') or define('KND_ROOT', dirname(__DIR__, 2));
-require_once KND_ROOT . '/retail/lib/invoice_number.php';
-require_once KND_ROOT . '/retail/lib/product_sale_lock.php';
+defined('KND_ROOT') or define('KND_ROOT', dirname(__DIR__, 3));
+require_once KND_ROOT . '/core/retail/lib/invoice_number.php';
+require_once KND_ROOT . '/core/retail/lib/product_sale_lock.php';
 
 function retail_create_credit_sale(PDO $pdo, array $input): array
 {

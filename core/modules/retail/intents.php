@@ -6,11 +6,11 @@
 
 declare(strict_types=1);
 
-defined('KND_ROOT') or define('KND_ROOT', dirname(__DIR__, 2));
+defined('KND_ROOT') or define('KND_ROOT', dirname(__DIR__, 3));
 
 require_once __DIR__ . '/nl_patterns.php';
-require_once KND_ROOT . '/retail/parser.php';
-require_once KND_ROOT . '/retail/intent_mapper.php';
+require_once KND_ROOT . '/core/retail/parser.php';
+require_once KND_ROOT . '/core/retail/intent_mapper.php';
 
 /**
  * @return array{tool: string, input: array}|null

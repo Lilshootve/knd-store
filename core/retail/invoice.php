@@ -49,7 +49,7 @@ function retail_generate_invoice(PDO $pdo, int $saleId): string
     $html          = _retail_invoice_html($sale, $items, $invoiceNumber);
 
     // Guardar en disco
-    $dir  = defined('KND_ROOT') ? KND_ROOT : dirname(__DIR__);
+    $dir  = defined('KND_ROOT') ? KND_ROOT : dirname(__DIR__, 2);
     $dir .= "/storage/retail-invoices/{$bizId}";
     if (!is_dir($dir)) {
         mkdir($dir, 0755, true);

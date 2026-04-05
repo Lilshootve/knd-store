@@ -5,20 +5,20 @@
 
 declare(strict_types=1);
 
-defined('KND_ROOT') or define('KND_ROOT', dirname(__DIR__, 2));
+defined('KND_ROOT') or define('KND_ROOT', dirname(__DIR__, 3));
 
-require_once KND_ROOT . '/retail/auth.php';
-require_once KND_ROOT . '/retail/tools/create_sale.php';
-require_once KND_ROOT . '/retail/tools/create_credit_sale.php';
-require_once KND_ROOT . '/retail/tools/register_credit_payment.php';
-require_once KND_ROOT . '/retail/tools/get_product.php';
-require_once KND_ROOT . '/retail/tools/search_product.php';
-require_once KND_ROOT . '/retail/tools/get_inventory_low.php';
-require_once KND_ROOT . '/retail/tools/get_sales_today.php';
-require_once KND_ROOT . '/retail/tools/adjust_stock.php';
-require_once KND_ROOT . '/retail/tools/get_customer_by_document.php';
-require_once KND_ROOT . '/retail/tools/create_customer_if_not_exists.php';
-require_once KND_ROOT . '/retail/tools/update_exchange_rate.php';
+require_once KND_ROOT . '/core/retail/auth.php';
+require_once KND_ROOT . '/core/retail/tools/create_sale.php';
+require_once KND_ROOT . '/core/retail/tools/create_credit_sale.php';
+require_once KND_ROOT . '/core/retail/tools/register_credit_payment.php';
+require_once KND_ROOT . '/core/retail/tools/get_product.php';
+require_once KND_ROOT . '/core/retail/tools/search_product.php';
+require_once KND_ROOT . '/core/retail/tools/get_inventory_low.php';
+require_once KND_ROOT . '/core/retail/tools/get_sales_today.php';
+require_once KND_ROOT . '/core/retail/tools/adjust_stock.php';
+require_once KND_ROOT . '/core/retail/tools/get_customer_by_document.php';
+require_once KND_ROOT . '/core/retail/tools/create_customer_if_not_exists.php';
+require_once KND_ROOT . '/core/retail/tools/update_exchange_rate.php';
 require_once __DIR__ . '/reporting_tools.php';
 
 /**
