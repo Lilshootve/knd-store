@@ -1,3 +1,4 @@
 <?php
 declare(strict_types=1);
-require __DIR__ . '/panel/iris.php';
+require_once __DIR__ . '/config/bootstrap.php';
+require BASE_PATH . '/panel/iris.php';

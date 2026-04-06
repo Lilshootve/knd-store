@@ -4,15 +4,16 @@
  * Loads images automatically from assets/images/gallery/
  * Reusable section; compatible with Apache and project relative paths.
  */
+require_once __DIR__ . '/config/bootstrap.php';
 if (session_status() === PHP_SESSION_NONE) {
     ini_set('session.cookie_httponly', 1);
     ini_set('session.use_only_cookies', 1);
     ini_set('session.cookie_secure', 0);
     session_start();
 }
-require_once __DIR__ . '/includes/config.php';
-require_once __DIR__ . '/includes/header.php';
-require_once __DIR__ . '/includes/footer.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/header.php';
+require_once BASE_PATH . '/includes/footer.php';
 
 // Ruta absoluta a la carpeta de galería (relativa al script)
 $galleryDir = __DIR__ . '/assets/images/gallery';

@@ -6,6 +6,7 @@
  * PRODUCCIÓN: dejar $SANDBOX_MODE = true; quitar o desactivar dry-run.
  */
 
+require_once __DIR__ . '/../../../config/bootstrap.php';
 declare(strict_types=1);
 
 // ── Sandbox: true = KP real, pity real, inventario, log. false = dry-run (sin escrituras). ──
@@ -14,14 +15,14 @@ $SANDBOX_MODE = true;
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 
-require_once __DIR__ . '/../../../includes/session.php';
-require_once __DIR__ . '/../../../includes/config.php';
-require_once __DIR__ . '/../../../includes/auth.php';
-require_once __DIR__ . '/../../../includes/support_credits.php';
-require_once __DIR__ . '/../includes/knl_packs.php';
-require_once __DIR__ . '/../includes/knl_db.php';
-require_once __DIR__ . '/../includes/knl_assets.php';
-require_once __DIR__ . '/../includes/knl_mw_items.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/support_credits.php';
+require_once BASE_PATH . '/includes/knl_packs.php';
+require_once BASE_PATH . '/includes/knl_db.php';
+require_once BASE_PATH . '/includes/knl_assets.php';
+require_once BASE_PATH . '/includes/knl_mw_items.php';
 
 $serverName = $_SERVER['SERVER_NAME'] ?? '';
 $knlIsLocal = in_array($serverName, ['localhost', '127.0.0.1'], true);

@@ -5,7 +5,8 @@
  * Or from browser (one-time): /admin/seed_owner.php?user=X&pass=Y
  * REMOVE or protect this file in production after use.
  */
-require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../config/bootstrap.php';
+require_once BASE_PATH . '/includes/config.php';
 
 $isCli = (php_sapi_name() === 'cli');
 if ($isCli) {

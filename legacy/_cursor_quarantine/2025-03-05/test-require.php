@@ -1,11 +1,12 @@
 <?php
+require_once __DIR__ . '/../../../config/bootstrap.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 echo "=== TEST REQUIRE ===<br><br>";
 
 echo "1. Verificando si functions-i18n.php existe...<br>";
-$file = __DIR__ . '/includes/functions-i18n.php';
+$file = BASE_PATH . '/includes/functions-i18n.php';
 if (file_exists($file)) {
     echo "✓ Archivo existe: $file<br>";
     echo "Tamaño: " . filesize($file) . " bytes<br>";
@@ -22,7 +23,7 @@ echo "<br>3. Verificando funciones:<br>";
 echo "function_exists('t'): " . (function_exists('t') ? 'SÍ ✓' : 'NO ✗') . "<br>";
 
 echo "<br>4. Cargando config.php...<br>";
-require_once __DIR__ . '/includes/config.php';
+require_once BASE_PATH . '/includes/config.php';
 echo "✓ config.php cargado<br>";
 
 echo "<br>5. Verificando funciones después de config.php:<br>";
@@ -33,7 +34,7 @@ if (!function_exists('t')) {
     echo "Esto sugiere que el require_once en config.php no se está ejecutando o hay un error.<br>";
     
     echo "<br>6. Verificando línea 29 de config.php...<br>";
-    $config_lines = file(__DIR__ . '/includes/config.php');
+    $config_lines = file(BASE_PATH . '/includes/config.php');
     if (isset($config_lines[28])) {
         echo "Línea 29: " . htmlspecialchars($config_lines[28]) . "<br>";
     }

@@ -1,11 +1,12 @@
 <?php
+require_once __DIR__ . '/../config/bootstrap.php';
 ini_set('display_errors', '0');
 require_once __DIR__ . '/_guard.php';
 admin_require_login();
 admin_require_perm('payments.view');
-require_once __DIR__ . '/../includes/csrf.php';
-require_once __DIR__ . '/../includes/rate_limit.php';
-require_once __DIR__ . '/../includes/support_credits.php';
+require_once BASE_PATH . '/includes/csrf.php';
+require_once BASE_PATH . '/includes/rate_limit.php';
+require_once BASE_PATH . '/includes/support_credits.php';
 
 $pdo = getDBConnection();
 if (!$pdo) { echo 'DB connection failed.'; exit; }
@@ -222,7 +223,7 @@ if ($selectedUserId > 0) {
     }
 }
 
-require_once __DIR__ . '/../includes/header.php';
+require_once BASE_PATH . '/includes/header.php';
 echo generateHeader('KND Points Wallet Inspector', 'Admin wallet inspector');
 echo generateAdminBar();
 ?>

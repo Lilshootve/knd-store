@@ -1,9 +1,10 @@
 <?php
-require_once __DIR__ . '/includes/session.php';
-require_once __DIR__ . '/includes/config.php';
-require_once __DIR__ . '/includes/paypal_config.php';
-require_once __DIR__ . '/includes/header.php';
-require_once __DIR__ . '/includes/footer.php';
+require_once __DIR__ . '/config/bootstrap.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/paypal_config.php';
+require_once BASE_PATH . '/includes/header.php';
+require_once BASE_PATH . '/includes/footer.php';
 
 echo generateHeader(t('order.meta.title'), t('order.meta.description'));
 ?>

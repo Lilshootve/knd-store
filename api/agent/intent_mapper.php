@@ -1,3 +1,4 @@
 <?php
 declare(strict_types=1);
-require __DIR__ . '/../../core/api/agent/intent_mapper.php';
+require_once __DIR__ . '/../../config/bootstrap.php';
+require BASE_PATH . '/core/api/agent/intent_mapper.php';

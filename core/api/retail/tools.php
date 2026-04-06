@@ -9,9 +9,9 @@
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache');
 
-defined('KND_ROOT') or define('KND_ROOT', dirname(__DIR__, 3));
-require_once KND_ROOT . '/includes/env.php';
-require_once KND_ROOT . '/includes/config.php';
+require_once __DIR__ . '/../../../config/bootstrap.php';
+require_once BASE_PATH . '/includes/env.php';
+require_once BASE_PATH . '/includes/config.php';
 
 // Auth: Bearer or ?token= (same visibility fixes as agent/execute.php)
 $authHeader = knd_request_authorization_header();

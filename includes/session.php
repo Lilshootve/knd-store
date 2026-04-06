@@ -1,4 +1,7 @@
 <?php
+if (!defined('BASE_PATH')) {
+    require_once __DIR__ . '/../config/bootstrap.php';
+}
 
 // KND Store - Gestión centralizada de sesión
 

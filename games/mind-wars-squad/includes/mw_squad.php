@@ -8,6 +8,7 @@
  * - mw_skill_* handlers (resolved through dispatcher)
  */
 
+require_once __DIR__ . '/../../../config/bootstrap.php';
 declare(strict_types=1);
 
 // ── Constants (mirrors 1v1 values — change only here if 1v1 changes) ──
@@ -911,10 +912,10 @@ function mw_squad_save_state(PDO $pdo, string $token, int $user_id, array $state
 function mw_squad_finalize_battle(PDO $pdo, string $token, int $user_id, array $state): array
 {
     if (!function_exists('kd_avatar_progress')) {
-        require_once __DIR__ . '/../../../includes/knowledge_duel.php';
+        require_once BASE_PATH . '/includes/knowledge_duel.php';
     }
     if (!function_exists('mw_apply_rewards_to_user')) {
-        require_once __DIR__ . '/../../../includes/mind_wars_rewards.php';
+        require_once BASE_PATH . '/includes/mind_wars_rewards.php';
     }
 
     $rewards = mw_squad_calculate_rewards($state, $user_id);

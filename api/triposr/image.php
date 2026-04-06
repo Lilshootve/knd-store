@@ -4,15 +4,16 @@
  * Called by the GPU server - job_uuid in ?t= is used (unguessable).
  * Endpoint kept at /api/triposr/image.php for backward compatibility.
  */
+require_once __DIR__ . '/../../config/bootstrap.php';
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 ini_set('display_errors', '0');
 
-require_once __DIR__ . '/../../includes/session.php';
-require_once __DIR__ . '/../../includes/config.php';
-require_once __DIR__ . '/../../includes/triposr_config.php';
-require_once __DIR__ . '/../../includes/storage.php';
-require_once __DIR__ . '/../../includes/triposr.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/triposr_config.php';
+require_once BASE_PATH . '/includes/storage.php';
+require_once BASE_PATH . '/includes/triposr.php';
 
 try {
     $token = trim($_GET['t'] ?? '');

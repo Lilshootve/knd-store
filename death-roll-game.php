@@ -1,13 +1,14 @@
 <?php
+require_once __DIR__ . '/config/bootstrap.php';
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
 
-require_once __DIR__ . '/includes/session.php';
-require_once __DIR__ . '/includes/config.php';
-require_once __DIR__ . '/includes/auth.php';
-require_once __DIR__ . '/includes/csrf.php';
-require_once __DIR__ . '/includes/mw_lobby.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/csrf.php';
+require_once BASE_PATH . '/includes/mw_lobby.php';
 
 require_login();
 require_verified_email();
@@ -65,7 +66,7 @@ if ($embed) {
     <link rel="stylesheet" href="/assets/css/lastroll-holo.css?v=<?php echo $holoV; ?>">
     <link rel="stylesheet" href="/assets/css/arena-embed.css?v=<?php echo file_exists(__DIR__ . '/assets/css/arena-embed.css') ? filemtime(__DIR__ . '/assets/css/arena-embed.css') : 0; ?>">
 <?php
-require_once __DIR__ . '/includes/holo_orb_assets.php';
+require_once BASE_PATH . '/includes/holo_orb_assets.php';
 holo_orb_emit_stylesheet_link();
 ?>
 </head>

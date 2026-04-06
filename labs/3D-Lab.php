@@ -3,8 +3,9 @@
  * 3D Lab - Unified 3D generation (text, image, text+image, recent)
  * Dedicated pipeline, separate ComfyUI. Safe mode only.
  */
+require_once __DIR__ . '/../config/bootstrap.php';
 require_once __DIR__ . '/_init.php';
-require_once __DIR__ . '/../includes/labs_3d_helpers.php';
+require_once BASE_PATH . '/includes/labs_3d_helpers.php';
 
 labs_perf_checkpoint('3d_lab_after_init');
 

@@ -1,7 +1,8 @@
 <?php
+require_once __DIR__ . '/../config/bootstrap.php';
 require_once __DIR__ . '/_init.php';
 
-require_once __DIR__ . '/../includes/triposr.php';
+require_once BASE_PATH . '/includes/triposr.php';
 
 $jobId = trim($_GET['job_id'] ?? '');
 if ($jobId === '') {

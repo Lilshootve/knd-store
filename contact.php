@@ -2,10 +2,11 @@
 /**
  * Contact — concept layout (sections/knd_contact.php + knd-contact.css/js).
  */
-require_once __DIR__ . '/includes/session.php';
-require_once __DIR__ . '/includes/config.php';
-require_once __DIR__ . '/includes/header.php';
-require_once __DIR__ . '/includes/footer.php';
+require_once __DIR__ . '/config/bootstrap.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/header.php';
+require_once BASE_PATH . '/includes/footer.php';
 
 $success_message = '';
 $error_message = '';

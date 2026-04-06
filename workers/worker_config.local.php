@@ -1,5 +1,6 @@
 <?php
-require_once dirname(__DIR__) . '/includes/env.php';
+require_once __DIR__ . '/../config/bootstrap.php';
+require_once BASE_PATH . '/includes/env.php';
 
 return [
 

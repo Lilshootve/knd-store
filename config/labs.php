@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/bootstrap.php';
+
 /**
  * KND Labs - Central path configuration.
  * Override in config/labs.local.php for your environment.
@@ -13,7 +15,7 @@ if (file_exists($labsLocal)) {
     require_once $labsLocal;
 }
 if (!defined('COMFY_INPUT_DIR')) {
-    define('COMFY_INPUT_DIR', getenv('COMFY_INPUT_DIR') ?: (dirname(__DIR__) . '/comfyui/ComfyUI/input'));
+    define('COMFY_INPUT_DIR', getenv('COMFY_INPUT_DIR') ?: (BASE_PATH . '/comfyui/ComfyUI/input'));
 }
 if (!defined('COMFY_OUTPUT_DIR')) {
     define('COMFY_OUTPUT_DIR', getenv('COMFY_OUTPUT_DIR') ?: '/path/to/ComfyUI/output');
@@ -22,7 +24,7 @@ if (!defined('KND_FINAL_IMAGE_DIR')) {
     define('KND_FINAL_IMAGE_DIR', getenv('KND_FINAL_IMAGE_DIR') ?: 'C:\\AI\\Comfyui3d\\Comfyui3d\\ComfyUI_windows_portable\\ComfyUI\\output');
 }
 if (!defined('WORKFLOWS_DIR')) {
-    define('WORKFLOWS_DIR', getenv('WORKFLOWS_DIR') ?: (dirname(__DIR__) . '/workflows'));
+    define('WORKFLOWS_DIR', getenv('WORKFLOWS_DIR') ?: (BASE_PATH . '/workflows'));
 }
 if (!defined('LABS_UPLOAD_DIR')) {
     define('LABS_UPLOAD_DIR', 'uploads/labs');

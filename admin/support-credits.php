@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/../config/bootstrap.php';
 ini_set('display_errors', '0');
 require_once __DIR__ . '/_guard.php';
 admin_require_login();
 admin_require_perm('payments.view');
-require_once __DIR__ . '/../includes/support_credits.php';
+require_once BASE_PATH . '/includes/support_credits.php';
 
 $pdo = getDBConnection();
 if (!$pdo) {

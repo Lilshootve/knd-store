@@ -3,8 +3,9 @@
  * RBAC - Role-Based Access Control for admin panel.
  * Requires: session (admin_id, admin_role), config (getDBConnection).
  */
-require_once __DIR__ . '/../includes/session.php';
-require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../config/bootstrap.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
 
 // Role -> permissions map. Owner gets all (checked via role name).
 $GLOBALS['_admin_role_permissions'] = [

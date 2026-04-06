@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../../config/bootstrap.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -11,7 +12,7 @@ echo "function_exists('t'): " . (function_exists('t') ? 'SÍ' : 'NO') . "<br><br
 echo "2. Cargando config.php línea por línea...<br>";
 
 // Leer el archivo y ejecutarlo manualmente
-$config_file = __DIR__ . '/includes/config.php';
+$config_file = BASE_PATH . '/includes/config.php';
 $lines = file($config_file);
 
 $line_num = 0;

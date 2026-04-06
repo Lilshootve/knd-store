@@ -3,20 +3,21 @@
  * GET /api/labs/provider_test.php
  * Admin only. Returns healthcheck for local and runpod providers.
  */
+require_once __DIR__ . '/../../config/bootstrap.php';
 header('Content-Type: application/json');
 header('Cache-Control: no-store, no-cache');
 
-require_once __DIR__ . '/../../includes/session.php';
-require_once __DIR__ . '/../../includes/config.php';
-require_once __DIR__ . '/../../includes/json.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/json.php';
 require_once __DIR__ . '/../../admin/_rbac.php';
 
 if (empty($_SESSION['admin_logged_in'])) {
     json_error('UNAUTHORIZED', 'Admin required.', 403);
 }
 
-require_once __DIR__ . '/../../includes/settings.php';
-require_once __DIR__ . '/../../includes/comfyui_provider.php';
+require_once BASE_PATH . '/includes/settings.php';
+require_once BASE_PATH . '/includes/comfyui_provider.php';
 
 try {
     $pdo = getDBConnection();

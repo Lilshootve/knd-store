@@ -2,15 +2,16 @@
 /**
  * Store ordered squad (3× mw_avatars.id) in session for battlefield.php.
  */
+require_once __DIR__ . '/../../config/bootstrap.php';
 declare(strict_types=1);
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 
-require_once __DIR__ . '/../../includes/session.php';
-require_once __DIR__ . '/../../includes/config.php';
-require_once __DIR__ . '/../../includes/auth.php';
-require_once __DIR__ . '/../includes/squad_battle_bootstrap.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/squad_battle_bootstrap.php';
 
 api_require_login();
 

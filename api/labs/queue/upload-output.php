@@ -6,13 +6,14 @@
  * Saves output image to storage so image.php and recent jobs can serve it.
  * Returns { ok: true, output_path: "uploads/labs/job_123_text2img.png" }
  */
+require_once __DIR__ . '/../../../config/bootstrap.php';
 header('Content-Type: application/json');
 header('Cache-Control: no-store, no-cache');
 ini_set('display_errors', '0');
 
-require_once __DIR__ . '/../../../includes/config.php';
-require_once __DIR__ . '/../../../includes/worker_auth.php';
-require_once __DIR__ . '/../../../includes/storage.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/worker_auth.php';
+require_once BASE_PATH . '/includes/storage.php';
 
 $workerToken = get_worker_token();
 $headerToken = trim($_SERVER['HTTP_X_KND_WORKER_TOKEN'] ?? '');

@@ -168,7 +168,7 @@ function validate_tool_call(string $tool, array $input, ?string $businessType = 
         default:
             if ($businessType === 'retail') {
                 if (!function_exists('validate_retail_tool_call')) {
-                    require_once __DIR__ . '/../../retail/validate.php';
+                    require_once BASE_PATH . '/core/retail/validate.php';
                 }
                 if (function_exists('validate_retail_tool_call')) {
                     return validate_retail_tool_call($tool, $input);
@@ -194,8 +194,9 @@ function validate_tool_call(string $tool, array $input, ?string $businessType = 
 
 if (basename($_SERVER['SCRIPT_FILENAME'] ?? '') === basename(__FILE__)) {
 
-    require_once __DIR__ . '/../../../includes/env.php';
-    require_once __DIR__ . '/../../../includes/json.php';
+    require_once __DIR__ . '/../../../config/bootstrap.php';
+    require_once BASE_PATH . '/includes/env.php';
+    require_once BASE_PATH . '/includes/json.php';
 
     header('Content-Type: application/json; charset=utf-8');
     header('Cache-Control: no-store');

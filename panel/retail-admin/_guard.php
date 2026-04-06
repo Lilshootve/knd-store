@@ -5,14 +5,15 @@
  * Verifica sesión + resolución de business_id + rol admin.
  */
 
-defined('KND_ROOT') or define('KND_ROOT', dirname(__DIR__, 2));
+require_once __DIR__ . '/../../config/bootstrap.php';
+defined('KND_ROOT') or define('KND_ROOT', BASE_PATH);
 
-require_once KND_ROOT . '/includes/env.php';
-require_once KND_ROOT . '/includes/session.php';
-require_once KND_ROOT . '/includes/config.php';
-require_once KND_ROOT . '/includes/auth.php';
-require_once KND_ROOT . '/core/retail/auth.php';
-require_once KND_ROOT . '/core/retail/audit.php';
+require_once BASE_PATH . '/includes/env.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/core/retail/auth.php';
+require_once BASE_PATH . '/core/retail/audit.php';
 require_once __DIR__ . '/_rbac.php';
 
 // 1. Verificar sesión activa

@@ -5,8 +5,9 @@
  * Usage: php test_badge_system.php
  */
 
-require_once __DIR__ . '/includes/config.php';
-require_once __DIR__ . '/includes/knd_badges.php';
+require_once __DIR__ . '/config/bootstrap.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/knd_badges.php';
 
 echo "=== KND Badge System Test ===\n\n";
 
@@ -100,7 +101,7 @@ try {
     echo "Test 5: Checking integration points...\n";
     
     // Check if knd_drop.php includes badges
-    $dropFile = file_get_contents(__DIR__ . '/includes/knd_drop.php');
+    $dropFile = file_get_contents(BASE_PATH . '/includes/knd_drop.php');
     if (strpos($dropFile, 'knd_badges.php') !== false) {
         echo "  ✓ includes/knd_drop.php includes badge system\n";
     } else {
@@ -108,7 +109,7 @@ try {
     }
     
     // Check if knd_xp.php includes badges
-    $xpFile = file_get_contents(__DIR__ . '/includes/knd_xp.php');
+    $xpFile = file_get_contents(BASE_PATH . '/includes/knd_xp.php');
     if (strpos($xpFile, 'knd_badges.php') !== false) {
         echo "  ✓ includes/knd_xp.php includes badge system\n";
     } else {

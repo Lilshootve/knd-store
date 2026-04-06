@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../../config/bootstrap.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -6,7 +7,7 @@ ini_set('display_startup_errors', 1);
 echo "=== TEST ARCHIVO DE FUNCIONES SEPARADO ===<br><br>";
 
 echo "1. Cargando functions-i18n.php directamente...<br>";
-require_once __DIR__ . '/includes/functions-i18n.php';
+require_once BASE_PATH . '/includes/functions-i18n.php';
 echo "✓ functions-i18n.php cargado<br><br>";
 
 echo "2. Verificando funciones:<br>";
@@ -21,7 +22,7 @@ if (function_exists('t')) {
 }
 
 echo "4. Ahora cargando config.php...<br>";
-require_once __DIR__ . '/includes/config.php';
+require_once BASE_PATH . '/includes/config.php';
 echo "✓ config.php cargado<br><br>";
 
 echo "5. Verificando funciones después de cargar config.php:<br>";

@@ -3,6 +3,10 @@
  * KND Labs - ComfyUI workflow injection and API helpers
  */
 
+if (!defined('BASE_PATH')) {
+    require_once __DIR__ . '/../config/bootstrap.php';
+}
+
 if (!function_exists('array_is_list')) {
     /** @param array $arr */
     function array_is_list($arr): bool {
@@ -19,8 +23,8 @@ if (!function_exists('array_is_list')) {
  * @param string $token Optional X-KND-TOKEN for auth
  */
 function comfyui_upload_image(string $filePath, ?string $baseUrl = null, string $token = ''): string {
-    if ($baseUrl === null && file_exists(dirname(__DIR__) . '/config/comfyui.php')) {
-        require_once dirname(__DIR__) . '/config/comfyui.php';
+    if ($baseUrl === null && file_exists(BASE_PATH . '/config/comfyui.php')) {
+        require_once BASE_PATH . '/config/comfyui.php';
         $baseUrl = defined('COMFYUI_BASE_URL') ? rtrim(COMFYUI_BASE_URL, '/') : '';
     }
     $base = $baseUrl ? rtrim($baseUrl, '/') : '';
@@ -108,13 +112,13 @@ function comfyui_workflow_filename_for_tool(string $tool, array $params = []): s
  * Load workflow file path by tool.
  */
 function comfyui_workflow_path(string $tool, array $params = []): string {
-    $baseDir = defined('WORKFLOWS_DIR') ? rtrim(WORKFLOWS_DIR, '/\\') : (dirname(__DIR__) . '/workflows');
+    $baseDir = defined('WORKFLOWS_DIR') ? rtrim(WORKFLOWS_DIR, '/\\') : (BASE_PATH . '/workflows');
     $filename = comfyui_workflow_filename_for_tool($tool, $params);
     $path = $baseDir . '/' . $filename;
     if (!is_readable($path)) {
         if ($filename === '3d_fast.json') $path = $baseDir . '/generate fast 3d.json';
         if ($filename === '3d_premium.json') $path = $baseDir . '/3d premium.json';
-        if ($filename === 'KND Character Lab.json') $path = dirname(__DIR__) . '/comfy-router/workflows/KND Character Lab.json';
+        if ($filename === 'KND Character Lab.json') $path = BASE_PATH . '/comfy-router/workflows/KND Character Lab.json';
         if ($filename === 'knd-workflow-api2.json') $path = $baseDir . '/knd-workflow-api.json';
     }
     if (!is_readable($path)) {
@@ -553,8 +557,8 @@ function comfyui_strip_meta(array $workflow): array {
  * @return array ['prompt_id' => string] or throw
  */
 function comfyui_run_prompt(array $workflow, ?string $baseUrl = null, string $token = ''): array {
-    if (!defined('COMFYUI_CLIENT_ID') && file_exists(dirname(__DIR__) . '/config/comfyui.php')) {
-        require_once dirname(__DIR__) . '/config/comfyui.php';
+    if (!defined('COMFYUI_CLIENT_ID') && file_exists(BASE_PATH . '/config/comfyui.php')) {
+        require_once BASE_PATH . '/config/comfyui.php';
     }
     if ($baseUrl === null) {
         $baseUrl = defined('COMFYUI_BASE_URL') ? COMFYUI_BASE_URL : '';
@@ -649,8 +653,8 @@ function comfyui_run_prompt(array $workflow, ?string $baseUrl = null, string $to
  * @param string $token Optional X-KND-TOKEN for auth
  */
 function comfyui_get_history(string $promptId, ?string $baseUrl = null, string $token = ''): ?array {
-    if ($baseUrl === null && file_exists(dirname(__DIR__) . '/config/comfyui.php')) {
-        require_once dirname(__DIR__) . '/config/comfyui.php';
+    if ($baseUrl === null && file_exists(BASE_PATH . '/config/comfyui.php')) {
+        require_once BASE_PATH . '/config/comfyui.php';
         $baseUrl = defined('COMFYUI_BASE_URL') ? COMFYUI_BASE_URL : '';
     }
     $base = $baseUrl ? rtrim($baseUrl, '/') : '';

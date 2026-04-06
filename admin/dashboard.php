@@ -2,6 +2,7 @@
 /**
  * Admin Dashboard v1 - KPIs, KP metrics, Top XP, Alerts
  */
+require_once __DIR__ . '/../config/bootstrap.php';
 require_once __DIR__ . '/_guard.php';
 admin_require_login();
 admin_require_perm('dashboard.view');
@@ -13,7 +14,7 @@ if (!$pdo) {
     exit;
 }
 
-require_once __DIR__ . '/../includes/knd_xp.php';
+require_once BASE_PATH . '/includes/knd_xp.php';
 
 $todayStart = gmdate('Y-m-d 00:00:00');
 $weekStart = gmdate('Y-m-d 00:00:00', strtotime('-7 days'));

@@ -4,11 +4,12 @@
  * Create, edit role, toggle active, reset password.
  * Reglas: no desactivar/cambiar role del último owner; reason obligatorio.
  */
+require_once __DIR__ . '/../config/bootstrap.php';
 ini_set('display_errors', '0');
 require_once __DIR__ . '/_guard.php';
 admin_require_login();
-require_once __DIR__ . '/../includes/csrf.php';
-require_once __DIR__ . '/../includes/rate_limit.php';
+require_once BASE_PATH . '/includes/csrf.php';
+require_once BASE_PATH . '/includes/rate_limit.php';
 require_once __DIR__ . '/_audit.php';
 
 $pdo = getDBConnection();
@@ -216,7 +217,7 @@ if (isset($_GET['show_temp']) && !empty($_SESSION['au_temp_password'])) {
 // ── Create form ──
 if ($isCreate) {
     admin_require_perm('admin_users.create');
-    require_once __DIR__ . '/../includes/header.php';
+    require_once BASE_PATH . '/includes/header.php';
     echo generateHeader('Create Admin', 'Create new admin user');
     echo generateAdminBar();
     ?>
@@ -285,7 +286,7 @@ $isLastOwner = $admin['role'] === 'owner' && $ownerCount <= 1;
 $canEdit = admin_has_perm('admin_users.edit');
 $canReset = admin_has_perm('admin_users.reset_password');
 
-require_once __DIR__ . '/../includes/header.php';
+require_once BASE_PATH . '/includes/header.php';
 echo generateHeader('Admin: ' . htmlspecialchars($admin['username']), 'Admin user detail');
 echo generateAdminBar();
 ?>

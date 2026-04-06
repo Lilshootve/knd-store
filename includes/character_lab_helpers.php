@@ -1,11 +1,15 @@
 <?php
+if (!defined('BASE_PATH')) {
+    require_once __DIR__ . '/../config/bootstrap.php';
+}
+
 /**
  * Character Lab - Helper functions
  */
 
 require_once __DIR__ . '/character_lab_policy.php';
 
-$clConfig = dirname(__DIR__) . '/config/character_lab.local.php';
+$clConfig = BASE_PATH . '/config/character_lab.local.php';
 if (file_exists($clConfig)) {
     require_once $clConfig;
 }

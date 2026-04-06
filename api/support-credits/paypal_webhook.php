@@ -1,12 +1,13 @@
 <?php
+require_once __DIR__ . '/../../config/bootstrap.php';
 // KND Support Credits - PayPal Webhook (stub)
 // TODO: Activate when PayPal credentials are available
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 ini_set('display_errors', '0');
 
-require_once __DIR__ . '/../../includes/config.php';
-require_once __DIR__ . '/../../includes/json.php';
-require_once __DIR__ . '/../../includes/support_credits.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/json.php';
+require_once BASE_PATH . '/includes/support_credits.php';
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

@@ -18,9 +18,10 @@
  *   customer_document  string opcional (resuelve a customer_id dentro del negocio)
  */
 
-defined('KND_ROOT') or define('KND_ROOT', dirname(__DIR__, 3));
-require_once KND_ROOT . '/core/retail/lib/invoice_number.php';
-require_once KND_ROOT . '/core/retail/lib/product_sale_lock.php';
+require_once __DIR__ . '/../../../config/bootstrap.php';
+defined('KND_ROOT') or define('KND_ROOT', BASE_PATH);
+require_once BASE_PATH . '/core/retail/lib/invoice_number.php';
+require_once BASE_PATH . '/core/retail/lib/product_sale_lock.php';
 
 function retail_create_sale(PDO $pdo, array $input): array
 {

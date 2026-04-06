@@ -3,12 +3,13 @@
  * Arena Activity Feed - Public API (no login required)
  * Returns recent Mind Wars battles for the activity feed
  */
+require_once __DIR__ . '/../../config/bootstrap.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Access-Control-Allow-Origin: *');
 
-require_once __DIR__ . '/../../includes/config.php';
-require_once __DIR__ . '/../../includes/json.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/json.php';
 
 try {
     $pdo = getDBConnection();

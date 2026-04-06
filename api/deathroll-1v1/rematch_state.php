@@ -1,10 +1,11 @@
 <?php
+require_once __DIR__ . '/../../config/bootstrap.php';
 // KND Store - Check rematch offer state (Death Roll 1v1)
 
-require_once __DIR__ . '/../../includes/session.php';
-require_once __DIR__ . '/../../includes/config.php';
-require_once __DIR__ . '/../../includes/auth.php';
-require_once __DIR__ . '/../../includes/deathroll_1v1.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/deathroll_1v1.php';
 
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');

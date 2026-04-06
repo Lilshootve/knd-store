@@ -1,4 +1,8 @@
 <?php
+if (!defined('BASE_PATH')) {
+    require_once __DIR__ . '/../../config/bootstrap.php';
+}
+
 /**
  * KND Retail Module — Invoice Generator
  *
@@ -49,7 +53,7 @@ function retail_generate_invoice(PDO $pdo, int $saleId): string
     $html          = _retail_invoice_html($sale, $items, $invoiceNumber);
 
     // Guardar en disco
-    $dir  = defined('KND_ROOT') ? KND_ROOT : dirname(__DIR__, 2);
+    $dir  = defined('KND_ROOT') ? KND_ROOT : BASE_PATH;
     $dir .= "/storage/retail-invoices/{$bizId}";
     if (!is_dir($dir)) {
         mkdir($dir, 0755, true);

@@ -3,20 +3,21 @@
  * AI tools job submission (text2img, upscale, character_create, character_variation, texture_seamless).
  * POST /api/ai/submit.php
  */
+require_once __DIR__ . '/../../config/bootstrap.php';
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 ini_set('display_errors', '0');
 
-require_once __DIR__ . '/../../includes/session.php';
-require_once __DIR__ . '/../../includes/config.php';
-require_once __DIR__ . '/../../includes/triposr_config.php';
-require_once __DIR__ . '/../../includes/ai_config.php';
-require_once __DIR__ . '/../../includes/json.php';
-require_once __DIR__ . '/../../includes/auth.php';
-require_once __DIR__ . '/../../includes/storage.php';
-require_once __DIR__ . '/../../includes/triposr.php';
-require_once __DIR__ . '/../../includes/ai.php';
-require_once __DIR__ . '/../../includes/support_credits.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/triposr_config.php';
+require_once BASE_PATH . '/includes/ai_config.php';
+require_once BASE_PATH . '/includes/json.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/storage.php';
+require_once BASE_PATH . '/includes/triposr.php';
+require_once BASE_PATH . '/includes/ai.php';
+require_once BASE_PATH . '/includes/support_credits.php';
 
 define('AI_MAX_ACTIVE_JOBS', 1);
 define('AI_MAX_PER_HOUR', 10);

@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../config/bootstrap.php';
 ini_set('display_errors', '0');
 require_once __DIR__ . '/_guard.php';
 admin_require_login();
@@ -111,7 +112,7 @@ try {
     }
 }
 
-require_once __DIR__ . '/../includes/header.php';
+require_once BASE_PATH . '/includes/header.php';
 echo generateHeader('User Management', 'Admin user management');
 echo generateAdminBar();
 ?>

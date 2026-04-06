@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/../config/bootstrap.php';
 require_once __DIR__ . '/_guard.php';
 admin_require_login();
 admin_require_perm('orders.view');
 
-require_once __DIR__ . '/../includes/storage.php';
+require_once BASE_PATH . '/includes/storage.php';
 
 ensure_storage_ready();
 
@@ -305,8 +306,8 @@ function renderOrderTable($rows, $source, $tab) {
     return ob_get_clean();
 }
 
-require_once __DIR__ . '/../includes/header.php';
-require_once __DIR__ . '/../includes/footer.php';
+require_once BASE_PATH . '/includes/header.php';
+require_once BASE_PATH . '/includes/footer.php';
 
 echo generateHeader('Admin - Orders', 'KND Store order management');
 echo generateAdminBar();

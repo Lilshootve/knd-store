@@ -9,6 +9,7 @@
  *   php scripts/test_mindwars_battles.php --battles=200 --json=results.json
  */
 
+require_once __DIR__ . '/../config/bootstrap.php';
 declare(strict_types=1);
 
 if (php_sapi_name() !== 'cli') {
@@ -41,10 +42,10 @@ if ($seed !== null) {
     echo "Using RNG seed: {$seed}\n";
 }
 
-require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/mind_wars.php';
-require_once __DIR__ . '/../includes/mind_wars_combat_actions.php';
-require_once __DIR__ . '/../includes/mind_wars_team_battle.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/mind_wars.php';
+require_once BASE_PATH . '/includes/mind_wars_combat_actions.php';
+require_once BASE_PATH . '/includes/mind_wars_team_battle.php';
 
 /** All avatars from mw_avatars (legendary, epic, special, rare, common) */
 const SIM_ALLOWED_RARITIES = ['legendary', 'epic', 'special', 'rare', 'common'];

@@ -1,10 +1,11 @@
 <?php
+require_once __DIR__ . '/../config/bootstrap.php';
 // api/nexus-state.php
 // Handles GET to retrieve all districts and POST to update a district's memory value.
 
 header('Content-Type: application/json');
-require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/auth.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/auth.php';
 
 // Ensure the user is authenticated for API access
 api_require_login();

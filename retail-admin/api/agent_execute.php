@@ -1,3 +1,4 @@
 <?php
 declare(strict_types=1);
-require __DIR__ . '/../../panel/retail-admin/api/agent_execute.php';
+require_once __DIR__ . '/../../config/bootstrap.php';
+require BASE_PATH . '/panel/retail-admin/api/agent_execute.php';

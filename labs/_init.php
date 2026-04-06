@@ -2,12 +2,13 @@
 /**
  * Shared init for KND Labs tool pages.
  */
+require_once __DIR__ . '/../config/bootstrap.php';
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
 
-require_once __DIR__ . '/../includes/bootstrap.php';
-require_once __DIR__ . '/../includes/labs_perf.php';
+require_once BASE_PATH . '/includes/bootstrap.php';
+require_once BASE_PATH . '/includes/labs_perf.php';
 labs_perf_start();
 
 require_once KND_ROOT . '/includes/session.php';

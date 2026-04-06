@@ -8,14 +8,15 @@
  */
 declare(strict_types=1);
 
-$projectRoot = dirname(__DIR__);
+require_once __DIR__ . '/../config/bootstrap.php';
+$projectRoot = BASE_PATH;
 chdir($projectRoot);
 
-require_once $projectRoot . '/includes/env.php';
-require_once $projectRoot . '/includes/comfyui.php';
-require_once $projectRoot . '/includes/storage.php';
-if (file_exists($projectRoot . '/config/labs.php')) {
-    require_once $projectRoot . '/config/labs.php';
+require_once BASE_PATH . '/includes/env.php';
+require_once BASE_PATH . '/includes/comfyui.php';
+require_once BASE_PATH . '/includes/storage.php';
+if (file_exists(BASE_PATH . '/config/labs.php')) {
+    require_once BASE_PATH . '/config/labs.php';
 }
 if (!defined('LABS_UPLOAD_DIR')) define('LABS_UPLOAD_DIR', 'uploads/labs');
 

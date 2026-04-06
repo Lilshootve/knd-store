@@ -1,6 +1,7 @@
 <?php
-require_once __DIR__ . '/../includes/session.php';
-require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../config/bootstrap.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
 
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
@@ -68,7 +69,7 @@ if (empty($_SESSION['admin_logged_in'])) {
 require_once __DIR__ . '/_guard.php';
 admin_require_login();
 
-require_once __DIR__ . '/../includes/storage.php';
+require_once BASE_PATH . '/includes/storage.php';
 ensure_storage_ready();
 
 $ordersFile = storage_path('orders.json');
@@ -146,7 +147,7 @@ $navCards = [
     ['title' => 'Email Test', 'desc' => 'Send a test confirmation email', 'href' => '/admin/email-test.php', 'icon' => 'fa-envelope', 'perm' => 'system.storage_diag', 'badge' => null, 'show' => file_exists(__DIR__ . '/email-test.php')],
 ];
 
-require_once __DIR__ . '/../includes/header.php';
+require_once BASE_PATH . '/includes/header.php';
 echo generateHeader('KND Admin', 'Admin dashboard');
 echo generateAdminBar();
 ?>

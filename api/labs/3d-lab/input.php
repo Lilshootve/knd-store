@@ -4,11 +4,12 @@
  * GET /api/labs/3d-lab/input.php?id={public_id}
  * No auth - public_id acts as secret. Worker fetches from remote hosting.
  */
+require_once __DIR__ . '/../../../config/bootstrap.php';
 header('Cache-Control: public, max-age=3600');
 ini_set('display_errors', '0');
 
-require_once __DIR__ . '/../../../includes/config.php';
-require_once __DIR__ . '/../../../includes/storage.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/storage.php';
 
 function fail(): void {
     http_response_code(404);

@@ -1,4 +1,8 @@
 <?php
+if (!defined('BASE_PATH')) {
+    require_once __DIR__ . '/../config/bootstrap.php';
+}
+
 /**
  * KND Store — Storage helpers
  * All JSON reads use LOCK_SH, all writes use LOCK_EX on the same file handle.
@@ -8,7 +12,7 @@
 function storage_path(string $relative = ''): string {
     static $base = null;
     if ($base === null) {
-        $base = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'storage';
+        $base = BASE_PATH . DIRECTORY_SEPARATOR . 'storage';
     }
     if ($relative === '') return $base;
     return $base . DIRECTORY_SEPARATOR . ltrim(str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $relative), DIRECTORY_SEPARATOR);

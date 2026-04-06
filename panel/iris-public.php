@@ -4,7 +4,8 @@
  * Read-only access: can query data but cannot execute mutations.
  * Mode is enforced server-side by api/iris.php (session-based).
  */
-$kndRoot = dirname(__DIR__);
+require_once __DIR__ . '/../config/bootstrap.php';
+$kndRoot = BASE_PATH;
 require_once $kndRoot . '/includes/session.php';
 require_once $kndRoot . '/includes/auth.php';
 require_once $kndRoot . '/includes/config.php';

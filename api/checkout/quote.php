@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/../../includes/pricing.php';
+require_once __DIR__ . '/../../config/bootstrap.php';
+require_once BASE_PATH . '/includes/pricing.php';
 
 header('Content-Type: application/json');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');

@@ -4,9 +4,13 @@
  */
 declare(strict_types=1);
 
+if (!defined('BASE_PATH')) {
+    require_once dirname(__DIR__, 3) . '/config/bootstrap.php';
+}
+
 function knl_project_root(): string
 {
-    return dirname(__DIR__, 3);
+    return BASE_PATH;
 }
 
 /**

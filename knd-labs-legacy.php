@@ -3,19 +3,20 @@
  * KND Labs - Legacy hub (card-based). Kept for migration/rollback.
  * Original /labs experience before app shell. Use /labs-legacy or link here if needed.
  */
+require_once __DIR__ . '/config/bootstrap.php';
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
 
 try {
-require_once __DIR__ . '/includes/session.php';
-require_once __DIR__ . '/includes/config.php';
-require_once __DIR__ . '/includes/auth.php';
-require_once __DIR__ . '/includes/support_credits.php';
-require_once __DIR__ . '/includes/ai.php';
-require_once __DIR__ . '/includes/comfyui.php';
-require_once __DIR__ . '/includes/header.php';
-require_once __DIR__ . '/includes/footer.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/support_credits.php';
+require_once BASE_PATH . '/includes/ai.php';
+require_once BASE_PATH . '/includes/comfyui.php';
+require_once BASE_PATH . '/includes/header.php';
+require_once BASE_PATH . '/includes/footer.php';
 
 require_login();
 

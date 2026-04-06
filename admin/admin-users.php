@@ -3,6 +3,7 @@
  * Admin Users - Lista de administradores (solo owner).
  * Permisos: admin_users.view (solo owner), admin_users.create para crear.
  */
+require_once __DIR__ . '/../config/bootstrap.php';
 ini_set('display_errors', '0');
 require_once __DIR__ . '/_guard.php';
 admin_require_login();
@@ -54,7 +55,7 @@ $roleBadges = [
     'viewer'  => ['class' => 'bg-secondary', 'label' => 'Viewer'],
 ];
 
-require_once __DIR__ . '/../includes/header.php';
+require_once BASE_PATH . '/includes/header.php';
 echo generateHeader('Admin Users', 'Admin user management');
 echo generateAdminBar();
 ?>

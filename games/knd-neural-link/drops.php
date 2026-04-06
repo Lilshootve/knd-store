@@ -3,10 +3,11 @@
  * KND Neural Link — drops.php (sandbox UI)
  * PRODUCCIÓN: puede integrarse al layout global; rutas relativas a /games/knd-neural-link/
  */
-require_once __DIR__ . '/../../includes/session.php';
-require_once __DIR__ . '/../../includes/config.php';
-require_once __DIR__ . '/../../includes/auth.php';
-require_once __DIR__ . '/../../includes/csrf.php';
+require_once __DIR__ . '/../../config/bootstrap.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/csrf.php';
 
 require_login();
 
@@ -18,7 +19,7 @@ $cssPath = __DIR__ . '/assets/drops.css';
 $jsPath  = __DIR__ . '/assets/drops.js';
 $cssV    = file_exists($cssPath) ? filemtime($cssPath) : 0;
 $jsV     = file_exists($jsPath) ? filemtime($jsPath) : 0;
-require_once __DIR__ . '/../../includes/favicon_links.php';
+require_once BASE_PATH . '/includes/favicon_links.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -4,10 +4,11 @@
  * Endpoint autoritativo para ejecutar Death Rolls
  */
 
-require_once __DIR__ . '/../../includes/session.php';
+require_once __DIR__ . '/../../config/bootstrap.php';
+require_once BASE_PATH . '/includes/session.php';
 
 // Verificación robusta de config.php
-$configPath = __DIR__ . '/../../includes/config.php';
+$configPath = BASE_PATH . '/includes/config.php';
 if (!file_exists($configPath)) {
     http_response_code(500);
     header('Content-Type: application/json; charset=utf-8');
@@ -324,7 +325,7 @@ function determineRarity($number) {
  */
 function getDeathRollSecret() {
     // Intentar desde archivo local no versionado
-    $secretFile = __DIR__ . '/../../includes/secrets.local.php';
+    $secretFile = BASE_PATH . '/includes/secrets.local.php';
     if (file_exists($secretFile)) {
         require_once $secretFile;
         if (defined('DEATHROLL_HMAC_SECRET')) {

@@ -1,11 +1,12 @@
 <?php
+require_once __DIR__ . '/../../../config/bootstrap.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
 echo "=== TEST LÍNEA POR LÍNEA ===<br><br>";
 
-$config_file = __DIR__ . '/includes/config.php';
+$config_file = BASE_PATH . '/includes/config.php';
 $lines = file($config_file);
 
 echo "Ejecutando config.php línea por línea hasta encontrar las funciones...<br><br>";

@@ -1,8 +1,9 @@
 <?php
+require_once __DIR__ . '/../config/bootstrap.php';
 require_once __DIR__ . '/_guard.php';
 admin_require_login();
 admin_require_perm('system.storage_diag');
-require_once __DIR__ . '/../includes/storage.php';
+require_once BASE_PATH . '/includes/storage.php';
 
 header('Content-Type: text/html; charset=utf-8');
 ensure_storage_ready();

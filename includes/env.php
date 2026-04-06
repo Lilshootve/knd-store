@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../config/bootstrap.php';
+
 /**
  * Lightweight .env loader for plain PHP projects.
  * Loads root .env once and exposes knd_env() helper.
@@ -33,7 +35,7 @@ if (!function_exists('knd_load_env')) {
             return true;
         }
 
-        $path = $envPath ?: dirname(__DIR__) . '/.env';
+        $path = $envPath ?: BASE_PATH . '/.env';
         if (!is_readable($path)) {
             $loaded = true;
             return false;

@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/../config/bootstrap.php';
 require_once __DIR__ . '/_init.php';
 labs_perf_checkpoint('consistency_after_init');
 
-require_once __DIR__ . '/../includes/comfyui.php';
-require_once __DIR__ . '/../includes/labs_display_helper.php';
+require_once BASE_PATH . '/includes/comfyui.php';
+require_once BASE_PATH . '/includes/labs_display_helper.php';
 labs_perf_checkpoint('consistency_after_comfyui');
 
 $toolName = t('labs.consistency.title', 'Consistency System');

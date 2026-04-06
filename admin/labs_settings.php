@@ -2,13 +2,14 @@
 /**
  * KND Labs - Provider settings (admin only)
  */
+require_once __DIR__ . '/../config/bootstrap.php';
 require_once __DIR__ . '/_guard.php';
 admin_require_login();
 admin_require_perm('system.storage_diag');
 
-require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/settings.php';
-require_once __DIR__ . '/../includes/comfyui_provider.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/settings.php';
+require_once BASE_PATH . '/includes/comfyui_provider.php';
 
 $pdo = getDBConnection();
 if (!$pdo) {
@@ -51,7 +52,7 @@ $timeoutMs = comfyui_get_auto_timeout_ms($pdo);
 $tokenVal = comfyui_get_token($pdo);
 $tokenMasked = $tokenVal !== '' ? (substr($tokenVal, 0, 8) . '…') : '';
 
-require_once __DIR__ . '/../includes/header.php';
+require_once BASE_PATH . '/includes/header.php';
 echo generateHeader('Labs Settings | KND Admin', 'ComfyUI Provider configuration');
 echo generateAdminBar();
 ?>

@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/../../includes/env.php';
+require_once __DIR__ . '/../../config/bootstrap.php';
+require_once BASE_PATH . '/includes/env.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
@@ -24,7 +25,7 @@ function json_error(int $code, string $msg, array $debug = []): void {
 }
 
 function support_log(string $event, array $data = []): void {
-    $dir = dirname(__DIR__, 2) . '/storage/logs';
+    $dir = BASE_PATH . '/storage/logs';
     if (!is_dir($dir)) @mkdir($dir, 0750, true);
     $line = '[' . date('Y-m-d H:i:s') . '] '
           . $event . ' '
@@ -35,7 +36,7 @@ function support_log(string $event, array $data = []): void {
 // ── Rate limiter (file-based, per IP) ──
 
 function check_rate_limit(string $ip): bool {
-    $dir = dirname(__DIR__, 2) . '/storage/logs';
+    $dir = BASE_PATH . '/storage/logs';
     if (!is_dir($dir)) @mkdir($dir, 0750, true);
     $file = $dir . '/support_ratelimit.json';
     $window = 600;
@@ -133,7 +134,7 @@ if ($apiKey === '') {
 
 // ── Load knowledge base ──
 
-$kbFile = __DIR__ . '/../../includes/support_kb_en.php';
+$kbFile = BASE_PATH . '/includes/support_kb_en.php';
 $kb = file_exists($kbFile) ? require $kbFile : '';
 
 $systemPrompt = "You are KND Support, the official AI assistant for KND Store (kndstore.com). "

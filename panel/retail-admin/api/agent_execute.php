@@ -11,14 +11,15 @@ declare(strict_types=1);
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
-defined('KND_ROOT') or define('KND_ROOT', dirname(__DIR__, 3));
+require_once __DIR__ . '/../../../config/bootstrap.php';
+defined('KND_ROOT') or define('KND_ROOT', BASE_PATH);
 
-require_once KND_ROOT . '/includes/env.php';
-require_once KND_ROOT . '/includes/session.php';
-require_once KND_ROOT . '/includes/config.php';
-require_once KND_ROOT . '/includes/auth.php';
-require_once KND_ROOT . '/includes/csrf.php';
-require_once KND_ROOT . '/includes/knd_agent_bridge.php';
+require_once BASE_PATH . '/includes/env.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/csrf.php';
+require_once BASE_PATH . '/includes/knd_agent_bridge.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);

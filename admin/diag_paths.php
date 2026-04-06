@@ -1,13 +1,14 @@
 <?php
+require_once __DIR__ . '/../config/bootstrap.php';
 require_once __DIR__ . '/_guard.php';
 admin_require_login();
 admin_require_perm('system.storage_diag');
 
 header('Content-Type: text/html; charset=utf-8');
 
-require_once __DIR__ . '/../includes/config.php';
+require_once BASE_PATH . '/includes/config.php';
 
-$secretsPath = __DIR__ . '/../config/admin_secrets.local.php';
+$secretsPath = BASE_PATH . '/config/admin_secrets.local.php';
 $secretsExists = file_exists($secretsPath);
 $secretsReadable = $secretsExists && is_readable($secretsPath);
 
@@ -34,7 +35,7 @@ try {
     $dbError = $e->getMessage();
 }
 
-$projectRoot = dirname(__DIR__);
+$projectRoot = BASE_PATH;
 
 $expectedFiles = [
     'admin/orders.php'             => __DIR__ . '/orders.php',

@@ -11,10 +11,11 @@
 
 declare(strict_types=1);
 
-require_once dirname(__DIR__, 2) . '/includes/env.php';
-require_once dirname(__DIR__, 2) . '/includes/session.php';
-require_once dirname(__DIR__, 2) . '/includes/auth.php';
-require_once dirname(__DIR__, 2) . '/includes/config.php';
+require_once __DIR__ . '/../../config/bootstrap.php';
+require_once BASE_PATH . '/includes/env.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/config.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');

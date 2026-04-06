@@ -1,11 +1,12 @@
 <?php
+require_once __DIR__ . '/../config/bootstrap.php';
 ini_set('display_errors', '0');
 require_once __DIR__ . '/_guard.php';
 admin_require_login();
 admin_require_perm('leaderboard.view');
-require_once __DIR__ . '/../includes/csrf.php';
-require_once __DIR__ . '/../includes/rate_limit.php';
-require_once __DIR__ . '/../includes/knd_xp.php';
+require_once BASE_PATH . '/includes/csrf.php';
+require_once BASE_PATH . '/includes/rate_limit.php';
+require_once BASE_PATH . '/includes/knd_xp.php';
 
 $pdo = getDBConnection();
 if (!$pdo) { echo 'DB connection failed.'; exit; }

@@ -3,13 +3,14 @@
  * KND Labs InstantMesh - validated download endpoint
  * GET /api/labs/instantmesh/download.php?job_id={public_id}&format=glb|obj|preview&inline=1
  */
+require_once __DIR__ . '/../../../config/bootstrap.php';
 header('Cache-Control: no-store, no-cache');
 ini_set('display_errors', '0');
 
-require_once __DIR__ . '/../../../includes/session.php';
-require_once __DIR__ . '/../../../includes/config.php';
-require_once __DIR__ . '/../../../includes/auth.php';
-require_once __DIR__ . '/../../../includes/storage.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/storage.php';
 
 function instantmesh_fail_download(): void {
     http_response_code(404);

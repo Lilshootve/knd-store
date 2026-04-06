@@ -3,9 +3,10 @@
  * Character Lab - Full pipeline: concept image -> 3D (Hunyuan3D/TripoSR/InstantMesh)
  * Route: /character-lab, /labs/character-lab.php
  */
+require_once __DIR__ . '/../config/bootstrap.php';
 require_once __DIR__ . '/_init.php';
-require_once __DIR__ . '/../includes/character_lab_helpers.php';
-require_once __DIR__ . '/../includes/character_lab_policy.php';
+require_once BASE_PATH . '/includes/character_lab_helpers.php';
+require_once BASE_PATH . '/includes/character_lab_policy.php';
 
 labs_perf_checkpoint('character_after_init');
 

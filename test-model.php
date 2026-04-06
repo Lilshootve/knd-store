@@ -1,9 +1,10 @@
 <?php
+require_once __DIR__ . '/config/bootstrap.php';
 // test-model.php
 // Standalone script to fetch all nexus_districts and compute average memory.
 
 header('Content-Type: application/json');
-require_once __DIR__ . '/includes/config.php';
+require_once BASE_PATH . '/includes/config.php';
 
 try {
     $pdo = getDBConnection();

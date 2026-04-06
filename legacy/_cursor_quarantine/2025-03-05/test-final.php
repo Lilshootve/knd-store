@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../../config/bootstrap.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -17,7 +18,7 @@ register_shutdown_function(function() {
 });
 
 echo "1. Cargando session.php...<br>";
-require_once __DIR__ . '/includes/session.php';
+require_once BASE_PATH . '/includes/session.php';
 echo "✓ session.php cargado<br><br>";
 
 echo "2. Cargando config.php...<br>";
@@ -25,7 +26,7 @@ ob_start();
 $error_occurred = false;
 $error_message = '';
 try {
-    require_once __DIR__ . '/includes/config.php';
+    require_once BASE_PATH . '/includes/config.php';
 } catch (Throwable $e) {
     $error_occurred = true;
     $error_message = $e->getMessage();

@@ -3,9 +3,10 @@
  * KND Neural Link — match mw_avatars to knd_avatar_items for inventory (item_id).
  * Names/slugs rarely match exactly between MW DB and shop rows from assets.
  */
+require_once __DIR__ . '/../../../config/bootstrap.php';
 declare(strict_types=1);
 
-require_once __DIR__ . '/../../../includes/knd_avatar.php';
+require_once BASE_PATH . '/includes/knd_avatar.php';
 
 /**
  * Lowercase + rough ASCII transliteration for slug compare (Aladdín ≈ aladdin).

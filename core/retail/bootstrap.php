@@ -5,16 +5,17 @@
  * Incluir este archivo al inicio de cualquier endpoint retail.
  */
 
-defined('KND_ROOT') or define('KND_ROOT', dirname(__DIR__, 2));
+require_once __DIR__ . '/../../config/bootstrap.php';
+defined('KND_ROOT') or define('KND_ROOT', BASE_PATH);
 
 // Core del sistema KND (ya existentes)
-require_once KND_ROOT . '/includes/env.php';
-require_once KND_ROOT . '/includes/session.php';
-require_once KND_ROOT . '/includes/config.php';
-require_once KND_ROOT . '/includes/auth.php';
-require_once KND_ROOT . '/includes/csrf.php';
-require_once KND_ROOT . '/includes/rate_limit.php';
-require_once KND_ROOT . '/includes/json.php';
+require_once BASE_PATH . '/includes/env.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/csrf.php';
+require_once BASE_PATH . '/includes/rate_limit.php';
+require_once BASE_PATH . '/includes/json.php';
 
 // Módulo retail
 require_once __DIR__ . '/auth.php';

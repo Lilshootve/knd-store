@@ -4,12 +4,13 @@
  * Auth: X-KND-WORKER-TOKEN header
  * Marks job as failed (if attempts>=3) or requeues.
  */
+require_once __DIR__ . '/../../../config/bootstrap.php';
 header('Content-Type: application/json');
 header('Cache-Control: no-store, no-cache');
 ini_set('display_errors', '0');
 
-require_once __DIR__ . '/../../../includes/config.php';
-require_once __DIR__ . '/../../../includes/worker_auth.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/worker_auth.php';
 
 $workerToken = get_worker_token();
 $headerToken = trim($_SERVER['HTTP_X_KND_WORKER_TOKEN'] ?? '');

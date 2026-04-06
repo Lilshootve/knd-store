@@ -1,10 +1,11 @@
 <?php
+require_once __DIR__ . '/../../config/bootstrap.php';
 header('Content-Type: application/json');
 header('Cache-Control: no-store, no-cache');
 
-require_once __DIR__ . '/../../includes/session.php';
-require_once __DIR__ . '/../../includes/auth.php';
-require_once __DIR__ . '/../../includes/json.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/json.php';
 
 api_require_login();
 

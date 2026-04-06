@@ -1,11 +1,12 @@
 <?php
+require_once __DIR__ . '/config/bootstrap.php';
 // Experimental fullpage home (no cambios sobre index.php actual).
 
-require_once __DIR__ . '/includes/session.php';
-require_once __DIR__ . '/includes/config.php';
-require_once __DIR__ . '/includes/header.php';
-require_once __DIR__ . '/includes/footer.php';
-require_once __DIR__ . '/includes/products-data.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/header.php';
+require_once BASE_PATH . '/includes/footer.php';
+require_once BASE_PATH . '/includes/products-data.php';
 
 // Galería reutilizando la lógica del home actual
 $galleryDir = __DIR__ . '/assets/images/gallery';

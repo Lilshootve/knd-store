@@ -3,8 +3,9 @@
  * Admin audit log - registra acciones administrativas.
  * Requiere: session, config (getDBConnection), _rbac (admin_id, admin_username).
  */
-require_once __DIR__ . '/../includes/session.php';
-require_once __DIR__ . '/../includes/config.php';
+require_once __DIR__ . '/../config/bootstrap.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
 if (!function_exists('admin_id')) require_once __DIR__ . '/_rbac.php';
 
 function admin_log_action(string $action, array $meta = []): void {

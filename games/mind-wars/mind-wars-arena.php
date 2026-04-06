@@ -1,8 +1,9 @@
 <?php
-require_once __DIR__ . '/../../includes/session.php';
-require_once __DIR__ . '/../../includes/config.php';
-require_once __DIR__ . '/../../includes/auth.php';
-require_once __DIR__ . '/../../includes/csrf.php';
+require_once __DIR__ . '/../../config/bootstrap.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/csrf.php';
 
 $pdo = getDBConnection();
 
@@ -21,7 +22,7 @@ try {
 
 $embed = isset($_GET['embed']) && $_GET['embed'] === '1';
 $arenaEmbedCssV = file_exists(__DIR__ . '/../../assets/css/arena-embed.css') ? filemtime(__DIR__ . '/../../assets/css/arena-embed.css') : 0;
-require_once __DIR__ . '/../../includes/favicon_links.php';
+require_once BASE_PATH . '/includes/favicon_links.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -45,7 +46,7 @@ if (!$embed) {
 <?php if ($embed): ?>
 <link rel="stylesheet" href="/assets/css/arena-embed.css?v=<?php echo $arenaEmbedCssV; ?>">
 <?php
-require_once __DIR__ . '/../../includes/holo_orb_assets.php';
+require_once BASE_PATH . '/includes/holo_orb_assets.php';
 holo_orb_emit_stylesheet_link();
 ?>
 <?php endif; ?>
@@ -854,7 +855,7 @@ if (!$embed) {
     }
 }
 if ($embed) {
-    require_once __DIR__ . '/../../includes/holo_orb_assets.php';
+    require_once BASE_PATH . '/includes/holo_orb_assets.php';
     holo_orb_emit_init_script();
 }
 ?>

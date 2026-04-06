@@ -1,4 +1,8 @@
 <?php
+if (!defined('BASE_PATH')) {
+    require_once __DIR__ . '/../config/bootstrap.php';
+}
+
 /**
  * Mind Wars lobby: resolve public URL for avatar GLB under /assets/avatars/models/{rarity}/ (see avatar-glb-map.json).
  */
@@ -16,7 +20,7 @@ function mw_avatar_glb_map(): array {
         return $GLOBALS['_mw_avatar_glb_map_cache'];
     }
     $out = [];
-    $path = dirname(__DIR__) . '/games/mind-wars/data/avatar-glb-map.json';
+    $path = BASE_PATH . '/games/mind-wars/data/avatar-glb-map.json';
     if (is_file($path)) {
         $raw = @file_get_contents($path);
         if ($raw !== false) {
@@ -207,7 +211,7 @@ function mw_resolve_avatar_model_url(?int $mwAvatarId, string $name, string $rar
 }
 
 function mw_avatar_models_fs_root(): string {
-    return dirname(__DIR__) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'avatars' . DIRECTORY_SEPARATOR . 'models';
+    return BASE_PATH . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'avatars' . DIRECTORY_SEPARATOR . 'models';
 }
 
 function mw_avatar_model_file_exists(string $relativePath): bool {

@@ -3,7 +3,8 @@
  * Iris — KND Agents interface (admin mode).
  * Full access: admin can execute mutations + read data.
  */
-$kndRoot = dirname(__DIR__);
+require_once __DIR__ . '/../config/bootstrap.php';
+$kndRoot = BASE_PATH;
 require_once $kndRoot . '/includes/session.php';
 require_once $kndRoot . '/includes/config.php';
 require_once $kndRoot . '/admin/_guard.php';

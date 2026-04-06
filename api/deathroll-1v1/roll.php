@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../config/bootstrap.php';
 // KND Store - Roll endpoint (Death Roll 1v1)
 
 header('Content-Type: application/json; charset=utf-8');
@@ -7,15 +8,15 @@ header('Pragma: no-cache');
 header('Expires: 0');
 ini_set('display_errors', '0');
 
-require_once __DIR__ . '/../../includes/session.php';
-require_once __DIR__ . '/../../includes/config.php';
-require_once __DIR__ . '/../../includes/csrf.php';
-require_once __DIR__ . '/../../includes/rate_limit.php';
-require_once __DIR__ . '/../../includes/auth.php';
-require_once __DIR__ . '/../../includes/deathroll_1v1.php';
-require_once __DIR__ . '/../../includes/support_credits.php';
-require_once __DIR__ . '/../../includes/knd_daily.php';
-require_once __DIR__ . '/../../includes/knd_xp.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/csrf.php';
+require_once BASE_PATH . '/includes/rate_limit.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/deathroll_1v1.php';
+require_once BASE_PATH . '/includes/support_credits.php';
+require_once BASE_PATH . '/includes/knd_daily.php';
+require_once BASE_PATH . '/includes/knd_xp.php';
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

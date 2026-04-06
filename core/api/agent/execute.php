@@ -33,8 +33,9 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../../../includes/env.php';
-require_once __DIR__ . '/../../../includes/config.php';
+require_once __DIR__ . '/../../../config/bootstrap.php';
+require_once BASE_PATH . '/includes/env.php';
+require_once BASE_PATH . '/includes/config.php';
 
 // validate_tool_call() lives here — guarded so HTTP block won't fire on include
 require_once __DIR__ . '/validate.php';
@@ -122,7 +123,7 @@ $req_memory_used = !empty($body['memory_used']);
 // ── Module tool registry (multi-tenant) ───────────────────────────────────────
 $moduleTools = [];
 if ($businessType !== null) {
-    $modulePath = __DIR__ . '/../../modules/' . $businessType . '/tools.php';
+    $modulePath = BASE_PATH . '/core/modules/' . $businessType . '/tools.php';
     if (is_file($modulePath)) {
         require_once $modulePath;
         if (function_exists('get_module_tools')) {
@@ -134,7 +135,7 @@ $isModuleTool = isset($moduleTools[$tool]);
 
 // ── Retail: resolve tenant server-side (never trust client business_id) ──────
 if ($businessType === 'retail' && $isModuleTool) {
-    require_once __DIR__ . '/../../retail/auth.php';
+    require_once BASE_PATH . '/core/retail/auth.php';
     $pdoRetail = getDBConnection();
     if (!$pdoRetail) {
         agent_respond('error', $tool, null, 'DB_CONNECTION_FAILED.', [], $simulate, 500);
@@ -182,7 +183,7 @@ if (!$validation['safe']) {
 
 // ── Retail: role + confirmation (parity with former api/retail/execute.php) ───
 if ($businessType === 'retail' && $isModuleTool) {
-    require_once __DIR__ . '/../../retail/auth.php';
+    require_once BASE_PATH . '/core/retail/auth.php';
     $adminOnlyTools = ['adjust_stock', 'update_exchange_rate'];
     if (in_array($tool, $adminOnlyTools, true) && !retail_is_admin()) {
         agent_log_entry($tool, $input, null, 'blocked', $iris_mode, $req_user_id, $req_confirm_id, $req_memory_used);
@@ -423,10 +424,7 @@ function run_file_manager(array $input): array
     $path   = str_replace('\\', '/', $input['path'] ?? '');
 
     // Resolve absolute path safely
-    $root = rtrim(
-        defined('KND_ROOT') ? KND_ROOT : dirname(__DIR__, 3),
-        '/\\'
-    );
+    $root = rtrim(defined('KND_ROOT') ? KND_ROOT : BASE_PATH, '/\\');
     $full = $root . '/' . ltrim($path, '/');
 
     // Normalise without requiring the path to exist yet

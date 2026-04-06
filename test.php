@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/config/bootstrap.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -16,7 +17,7 @@ register_shutdown_function(function() {
 echo "Test 1: PHP funciona<br>";
 
 try {
-    require_once __DIR__ . '/includes/session.php';
+    require_once BASE_PATH . '/includes/session.php';
     echo "Test 2: session.php cargado<br>";
 } catch (Exception $e) {
     echo "Error en session.php: " . $e->getMessage() . "<br>";
@@ -26,7 +27,7 @@ try {
 try {
     echo "Test 3: Cargando config.php...<br>";
     ob_start();
-    require_once __DIR__ . '/includes/config.php';
+    require_once BASE_PATH . '/includes/config.php';
     $output = ob_get_clean();
     if ($output) {
         echo "Output capturado: " . htmlspecialchars($output) . "<br>";
@@ -79,7 +80,7 @@ try {
 }
 
 try {
-    require_once __DIR__ . '/includes/header.php';
+    require_once BASE_PATH . '/includes/header.php';
     echo "Test 5: header.php cargado<br>";
 } catch (Exception $e) {
     echo "Error en header.php: " . $e->getMessage() . "<br>";

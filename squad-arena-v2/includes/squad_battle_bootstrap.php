@@ -3,14 +3,15 @@
  * Squad Arena v2 — build battle JSON from mw_avatars + user inventory.
  * Used by battlefield.php (not loaded on public static pages).
  */
+require_once __DIR__ . '/../../config/bootstrap.php';
 declare(strict_types=1);
 
 if (!function_exists('mw_get_user_avatars')
     || !function_exists('mw_skill_display_name')
     || !function_exists('mw_apply_combat_class_profile_bonuses')) {
-    require_once __DIR__ . '/../../includes/mind_wars.php';
+    require_once BASE_PATH . '/includes/mind_wars.php';
 }
-require_once __DIR__ . '/../../includes/mw_avatar_models.php';
+require_once BASE_PATH . '/includes/mw_avatar_models.php';
 
 /**
  * Human-readable skill line from DB text column and/or Mind Wars code registries.

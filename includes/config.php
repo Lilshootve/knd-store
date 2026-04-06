@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../config/bootstrap.php';
 require_once __DIR__ . '/env.php';
 // i18n (necesario para evitar fatal en producción)
 $__i18n = __DIR__ . '/functions-i18n.php';
@@ -33,7 +34,7 @@ if ($isLocal) {
     ini_set('display_errors', 0);
     ini_set('log_errors', 1);
     // Asegúrate de que esta carpeta exista en el servidor
-    ini_set('error_log', __DIR__ . '/../logs/php-error.log');
+    ini_set('error_log', BASE_PATH . '/logs/php-error.log');
 }
 
 // ==========================

@@ -2,14 +2,15 @@
 /**
  * Mind Wars Squad Arena v2 — authenticated battlefield with DB-driven squads.
  */
+require_once __DIR__ . '/../config/bootstrap.php';
 declare(strict_types=1);
 
-require_once __DIR__ . '/../includes/session.php';
-require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/csrf.php';
-require_once __DIR__ . '/../includes/mw_lobby.php';
-require_once __DIR__ . '/../includes/favicon_links.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/csrf.php';
+require_once BASE_PATH . '/includes/mw_lobby.php';
+require_once BASE_PATH . '/includes/favicon_links.php';
 
 require_login();
 
@@ -47,7 +48,7 @@ if ($pdo && $userId > 0) {
     if (is_array($eng) && isset($eng['ally_mw_ids']) && is_array($eng['ally_mw_ids'])
         && is_array($active) && isset($active['ally_mw_ids']) && is_array($active['ally_mw_ids'])
         && $eng['ally_mw_ids'] === $active['ally_mw_ids']) {
-        require_once __DIR__ . '/includes/squad_battle_bootstrap.php';
+        require_once BASE_PATH . '/includes/squad_battle_bootstrap.php';
         $result = squad_v2_build_battle_payload($pdo, $userId, $eng['ally_mw_ids']);
         if ($result['ok'] ?? false) {
             $token = (string) ($active['battle_token'] ?? '');

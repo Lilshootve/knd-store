@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../../config/bootstrap.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -17,11 +18,11 @@ register_shutdown_function(function() {
 echo "=== TEST INDEX.PHP ===<br><br>";
 
 echo "1. Cargando session.php...<br>";
-require_once __DIR__ . '/includes/session.php';
+require_once BASE_PATH . '/includes/session.php';
 echo "✓ session.php cargado<br><br>";
 
 echo "2. Cargando config.php...<br>";
-require_once __DIR__ . '/includes/config.php';
+require_once BASE_PATH . '/includes/config.php';
 echo "✓ config.php cargado<br><br>";
 
 echo "3. Verificando funciones:<br>";
@@ -31,7 +32,7 @@ echo "4. Cargando header.php...<br>";
 ob_start();
 $error_occurred = false;
 try {
-    require_once __DIR__ . '/includes/header.php';
+    require_once BASE_PATH . '/includes/header.php';
     echo "✓ header.php cargado<br>";
 } catch (Throwable $e) {
     $error_occurred = true;
@@ -65,7 +66,7 @@ if (!$error_occurred) {
 
 echo "<br>7. Cargando products-data.php...<br>";
 try {
-    require_once __DIR__ . '/includes/products-data.php';
+    require_once BASE_PATH . '/includes/products-data.php';
     echo "✓ products-data.php cargado<br>";
 } catch (Throwable $e) {
     echo "✗ ERROR en products-data.php: " . $e->getMessage() . "<br>";

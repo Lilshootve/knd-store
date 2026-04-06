@@ -3,8 +3,9 @@
  * Avatar Sync - Recursively scans assets/avatars/** and syncs knd_avatar_items.
  * Admin only. Run via browser: /admin/avatar_sync_items.php
  */
+require_once __DIR__ . '/../config/bootstrap.php';
 require_once __DIR__ . '/_guard.php';
-require_once __DIR__ . '/../includes/knd_avatar.php';
+require_once BASE_PATH . '/includes/knd_avatar.php';
 admin_require_login();
 
 $pdo = getDBConnection();

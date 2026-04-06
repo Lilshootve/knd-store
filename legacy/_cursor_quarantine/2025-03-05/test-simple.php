@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../../config/bootstrap.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -39,7 +40,7 @@ echo "Probando t('test.key', array(), 'Test funciona'): " . t('test.key', array(
 
 // Ahora probar cargar config.php
 echo "Ahora cargando config.php...<br>";
-require_once __DIR__ . '/includes/config.php';
+require_once BASE_PATH . '/includes/config.php';
 
 echo "Después de cargar config.php:<br>";
 echo "function_exists('t'): " . (function_exists('t') ? 'SÍ' : 'NO') . "<br>";

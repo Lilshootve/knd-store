@@ -8,14 +8,15 @@
  * Worker runs locally, web on hosting. Files are created on worker,
  * this API receives and saves them to hosting storage so download.php can serve.
  */
+require_once __DIR__ . '/../../../config/bootstrap.php';
 header('Cache-Control: no-store, no-cache');
 header('Content-Type: application/json');
 ini_set('display_errors', '0');
 
-require_once __DIR__ . '/../../../includes/config.php';
-require_once __DIR__ . '/../../../includes/worker_3d_upload_auth.php';
-require_once __DIR__ . '/../../../includes/storage.php';
-require_once __DIR__ . '/../../../includes/labs_3d_helpers.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/worker_3d_upload_auth.php';
+require_once BASE_PATH . '/includes/storage.php';
+require_once BASE_PATH . '/includes/labs_3d_helpers.php';
 
 function json_fail(string $msg, int $code = 400): void {
     http_response_code($code);

@@ -4,8 +4,9 @@
  * Caller must set $LOBBY_CENTER_PARTIAL (path to PHP partial for center column) and
  * $csrfToken, $L, $cssV, $jsV, $mwCardCssV, $mwCardJsV, $levelsCssV before including.
  */
-require_once __DIR__ . '/../../includes/favicon_links.php';
-require_once __DIR__ . '/../../includes/holo_orb_assets.php';
+require_once __DIR__ . '/../../config/bootstrap.php';
+require_once BASE_PATH . '/includes/favicon_links.php';
+require_once BASE_PATH . '/includes/holo_orb_assets.php';
 if (empty($LOBBY_CENTER_PARTIAL) || !is_readable($LOBBY_CENTER_PARTIAL)) {
     http_response_code(500);
     header('Content-Type: text/html; charset=utf-8');

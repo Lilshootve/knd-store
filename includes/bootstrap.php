@@ -7,4 +7,8 @@
 if (defined('KND_ROOT')) {
     return;
 }
+if (defined('BASE_PATH')) {
+    define('KND_ROOT', BASE_PATH);
+    return;
+}
 define('KND_ROOT', dirname(__DIR__));

@@ -2,10 +2,11 @@
 /**
  * About KND — concept layout (sections/knd_about.php + knd-about.css/js).
  */
-require_once __DIR__ . '/includes/session.php';
-require_once __DIR__ . '/includes/config.php';
-require_once __DIR__ . '/includes/header.php';
-require_once __DIR__ . '/includes/footer.php';
+require_once __DIR__ . '/config/bootstrap.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/header.php';
+require_once BASE_PATH . '/includes/footer.php';
 
 $aboutCss = __DIR__ . '/assets/css/knd-about.css';
 $aboutJs = __DIR__ . '/assets/js/knd-about.js';

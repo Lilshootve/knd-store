@@ -4,13 +4,14 @@
  * Body: private=0|1
  * Sets labs_recent_private (0=public catalog, 1=only my jobs).
  */
+require_once __DIR__ . '/../../config/bootstrap.php';
 header('Content-Type: application/json');
 header('Cache-Control: no-store, no-cache');
 
-require_once __DIR__ . '/../../includes/session.php';
-require_once __DIR__ . '/../../includes/config.php';
-require_once __DIR__ . '/../../includes/auth.php';
-require_once __DIR__ . '/../../includes/json.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/json.php';
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

@@ -3,6 +3,7 @@
  * Squad Arena v2 — apply Mind Wars PVE-style rewards after a client-resolved battle.
  * Mirrors api/mind-wars/pve_submit.php (XP, KE on squad lead avatar, season rank) with session-bound battle_token.
  */
+require_once __DIR__ . '/../../config/bootstrap.php';
 declare(strict_types=1);
 
 header('Content-Type: application/json; charset=utf-8');
@@ -10,16 +11,16 @@ header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
 
-require_once __DIR__ . '/../../includes/session.php';
-require_once __DIR__ . '/../../includes/config.php';
-require_once __DIR__ . '/../../includes/auth.php';
-require_once __DIR__ . '/../../includes/csrf.php';
-require_once __DIR__ . '/../../includes/json.php';
-require_once __DIR__ . '/../../includes/rate_limit.php';
-require_once __DIR__ . '/../../includes/mind_wars.php';
-require_once __DIR__ . '/../../includes/knowledge_duel.php';
-require_once __DIR__ . '/../includes/squad_v2_reward_helpers.php';
-require_once __DIR__ . '/../../includes/mind_wars_rewards.php';
+require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/csrf.php';
+require_once BASE_PATH . '/includes/json.php';
+require_once BASE_PATH . '/includes/rate_limit.php';
+require_once BASE_PATH . '/includes/mind_wars.php';
+require_once BASE_PATH . '/includes/knowledge_duel.php';
+require_once BASE_PATH . '/includes/squad_v2_reward_helpers.php';
+require_once BASE_PATH . '/includes/mind_wars_rewards.php';
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -105,8 +106,8 @@ try {
 
     $_SESSION['squad_arena_v2_active']['rewards_claimed'] = true;
 
-    if ($result === 'win' && is_file(__DIR__ . '/../../includes/knd_badges.php')) {
-        require_once __DIR__ . '/../../includes/knd_badges.php';
+    if ($result === 'win' && is_file(BASE_PATH . '/includes/knd_badges.php')) {
+        require_once BASE_PATH . '/includes/knd_badges.php';
         if (function_exists('badges_check_and_grant')) {
             foreach (['mind_wars_wins', 'mind_wars_streak', 'mind_wars_special', 'mind_wars_legendary'] as $t) {
                 badges_check_and_grant($pdo, $userId, $t);

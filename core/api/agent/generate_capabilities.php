@@ -14,9 +14,10 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../../../includes/env.php';
-require_once __DIR__ . '/../../../includes/config.php';
-require_once __DIR__ . '/../../../includes/json.php';
+require_once __DIR__ . '/../../../config/bootstrap.php';
+require_once BASE_PATH . '/includes/env.php';
+require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/json.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -51,7 +52,7 @@ if (!is_array($input) || empty($input['endpoints'])) {
 
 function require_analyzer_data(): ?array
 {
-    $root      = defined('KND_ROOT') ? KND_ROOT : dirname(__DIR__, 3);
+    $root      = BASE_PATH;
     $files     = [];
     $endpoints = [];
     $db_tables = [];

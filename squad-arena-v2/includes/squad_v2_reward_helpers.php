@@ -2,10 +2,11 @@
 /**
  * Squad Arena v2 — ownership + inventory mapping for MW reward submission.
  */
+require_once __DIR__ . '/../../config/bootstrap.php';
 declare(strict_types=1);
 
 if (!function_exists('mw_get_user_avatars')) {
-    require_once __DIR__ . '/../../includes/mind_wars.php';
+    require_once BASE_PATH . '/includes/mind_wars.php';
 }
 
 function squad_v2_item_id_for_mw_avatar(PDO $pdo, int $userId, int $mwAvatarId): ?int

@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/../../includes/pricing.php';
+require_once __DIR__ . '/../../config/bootstrap.php';
+require_once BASE_PATH . '/includes/pricing.php';
 
 header('Content-Type: application/json');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
@@ -112,7 +113,7 @@ $record = [
     'payment_method' => 'WhatsApp Other',
 ];
 
-require_once __DIR__ . '/../../includes/storage.php';
+require_once BASE_PATH . '/includes/storage.php';
 ensure_storage_ready();
 
 $ok = append_json_record(storage_path('other_payment_requests.json'), $record);

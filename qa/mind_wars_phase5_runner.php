@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/../includes/mind_wars.php';
+require_once __DIR__ . '/../config/bootstrap.php';
+require_once BASE_PATH . '/includes/mind_wars.php';
 
 function p5_assert(bool $cond, string $message, array &$fails): void {
     if (!$cond) {

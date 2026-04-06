@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../../config/bootstrap.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -6,7 +7,7 @@ ini_set('display_startup_errors', 1);
 echo "=== TEST DIRECTO ===<br><br>";
 
 echo "1. Leyendo config.php directamente...<br>";
-$config_content = file_get_contents(__DIR__ . '/includes/config.php');
+$config_content = file_get_contents(BASE_PATH . '/includes/config.php');
 
 // Buscar la línea donde está function t(
 $lines = explode("\n", $config_content);
@@ -39,7 +40,7 @@ echo "<br>3. Intentando ejecutar config.php con output buffering...<br>";
 ob_start();
 $error = null;
 try {
-    require __DIR__ . '/includes/config.php';
+    require BASE_PATH . '/includes/config.php';
 } catch (Throwable $e) {
     $error = $e;
 }
