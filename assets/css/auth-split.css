@@ -157,6 +157,8 @@ body.knd-auth-split-page.auth-page.knd-saas-app .knd-access-form-panel {
   border-radius: 12px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
   padding: clamp(1.75rem, 4vw, 2.5rem);
+  /* html has data-bs-theme="dark" — without this, native inputs use light text on our white card */
+  color-scheme: light;
 }
 
 .knd-auth-split .knd-access-form-panel {
@@ -255,14 +257,32 @@ body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-access-tab-switch
   border: 1px solid var(--knd-auth-border);
   border-radius: 8px;
   background: var(--knd-auth-input-bg);
-  color: var(--knd-auth-text);
+  /* Force dark text — overrides legacy auth.css / autofill (password must stay readable) */
+  color: #111111;
+  -webkit-text-fill-color: #111111;
+  caret-color: #111111;
   font-family: var(--knd-auth-font-ui);
   transition: border-color var(--knd-auth-transition), box-shadow var(--knd-auth-transition);
+}
+
+/* WebKit autofill: keep fill background subtle, text always dark */
+body.knd-auth-split-page .knd-auth-split input.knd-access-input:-webkit-autofill,
+body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill,
+body.knd-auth-split-page .knd-auth-split input.knd-access-input:-webkit-autofill:hover,
+body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:hover,
+body.knd-auth-split-page .knd-auth-split input.knd-access-input:-webkit-autofill:focus,
+body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #111111 !important;
+  caret-color: #111111;
+  box-shadow: 0 0 0 1000px var(--knd-auth-input-bg) inset !important;
+  transition: background-color 99999s ease-out 0s;
 }
 
 .knd-auth-split .knd-access-input::placeholder,
 .knd-auth-input::placeholder {
   color: var(--knd-auth-placeholder);
+  -webkit-text-fill-color: var(--knd-auth-placeholder);
+  opacity: 1;
 }
 
 .knd-auth-split .knd-access-input:hover,
@@ -475,7 +495,9 @@ body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-access-tab-switch
 .knd-auth-split .knd-access-aux-panel .knd-access-input {
   background: var(--knd-auth-input-bg);
   border-color: var(--knd-auth-border);
-  color: var(--knd-auth-text);
+  color: #111111;
+  -webkit-text-fill-color: #111111;
+  caret-color: #111111;
 }
 
 /* Password strength — restrained */
