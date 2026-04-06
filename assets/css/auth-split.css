@@ -1,20 +1,27 @@
 /**
- * KND Store — split-screen auth (login / register)
- * Dark brand panel + light form card. No animations.
+ * KND Store — production SaaS auth (split layout)
+ * Stripe / Linear / Notion: neutral, trustworthy. No gradients, no glow.
  */
 
 :root {
   --knd-auth-bg: #0b0b0b;
-  --knd-auth-accent: #2ee6d6;
-  --knd-auth-accent-dim: rgba(46, 230, 214, 0.35);
-  --knd-auth-card: #f7f7f7;
-  --knd-auth-card-border: #e8e8e8;
-  --knd-auth-text: #1a1a1a;
-  --knd-auth-text-muted: #525252;
-  --knd-auth-placeholder: #737373;
+  --knd-auth-card: #ffffff;
+  --knd-auth-input-bg: #f3f3f1;
+  --knd-auth-border: #e5e5e5;
+  --knd-auth-text: #111111;
+  --knd-auth-text-muted: #6b6b6b;
+  --knd-auth-placeholder: #8a8a8a;
+  --knd-auth-beige: #d6cfc7;
+  --knd-auth-cyan: #22d3ee;
+  --knd-auth-cyan-ring: rgba(34, 211, 238, 0.22);
+  --knd-auth-btn-hover: #000000;
+  --knd-auth-error: #dc2626;
+  --knd-auth-error-bg: rgba(220, 38, 38, 0.06);
+  --knd-auth-transition: 150ms ease;
+  --knd-auth-font-ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --knd-auth-font-brand: "Orbitron", system-ui, sans-serif;
 }
 
-/* Full-height split; hide global chrome for focused auth */
 body.knd-auth-split-page #bg {
   display: none !important;
 }
@@ -23,21 +30,41 @@ body.knd-auth-split-page header.knd-admin-topbar {
   display: none !important;
 }
 
+body.knd-auth-split-page header.site-header,
+body.knd-auth-split-page header.topbar {
+  display: none !important;
+}
+
+body.knd-auth-split-page .knd-nav-offcanvas,
+body.knd-auth-split-page .offcanvas-backdrop {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 body.knd-auth-split-page.auth-page.knd-saas-app {
   background: var(--knd-auth-bg) !important;
   min-height: 100vh;
+  color: #ffffff;
+  font-family: var(--knd-auth-font-ui) !important;
 }
 
-body.knd-auth-split-page .knd-access-shell {
-  padding: 0;
+body.knd-auth-split-page.auth-page.knd-saas-app .knd-access-shell {
+  padding: 0 !important;
   min-height: 100vh;
   margin: 0;
+}
+
+body.knd-auth-split-page.auth-page.knd-saas-app .knd-access-form-panel {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* ── Split grid ───────────────────────────────────────── */
 .knd-auth-split {
   display: grid;
-  grid-template-columns: minmax(280px, 1fr) minmax(320px, 1.1fr);
+  grid-template-columns: minmax(280px, 1fr) minmax(320px, 1.15fr);
   min-height: 100vh;
   width: 100%;
 }
@@ -48,54 +75,47 @@ body.knd-auth-split-page .knd-access-shell {
   justify-content: center;
   padding: clamp(2rem, 5vw, 4rem);
   background: var(--knd-auth-bg);
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
   position: relative;
-  overflow: hidden;
 }
 
-/* Subtle vertical accent — minimal KND signal */
+/* Subtle cyan line accent — solid, no gradient */
 .knd-auth-split__brand::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 15%;
-  bottom: 15%;
-  width: 3px;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    var(--knd-auth-accent-dim) 20%,
-    var(--knd-auth-accent) 50%,
-    var(--knd-auth-accent-dim) 80%,
-    transparent
-  );
-  opacity: 0.85;
+  top: 18%;
+  bottom: 18%;
+  width: 2px;
+  background: var(--knd-auth-cyan);
+  opacity: 0.55;
   pointer-events: none;
 }
 
 .knd-auth-split__brand-inner {
-  max-width: 320px;
+  max-width: 340px;
   position: relative;
   z-index: 1;
 }
 
 .knd-auth-split__mark {
   display: block;
-  width: 40px;
-  height: 3px;
-  background: var(--knd-auth-accent);
-  border-radius: 2px;
+  width: 32px;
+  height: 2px;
+  background: var(--knd-auth-cyan);
   margin-bottom: 1.5rem;
-  opacity: 0.9;
+  opacity: 0.85;
 }
 
 .knd-auth-split__title {
-  margin: 0 0 0.75rem;
-  font-size: clamp(1.5rem, 3vw, 1.875rem);
+  margin: 0 0 0.875rem;
+  font-family: var(--knd-auth-font-brand);
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
   font-weight: 600;
-  letter-spacing: -0.03em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: #ffffff;
-  font-family: "Inter", system-ui, sans-serif;
+  line-height: 1.2;
 }
 
 .knd-auth-split__tagline {
@@ -104,18 +124,20 @@ body.knd-auth-split-page .knd-access-shell {
   line-height: 1.55;
   color: #a1a1a1;
   font-weight: 400;
-  max-width: 28ch;
+  max-width: 32ch;
+  font-family: var(--knd-auth-font-ui);
 }
 
 .knd-auth-split__back {
   font-size: 0.8125rem;
-  color: #737373;
+  color: #8a8a8a;
   text-decoration: none;
   font-weight: 500;
+  transition: color var(--knd-auth-transition);
 }
 
 .knd-auth-split__back:hover {
-  color: var(--knd-auth-accent);
+  color: var(--knd-auth-cyan);
 }
 
 /* ── Form column ─────────────────────────────────────── */
@@ -124,17 +146,17 @@ body.knd-auth-split-page .knd-access-shell {
   align-items: center;
   justify-content: center;
   padding: clamp(1.5rem, 4vw, 3rem);
-  background: #0e0e0e;
+  background: #0b0b0b;
 }
 
 .knd-auth-split__card {
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   background: var(--knd-auth-card);
-  border: 1px solid var(--knd-auth-card-border);
+  border: 1px solid var(--knd-auth-border);
   border-radius: 12px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-  padding: clamp(1.75rem, 4vw, 2.25rem);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  padding: clamp(1.75rem, 4vw, 2.5rem);
 }
 
 .knd-auth-split .knd-access-form-panel {
@@ -144,13 +166,15 @@ body.knd-auth-split-page .knd-access-shell {
   box-shadow: none;
 }
 
-/* Tabs: Sign in / Create account */
-.knd-auth-split .knd-access-tab-switch {
+/* Tabs — override legacy auth.css neon chrome */
+body.knd-auth-split-page .knd-auth-split .knd-access-tab-switch {
   display: flex;
   gap: 0;
   margin-bottom: 1.5rem;
-  border-bottom: 1px solid var(--knd-auth-card-border);
-  padding-bottom: 0;
+  border: none !important;
+  border-bottom: 1px solid var(--knd-auth-border) !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
 }
 
 .knd-auth-split .knd-access-tab-btn {
@@ -164,15 +188,19 @@ body.knd-auth-split-page .knd-access-shell {
   background: transparent !important;
   cursor: pointer;
   margin-bottom: -1px;
-  text-transform: none;
-  letter-spacing: normal;
+  font-family: var(--knd-auth-font-ui);
+  transition: color var(--knd-auth-transition);
 }
 
 .knd-auth-split .knd-access-tab-btn::after {
+  content: "";
+  display: block;
   height: 2px;
-  left: 15%;
-  right: 15%;
-  background: var(--knd-auth-accent);
+  margin-top: 0.5rem;
+  border-radius: 1px;
+  background: var(--knd-auth-beige);
+  transform: scaleX(0);
+  transition: transform var(--knd-auth-transition);
 }
 
 body.knd-auth-split-page #knd-auth-tab-login:checked ~ .knd-access-tab-switch label[for="knd-auth-tab-login"],
@@ -186,7 +214,6 @@ body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-access-tab-switch
   transform: scaleX(1);
 }
 
-/* Headings inside card */
 .knd-auth-split .knd-access-form-heading h2 {
   font-size: 1.25rem;
   font-weight: 600;
@@ -194,25 +221,18 @@ body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-access-tab-switch
   letter-spacing: -0.02em;
   text-transform: none;
   margin: 0 0 0.35rem;
+  font-family: var(--knd-auth-font-ui);
 }
 
 .knd-auth-split .knd-access-form-heading p {
   font-size: 0.875rem;
   color: var(--knd-auth-text-muted);
   margin: 0 0 1.25rem;
-  text-transform: none;
-  letter-spacing: normal;
+  font-family: var(--knd-auth-font-ui);
 }
 
-/* Fields — shared */
 .knd-auth-split .knd-access-field,
 .knd-auth-field {
-  margin-bottom: 1rem;
-  position: relative;
-}
-
-.knd-auth-split .knd-access-field--password,
-.knd-auth-field--password {
   margin-bottom: 1rem;
   position: relative;
 }
@@ -223,6 +243,7 @@ body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-access-tab-switch
   font-weight: 500;
   color: var(--knd-auth-text);
   margin-bottom: 0.35rem;
+  font-family: var(--knd-auth-font-ui);
 }
 
 .knd-auth-split .knd-access-input,
@@ -231,12 +252,12 @@ body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-access-tab-switch
   box-sizing: border-box;
   padding: 0.65rem 0.75rem;
   font-size: 0.9375rem;
-  border: 1px solid #d4d4d4;
+  border: 1px solid var(--knd-auth-border);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--knd-auth-input-bg);
   color: var(--knd-auth-text);
-  font-family: "Inter", system-ui, sans-serif;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  font-family: var(--knd-auth-font-ui);
+  transition: border-color var(--knd-auth-transition), box-shadow var(--knd-auth-transition);
 }
 
 .knd-auth-split .knd-access-input::placeholder,
@@ -246,14 +267,20 @@ body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-access-tab-switch
 
 .knd-auth-split .knd-access-input:hover,
 .knd-auth-input:hover {
-  border-color: #c4c4c4;
+  border-color: #d0d0d0;
 }
 
 .knd-auth-split .knd-access-input:focus,
 .knd-auth-input:focus {
   outline: none;
-  border-color: var(--knd-auth-accent);
-  box-shadow: 0 0 0 3px rgba(46, 230, 214, 0.15);
+  border-color: var(--knd-auth-cyan);
+  box-shadow: 0 0 0 3px var(--knd-auth-cyan-ring);
+}
+
+.knd-auth-split .knd-access-input.knd-auth-input--error,
+.knd-auth-input.knd-auth-input--error {
+  border-color: var(--knd-auth-error);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
 }
 
 .knd-auth-split .knd-access-input-icon {
@@ -266,18 +293,24 @@ body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-access-tab-switch
   bottom: 10px;
   border: none;
   background: none;
-  color: var(--knd-auth-text-muted);
+  color: var(--knd-auth-cyan);
   font-size: 0.75rem;
+  font-weight: 500;
   cursor: pointer;
-  padding: 0.25rem;
+  padding: 0.25rem 0.35rem;
+  font-family: var(--knd-auth-font-ui);
+  transition: opacity var(--knd-auth-transition);
+}
+
+.knd-auth-split .knd-access-pwd-toggle:hover {
+  opacity: 0.85;
 }
 
 .knd-auth-split .knd-access-field--password .knd-access-input,
 .knd-auth-field--password .knd-auth-input {
-  padding-right: 4rem;
+  padding-right: 4.25rem;
 }
 
-/* Remember + forgot row */
 .knd-auth-row {
   display: flex;
   align-items: center;
@@ -295,45 +328,44 @@ body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-access-tab-switch
   color: var(--knd-auth-text-muted);
   cursor: pointer;
   user-select: none;
+  font-family: var(--knd-auth-font-ui);
 }
 
 .knd-auth-remember input {
   width: 14px;
   height: 14px;
-  accent-color: var(--knd-auth-accent);
+  accent-color: var(--knd-auth-text);
 }
 
 .knd-auth-inline-link {
   font-size: 0.8125rem;
   font-weight: 500;
-  color: var(--knd-auth-text-muted);
+  color: var(--knd-auth-cyan);
   text-decoration: none;
+  font-family: var(--knd-auth-font-ui);
+  transition: opacity var(--knd-auth-transition);
 }
 
 .knd-auth-inline-link:hover {
-  color: var(--knd-auth-text);
+  opacity: 0.85;
+  text-decoration: underline;
 }
 
-/* Hide old checkbox row styling on login — we use knd-auth-row */
 .knd-auth-split #form-login .knd-access-check-row {
   display: none;
 }
 
-.knd-auth-split #form-login .knd-auth-row .knd-access-check-row {
-  display: none;
-}
-
-/* Primary button */
 .knd-auth-split .knd-access-btn,
 .knd-auth-btn {
   width: 100%;
-  padding: 0.7rem 1rem;
+  padding: 0.72rem 1rem;
   font-size: 0.9375rem;
   font-weight: 600;
   border-radius: 8px;
   border: none;
   cursor: pointer;
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: var(--knd-auth-font-ui);
+  transition: background var(--knd-auth-transition), opacity var(--knd-auth-transition);
 }
 
 .knd-auth-split .knd-access-btn-primary,
@@ -345,17 +377,22 @@ body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-access-tab-switch
 
 .knd-auth-split .knd-access-btn-primary:hover,
 .knd-auth-btn--primary:hover {
-  background: #000000;
+  background: var(--knd-auth-btn-hover);
+}
+
+.knd-auth-split .knd-access-btn-primary:active,
+.knd-auth-btn--primary:active {
+  opacity: 0.92;
 }
 
 .knd-auth-split .knd-access-btn-outline {
-  background: #ffffff;
+  background: var(--knd-auth-card);
   color: var(--knd-auth-text);
-  border: 1px solid #d4d4d4;
+  border: 1px solid var(--knd-auth-border);
 }
 
 .knd-auth-split .knd-access-btn-outline:hover {
-  background: #fafafa;
+  background: var(--knd-auth-input-bg);
 }
 
 .knd-auth-footer-text {
@@ -363,18 +400,29 @@ body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-access-tab-switch
   font-size: 0.8125rem;
   color: var(--knd-auth-text-muted);
   margin: 0;
+  font-family: var(--knd-auth-font-ui);
 }
 
-.knd-auth-footer-text a,
-.knd-auth-split .knd-access-auth-link {
-  color: var(--knd-auth-text);
+.knd-auth-footer-text a {
+  color: var(--knd-auth-cyan);
   font-weight: 500;
   text-decoration: none;
 }
 
-.knd-auth-footer-text a:hover,
+.knd-auth-footer-text a:hover {
+  text-decoration: underline;
+}
+
+.knd-auth-split .knd-access-auth-link {
+  color: var(--knd-auth-cyan);
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-family: var(--knd-auth-font-ui);
+}
+
 .knd-auth-split .knd-access-auth-link:hover {
-  color: var(--knd-auth-accent);
+  text-decoration: underline;
 }
 
 .knd-auth-split .knd-access-auth-links {
@@ -385,30 +433,84 @@ body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-access-tab-switch
   align-items: center;
 }
 
-/* Register: show hints */
 .knd-auth-split .knd-access-input-hint {
   font-size: 0.75rem;
   color: var(--knd-auth-text-muted);
   margin-top: 0.35rem;
+  font-family: var(--knd-auth-font-ui);
 }
 
-/* Alerts */
+/* Alerts — minimal error */
 .knd-auth-split .knd-access-alert {
   margin-top: 1rem;
   border-radius: 8px;
   font-size: 0.875rem;
+  padding: 0.65rem 0.75rem;
+  font-family: var(--knd-auth-font-ui);
 }
 
-/* Aux panels (forgot / verify) */
+.knd-auth-split .knd-access-alert.error,
+.knd-auth-split .knd-access-alert.show.error {
+  background: var(--knd-auth-error-bg);
+  color: var(--knd-auth-error);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.knd-auth-split .knd-access-alert.success,
+.knd-auth-split .knd-access-alert.show.success {
+  background: rgba(22, 163, 74, 0.08);
+  color: #15803d;
+  border: 1px solid rgba(22, 163, 74, 0.2);
+}
+
 .knd-auth-split .knd-access-aux-panel {
   color: var(--knd-auth-text);
 }
 
 .knd-auth-split .knd-access-aux-panel .knd-access-form-heading h2 {
   text-transform: none;
+  color: var(--knd-auth-text);
 }
 
-/* Panels: override auth.css flex + animation (no motion per product brief) */
+.knd-auth-split .knd-access-aux-panel .knd-access-input {
+  background: var(--knd-auth-input-bg);
+  border-color: var(--knd-auth-border);
+  color: var(--knd-auth-text);
+}
+
+/* Password strength — restrained */
+.knd-auth-split .knd-access-pwd-str-seg {
+  background: var(--knd-auth-border);
+}
+
+.knd-auth-split .knd-access-pwd-str-seg.weak {
+  background: var(--knd-auth-error);
+}
+
+.knd-auth-split .knd-access-pwd-str-seg.medium {
+  background: #ca8a04;
+}
+
+.knd-auth-split .knd-access-pwd-str-seg.strong {
+  background: #15803d;
+}
+
+/* Code digits */
+.knd-auth-split .knd-access-code-digit {
+  background: var(--knd-auth-input-bg);
+  border: 1px solid var(--knd-auth-border);
+  color: var(--knd-auth-text);
+  border-radius: 8px;
+  transition: border-color var(--knd-auth-transition), box-shadow var(--knd-auth-transition);
+}
+
+.knd-auth-split .knd-access-code-digit:focus {
+  outline: none;
+  border-color: var(--knd-auth-cyan);
+  box-shadow: 0 0 0 3px var(--knd-auth-cyan-ring);
+}
+
+/* Panels */
 body.knd-auth-split-page #auth-main-stack > .knd-access-auth-panel {
   display: none !important;
 }
@@ -424,7 +526,12 @@ body.knd-auth-split-page #knd-auth-tab-register:checked ~ #panel-login {
   display: none !important;
 }
 
-/* ── Responsive ──────────────────────────────────────── */
+/* Loading state */
+.knd-auth-split .auth-btn--loading {
+  opacity: 0.65;
+  pointer-events: none;
+}
+
 @media (max-width: 900px) {
   .knd-auth-split {
     grid-template-columns: 1fr;
@@ -433,26 +540,19 @@ body.knd-auth-split-page #knd-auth-tab-register:checked ~ #panel-login {
 
   .knd-auth-split__brand {
     border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     padding: 2rem 1.5rem 1.5rem;
     justify-content: flex-start;
   }
 
   .knd-auth-split__brand::before {
-    top: 0;
-    bottom: auto;
+    top: auto;
+    bottom: 0;
     left: 1.5rem;
     right: 1.5rem;
     width: auto;
-    height: 3px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      var(--knd-auth-accent-dim) 15%,
-      var(--knd-auth-accent) 50%,
-      var(--knd-auth-accent-dim) 85%,
-      transparent
-    );
+    height: 2px;
+    opacity: 0.45;
   }
 
   .knd-auth-split__brand-inner {
@@ -469,7 +569,6 @@ body.knd-auth-split-page #knd-auth-tab-register:checked ~ #panel-login {
   }
 }
 
-/* Embed: single column, hide brand for space */
 body.arena-embed.knd-auth-split-page .knd-auth-split__brand {
   display: none;
 }

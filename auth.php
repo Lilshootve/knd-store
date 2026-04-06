@@ -44,11 +44,12 @@ $embed = isset($_GET['embed']) && $_GET['embed'] === '1';
 ?>
 
 <?php
-$seoTitle = 'KND Access — Sign In';
-$seoDesc  = 'Sign in to your KND ecosystem. Access KND Arena, LastRoll, Support Credits, and more.';
+$seoTitle = 'Sign in | KND Store';
+$seoDesc  = 'Sign in to KND Store — your workspace for retail and AI-assisted operations.';
 $authCssV = file_exists(__DIR__ . '/assets/css/auth.css') ? filemtime(__DIR__ . '/assets/css/auth.css') : 0;
 $saasCssV = file_exists(__DIR__ . '/assets/css/saas.css') ? filemtime(__DIR__ . '/assets/css/saas.css') : 0;
 $authSplitCssV = file_exists(__DIR__ . '/assets/css/auth-split.css') ? filemtime(__DIR__ . '/assets/css/auth-split.css') : 0;
+$authSplitJsV = file_exists(__DIR__ . '/assets/js/auth-split.js') ? filemtime(__DIR__ . '/assets/js/auth-split.js') : 0;
 $arenaEmbedCssV = file_exists(__DIR__ . '/assets/css/arena-embed.css') ? filemtime(__DIR__ . '/assets/css/arena-embed.css') : 0;
 
 if ($embed) {
@@ -62,7 +63,7 @@ if ($embed) {
     <title><?php echo htmlspecialchars($seoTitle); ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/auth.css?v=<?php echo $authCssV; ?>">
     <link rel="stylesheet" href="/assets/css/saas.css?v=<?php echo $saasCssV; ?>">
     <link rel="stylesheet" href="/assets/css/auth-split.css?v=<?php echo $authSplitCssV; ?>">
@@ -80,7 +81,7 @@ if ($embed) {
     $ogHead  .= '    <meta name="twitter:description" content="' . htmlspecialchars($seoDesc) . '">' . "\n";
     $ogHead  .= '    <link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
     $ogHead  .= '    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
-    $ogHead  .= '    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">' . "\n";
+    $ogHead  .= '    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@500;600&display=swap" rel="stylesheet">' . "\n";
     $ogHead  .= '    <link rel="stylesheet" href="/assets/css/auth.css?v=' . $authCssV . '">' . "\n";
     $ogHead  .= '    <link rel="stylesheet" href="/assets/css/saas.css?v=' . $saasCssV . '">' . "\n";
     $ogHead  .= '    <link rel="stylesheet" href="/assets/css/auth-split.css?v=' . $authSplitCssV . '">' . "\n";
@@ -90,7 +91,7 @@ if ($embed) {
 
 <?php if (!$embed) echo generateNavigation(); ?>
 
-<section class="knd-access-shell" aria-label="KND Store — Sign in">
+<section class="knd-access-shell" aria-label="KND Store sign in">
     <div class="knd-auth-split">
         <aside class="knd-auth-split__brand">
             <div class="knd-auth-split__brand-inner">
@@ -128,7 +129,7 @@ if ($embed) {
                         <div class="knd-access-field knd-access-field--password knd-auth-field knd-auth-field--password">
                             <label class="knd-auth-label" for="login-password"><?php echo t('dr.auth.password', 'Password'); ?></label>
                             <input type="password" name="password" id="login-password" class="knd-access-input knd-auth-input" placeholder="••••••••" required minlength="8" autocomplete="current-password">
-                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="login-password" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>"><?php echo t('dr.auth.show', 'Show'); ?></button>
+                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="login-password" data-label-show="<?php echo htmlspecialchars(t('dr.auth.show', 'Show'), ENT_QUOTES); ?>" data-label-hide="<?php echo htmlspecialchars(t('dr.auth.hide', 'Hide'), ENT_QUOTES); ?>" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>"><?php echo t('dr.auth.show', 'Show'); ?></button>
                         </div>
                         <div class="knd-auth-row">
                             <label class="knd-auth-remember" for="remember-login">
@@ -164,7 +165,7 @@ if ($embed) {
                         <div class="knd-access-field knd-access-field--password knd-auth-field knd-auth-field--password">
                             <label class="knd-auth-label" for="reg-password"><?php echo t('dr.auth.password', 'Password'); ?></label>
                             <input type="password" name="password" id="reg-password" class="knd-access-input knd-auth-input" placeholder="••••••••" required minlength="8" autocomplete="new-password">
-                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reg-password" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>"><?php echo t('dr.auth.show', 'Show'); ?></button>
+                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reg-password" data-label-show="<?php echo htmlspecialchars(t('dr.auth.show', 'Show'), ENT_QUOTES); ?>" data-label-hide="<?php echo htmlspecialchars(t('dr.auth.hide', 'Hide'), ENT_QUOTES); ?>" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>"><?php echo t('dr.auth.show', 'Show'); ?></button>
                             <div class="knd-access-pwd-strength">
                                 <div class="knd-access-pwd-str-seg"></div>
                                 <div class="knd-access-pwd-str-seg"></div>
@@ -177,7 +178,7 @@ if ($embed) {
                         <div class="knd-access-field knd-access-field--password knd-auth-field knd-auth-field--password">
                             <label class="knd-auth-label" for="reg-password-confirm"><?php echo t('dr.auth.confirm_password', 'Confirm password'); ?></label>
                             <input type="password" name="password_confirm" id="reg-password-confirm" class="knd-access-input knd-auth-input" placeholder="••••••••" required minlength="8" autocomplete="new-password">
-                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reg-password-confirm" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>"><?php echo t('dr.auth.show', 'Show'); ?></button>
+                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reg-password-confirm" data-label-show="<?php echo htmlspecialchars(t('dr.auth.show', 'Show'), ENT_QUOTES); ?>" data-label-hide="<?php echo htmlspecialchars(t('dr.auth.hide', 'Hide'), ENT_QUOTES); ?>" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>"><?php echo t('dr.auth.show', 'Show'); ?></button>
                         </div>
                         <button type="submit" class="knd-access-btn knd-access-btn-primary knd-auth-btn knd-auth-btn--primary">
                             <?php echo t('dr.auth.register', 'Create account'); ?>
@@ -191,7 +192,7 @@ if ($embed) {
 
             <div id="forgot-panel" class="knd-access-aux-panel" style="display:none;">
                 <div class="knd-access-form-heading">
-                    <h2><?php echo t('dr.auth.forgot_heading', 'SIGNAL RECOVERY'); ?></h2>
+                    <h2><?php echo t('dr.auth.forgot_heading', 'Reset access'); ?></h2>
                     <p><?php echo t('dr.auth.forgot_subtitle', 'Enter the email linked to your account'); ?></p>
                 </div>
 
@@ -201,10 +202,10 @@ if ($embed) {
                         <span class="knd-access-input-icon" aria-hidden="true">✉</span>
                     </div>
                     <button type="button" id="btn-forgot-password" class="knd-access-btn knd-access-btn-primary">
-                        <span class="auth-btn-text">🔒 <?php echo t('dr.auth.reset_password_btn', 'Reset Password'); ?></span>
+                        <span class="auth-btn-text"><?php echo t('dr.auth.reset_password_btn', 'Reset password'); ?></span>
                     </button>
                     <button type="button" id="btn-forgot-username" class="knd-access-btn knd-access-btn-outline">
-                        <span class="auth-btn-text">◆ <?php echo t('dr.auth.send_username_btn', 'Send me my username'); ?></span>
+                        <span class="auth-btn-text"><?php echo t('dr.auth.send_username_btn', 'Email my username'); ?></span>
                     </button>
                 </div>
 
@@ -222,7 +223,7 @@ if ($embed) {
                         <div class="knd-access-field knd-access-field--password">
                             <input type="password" name="password" id="reset-password" class="knd-access-input" placeholder="<?php echo htmlspecialchars(t('dr.auth.new_password', 'New Password'), ENT_QUOTES); ?>" required minlength="8" autocomplete="new-password">
                             <span class="knd-access-input-icon" aria-hidden="true">🔒</span>
-                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reset-password" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>">👁</button>
+                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reset-password" data-label-show="<?php echo htmlspecialchars(t('dr.auth.show', 'Show'), ENT_QUOTES); ?>" data-label-hide="<?php echo htmlspecialchars(t('dr.auth.hide', 'Hide'), ENT_QUOTES); ?>" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>"><?php echo t('dr.auth.show', 'Show'); ?></button>
                             <div class="knd-access-pwd-strength">
                                 <div class="knd-access-pwd-str-seg"></div>
                                 <div class="knd-access-pwd-str-seg"></div>
@@ -235,10 +236,10 @@ if ($embed) {
                         <div class="knd-access-field knd-access-field--password">
                             <input type="password" name="password_confirm" id="reset-password-confirm" class="knd-access-input" placeholder="<?php echo htmlspecialchars(t('dr.auth.confirm_password', 'Confirm Password'), ENT_QUOTES); ?>" required minlength="8" autocomplete="new-password">
                             <span class="knd-access-input-icon" aria-hidden="true">🔒</span>
-                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reset-password-confirm" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>">👁</button>
+                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reset-password-confirm" data-label-show="<?php echo htmlspecialchars(t('dr.auth.show', 'Show'), ENT_QUOTES); ?>" data-label-hide="<?php echo htmlspecialchars(t('dr.auth.hide', 'Hide'), ENT_QUOTES); ?>" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>"><?php echo t('dr.auth.show', 'Show'); ?></button>
                         </div>
                         <button type="submit" class="knd-access-btn knd-access-btn-primary">
-                            <span class="auth-btn-text">💾 <?php echo t('dr.auth.set_new_password_btn', 'Set New Password'); ?></span>
+                            <span class="auth-btn-text"><?php echo t('dr.auth.set_new_password_btn', 'Set new password'); ?></span>
                         </button>
                     </form>
                 </div>
@@ -251,7 +252,7 @@ if ($embed) {
 
             <div id="verify-panel" class="knd-access-aux-panel" style="display:<?php echo $showVerify ? 'flex' : 'none'; ?>;">
                 <div class="knd-access-form-heading">
-                    <h2><?php echo t('dr.auth.verify_heading', 'VERIFY SIGNAL'); ?></h2>
+                    <h2><?php echo t('dr.auth.verify_heading', 'Verify your email'); ?></h2>
                     <p><?php echo t('dr.auth.verify_subtitle', 'Enter the 6-digit code we sent to your email'); ?></p>
                 </div>
                 <form id="form-verify" autocomplete="off">
@@ -263,7 +264,7 @@ if ($embed) {
                         <?php endfor; ?>
                     </div>
                     <button type="submit" class="knd-access-btn knd-access-btn-primary">
-                        <span class="auth-btn-text">✓ <?php echo t('dr.auth.verify_btn', 'Verify'); ?></span>
+                        <span class="auth-btn-text"><?php echo t('dr.auth.verify_btn', 'Verify'); ?></span>
                     </button>
                 </form>
                 <div class="knd-access-auth-links">
@@ -281,6 +282,7 @@ if ($embed) {
 
 <?php if (!$embed): ?><script src="/assets/js/navigation-extend.js"></script><?php endif; ?>
 <script src="/assets/js/auth.js"></script>
+<script src="/assets/js/auth-split.js?v=<?php echo (int) $authSplitJsV; ?>"></script>
 
 <?php if (!$embed) echo generateFooter(); ?>
 

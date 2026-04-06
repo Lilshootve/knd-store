@@ -77,7 +77,10 @@
     }
     if (label) {
       label.textContent = s.label;
-      if (s.level === 0) {
+      if (document.body.classList.contains('knd-auth-split-page')) {
+        var splitColors = ['#6b6b6b', '#dc2626', '#ca8a04', '#ca8a04', '#15803d'];
+        label.style.color = splitColors[s.level] || '#6b6b6b';
+      } else if (s.level === 0) {
         label.style.color = 'var(--ka-t4)';
       } else if (s.level === 1) {
         label.style.color = 'var(--ka-red)';
@@ -106,16 +109,18 @@
 
   function initPasswordToggles() {
     document.querySelectorAll('.knd-access-pwd-toggle[data-knd-toggle-pwd]').forEach(function (btn) {
+      var showL = btn.getAttribute('data-label-show') || 'Show';
+      var hideL = btn.getAttribute('data-label-hide') || 'Hide';
       btn.addEventListener('click', function () {
         var id = btn.getAttribute('data-knd-toggle-pwd');
         var inp = id ? document.getElementById(id) : null;
         if (!inp) return;
         if (inp.type === 'password') {
           inp.type = 'text';
-          btn.textContent = '🔒';
+          btn.textContent = hideL;
         } else {
           inp.type = 'password';
-          btn.textContent = '👁';
+          btn.textContent = showL;
         }
       });
     });
