@@ -2,8 +2,10 @@
 // KND Store - Footer común
 
 // Función para generar el footer completo
-function generateFooter() {
+// $skipMarketingShell: app-style pages (e.g. dashboard) — omit marketing footer; keep cookie consent UI.
+function generateFooter($skipMarketingShell = false) {
     ob_start();
+    if (!$skipMarketingShell) {
     ?>
     <!-- Footer -->
     <footer class="footer knd-footer-shell site-footer-wrap py-4 position-relative z-2">
@@ -33,6 +35,9 @@ function generateFooter() {
         <!-- Efecto de partículas para el footer -->
         <div id="particles-footer" class="position-absolute top-0 left-0 w-100 h-100" style="z-index: 1;"></div>
     </footer>
+    <?php
+    }
+    ?>
 
     <!-- Cookie Consent Banner & Modal -->
     <div id="knd-cookie-banner" class="knd-cookie-banner">
@@ -121,11 +126,24 @@ function generateFooter() {
 }
 
 // Función para generar los scripts comunes
-function generateScripts() {
+// $appShell: signed-in app surfaces — skip particles, starfield, holo, support widget, XP/confetti fluff.
+function generateScripts($appShell = false) {
     $scripts = '';
 
     $phpSelfNav = $_SERVER['PHP_SELF'] ?? '';
     $isAdminScripts = (strpos($phpSelfNav, '/admin') !== false || strpos($phpSelfNav, 'admin/') === 0);
+
+    if ($appShell) {
+        $ds = __DIR__ . '/../assets/js/dashboard-shell.js';
+        $dsV = file_exists($ds) ? filemtime($ds) : 0;
+        $scripts .= '<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>' . "\n";
+        $scripts .= '<script src="/assets/js/cookies-consent.js" defer></script>' . "\n";
+        $scripts .= '<script src="/assets/js/dashboard-shell.js?v=' . (int) $dsV . '" defer></script>' . "\n";
+        $scripts .= '</body>' . "\n";
+        $scripts .= '</html>' . "\n";
+        return $scripts;
+    }
+
     if (!$isAdminScripts && session_status() === PHP_SESSION_ACTIVE && !empty($_SESSION['dr_user_id'])) {
         require_once __DIR__ . '/holo_orb_assets.php';
         ob_start();

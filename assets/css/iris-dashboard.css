@@ -1,0 +1,226 @@
+/**
+ * Iris — dashboard integration (.iris-page--saas)
+ * Overrides futuristic iris.css for Stripe/Linear-style shell only.
+ */
+.iris-page.iris-page--saas {
+  --iris-bg: #111111;
+  --iris-text: #ffffff;
+  --iris-text-muted: #a1a1a1;
+  --iris-border: #1f1f1f;
+
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  color: var(--iris-text);
+  background: var(--iris-bg) !important;
+  background-image: none !important;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.iris-page.iris-page--saas::before {
+  display: none !important;
+}
+
+.iris-page.iris-page--saas .iris-menu-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 5;
+  border: 1px solid var(--iris-border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--iris-text-muted);
+  border-radius: 8px;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+.iris-page.iris-page--saas .iris-menu-btn:hover {
+  color: #d6cfc7;
+  background: rgba(214, 207, 199, 0.1);
+}
+
+.iris-page.iris-page--saas .iris-container {
+  max-width: none;
+  margin: 0;
+  padding: 1rem 1rem 1.25rem;
+  align-items: stretch;
+  flex: 1;
+  min-height: 320px;
+  justify-content: flex-end;
+}
+
+.iris-page.iris-page--saas .iris-core {
+  display: none !important;
+}
+
+.iris-page.iris-page--saas .iris-status {
+  order: 1;
+  font-size: 0.75rem;
+  color: var(--iris-text-muted);
+  text-align: left;
+  width: 100%;
+  margin: 0 0 0.5rem;
+  min-height: 1rem;
+}
+
+.iris-page.iris-page--saas .iris-chat {
+  order: 2;
+  width: 100%;
+  max-height: 220px;
+  min-height: 120px;
+  overflow-y: auto;
+  border: 1px solid var(--iris-border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  background: #0b0b0b;
+  margin-bottom: 0.75rem;
+  text-align: left;
+}
+
+.iris-page.iris-page--saas .iris-chat .iris-line,
+.iris-page.iris-page--saas .iris-chat > div {
+  color: var(--iris-text);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.iris-page.iris-page--saas .iris-message {
+  order: 3;
+  width: 100%;
+  text-align: left;
+  font-size: 0.8125rem;
+}
+
+.iris-page.iris-page--saas .iris-form {
+  order: 4;
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0;
+  align-items: stretch;
+}
+
+.iris-page.iris-page--saas .iris-input {
+  flex: 1;
+  background: #0b0b0b !important;
+  border: 1px solid var(--iris-border) !important;
+  color: var(--iris-text) !important;
+  border-radius: 8px !important;
+  padding: 0.6rem 0.75rem !important;
+  font-size: 0.875rem !important;
+  box-shadow: none !important;
+}
+
+.iris-page.iris-page--saas .iris-input::placeholder {
+  color: #6b6b6b;
+}
+
+.iris-page.iris-page--saas .knd-iris-send {
+  flex-shrink: 0;
+  padding: 0.6rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: inherit;
+  border-radius: 8px;
+  border: 1px solid #1f1f1f;
+  background: rgba(34, 211, 238, 0.12);
+  color: #22d3ee;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.iris-page.iris-page--saas .knd-iris-send:hover {
+  background: rgba(34, 211, 238, 0.18);
+}
+
+.iris-page.iris-page--saas .iris-mem-btn {
+  border: 1px solid var(--iris-border);
+  background: transparent;
+  color: var(--iris-text-muted);
+  border-radius: 8px;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+.iris-page.iris-page--saas .iris-sidebar {
+  background: #111111;
+  border-right: 1px solid var(--iris-border);
+  box-shadow: none !important;
+}
+
+.iris-page.iris-page--saas .iris-sidebar-backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.iris-page.iris-page--saas .iris-mem-panel {
+  background: #111111;
+  border: 1px solid var(--iris-border);
+  box-shadow: none !important;
+}
+
+/* Suggestion chips below title (outside iris-page inner traffic) */
+.knd-iris-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.knd-iris-chip {
+  font-size: 0.8125rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid var(--iris-border);
+  background: #0b0b0b;
+  color: var(--iris-text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.knd-iris-chip:hover {
+  background: rgba(214, 207, 199, 0.08);
+  color: #d6cfc7;
+}
+
+.iris-page.iris-page--saas .iris-chat-msg {
+  margin-bottom: 0.65rem;
+  text-align: left;
+}
+
+.iris-page.iris-page--saas .iris-chat-msg__bubble {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--iris-border);
+  background: #141414;
+  color: var(--iris-text);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  box-shadow: none !important;
+}
+
+.iris-page.iris-page--saas .iris-chat-msg--user .iris-chat-msg__bubble {
+  background: rgba(34, 211, 238, 0.08);
+  border-color: rgba(34, 211, 238, 0.25);
+}
+
+.iris-page.iris-page--saas .iris-confirm-msg {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--iris-border);
+  box-shadow: none !important;
+}
+
+.iris-page.iris-page--saas .iris-confirm-btn {
+  border-radius: 8px;
+  box-shadow: none !important;
+}
+
+.iris-page.iris-page--saas .iris-data-table {
+  border: 1px solid var(--iris-border);
+  box-shadow: none !important;
+}
