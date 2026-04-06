@@ -115,6 +115,7 @@ if ($embed) {
                     <label for="knd-auth-tab-register" class="knd-access-tab-btn" id="knd-label-register" role="tab"><?php echo t('dr.auth.tab_create_account', 'Create account'); ?></label>
                 </div>
 
+                <div class="knd-auth-panels">
                 <div id="panel-login" class="knd-access-auth-panel" role="tabpanel" aria-labelledby="knd-label-login">
                     <div class="knd-access-form-heading">
                         <h2><?php echo t('dr.auth.welcome_back', 'Welcome back'); ?></h2>
@@ -148,7 +149,7 @@ if ($embed) {
                 <div id="panel-register" class="knd-access-auth-panel" role="tabpanel" aria-labelledby="knd-label-register">
                     <div class="knd-access-form-heading">
                         <h2><?php echo t('dr.auth.create_workspace', 'Create your workspace'); ?></h2>
-                        <p><?php echo t('dr.auth.create_workspace_sub', 'Start with a username and business email'); ?></p>
+                        <p><?php echo t('dr.auth.create_workspace_sub', 'Add your username and work email.'); ?></p>
                     </div>
                     <form id="form-register" autocomplete="on">
                         <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
@@ -185,6 +186,7 @@ if ($embed) {
                         </button>
                         <p class="knd-auth-footer-text"><?php echo t('dr.auth.have_account_prompt', 'Already have an account?'); ?> <a href="#" id="link-to-login"><?php echo t('dr.auth.sign_in', 'Sign in'); ?></a></p>
                     </form>
+                </div>
                 </div>
 
                 <div id="auth-alert" class="knd-access-alert" role="alert"></div>

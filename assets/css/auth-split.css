@@ -159,6 +159,12 @@ body.knd-auth-split-page.auth-page.knd-saas-app .knd-access-form-panel {
   padding: clamp(1.75rem, 4vw, 2.5rem);
   /* html has data-bs-theme="dark" — without this, native inputs use light text on our white card */
   color-scheme: light;
+  transition: max-width 0.28s ease, box-shadow 0.28s ease;
+}
+
+/* Register has more fields + longer copy — widen card smoothly */
+.knd-auth-split__card:has(#knd-auth-tab-register:checked) {
+  max-width: 500px;
 }
 
 .knd-auth-split .knd-access-form-panel {
@@ -231,6 +237,13 @@ body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-access-tab-switch
   color: var(--knd-auth-text-muted);
   margin: 0 0 1.25rem;
   font-family: var(--knd-auth-font-ui);
+  line-height: 1.45;
+}
+
+/* Register copy: nicer line breaks inside wider card */
+body.knd-auth-split-page #panel-register .knd-access-form-heading p {
+  text-wrap: balance;
+  max-width: 42em;
 }
 
 .knd-auth-split .knd-access-field,
@@ -532,20 +545,96 @@ body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:f
   box-shadow: 0 0 0 3px var(--knd-auth-cyan-ring);
 }
 
-/* Panels */
-body.knd-auth-split-page #auth-main-stack > .knd-access-auth-panel {
-  display: none !important;
+/* Tab panels: cross-fade + light vertical motion (radios ~ .knd-auth-panels …) */
+.knd-auth-panels {
+  position: relative;
 }
 
-body.knd-auth-split-page #knd-auth-tab-login:checked ~ #panel-login,
-body.knd-auth-split-page #knd-auth-tab-register:checked ~ #panel-register {
-  display: block !important;
-  animation: none !important;
+/* Panels are no longer direct children of #auth-main-stack — legacy auth.css panel rules do not apply */
+body.knd-auth-split-page .knd-auth-panels .knd-access-auth-panel {
+  width: 100%;
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  will-change: opacity, transform;
 }
 
-body.knd-auth-split-page #knd-auth-tab-login:checked ~ #panel-register,
-body.knd-auth-split-page #knd-auth-tab-register:checked ~ #panel-login {
-  display: none !important;
+body.knd-auth-split-page #knd-auth-tab-login:checked ~ .knd-auth-panels #panel-login {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+  transition:
+    opacity 0.24s ease,
+    transform 0.24s ease,
+    visibility 0s linear 0s;
+}
+
+body.knd-auth-split-page #knd-auth-tab-login:checked ~ .knd-auth-panels #panel-register {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition:
+    opacity 0.24s ease,
+    transform 0.24s ease,
+    visibility 0s linear 0.24s;
+}
+
+body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-auth-panels #panel-register {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+  transition:
+    opacity 0.24s ease,
+    transform 0.24s ease,
+    visibility 0s linear 0s;
+}
+
+body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-auth-panels #panel-login {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition:
+    opacity 0.24s ease,
+    transform 0.24s ease,
+    visibility 0s linear 0.24s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .knd-auth-panels .knd-access-auth-panel {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .knd-auth-split__card {
+    transition: none !important;
+  }
 }
 
 /* Loading state */
