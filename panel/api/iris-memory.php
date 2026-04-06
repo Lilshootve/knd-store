@@ -80,6 +80,12 @@ try {
         if ($method === 'GET')    { echo json_encode(['facts' => []]); exit; }
         if ($method === 'DELETE') { echo json_encode(['deleted' => false, 'error' => 'db_unavailable']); exit; }
         if ($method === 'POST')   { echo json_encode(['saved' => false, 'error' => 'db_unavailable']); exit; }
+        // OPTIONS / HEAD / unknown — must not fall through (mem_ensure_table(null) → TypeError → 500)
+        http_response_code($method === 'OPTIONS' ? 204 : 405);
+        if ($method !== 'OPTIONS') {
+            echo json_encode(['error' => 'db_unavailable', 'facts' => []]);
+        }
+        exit;
     }
 
     if (!mem_ensure_table($pdo)) {
@@ -87,6 +93,11 @@ try {
         if ($method === 'GET')    { echo json_encode(['facts' => []]); exit; }
         if ($method === 'DELETE') { echo json_encode(['deleted' => false, 'error' => 'db_unavailable']); exit; }
         if ($method === 'POST')   { echo json_encode(['saved' => false, 'error' => 'db_unavailable']); exit; }
+        http_response_code($method === 'OPTIONS' ? 204 : 405);
+        if ($method !== 'OPTIONS') {
+            echo json_encode(['error' => 'db_unavailable', 'facts' => []]);
+        }
+        exit;
     }
 
     // ── GET ───────────────────────────────────────────────────────────────────
@@ -102,7 +113,12 @@ try {
         if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
             $jsonFlags |= JSON_INVALID_UTF8_SUBSTITUTE;
         }
-        echo json_encode(['facts' => $facts], $jsonFlags);
+        $jsonOut = json_encode(['facts' => $facts], $jsonFlags);
+        if ($jsonOut === false) {
+            error_log('[iris-mem-api] json_encode: ' . json_last_error_msg());
+            $jsonOut = '{"facts":[]}';
+        }
+        echo $jsonOut;
         exit;
     }
 

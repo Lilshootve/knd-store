@@ -460,12 +460,18 @@
     if (!memApiUrl || !memList) return;
     try {
       var res = await fetch(memApiUrl, { credentials: creds(memApiUrl) });
-      if (!res.ok) return;
+      if (!res.ok) {
+        // 401: not logged in; 5xx: server — show empty memory instead of broken UI
+        if (res.status === 401 || res.status >= 500) {
+          renderMemory([]);
+        }
+        return;
+      }
       var data = await res.json();
       var facts = Array.isArray(data.facts) ? data.facts : [];
       renderMemory(facts);
     } catch (_) {
-      // ignore
+      renderMemory([]);
     }
   }
 
