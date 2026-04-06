@@ -347,11 +347,27 @@ body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:f
   isolation: isolate;
 }
 
-.knd-auth-split .knd-access-pwd-toggle {
+/* Input + toggle share one row; toggle vertically centered in the field */
+.knd-auth-split .knd-access-pwd-input-wrap {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.knd-auth-split .knd-access-pwd-input-wrap > .knd-access-input,
+.knd-auth-split .knd-access-pwd-input-wrap > .knd-auth-input {
+  padding-right: 4.85rem;
+}
+
+.knd-auth-split .knd-access-pwd-input-wrap .knd-access-pwd-toggle {
   position: absolute;
-  right: 8px;
-  bottom: 8px;
-  z-index: 2;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  bottom: auto;
+  margin: 0;
+  z-index: 4;
+  pointer-events: auto;
   border: 1px solid rgba(92, 74, 61, 0.55);
   border-radius: 6px;
   background: var(--knd-auth-card-accent-surface);
@@ -363,6 +379,7 @@ body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:f
   font-family: var(--knd-auth-font-ui);
   line-height: 1.1;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  -webkit-tap-highlight-color: transparent;
   transition:
     background var(--knd-auth-transition),
     color var(--knd-auth-transition),
@@ -370,15 +387,10 @@ body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:f
     box-shadow var(--knd-auth-transition);
 }
 
-.knd-auth-split .knd-access-pwd-toggle:hover {
+.knd-auth-split .knd-access-pwd-input-wrap .knd-access-pwd-toggle:hover {
   background: #e3dcd4;
   color: var(--knd-auth-card-accent-hover);
   border-color: rgba(61, 48, 40, 0.65);
-}
-
-.knd-auth-split .knd-access-field--password .knd-access-input,
-.knd-auth-field--password .knd-auth-input {
-  padding-right: 4.25rem;
 }
 
 .knd-auth-row {

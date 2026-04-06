@@ -129,8 +129,10 @@ if ($embed) {
                         </div>
                         <div class="knd-access-field knd-access-field--password knd-auth-field knd-auth-field--password">
                             <label class="knd-auth-label" for="login-password"><?php echo t('dr.auth.password', 'Password'); ?></label>
-                            <input type="password" name="password" id="login-password" class="knd-access-input knd-auth-input" placeholder="••••••••" required minlength="8" autocomplete="current-password">
-                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="login-password" data-label-show="<?php echo htmlspecialchars(t('dr.auth.show', 'Show'), ENT_QUOTES); ?>" data-label-hide="<?php echo htmlspecialchars(t('dr.auth.hide', 'Hide'), ENT_QUOTES); ?>" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>"><?php echo t('dr.auth.show', 'Show'); ?></button>
+                            <div class="knd-access-pwd-input-wrap">
+                                <input type="password" name="password" id="login-password" class="knd-access-input knd-auth-input" placeholder="••••••••" required minlength="8" autocomplete="current-password">
+                                <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="login-password" data-label-show="<?php echo htmlspecialchars(t('dr.auth.show', 'Show'), ENT_QUOTES); ?>" data-label-hide="<?php echo htmlspecialchars(t('dr.auth.hide', 'Hide'), ENT_QUOTES); ?>" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>" aria-pressed="false"><?php echo t('dr.auth.show', 'Show'); ?></button>
+                            </div>
                         </div>
                         <div class="knd-auth-row">
                             <label class="knd-auth-remember" for="remember-login">
@@ -165,8 +167,10 @@ if ($embed) {
                         </div>
                         <div class="knd-access-field knd-access-field--password knd-auth-field knd-auth-field--password">
                             <label class="knd-auth-label" for="reg-password"><?php echo t('dr.auth.password', 'Password'); ?></label>
-                            <input type="password" name="password" id="reg-password" class="knd-access-input knd-auth-input" placeholder="••••••••" required minlength="8" autocomplete="new-password">
-                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reg-password" data-label-show="<?php echo htmlspecialchars(t('dr.auth.show', 'Show'), ENT_QUOTES); ?>" data-label-hide="<?php echo htmlspecialchars(t('dr.auth.hide', 'Hide'), ENT_QUOTES); ?>" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>"><?php echo t('dr.auth.show', 'Show'); ?></button>
+                            <div class="knd-access-pwd-input-wrap">
+                                <input type="password" name="password" id="reg-password" class="knd-access-input knd-auth-input" placeholder="••••••••" required minlength="8" autocomplete="new-password">
+                                <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reg-password" data-label-show="<?php echo htmlspecialchars(t('dr.auth.show', 'Show'), ENT_QUOTES); ?>" data-label-hide="<?php echo htmlspecialchars(t('dr.auth.hide', 'Hide'), ENT_QUOTES); ?>" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>" aria-pressed="false"><?php echo t('dr.auth.show', 'Show'); ?></button>
+                            </div>
                             <div class="knd-access-pwd-strength">
                                 <div class="knd-access-pwd-str-seg"></div>
                                 <div class="knd-access-pwd-str-seg"></div>
@@ -178,8 +182,10 @@ if ($embed) {
                         </div>
                         <div class="knd-access-field knd-access-field--password knd-auth-field knd-auth-field--password">
                             <label class="knd-auth-label" for="reg-password-confirm"><?php echo t('dr.auth.confirm_password', 'Confirm password'); ?></label>
-                            <input type="password" name="password_confirm" id="reg-password-confirm" class="knd-access-input knd-auth-input" placeholder="••••••••" required minlength="8" autocomplete="new-password">
-                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reg-password-confirm" data-label-show="<?php echo htmlspecialchars(t('dr.auth.show', 'Show'), ENT_QUOTES); ?>" data-label-hide="<?php echo htmlspecialchars(t('dr.auth.hide', 'Hide'), ENT_QUOTES); ?>" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>"><?php echo t('dr.auth.show', 'Show'); ?></button>
+                            <div class="knd-access-pwd-input-wrap">
+                                <input type="password" name="password_confirm" id="reg-password-confirm" class="knd-access-input knd-auth-input" placeholder="••••••••" required minlength="8" autocomplete="new-password">
+                                <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reg-password-confirm" data-label-show="<?php echo htmlspecialchars(t('dr.auth.show', 'Show'), ENT_QUOTES); ?>" data-label-hide="<?php echo htmlspecialchars(t('dr.auth.hide', 'Hide'), ENT_QUOTES); ?>" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>" aria-pressed="false"><?php echo t('dr.auth.show', 'Show'); ?></button>
+                            </div>
                         </div>
                         <button type="submit" class="knd-access-btn knd-access-btn-primary knd-auth-btn knd-auth-btn--primary">
                             <?php echo t('dr.auth.register', 'Create account'); ?>
@@ -223,9 +229,11 @@ if ($embed) {
                             <?php endfor; ?>
                         </div>
                         <div class="knd-access-field knd-access-field--password">
-                            <input type="password" name="password" id="reset-password" class="knd-access-input" placeholder="<?php echo htmlspecialchars(t('dr.auth.new_password', 'New Password'), ENT_QUOTES); ?>" required minlength="8" autocomplete="new-password">
+                            <div class="knd-access-pwd-input-wrap">
+                                <input type="password" name="password" id="reset-password" class="knd-access-input" placeholder="<?php echo htmlspecialchars(t('dr.auth.new_password', 'New Password'), ENT_QUOTES); ?>" required minlength="8" autocomplete="new-password">
+                                <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reset-password" data-label-show="<?php echo htmlspecialchars(t('dr.auth.show', 'Show'), ENT_QUOTES); ?>" data-label-hide="<?php echo htmlspecialchars(t('dr.auth.hide', 'Hide'), ENT_QUOTES); ?>" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>" aria-pressed="false"><?php echo t('dr.auth.show', 'Show'); ?></button>
+                            </div>
                             <span class="knd-access-input-icon" aria-hidden="true">🔒</span>
-                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reset-password" data-label-show="<?php echo htmlspecialchars(t('dr.auth.show', 'Show'), ENT_QUOTES); ?>" data-label-hide="<?php echo htmlspecialchars(t('dr.auth.hide', 'Hide'), ENT_QUOTES); ?>" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>"><?php echo t('dr.auth.show', 'Show'); ?></button>
                             <div class="knd-access-pwd-strength">
                                 <div class="knd-access-pwd-str-seg"></div>
                                 <div class="knd-access-pwd-str-seg"></div>
@@ -236,9 +244,11 @@ if ($embed) {
                             <div class="knd-access-input-hint knd-access-input-hint--below-strength"><?php echo t('dr.auth.password_hint', 'Minimum 8 characters'); ?></div>
                         </div>
                         <div class="knd-access-field knd-access-field--password">
-                            <input type="password" name="password_confirm" id="reset-password-confirm" class="knd-access-input" placeholder="<?php echo htmlspecialchars(t('dr.auth.confirm_password', 'Confirm Password'), ENT_QUOTES); ?>" required minlength="8" autocomplete="new-password">
+                            <div class="knd-access-pwd-input-wrap">
+                                <input type="password" name="password_confirm" id="reset-password-confirm" class="knd-access-input" placeholder="<?php echo htmlspecialchars(t('dr.auth.confirm_password', 'Confirm Password'), ENT_QUOTES); ?>" required minlength="8" autocomplete="new-password">
+                                <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reset-password-confirm" data-label-show="<?php echo htmlspecialchars(t('dr.auth.show', 'Show'), ENT_QUOTES); ?>" data-label-hide="<?php echo htmlspecialchars(t('dr.auth.hide', 'Hide'), ENT_QUOTES); ?>" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>" aria-pressed="false"><?php echo t('dr.auth.show', 'Show'); ?></button>
+                            </div>
                             <span class="knd-access-input-icon" aria-hidden="true">🔒</span>
-                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reset-password-confirm" data-label-show="<?php echo htmlspecialchars(t('dr.auth.show', 'Show'), ENT_QUOTES); ?>" data-label-hide="<?php echo htmlspecialchars(t('dr.auth.hide', 'Hide'), ENT_QUOTES); ?>" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>"><?php echo t('dr.auth.show', 'Show'); ?></button>
                         </div>
                         <button type="submit" class="knd-access-btn knd-access-btn-primary">
                             <span class="auth-btn-text"><?php echo t('dr.auth.set_new_password_btn', 'Set new password'); ?></span>
