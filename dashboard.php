@@ -260,7 +260,7 @@ $bizNameEsc = $bizName ? htmlspecialchars($bizName, ENT_QUOTES, 'UTF-8') : '';
                                 <div class="iris-core idle" id="iris-core" aria-hidden="true">
                                     <svg class="iris-hex-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                         <polygon points="170,100 135,160.62 65,160.62 30,100 65,39.38 135,39.38"
-                                            fill="var(--knd-accent-08)" stroke="var(--knd-accent-12)" stroke-width="1.2"/>
+                                            fill="rgba(245,245,220,0.08)" stroke="rgba(245,245,220,0.35)" stroke-width="1.2"/>
                                     </svg>
                                 </div>
                                 <p class="iris-status" id="iris-status">Iris is ready</p>

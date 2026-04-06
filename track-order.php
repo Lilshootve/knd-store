@@ -83,15 +83,15 @@ echo generateHeader(t('track.meta.title'), t('track.meta.description'));
 ?>
 <style>
 .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: .4px; display: inline-block; text-transform: capitalize; }
-.status-pending { background: var(--bg-surface); color: var(--text-secondary); }
-.status-awaiting_transfer { background: color-mix(in srgb, var(--knd-warning) 18%, transparent); color: var(--knd-warning); }
-.status-paid { background: color-mix(in srgb, var(--knd-success) 18%, transparent); color: var(--knd-success); }
-.status-completed { background: color-mix(in srgb, var(--knd-success) 22%, transparent); color: var(--knd-success); }
-.status-delivered { background: color-mix(in srgb, var(--knd-success) 26%, transparent); color: var(--knd-success); }
-.status-processing { background: var(--knd-action-10); color: var(--accent-action); }
-.status-cancelled { background: color-mix(in srgb, var(--knd-error) 18%, transparent); color: var(--knd-error); }
-.status-failed { background: color-mix(in srgb, var(--knd-error) 22%, transparent); color: var(--knd-error); }
-.status-unknown { background: var(--bg-surface); color: var(--text-secondary); }
+.status-pending { background: #2a2f36; color: #9aa4af; }
+.status-awaiting_transfer { background: rgba(243,156,18,.15); color: #f39c12; }
+.status-paid { background: rgba(46,204,113,.15); color: #2ecc71; }
+.status-completed { background: rgba(39,174,96,.18); color: #27ae60; }
+.status-delivered { background: rgba(39,174,96,.22); color: #27ae60; }
+.status-processing { background: rgba(52,152,219,.15); color: #3498db; }
+.status-cancelled { background: rgba(231,76,60,.18); color: #e74c3c; }
+.status-failed { background: rgba(192,57,43,.20); color: #c0392b; }
+.status-unknown { background: #1f242b; color: #7f8c8d; }
 </style>
 <div id="particles-bg"></div>
 <?php echo generateNavigation(); ?>

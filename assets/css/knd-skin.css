@@ -6,26 +6,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
 
 :root {
-  --void: var(--bg-main);
-  --deep: var(--bg-surface);
-  --surface: var(--bg-surface);
-  --glass: color-mix(in srgb, var(--bg-surface) 88%, transparent);
-  --glassl: color-mix(in srgb, var(--bg-surface) 72%, transparent);
-  --c: var(--accent-action);
-  --c2: color-mix(in srgb, var(--accent-action) 72%, var(--bg-main));
-  --cg: var(--knd-action-12);
-  --cb: var(--knd-action-22);
-  --m: var(--accent-primary);
-  --m2: var(--accent-primary);
-  --mg: var(--knd-accent-12);
-  --gold: #ca8a04;
-  --green: #15803d;
-  --red: #dc2626;
-  --orange: #ea580c;
-  --t1: var(--text-primary);
-  --t2: var(--text-secondary);
-  --t3: var(--text-secondary);
-  --t4: color-mix(in srgb, var(--text-secondary) 45%, transparent);
+  --void: #010508;
+  --deep: #020a10;
+  --surface: #04131c;
+  --glass: rgba(6, 24, 36, 0.72);
+  --glassl: rgba(8, 30, 44, 0.55);
+  --c: #00e8ff;
+  --c2: #00a8bb;
+  --cg: rgba(0, 232, 255, 0.12);
+  --cb: rgba(0, 232, 255, 0.22);
+  --m: #d44fff;
+  --m2: #9b30ff;
+  --mg: rgba(212, 79, 255, 0.12);
+  --gold: #ffcc00;
+  --green: #00ff99;
+  --red: #ff2255;
+  --orange: #ff8800;
+  --t1: rgba(220, 248, 255, 0.95);
+  --t2: rgba(155, 215, 235, 0.62);
+  --t3: rgba(90, 165, 190, 0.38);
+  --t4: rgba(60, 120, 145, 0.2);
   --FD: 'Orbitron', monospace;
   --FB: 'Rajdhani', sans-serif;
   --FM: 'Share Tech Mono', monospace;
@@ -41,7 +41,7 @@ html {
   /* Single lever: scales rem-based UI (Bootstrap, many components) ~12.5% */
   font-size: 112.5%;
   scrollbar-width: thin;
-  scrollbar-color: var(--knd-action-20) transparent;
+  scrollbar-color: rgba(0, 232, 255, 0.2) transparent;
 }
 
 body.knd-skin {
@@ -71,7 +71,7 @@ body.knd-skin:not(.admin-page):not(.arena-info-page)::after {
   width: 4px;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--knd-action-20);
+  background: rgba(0, 232, 255, 0.2);
   border-radius: 2px;
 }
 
@@ -93,7 +93,10 @@ body.knd-skin:not(.admin-page):not(.arena-info-page)::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 80% 50% at 50% 10%, var(--knd-action-06), transparent 50%);
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 10%, rgba(0, 60, 140, 0.15), transparent 50%),
+    radial-gradient(ellipse 40% 40% at 10% 70%, rgba(0, 232, 255, 0.06), transparent 45%),
+    radial-gradient(ellipse 40% 40% at 90% 60%, rgba(155, 48, 255, 0.05), transparent 45%);
   z-index: 1;
 }
 
@@ -116,8 +119,8 @@ body.admin-page #bg {
   padding: 0 16px 0 20px;
   gap: 12px;
   flex-wrap: wrap;
-  background: color-mix(in srgb, var(--bg-main) 92%, transparent) !important;
-  border-bottom: 1px solid var(--knd-action-06) !important;
+  background: rgba(1, 5, 8, 0.85) !important;
+  border-bottom: 1px solid rgba(0, 232, 255, 0.06) !important;
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   box-shadow: none !important;
@@ -147,8 +150,8 @@ body.admin-page #bg {
   font-size: clamp(15px, 1rem, 18px);
   font-weight: 900;
   letter-spacing: 5px;
-  color: var(--accent-primary);
-  text-shadow: none;
+  color: var(--c);
+  text-shadow: 0 0 20px rgba(0, 232, 255, 0.4);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -156,7 +159,7 @@ body.admin-page #bg {
   flex-shrink: 0;
 }
 .tb-logo:hover {
-  color: var(--accent-action);
+  color: var(--c);
 }
 
 .tb-hex {
@@ -167,7 +170,7 @@ body.admin-page #bg {
 .tb-hex svg {
   width: 100%;
   height: 100%;
-  filter: none;
+  filter: drop-shadow(0 0 6px var(--c));
   animation: kndHexSpin 12s linear infinite;
 }
 @keyframes kndHexSpin {
@@ -207,13 +210,13 @@ body.admin-page #bg {
 .tb-link:hover,
 .tb-link:focus {
   color: var(--c);
-  border-color: var(--knd-action-15);
-  background: var(--knd-action-03);
+  border-color: rgba(0, 232, 255, 0.15);
+  background: rgba(0, 232, 255, 0.03);
 }
 .tb-link.active {
   color: var(--c);
-  border-color: var(--knd-action-25);
-  background: var(--knd-action-08);
+  border-color: rgba(0, 232, 255, 0.25);
+  background: rgba(0, 232, 255, 0.08);
 }
 
 .tb-more-wrap {
@@ -229,9 +232,9 @@ body.admin-page #bg {
   font-size: var(--knd-fs-xs);
   letter-spacing: 2px;
   padding: 6px 14px;
-  border: 1px solid var(--accent-primary);
-  color: var(--text-dark);
-  background: var(--accent-primary);
+  border: 1px solid var(--c);
+  color: var(--c);
+  background: rgba(0, 232, 255, 0.05);
   text-decoration: none;
   transition: all 0.25s;
   text-transform: uppercase;
@@ -241,7 +244,11 @@ body.admin-page #bg {
   flex-shrink: 0;
 }
 .tb-cta::before {
-  content: none;
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(0, 232, 255, 0.08), transparent);
+  animation: kndSweep 3s ease infinite;
 }
 @keyframes kndSweep {
   0% {
@@ -252,10 +259,9 @@ body.admin-page #bg {
   }
 }
 .tb-cta:hover {
-  box-shadow: none;
-  background: color-mix(in srgb, var(--accent-primary) 88%, var(--text-dark));
-  color: var(--text-dark);
-  border-color: color-mix(in srgb, var(--accent-primary) 88%, var(--text-dark));
+  box-shadow: 0 0 18px rgba(0, 232, 255, 0.2);
+  background: rgba(0, 232, 255, 0.1);
+  color: var(--c);
 }
 
 .tb-end {
@@ -290,8 +296,8 @@ body.admin-page #bg {
   justify-content: center;
   width: 44px;
   height: 44px;
-  border: 1px solid var(--knd-action-20);
-  background: var(--knd-action-05);
+  border: 1px solid rgba(0, 232, 255, 0.2);
+  background: rgba(0, 232, 255, 0.05);
   color: var(--c);
   border-radius: 4px;
   cursor: pointer;
@@ -318,13 +324,13 @@ body.admin-page #bg {
   text-transform: uppercase;
   padding: 6px 10px !important;
   color: var(--t2) !important;
-  border: 1px solid var(--knd-action-12);
-  background: var(--knd-action-04);
+  border: 1px solid rgba(0, 232, 255, 0.12);
+  background: rgba(0, 232, 255, 0.04);
   clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
 }
 .topbar .knd-dropdown-toggle:hover {
   color: var(--c) !important;
-  border-color: var(--knd-action-20);
+  border-color: rgba(0, 232, 255, 0.2);
 }
 
 .topbar .knd-dropdown-menu {
@@ -332,16 +338,11 @@ body.admin-page #bg {
   top: calc(100% + 6px);
   right: 0;
   min-width: 240px;
-  background: color-mix(in srgb, var(--bg-surface) 96%, transparent) !important;
-  border: 1px solid var(--border) !important;
+  background: rgba(4, 12, 18, 0.98) !important;
+  border: 1px solid rgba(0, 232, 255, 0.12) !important;
   border-radius: 0;
   clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
   padding: 8px 0;
-}
-
-.knd-dropdown-sep {
-  border-top: 1px solid var(--border-on-dark-mid);
-  margin: 6px 0;
 }
 
 .topbar .knd-dropdown {
@@ -355,7 +356,7 @@ body.admin-page #bg {
 
 .tb-more-wrap .dropdown-menu {
   background: rgba(4, 12, 18, 0.98) !important;
-  border: 1px solid var(--knd-action-12) !important;
+  border: 1px solid rgba(0, 232, 255, 0.12) !important;
   border-radius: 0;
   padding: 6px 0;
   clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
@@ -371,13 +372,13 @@ body.admin-page #bg {
 
 .tb-more-wrap .dropdown-item:hover,
 .tb-more-wrap .dropdown-item:focus {
-  background: var(--knd-action-08) !important;
+  background: rgba(0, 232, 255, 0.08) !important;
   color: var(--c) !important;
 }
 
 .tb-more-wrap .dropdown-item.active {
   color: var(--c) !important;
-  background: var(--knd-action-10) !important;
+  background: rgba(0, 232, 255, 0.1) !important;
 }
 
 .topbar .sc-nav-badge,
@@ -389,11 +390,11 @@ body.admin-page #bg {
 /* Mobile offcanvas */
 .knd-nav-offcanvas.offcanvas {
   background: rgba(1, 5, 8, 0.98) !important;
-  border-left: 1px solid var(--knd-action-10) !important;
+  border-left: 1px solid rgba(0, 232, 255, 0.1) !important;
   color: var(--t1);
 }
 .knd-nav-offcanvas .offcanvas-header {
-  border-bottom: 1px solid var(--knd-action-08);
+  border-bottom: 1px solid rgba(0, 232, 255, 0.08);
 }
 .knd-nav-offcanvas .tb-link {
   display: block;
@@ -491,7 +492,7 @@ main,
   height: 400px;
   top: -100px;
   left: -100px;
-  background: var(--knd-action-06);
+  background: rgba(0, 232, 255, 0.06);
   animation: kndOrbFloat 8s ease-in-out infinite;
 }
 .hero-orb.o2 {
@@ -499,7 +500,7 @@ main,
   height: 350px;
   bottom: -80px;
   right: -80px;
-  background: var(--knd-accent-08);
+  background: rgba(212, 79, 255, 0.05);
   animation: kndOrbFloat 10s ease-in-out infinite 2s;
 }
 @keyframes kndOrbFloat {
@@ -524,12 +525,12 @@ main,
   gap: 6px;
   padding: 4px 14px;
   margin-bottom: 20px;
-  border: 1px solid var(--knd-accent-12);
-  background: var(--knd-accent-08);
+  border: 1px solid rgba(0, 232, 255, 0.2);
+  background: rgba(0, 232, 255, 0.04);
   font-family: var(--FM);
   font-size: var(--knd-fs-sm);
   letter-spacing: 3px;
-  color: var(--accent-primary);
+  color: var(--c);
   text-transform: uppercase;
   animation: kndFadeUp 0.8s ease both;
 }
@@ -557,7 +558,7 @@ main,
   text-align: center;
 }
 .hero-title .accent {
-  background: linear-gradient(90deg, var(--accent-primary), var(--accent-action));
+  background: linear-gradient(90deg, var(--c), var(--m));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -597,18 +598,22 @@ main,
   clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
 }
 .hero-btn.primary {
-  background: var(--accent-primary);
-  border: 1px solid var(--accent-primary);
-  color: var(--text-dark);
+  background: linear-gradient(135deg, rgba(0, 232, 255, 0.1), rgba(212, 79, 255, 0.06));
+  border: 1px solid var(--c);
+  color: var(--c);
 }
 .hero-btn.primary::before {
-  content: none;
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(0, 232, 255, 0.08), transparent);
+  animation: kndSweep 2.5s ease infinite;
 }
 .hero-btn.primary:hover {
-  box-shadow: none;
-  background: color-mix(in srgb, var(--accent-primary) 88%, var(--text-dark));
+  box-shadow: 0 0 30px rgba(0, 232, 255, 0.2);
+  background: rgba(0, 232, 255, 0.12);
   letter-spacing: 5px;
-  color: var(--text-dark);
+  color: var(--c);
 }
 .hero-btn.secondary {
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -616,9 +621,9 @@ main,
   background: transparent;
 }
 .hero-btn.secondary:hover {
-  border-color: var(--accent-primary);
-  color: var(--accent-primary);
-  box-shadow: none;
+  border-color: var(--m);
+  color: var(--m);
+  box-shadow: 0 0 18px rgba(212, 79, 255, 0.1);
 }
 
 .scroll-cue {
@@ -675,7 +680,7 @@ main,
   font-family: var(--FM);
   font-size: var(--knd-fs-xs);
   letter-spacing: 4px;
-  color: var(--accent-primary);
+  color: var(--c);
   text-transform: uppercase;
   margin-bottom: 8px;
   display: flex;
@@ -687,8 +692,8 @@ main,
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--accent-action);
-  box-shadow: none;
+  background: var(--c);
+  box-shadow: 0 0 6px var(--c);
   animation: kndDotPulse 2.5s ease-in-out infinite;
 }
 @keyframes kndDotPulse {
@@ -737,7 +742,7 @@ main,
 
 .portal {
   background: var(--glass);
-  border: 1px solid var(--knd-action-08);
+  border: 1px solid rgba(0, 232, 255, 0.08);
   backdrop-filter: blur(16px);
   padding: 0;
   position: relative;
@@ -760,9 +765,9 @@ main,
   transition: opacity 0.3s;
 }
 .portal:hover {
-  border-color: var(--knd-action-15);
+  border-color: rgba(0, 232, 255, 0.15);
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 20px var(--pg, var(--knd-action-06));
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 20px var(--pg, rgba(0, 232, 255, 0.06));
 }
 .portal-visual {
   height: 180px;
@@ -776,11 +781,11 @@ main,
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 60%, var(--pvg, var(--knd-action-06)), transparent 65%);
+  background: radial-gradient(ellipse at 50% 60%, var(--pvg, rgba(0, 232, 255, 0.06)), transparent 65%);
 }
 .portal-icon {
   font-size: 64px;
-  filter: none;
+  filter: drop-shadow(0 0 20px var(--pc, var(--c)));
   animation: kndPortalFloat 4s ease-in-out infinite;
   position: relative;
   z-index: 2;
@@ -803,7 +808,7 @@ main,
   font-weight: 900;
   letter-spacing: 3px;
   color: var(--pc, var(--c));
-  text-shadow: none;
+  text-shadow: 0 0 10px var(--pg, rgba(0, 232, 255, 0.3));
   margin-bottom: 6px;
 }
 .portal-desc {
@@ -844,25 +849,25 @@ main,
   letter-spacing: 2px;
   color: var(--pc, var(--c));
   padding: 6px 14px;
-  border: 1px solid var(--knd-action-15);
+  border: 1px solid rgba(0, 232, 255, 0.15);
   transition: all 0.2s;
   text-transform: uppercase;
   clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
 }
 .portal:hover .portal-enter {
-  border-color: var(--pc, var(--accent-action));
-  box-shadow: none;
+  border-color: var(--pc, var(--c));
+  box-shadow: 0 0 10px var(--pg, rgba(0, 232, 255, 0.1));
 }
 
 .portal.mind-wars {
   --pc: var(--c);
-  --pg: var(--knd-action-08);
-  --pvg: var(--knd-action-06);
+  --pg: rgba(0, 232, 255, 0.08);
+  --pvg: rgba(0, 232, 255, 0.06);
 }
 .portal.drop-chamber {
-  --pc: var(--accent-primary);
-  --pg: var(--knd-accent-08);
-  --pvg: var(--knd-accent-06);
+  --pc: var(--m);
+  --pg: rgba(212, 79, 255, 0.08);
+  --pvg: rgba(212, 79, 255, 0.06);
 }
 .portal.avatars {
   --pc: var(--gold);
@@ -881,7 +886,7 @@ main,
   height: 2px;
 }
 .avatar-carousel::-webkit-scrollbar-thumb {
-  background: var(--knd-action-20);
+  background: rgba(0, 232, 255, 0.2);
 }
 .av-card {
   flex-shrink: 0;
@@ -896,9 +901,9 @@ main,
 }
 .av-card:hover {
   transform: translateY(-4px);
-  border-color: var(--knd-action-15);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 12px var(--knd-action-05);
-  background: var(--knd-action-03);
+  border-color: rgba(0, 232, 255, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 12px rgba(0, 232, 255, 0.05);
+  background: rgba(0, 232, 255, 0.03);
 }
 .av-img {
   width: 72px;
@@ -946,7 +951,7 @@ main,
 }
 .pulse-card {
   background: var(--glass);
-  border: 1px solid var(--knd-action-06);
+  border: 1px solid rgba(0, 232, 255, 0.06);
   backdrop-filter: blur(14px);
   padding: 18px;
   position: relative;
@@ -960,11 +965,11 @@ main,
   top: 0;
   bottom: 0;
   width: 2px;
-  background: var(--plc, var(--accent-action));
-  box-shadow: none;
+  background: var(--plc, var(--c));
+  box-shadow: 0 0 8px var(--plc, var(--c));
 }
 .pulse-card:hover {
-  border-color: var(--knd-action-12);
+  border-color: rgba(0, 232, 255, 0.12);
   transform: translateX(3px);
 }
 .pulse-icon {
@@ -997,7 +1002,7 @@ main,
 
 /* Footer shell (see footer.php) */
 .knd-footer-shell {
-  border-top: 1px solid var(--knd-action-05);
+  border-top: 1px solid rgba(0, 232, 255, 0.05);
   background: rgba(1, 5, 8, 0.6);
   backdrop-filter: blur(12px);
 }

@@ -75,13 +75,13 @@ echo generateNavigation();
             <svg class="iris-hex-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <linearGradient id="iris-hex-fill" x1="40" y1="30" x2="170" y2="180" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#d6cfc7" stop-opacity="0.22" />
-                        <stop offset="0.55" stop-color="#22d3ee" stop-opacity="0.1" />
-                        <stop offset="1" stop-color="#d6cfc7" stop-opacity="0.08" />
+                        <stop stop-color="#7c5cff" stop-opacity="0.25" />
+                        <stop offset="0.55" stop-color="#00d4ff" stop-opacity="0.12" />
+                        <stop offset="1" stop-color="#7c5cff" stop-opacity="0.08" />
                     </linearGradient>
                     <linearGradient id="iris-hex-stroke" x1="30" y1="100" x2="170" y2="100" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#d6cfc7" />
-                        <stop offset="1" stop-color="#22d3ee" />
+                        <stop stop-color="#7c5cff" />
+                        <stop offset="1" stop-color="#00d4ff" />
                     </linearGradient>
                 </defs>
                 <g class="iris-hex-glow">

@@ -153,7 +153,7 @@ require_once BASE_PATH . '/includes/footer.php';
                     </p>
                 </div>
 
-                <div class="text-center mt-5 pt-4" style="border-top: 1px solid var(--border);">
+                <div class="text-center mt-5 pt-4" style="border-top: 1px solid rgba(138, 43, 226, 0.3);">
                     <p class="text-white mb-2">
                         <i class="fas fa-file-contract me-2"></i>
                         <strong>KND Store</strong> - Knowledge 'N Development

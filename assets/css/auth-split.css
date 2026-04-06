@@ -3,8 +3,20 @@
  * Stripe / Linear / Notion: neutral, trustworthy. No gradients, no glow.
  */
 
-/* Auth color tokens: knd-tokens.css (--knd-auth-*, --accent-*, etc.) */
 :root {
+  --knd-auth-bg: #0b0b0b;
+  --knd-auth-card: #ffffff;
+  --knd-auth-input-bg: #f3f3f1;
+  --knd-auth-border: #e5e5e5;
+  --knd-auth-text: #111111;
+  --knd-auth-text-muted: #6b6b6b;
+  --knd-auth-placeholder: #8a8a8a;
+  --knd-auth-beige: #d6cfc7;
+  --knd-auth-cyan: #22d3ee;
+  --knd-auth-cyan-ring: rgba(34, 211, 238, 0.22);
+  --knd-auth-btn-hover: #000000;
+  --knd-auth-error: #dc2626;
+  --knd-auth-error-bg: rgba(220, 38, 38, 0.06);
   --knd-auth-transition: 150ms ease;
   --knd-auth-font-ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --knd-auth-font-brand: "Orbitron", system-ui, sans-serif;
@@ -33,7 +45,7 @@ body.knd-auth-split-page .offcanvas-backdrop {
 body.knd-auth-split-page.auth-page.knd-saas-app {
   background: var(--knd-auth-bg) !important;
   min-height: 100vh;
-  color: var(--text-primary);
+  color: #ffffff;
   font-family: var(--knd-auth-font-ui) !important;
 }
 
@@ -63,7 +75,7 @@ body.knd-auth-split-page.auth-page.knd-saas-app .knd-access-form-panel {
   justify-content: center;
   padding: clamp(2rem, 5vw, 4rem);
   background: var(--knd-auth-bg);
-  border-right: 1px solid var(--border-on-dark);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
   position: relative;
 }
 
@@ -102,7 +114,7 @@ body.knd-auth-split-page.auth-page.knd-saas-app .knd-access-form-panel {
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--text-primary);
+  color: #ffffff;
   line-height: 1.2;
 }
 
@@ -110,7 +122,7 @@ body.knd-auth-split-page.auth-page.knd-saas-app .knd-access-form-panel {
   margin: 0 0 2rem;
   font-size: 1rem;
   line-height: 1.55;
-  color: var(--text-secondary);
+  color: #a1a1a1;
   font-weight: 400;
   max-width: 32ch;
   font-family: var(--knd-auth-font-ui);
@@ -118,7 +130,7 @@ body.knd-auth-split-page.auth-page.knd-saas-app .knd-access-form-panel {
 
 .knd-auth-split__back {
   font-size: 0.8125rem;
-  color: var(--text-placeholder);
+  color: #8a8a8a;
   text-decoration: none;
   font-weight: 500;
   transition: color var(--knd-auth-transition);
@@ -134,7 +146,7 @@ body.knd-auth-split-page.auth-page.knd-saas-app .knd-access-form-panel {
   align-items: center;
   justify-content: center;
   padding: clamp(1.5rem, 4vw, 3rem);
-  background: var(--bg-main);
+  background: #0b0b0b;
 }
 
 .knd-auth-split__card {
@@ -143,7 +155,7 @@ body.knd-auth-split-page.auth-page.knd-saas-app .knd-access-form-panel {
   background: var(--knd-auth-card);
   border: 1px solid var(--knd-auth-border);
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
   padding: clamp(1.75rem, 4vw, 2.5rem);
   /* html has data-bs-theme="dark" — without this, native inputs use light text on our white card */
   color-scheme: light;
@@ -259,9 +271,9 @@ body.knd-auth-split-page #panel-register .knd-access-form-heading p {
   border-radius: 8px;
   background: var(--knd-auth-input-bg);
   /* Force dark text — overrides legacy auth.css / autofill (password must stay readable) */
-  color: var(--text-dark);
-  -webkit-text-fill-color: var(--text-dark);
-  caret-color: var(--text-dark);
+  color: #111111;
+  -webkit-text-fill-color: #111111;
+  caret-color: #111111;
   font-family: var(--knd-auth-font-ui);
   transition: border-color var(--knd-auth-transition), box-shadow var(--knd-auth-transition);
 }
@@ -273,8 +285,8 @@ body.knd-auth-split-page .knd-auth-split input.knd-access-input:-webkit-autofill
 body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:hover,
 body.knd-auth-split-page .knd-auth-split input.knd-access-input:-webkit-autofill:focus,
 body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:focus {
-  -webkit-text-fill-color: var(--text-dark) !important;
-  caret-color: var(--text-dark);
+  -webkit-text-fill-color: #111111 !important;
+  caret-color: #111111;
   box-shadow: 0 0 0 1000px var(--knd-auth-input-bg) inset !important;
   transition: background-color 99999s ease-out 0s;
 }
@@ -288,7 +300,7 @@ body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:f
 
 .knd-auth-split .knd-access-input:hover,
 .knd-auth-input:hover {
-  border-color: color-mix(in srgb, var(--border-subtle) 85%, var(--text-dark));
+  border-color: #d0d0d0;
 }
 
 .knd-auth-split .knd-access-input:focus,
@@ -301,7 +313,7 @@ body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:f
 .knd-auth-split .knd-access-input.knd-auth-input--error,
 .knd-auth-input.knd-auth-input--error {
   border-color: var(--knd-auth-error);
-  box-shadow: 0 0 0 3px var(--knd-error-ring);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
 }
 
 .knd-auth-split .knd-access-input-icon {
@@ -391,14 +403,14 @@ body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:f
 
 .knd-auth-split .knd-access-btn-primary,
 .knd-auth-btn--primary {
-  background: var(--accent-primary);
-  color: var(--text-dark);
+  background: var(--knd-auth-text);
+  color: #ffffff;
   margin-bottom: 1rem;
 }
 
 .knd-auth-split .knd-access-btn-primary:hover,
 .knd-auth-btn--primary:hover {
-  background: color-mix(in srgb, var(--accent-primary) 88%, var(--text-dark));
+  background: var(--knd-auth-btn-hover);
 }
 
 .knd-auth-split .knd-access-btn-primary:active,
@@ -474,14 +486,14 @@ body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:f
 .knd-auth-split .knd-access-alert.show.error {
   background: var(--knd-auth-error-bg);
   color: var(--knd-auth-error);
-  border: 1px solid var(--knd-error-border);
+  border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
 .knd-auth-split .knd-access-alert.success,
 .knd-auth-split .knd-access-alert.show.success {
-  background: var(--knd-success-bg);
-  color: var(--knd-success);
-  border: 1px solid var(--knd-success-border);
+  background: rgba(22, 163, 74, 0.08);
+  color: #15803d;
+  border: 1px solid rgba(22, 163, 74, 0.2);
 }
 
 .knd-auth-split .knd-access-aux-panel {
@@ -496,9 +508,9 @@ body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:f
 .knd-auth-split .knd-access-aux-panel .knd-access-input {
   background: var(--knd-auth-input-bg);
   border-color: var(--knd-auth-border);
-  color: var(--text-dark);
-  -webkit-text-fill-color: var(--text-dark);
-  caret-color: var(--text-dark);
+  color: #111111;
+  -webkit-text-fill-color: #111111;
+  caret-color: #111111;
 }
 
 /* Password strength — restrained */
@@ -511,11 +523,11 @@ body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:f
 }
 
 .knd-auth-split .knd-access-pwd-str-seg.medium {
-  background: var(--knd-warning);
+  background: #ca8a04;
 }
 
 .knd-auth-split .knd-access-pwd-str-seg.strong {
-  background: var(--knd-success);
+  background: #15803d;
 }
 
 /* Code digits */
@@ -639,7 +651,7 @@ body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-auth-panels #pane
 
   .knd-auth-split__brand {
     border-right: none;
-    border-bottom: 1px solid var(--border-on-dark);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     padding: 2rem 1.5rem 1.5rem;
     justify-content: flex-start;
   }

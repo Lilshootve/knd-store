@@ -3,10 +3,10 @@
  * Overrides futuristic iris.css for Stripe/Linear-style shell only.
  */
 .iris-page.iris-page--saas {
-  --iris-bg: var(--bg-surface);
-  --iris-text: var(--text-primary);
-  --iris-text-muted: var(--text-secondary);
-  --iris-border: var(--border);
+  --iris-bg: #111111;
+  --iris-text: #ffffff;
+  --iris-text-muted: #a1a1a1;
+  --iris-border: #1f1f1f;
 
   flex: 1;
   display: flex;
@@ -30,7 +30,7 @@
   right: 0.75rem;
   z-index: 5;
   border: 1px solid var(--iris-border);
-  background: var(--knd-white-04);
+  background: rgba(255, 255, 255, 0.04);
   color: var(--iris-text-muted);
   border-radius: 8px;
   box-shadow: none !important;
@@ -38,8 +38,8 @@
 }
 
 .iris-page.iris-page--saas .iris-menu-btn:hover {
-  color: var(--accent-primary);
-  background: var(--knd-accent-10);
+  color: #d6cfc7;
+  background: rgba(214, 207, 199, 0.1);
 }
 
 .iris-page.iris-page--saas .iris-container {
@@ -75,7 +75,7 @@
   border: 1px solid var(--iris-border);
   border-radius: 8px;
   padding: 0.75rem;
-  background: var(--bg-main);
+  background: #0b0b0b;
   margin-bottom: 0.75rem;
   text-align: left;
 }
@@ -115,7 +115,7 @@
 }
 
 .iris-page.iris-page--saas .iris-input::placeholder {
-  color: var(--text-muted);
+  color: #6b6b6b;
 }
 
 .iris-page.iris-page--saas .knd-iris-send {
@@ -125,15 +125,15 @@
   font-weight: 500;
   font-family: inherit;
   border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--knd-action-12);
-  color: var(--accent-action);
+  border: 1px solid #1f1f1f;
+  background: rgba(34, 211, 238, 0.12);
+  color: #22d3ee;
   cursor: pointer;
   transition: background 0.12s ease;
 }
 
 .iris-page.iris-page--saas .knd-iris-send:hover {
-  background: var(--knd-action-18);
+  background: rgba(34, 211, 238, 0.18);
 }
 
 .iris-page.iris-page--saas .iris-mem-btn {
@@ -146,17 +146,17 @@
 }
 
 .iris-page.iris-page--saas .iris-sidebar {
-  background: var(--bg-surface);
+  background: #111111;
   border-right: 1px solid var(--iris-border);
   box-shadow: none !important;
 }
 
 .iris-page.iris-page--saas .iris-sidebar-backdrop {
-  background: var(--knd-overlay-scrim-soft);
+  background: rgba(0, 0, 0, 0.45);
 }
 
 .iris-page.iris-page--saas .iris-mem-panel {
-  background: var(--bg-surface);
+  background: #111111;
   border: 1px solid var(--iris-border);
   box-shadow: none !important;
 }
@@ -174,7 +174,7 @@
   padding: 0.35rem 0.65rem;
   border-radius: 6px;
   border: 1px solid var(--iris-border);
-  background: var(--bg-main);
+  background: #0b0b0b;
   color: var(--iris-text-muted);
   cursor: pointer;
   font-family: inherit;
@@ -182,8 +182,8 @@
 }
 
 .knd-iris-chip:hover {
-  background: var(--knd-accent-08);
-  color: var(--accent-primary);
+  background: rgba(214, 207, 199, 0.08);
+  color: #d6cfc7;
 }
 
 .iris-page.iris-page--saas .iris-chat-msg {
@@ -197,7 +197,7 @@
   padding: 0.5rem 0.75rem;
   border-radius: 8px;
   border: 1px solid var(--iris-border);
-  background: var(--bg-elevated);
+  background: #141414;
   color: var(--iris-text);
   font-size: 0.875rem;
   line-height: 1.45;
@@ -205,12 +205,12 @@
 }
 
 .iris-page.iris-page--saas .iris-chat-msg--user .iris-chat-msg__bubble {
-  background: var(--knd-action-08);
-  border-color: var(--knd-action-25);
+  background: rgba(34, 211, 238, 0.08);
+  border-color: rgba(34, 211, 238, 0.25);
 }
 
 .iris-page.iris-page--saas .iris-confirm-msg {
-  background: var(--knd-white-04);
+  background: rgba(255, 255, 255, 0.04);
   border-color: var(--iris-border);
   box-shadow: none !important;
 }

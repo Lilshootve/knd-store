@@ -64,7 +64,6 @@ if ($embed) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/knd-tokens.css?v=<?php echo file_exists(__DIR__ . '/assets/css/knd-tokens.css') ? (int) filemtime(__DIR__ . '/assets/css/knd-tokens.css') : 0; ?>">
     <link rel="stylesheet" href="/assets/css/auth.css?v=<?php echo $authCssV; ?>">
     <link rel="stylesheet" href="/assets/css/saas.css?v=<?php echo $saasCssV; ?>">
     <link rel="stylesheet" href="/assets/css/auth-split.css?v=<?php echo $authSplitCssV; ?>">
@@ -83,7 +82,6 @@ if ($embed) {
     $ogHead  .= '    <link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
     $ogHead  .= '    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
     $ogHead  .= '    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@500;600&display=swap" rel="stylesheet">' . "\n";
-    $ogHead  .= '    <link rel="stylesheet" href="/assets/css/knd-tokens.css?v=' . (file_exists(__DIR__ . '/assets/css/knd-tokens.css') ? (int) filemtime(__DIR__ . '/assets/css/knd-tokens.css') : 0) . '">' . "\n";
     $ogHead  .= '    <link rel="stylesheet" href="/assets/css/auth.css?v=' . $authCssV . '">' . "\n";
     $ogHead  .= '    <link rel="stylesheet" href="/assets/css/saas.css?v=' . $saasCssV . '">' . "\n";
     $ogHead  .= '    <link rel="stylesheet" href="/assets/css/auth-split.css?v=' . $authSplitCssV . '">' . "\n";

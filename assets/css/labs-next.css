@@ -22,7 +22,7 @@ html, body {
 }
 body.knd-labs-next {
   min-height: 100vh;
-  background: var(--bg-main);
+  background: #05070f;
 }
 
 /* Global background on .ln-app (primary Labs container) – full shell: sidebar, editor, recent */
@@ -55,18 +55,18 @@ body.knd-labs-next .ln-tool-content-wrap {
 
 /* ---- Variables ---- */
 .ln-app {
-  --ln-bg: var(--bg-main);
-  --ln-surface-1: var(--bg-surface);
-  --ln-surface-2: var(--bg-elevated);
-  --ln-border: var(--knd-white-06);
-  --ln-accent: var(--accent-primary);
-  --ln-accent-hover: color-mix(in srgb, var(--accent-primary) 88%, var(--text-dark));
-  --ln-accent-glow: var(--knd-accent-12);
-  --ln-accent-subtle: var(--knd-accent-08);
-  --ln-secondary: var(--accent-action);
-  --ln-text: var(--text-primary);
-  --ln-text-muted: var(--text-secondary);
-  --ln-text-dim: color-mix(in srgb, var(--text-secondary) 70%, transparent);
+  --ln-bg: #05070f;
+  --ln-surface-1: #0b1020;
+  --ln-surface-2: #11162a;
+  --ln-border: rgba(255, 255, 255, 0.06);
+  --ln-accent: #7c5cff;
+  --ln-accent-hover: #8d6dff;
+  --ln-accent-glow: rgba(124, 92, 255, 0.35);
+  --ln-accent-subtle: rgba(124, 92, 255, 0.12);
+  --ln-secondary: #4da3ff;
+  --ln-text: rgba(255, 255, 255, 0.92);
+  --ln-text-muted: rgba(255, 255, 255, 0.60);
+  --ln-text-dim: rgba(255, 255, 255, 0.40);
   --ln-sidebar-w: 260px;
   --ln-recent-h: 160px;
   --ln-radius: 12px;
@@ -221,16 +221,16 @@ body.knd-labs-next .ln-app {
 
 .ln-tool-active,
 .ln-tool[aria-current="true"] {
-  background: rgba(214, 207, 199, 0.15);
+  background: rgba(124, 92, 255, 0.15);
   color: var(--ln-accent);
-  box-shadow: 0 0 0 1px rgba(214, 207, 199, 0.25);
+  box-shadow: 0 0 0 1px rgba(124, 92, 255, 0.25);
 }
 
 .ln-tool-active:hover,
 .ln-tool[aria-current="true"]:hover {
-  background: rgba(214, 207, 199, 0.2);
+  background: rgba(124, 92, 255, 0.2);
   color: var(--ln-accent-hover);
-  box-shadow: 0 0 0 1px rgba(214, 207, 199, 0.3);
+  box-shadow: 0 0 0 1px rgba(124, 92, 255, 0.3);
 }
 
 /* Texture Lab mode chips */
@@ -238,7 +238,7 @@ body.knd-labs-next .ln-app {
 .texture-mode-chip.is-active {
   background: var(--ln-accent-subtle);
   color: var(--ln-accent);
-  border-color: rgba(214, 207, 199, 0.3);
+  border-color: rgba(124, 92, 255, 0.3);
 }
 
 .ln-sidebar-sep {
@@ -396,7 +396,7 @@ body.knd-labs-next .ln-app {
   margin-top: -20%;
   background:
     radial-gradient(ellipse 80% 60% at 50% 40%, rgba(77, 163, 255, 0.08) 0%, transparent 55%),
-    radial-gradient(ellipse 70% 70% at 50% 50%, rgba(214, 207, 199, 0.1) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 70% at 50% 50%, rgba(124, 92, 255, 0.1) 0%, transparent 60%),
     radial-gradient(circle at 30% 60%, rgba(34, 211, 238, 0.06) 0%, transparent 45%);
   filter: blur(80px);
   z-index: -1;
@@ -413,7 +413,7 @@ body.knd-labs-next .ln-app {
   top: 50%;
   margin-left: -280px;
   margin-top: -280px;
-  background: radial-gradient(circle, rgba(214, 207, 199, 0.12), transparent 58%);
+  background: radial-gradient(circle, rgba(124, 92, 255, 0.12), transparent 58%);
   filter: blur(100px);
   z-index: -1;
   pointer-events: none;
@@ -472,8 +472,8 @@ body.knd-labs-next .ln-app {
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 .ln-composer-wrap:focus-within {
-  border-color: var(--accent-action);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  border-color: rgba(124, 92, 255, 0.5);
+  box-shadow: 0 0 28px rgba(124, 92, 255, 0.2), 0 16px 48px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .ln-composer {
@@ -541,7 +541,7 @@ body.knd-labs-next .ln-app {
 .ln-pill.ln-pill-active {
   background: var(--ln-accent-subtle);
   color: var(--ln-accent);
-  border-color: rgba(214, 207, 199, 0.3);
+  border-color: rgba(124, 92, 255, 0.3);
 }
 
 /* Main CTAs – premium, prominent */
@@ -552,19 +552,18 @@ body.knd-labs-next .ln-app {
   padding: 0.7rem 1.5rem;
   border-radius: var(--ln-radius-sm);
   border: none;
-  background: var(--accent-primary);
-  color: var(--text-dark);
+  background: linear-gradient(135deg, #7c5cff 0%, #6b4ce6 45%, #4da3ff 100%);
+  color: #fff;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: none;
-  transition: transform 0.2s ease, filter 0.2s ease;
+  box-shadow: 0 4px 16px rgba(124, 92, 255, 0.4), 0 1px 0 rgba(255, 255, 255, 0.15) inset;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .ln-cta:hover {
-  transform: translateY(-1px);
-  filter: brightness(0.95);
-  box-shadow: none;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(124, 92, 255, 0.5), 0 2px 0 rgba(255, 255, 255, 0.2) inset;
 }
 
 .ln-cta:focus-visible {
@@ -574,7 +573,7 @@ body.knd-labs-next .ln-app {
 
 .ln-cta:active {
   transform: translateY(0);
-  box-shadow: none;
+  box-shadow: 0 2px 12px rgba(124, 92, 255, 0.35), 0 1px 0 rgba(255, 255, 255, 0.1) inset;
 }
 
 .ln-upload-zone {
@@ -595,7 +594,7 @@ body.knd-labs-next .ln-app {
 }
 
 .ln-upload-zone-placeholder:hover {
-  border-color: rgba(214, 207, 199, 0.3);
+  border-color: rgba(124, 92, 255, 0.3);
   background: var(--ln-accent-subtle);
 }
 
@@ -898,7 +897,7 @@ body.knd-labs-next .ln-app {
 }
 
 .ln-job-card[data-status="done"] .ln-job-card-status {
-  background: rgba(214, 207, 199, 0.2);
+  background: rgba(124, 92, 255, 0.2);
   color: var(--ln-accent);
   transform: translateY(-1px);
 }
@@ -1022,8 +1021,8 @@ body.knd-labs-next .ln-t2i-params-col {
 }
 
 .ln-t2i-prompt-block:focus-within {
-  border-color: var(--accent-action);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  border-color: rgba(124, 92, 255, 0.5);
+  box-shadow: 0 0 24px rgba(124, 92, 255, 0.2), 0 20px 60px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .ln-t2i-label {
@@ -1158,17 +1157,16 @@ body.knd-labs-next .ln-t2i-params-col {
   font-weight: 600;
   border: none;
   border-radius: var(--ln-radius-sm);
-  background: var(--accent-primary);
-  color: var(--text-dark);
-  box-shadow: none;
+  background: linear-gradient(135deg, #7c5cff 0%, #6b4ce6 40%, #4da3ff 100%);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(124, 92, 255, 0.45), 0 1px 0 rgba(255, 255, 255, 0.15) inset;
   cursor: pointer;
-  transition: transform 0.2s ease, filter 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .ln-t2i-cta:hover {
-  transform: translateY(-1px);
-  filter: brightness(0.95);
-  box-shadow: none;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(124, 92, 255, 0.5), 0 2px 0 rgba(255, 255, 255, 0.2) inset;
 }
 
 .ln-t2i-cta:focus-visible {
@@ -1178,7 +1176,7 @@ body.knd-labs-next .ln-t2i-params-col {
 
 .ln-t2i-cta:active {
   transform: translateY(0);
-  box-shadow: none;
+  box-shadow: 0 2px 16px rgba(124, 92, 255, 0.4), 0 1px 0 rgba(255, 255, 255, 0.1) inset;
 }
 
 .ln-t2i-cta:disabled {
@@ -1473,7 +1471,7 @@ body.knd-labs-next .knd-details-drawer__body {
   pointer-events: none;
   background:
     radial-gradient(60% 50% at 15% 20%, rgba(77, 163, 255, 0.08), transparent 65%),
-    radial-gradient(55% 45% at 80% 70%, rgba(214, 207, 199, 0.08), transparent 70%);
+    radial-gradient(55% 45% at 80% 70%, rgba(124, 92, 255, 0.08), transparent 70%);
   opacity: 0.9;
   animation: ln-atmosphere-float 9s ease-in-out infinite alternate;
 }

@@ -22,7 +22,7 @@ $safeRef = htmlspecialchars($ref);
                 <p class="text-muted mb-4">Your order has been received and payment was successful.</p>
 
                 <?php if ($ref): ?>
-                <div class="checkout-info-box mb-4 p-3 text-start" style="background: var(--knd-action-08); border: 1px solid var(--knd-action-15); border-radius: 10px;">
+                <div class="checkout-info-box mb-4 p-3 text-start" style="background: rgba(0,212,255,.06); border: 1px solid rgba(0,212,255,.15); border-radius: 10px;">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <small class="text-muted d-block mb-1">Order ID</small>
@@ -37,10 +37,10 @@ $safeRef = htmlspecialchars($ref);
                 <a href="/track-order.php?id=<?php echo urlencode($ref); ?>" class="btn btn-neon-primary w-100 mb-3" style="padding: .85rem 1.5rem; font-weight: 600; font-size: 1rem;">
                     <i class="fas fa-magnifying-glass me-2"></i>Track Order Status
                 </a>
-                <p class="small text-muted mb-0">You can track your order anytime at <a href="/track-order.php" style="color: var(--accent-action);">/track-order</a></p>
+                <p class="small text-muted mb-0">You can track your order anytime at <a href="/track-order.php" style="color: var(--knd-accent-cyan, #00d4ff);">/track-order</a></p>
                 <?php else: ?>
-                <div class="checkout-info-box mb-4 p-3" style="background: color-mix(in srgb, var(--knd-warning) 12%, transparent); border: 1px solid color-mix(in srgb, var(--knd-warning) 28%, transparent); border-radius: 10px;">
-                    <p class="mb-0"><i class="fas fa-info-circle me-2" style="color: var(--knd-warning);"></i>If you didn't receive an Order ID, please <a href="/contact.php" style="color: var(--accent-action);">contact support</a>.</p>
+                <div class="checkout-info-box mb-4 p-3" style="background: rgba(243,156,18,.08); border: 1px solid rgba(243,156,18,.2); border-radius: 10px;">
+                    <p class="mb-0"><i class="fas fa-info-circle me-2" style="color: #f39c12;"></i>If you didn't receive an Order ID, please <a href="/contact.php" style="color: var(--knd-accent-cyan, #00d4ff);">contact support</a>.</p>
                 </div>
                 <?php endif; ?>
 
