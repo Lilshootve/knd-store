@@ -36,6 +36,9 @@
   var apiUrl     = container.getAttribute("data-iris-api") || "";
   var convApiUrl = container.getAttribute("data-iris-conv-api") || "";
   var memApiUrl  = container.getAttribute("data-iris-mem-api") || "";
+  var agentUidRaw = container.getAttribute("data-agent-user-id") || "";
+  var agentUserId = parseInt(agentUidRaw, 10);
+  if (isNaN(agentUserId) || agentUserId <= 0) agentUserId = null;
 
   var state           = "idle";
   var idleTimer       = null;
@@ -218,12 +221,12 @@
       var res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: JSON.stringify(Object.assign({
           message: "(confirmed)",
           confirm: true,
           confirm_id: confirmId,
           conversation_id: conversationId,
-        }),
+        }, agentUserId !== null ? { user_id: agentUserId } : {})),
         mode: "cors",
         credentials: creds(apiUrl),
       });
@@ -318,11 +321,11 @@
       var res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: JSON.stringify(Object.assign({
           message: prompt,
           context: { includeLastRun: true },
           conversation_id: conversationId,
-        }),
+        }, agentUserId !== null ? { user_id: agentUserId } : {})),
         mode: "cors",
         credentials: creds(apiUrl),
       });

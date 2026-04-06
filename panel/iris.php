@@ -10,6 +10,9 @@ require_once $kndRoot . '/includes/config.php';
 require_once $kndRoot . '/admin/_guard.php';
 admin_require_login();
 require_once $kndRoot . '/includes/auth.php';
+
+$irisStoreUserId = current_user_id();
+
 require_once $kndRoot . '/includes/header.php';
 require_once $kndRoot . '/includes/footer.php';
 
@@ -32,6 +35,9 @@ $desc  = t('iris.meta.description', 'KND Agents interface — Iris.');
 $apiAttr     = htmlspecialchars($irisApiUrl,  ENT_QUOTES, 'UTF-8');
 $convApiAttr = htmlspecialchars($irisConvApi, ENT_QUOTES, 'UTF-8');
 $memApiAttr  = htmlspecialchars($irisMemApi,  ENT_QUOTES, 'UTF-8');
+$agentUidAttr = $irisStoreUserId !== null && $irisStoreUserId > 0
+    ? htmlspecialchars((string) $irisStoreUserId, ENT_QUOTES, 'UTF-8')
+    : '';
 
 echo generateHeader($title, $desc, $extraHead, true);
 echo generateNavigation();
@@ -62,7 +68,8 @@ echo generateNavigation();
     <div class="iris-container" id="iris-container"
         data-iris-api="<?php echo $apiAttr; ?>"
         data-iris-conv-api="<?php echo $convApiAttr; ?>"
-        data-iris-mem-api="<?php echo $memApiAttr; ?>">
+        data-iris-mem-api="<?php echo $memApiAttr; ?>"
+        data-agent-user-id="<?php echo $agentUidAttr; ?>">
 
         <div class="iris-core idle" id="iris-core" aria-hidden="true">
             <svg class="iris-hex-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">

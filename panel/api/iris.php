@@ -62,8 +62,18 @@ $clientConvId = isset($body['conversation_id']) && is_int($body['conversation_id
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
-$userId    = current_user_id();   // int|null — uses $_SESSION['dr_user_id']
+$userId     = current_user_id();   // int|null — uses $_SESSION['dr_user_id']
 $isLoggedIn = $userId !== null;
+
+// Panel Iris sits behind admin_users login; many admins have no dr_user_id. Allow an
+// explicit JSON user_id for retail/agent calls (same-origin + admin session only).
+if (!$isLoggedIn && !empty($_SESSION['admin_logged_in']) && isset($body['user_id'])) {
+    $candidate = filter_var($body['user_id'], FILTER_VALIDATE_INT);
+    if (is_int($candidate) && $candidate > 0) {
+        $userId     = $candidate;
+        $isLoggedIn = true;
+    }
+}
 
 $irisMode  = !empty($_SESSION['admin_logged_in']) ? 'admin' : 'public';
 
@@ -224,12 +234,21 @@ if ($confirmMode && $isLoggedIn && $clientConvId !== null) {
 // ── Retail business context (optional enrichment) ─────────────────────────────
 
 $retailBiz = null;
-if ($isLoggedIn && !empty($pdo) && $userId !== null) {
+if ($isLoggedIn && $userId !== null) {
     try {
-        $retailAuthFile = BASE_PATH . '/core/retail/auth.php';
-        if (file_exists($retailAuthFile)) {
-            require_once $retailAuthFile;
-            $retailBiz = retail_resolve_business_for_gateway($pdo, $userId);
+        $pdoRetail = (isset($pdo) && $pdo instanceof PDO) ? $pdo : getDBConnection();
+        if ($pdoRetail) {
+            $retailAuthFile = BASE_PATH . '/core/retail/auth.php';
+            if (is_file($retailAuthFile)) {
+                require_once $retailAuthFile;
+                if (retail_resolve_business_for_gateway($pdoRetail, $userId)) {
+                    $rb              = retail_business();
+                    $retailBiz       = [
+                        'id'            => retail_business_id(),
+                        'base_currency' => isset($rb['base_currency']) ? (string) $rb['base_currency'] : '',
+                    ];
+                }
+            }
         }
     } catch (Throwable $e) {
         iris_log('retail business resolve failed: ' . $e->getMessage());
@@ -245,9 +264,11 @@ $nextPayload = [
     'iris_mode'            => $irisMode,
     'user_id'              => $userId !== null ? (string)$userId : null,
     'user_memory'          => empty($userMemory) ? null : $userMemory,
-    'business_type'        => $retailBiz ? 'retail' : null,
-    'business_id'          => $retailBiz ? (int)($retailBiz['id'] ?? 0) : null,
-    'business_currency'    => $retailBiz ? ($retailBiz['base_currency'] ?? null) : null,
+    'business_type'        => $retailBiz !== null ? 'retail' : null,
+    'business_id'          => $retailBiz !== null ? (int) $retailBiz['id'] : null,
+    'business_currency'    => ($retailBiz !== null && $retailBiz['base_currency'] !== '')
+        ? $retailBiz['base_currency']
+        : null,
 ];
 
 if ($confirmMode && $confirmId !== null) {
