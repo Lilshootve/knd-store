@@ -61,8 +61,11 @@ function validate_retail_tool_call(string $tool, array $input): array
             break;
 
         case 'register_credit_payment':
-            if (empty($input['customer_id']) && empty($input['customer_document'])) {
-                $issues[] = 'Se requiere customer_id o customer_document.';
+            $hasCustomer = !empty($input['customer_id'])
+                || (!empty($input['customer_document']) && is_string($input['customer_document']) && trim($input['customer_document']) !== '')
+                || (!empty($input['customer_name']) && is_string($input['customer_name']) && trim($input['customer_name']) !== '');
+            if (!$hasCustomer) {
+                $issues[] = 'Se requiere customer_id, customer_document o customer_name.';
             }
             if (!isset($input['amount']) || !is_numeric($input['amount']) || (float) $input['amount'] <= 0) {
                 $issues[] = 'amount debe ser un número positivo.';

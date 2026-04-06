@@ -33,6 +33,7 @@ $debtorCount = (int) ($totRows[0]['c'] ?? 0);
 
 $transactions = [];
 $selectedCustomer = null;
+$selectedCreditBalance = null;
 if ($custId) {
     $custRows = knd_retail_admin_db_rows(
         'SELECT * FROM retail_customers WHERE id = ? AND business_id = ? LIMIT 1',
@@ -41,6 +42,12 @@ if ($custId) {
     $selectedCustomer = $custRows[0] ?? null;
 
     if ($selectedCustomer) {
+        $balRows = knd_retail_admin_db_rows(
+            'SELECT balance FROM retail_credits WHERE business_id = ? AND customer_id = ? LIMIT 1',
+            [$RETAIL_BIZ_ID, $custId]
+        );
+        $selectedCreditBalance = isset($balRows[0]['balance']) ? (float) $balRows[0]['balance'] : null;
+
         $transactions = knd_retail_admin_db_rows(
             'SELECT ct.*, s.invoice_number
              FROM retail_credit_transactions ct
@@ -94,6 +101,30 @@ retail_header('Créditos de Clientes', 'credits');
   <?php if ($custId && $selectedCustomer): ?>
   <div class="card">
     <div class="card-title">Historial — <?= htmlspecialchars((string) $selectedCustomer['name']) ?></div>
+    <?php
+    $canPay = $selectedCreditBalance !== null && $selectedCreditBalance > 0;
+    ?>
+    <?php if ($canPay): ?>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">
+      Saldo deudor: <strong style="color:var(--yellow)"><?= retail_fmt($selectedCreditBalance, $currency) ?></strong>
+      · Los pagos se registran vía <code>api/agent/execute.php</code> (herramienta <code>register_credit_payment</code>).
+    </p>
+    <form class="knd-credit-pay-form" style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:18px;padding:14px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid var(--border);" onsubmit="return kndSubmitCreditPayment(event, <?= (int) $custId ?>)">
+      <div>
+        <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px;">Monto pagado</label>
+        <input type="number" name="amount" step="0.01" min="0.01" required placeholder="0.00"
+               style="width:120px;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:6px;font-size:13px;">
+      </div>
+      <div>
+        <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px;">Moneda cobrada</label>
+        <input type="text" name="currency" maxlength="10" value="<?= htmlspecialchars(strtoupper((string) ($RETAIL_BIZ['base_currency'] ?? 'USD'))) ?>"
+               style="width:72px;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:6px;font-size:13px;text-transform:uppercase;">
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-top:18px;">Registrar pago</button>
+    </form>
+    <?php elseif ($selectedCreditBalance !== null && $selectedCreditBalance <= 0): ?>
+    <p style="font-size:13px;color:var(--green);margin-bottom:14px;">Sin saldo deudor pendiente.</p>
+    <?php endif; ?>
     <table>
       <thead><tr><th>Tipo</th><th>Monto</th><th>Factura</th><th>Fecha</th></tr></thead>
       <tbody>
@@ -116,5 +147,46 @@ retail_header('Créditos de Clientes', 'credits');
   <?php endif; ?>
 
 </div>
+
+<script>
+async function kndSubmitCreditPayment(ev, customerId) {
+  ev.preventDefault();
+  const form = ev.target;
+  const amount = parseFloat(form.amount.value, 10);
+  const currency = (form.currency.value || '').trim().toUpperCase();
+  if (!Number.isFinite(amount) || amount <= 0) {
+    alert('Indique un monto válido mayor que cero.');
+    return false;
+  }
+  if (!currency || currency.length < 2) {
+    alert('Indique una moneda válida (ej. USD, VES).');
+    return false;
+  }
+  if (!confirm('¿Registrar este pago en el sistema?')) return false;
+  const input = { customer_id: customerId, amount: amount, currency: currency };
+  try {
+    let r = await kndRetailAdminAgent({ tool: 'register_credit_payment', input: input });
+    if (r.status === 'blocked' && r.error && String(r.error).indexOf('REQUIRES_CONFIRMATION') !== -1) {
+      const hint = r.message || r.error || 'Esta operación requiere confirmación del servidor.';
+      if (!confirm(hint + '\n\n¿Ejecutar ahora?')) return false;
+      if (!r.confirm_id) {
+        alert('No se recibió confirm_id. Intente de nuevo.');
+        return false;
+      }
+      r = await kndRetailAdminAgent({ tool: 'register_credit_payment', input: input, confirm_id: r.confirm_id });
+    }
+    if (r.status !== 'success') {
+      alert(r.error || 'No se pudo registrar el pago.');
+      return false;
+    }
+    const msg = (r.data && r.data.message) ? r.data.message : 'Pago registrado.';
+    alert(msg);
+    location.reload();
+  } catch (e) {
+    alert(e.message || String(e));
+  }
+  return false;
+}
+</script>
 
 <?php retail_footer(); ?>

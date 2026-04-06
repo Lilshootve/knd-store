@@ -11,7 +11,7 @@ defined('KND_ROOT') or define('KND_ROOT', BASE_PATH);
 require_once BASE_PATH . '/core/retail/auth.php';
 require_once BASE_PATH . '/core/retail/tools/create_sale.php';
 require_once BASE_PATH . '/core/retail/tools/create_credit_sale.php';
-require_once BASE_PATH . '/core/retail/tools/register_credit_payment.php';
+require_once __DIR__ . '/tools/register_credit_payment.php';
 require_once BASE_PATH . '/core/retail/tools/get_product.php';
 require_once BASE_PATH . '/core/retail/tools/search_product.php';
 require_once BASE_PATH . '/core/retail/tools/get_inventory_low.php';

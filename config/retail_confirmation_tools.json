@@ -1,0 +1,10 @@
+{
+  "tools": [
+    "create_sale",
+    "create_credit_sale",
+    "register_credit_payment",
+    "create_customer_if_not_exists",
+    "adjust_stock",
+    "update_exchange_rate"
+  ]
+}

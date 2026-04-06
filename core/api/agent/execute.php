@@ -184,6 +184,7 @@ if (!$validation['safe']) {
 // ── Retail: role + confirmation (parity with former api/retail/execute.php) ───
 if ($businessType === 'retail' && $isModuleTool) {
     require_once BASE_PATH . '/core/retail/auth.php';
+    require_once BASE_PATH . '/core/retail/confirmation_tools.php';
     $adminOnlyTools = ['adjust_stock', 'update_exchange_rate'];
     if (in_array($tool, $adminOnlyTools, true) && !retail_is_admin()) {
         agent_log_entry($tool, $input, null, 'blocked', $iris_mode, $req_user_id, $req_confirm_id, $req_memory_used);
@@ -198,7 +199,7 @@ if ($businessType === 'retail' && $isModuleTool) {
         );
     }
 
-    $confirmationTools = ['adjust_stock', 'update_exchange_rate', 'create_credit_sale'];
+    $confirmationTools = knd_retail_confirmation_tools();
     $requiresConfirm   = in_array($tool, $confirmationTools, true) && retail_is_admin();
 
     if ($requiresConfirm && !$simulate) {
@@ -228,7 +229,11 @@ if ($businessType === 'retail' && $isModuleTool) {
             );
         }
 
-        $irisConfirmOk = $iris_mode === 'admin' && strlen($req_confirm_id) >= 32;
+        // Panel second leg: confirm_id is HMAC-SHA256 hex (64 chars). Iris second leg: Prisma cuid
+        // (~25 chars) or randomUUID() fallback (36). Require minimum entropy so short guesses fail.
+        $irisConfirmOk = $iris_mode === 'admin'
+            && strlen($req_confirm_id) >= 24
+            && strlen($req_confirm_id) <= 256;
         if (!hash_equals($expectedConfirm, $req_confirm_id) && !$irisConfirmOk) {
             agent_log_entry($tool, $input, null, 'blocked', $iris_mode, $req_user_id, $req_confirm_id, $req_memory_used);
             agent_respond(
