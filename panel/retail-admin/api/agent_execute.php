@@ -27,7 +27,34 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-csrf_guard();
+$csrfBypass = false;
+
+if (trim((string) (knd_env('KND_DISABLE_CSRF') ?? '')) === '1') {
+    $csrfBypass = true;
+}
+
+if (!$csrfBypass) {
+    $expectedAgent = knd_agents_token();
+    if ($expectedAgent !== '') {
+        $authHeader = knd_request_authorization_header();
+        $provided = '';
+        if (str_starts_with($authHeader, 'Bearer ')) {
+            $provided = trim(substr($authHeader, 7));
+        }
+        if ($provided !== '' && hash_equals($expectedAgent, $provided)) {
+            $csrfBypass = true;
+        }
+    }
+}
+
+if ($csrfBypass) {
+    error_log('[agent_execute] CSRF bypass via token or env');
+}
+
+if (!$csrfBypass) {
+    csrf_guard();
+}
+
 api_require_login();
 
 $raw = file_get_contents('php://input');

@@ -402,6 +402,21 @@ if (!function_exists('knd_request_authorization_header')) {
         if (!empty($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
             return (string) $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
         }
+        // Rare: some reverse proxies / SAPIs expose the raw name without HTTP_ prefix.
+        if (!empty($_SERVER['Authorization'])) {
+            return (string) $_SERVER['Authorization'];
+        }
+        // PHP-FPM + Apache: header map often only available via getallheaders().
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
+            if (is_array($headers)) {
+                foreach ($headers as $name => $value) {
+                    if (strcasecmp((string) $name, 'Authorization') === 0) {
+                        return (string) $value;
+                    }
+                }
+            }
+        }
         if (function_exists('apache_request_headers')) {
             $headers = apache_request_headers();
             if (is_array($headers)) {

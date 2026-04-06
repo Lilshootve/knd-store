@@ -102,11 +102,17 @@
 </FilesMatch>
 
 # Redirección de HTTP a HTTPS
+# Authorization → PHP (CGI/FastCGI / suPHP on shared hosts often omit HTTP_AUTHORIZATION).
+# Works together with RewriteRule [E=HTTP_AUTHORIZATION:...] below.
+<IfModule mod_setenvif.c>
+    SetEnvIf Authorization "(.+)" HTTP_AUTHORIZATION=$1
+</IfModule>
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Pass Authorization to PHP (Apache/CGI often drops it; mod_rewrite internal redirects too).
-    # execute.php reads HTTP_AUTHORIZATION / REDIRECT_HTTP_AUTHORIZATION via knd_request_authorization_header().
+    # Pass Authorization to PHP (mod_rewrite internal redirects; complements SetEnvIf above).
+    # execute.php: knd_request_authorization_header().
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
     
