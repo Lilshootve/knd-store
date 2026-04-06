@@ -9,7 +9,7 @@ body.knd-labs-concept.knd-labs-next {
   --lc-glass: rgba(6, 24, 36, 0.78);
   --lc-c: #00e8ff;
   --lc-c-dim: rgba(0, 232, 255, 0.12);
-  --lc-m: #d44fff;
+  --lc-m: var(--accent-primary);
   --lc-gold: #ffcc00;
   --lc-green: #00ff99;
   --lc-red: #ff2255;

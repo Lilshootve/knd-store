@@ -27,6 +27,7 @@ $extraHead = $LOBBY_EXTRA_HEAD_HTML ?? '';
 <?php echo generateFaviconLinks(); ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/knd-tokens.css?v=<?php echo is_file(__DIR__ . '/../../assets/css/knd-tokens.css') ? (int) filemtime(__DIR__ . '/../../assets/css/knd-tokens.css') : 0; ?>">
 <link rel="stylesheet" href="/assets/css/levels.css?v=<?php echo (int) $levelsCssV; ?>">
 <link rel="stylesheet" href="/games/mind-wars/lobby.css?v=<?php echo (int) $cssV; ?>">
 <link rel="stylesheet" href="/games/mind-wars/mw-avatar-cards.css?v=<?php echo (int) $mwCardCssV; ?>">
@@ -112,7 +113,7 @@ if (is_file($cfxCss)) { ?>
             <div class="ms-badge" style="background:rgba(255,34,85,.1);border:1px solid rgba(255,34,85,.3);color:var(--red);font-family:var(--FD);font-size:8px;letter-spacing:1px;padding:2px 6px;border-radius:1px">RANKED</div>
           </div>
           <div class="ms-option" data-mode="pve">
-            <div class="ms-ico" style="color:#9b30ff">🤖</div>
+            <div class="ms-ico" style="color:var(--accent-primary)">🤖</div>
             <div class="ms-name">PvE</div>
             <div class="ms-desc">vs AI</div>
             <div class="ms-badge" style="background:rgba(0,255,153,.08);border:1px solid rgba(0,255,153,.25);color:var(--green);font-family:var(--FD);font-size:8px;letter-spacing:1px;padding:2px 6px;border-radius:1px">CASUAL</div>
@@ -135,7 +136,7 @@ if (is_file($cfxCss)) { ?>
             <div class="ms-badge" style="background:rgba(0,232,255,.08);border:1px solid rgba(0,232,255,.25);color:var(--c);font-family:var(--FD);font-size:8px;letter-spacing:1px;padding:2px 6px;border-radius:1px">DUEL</div>
           </div>
           <div class="ms-option" data-pve-format="3v3">
-            <div class="ms-ico" style="color:#9b30ff">👥</div>
+            <div class="ms-ico" style="color:var(--accent-primary)">👥</div>
             <div class="ms-name">3v3</div>
             <div class="ms-desc">Squad vs AI waves</div>
             <div class="ms-badge" style="background:rgba(155,48,255,.1);border:1px solid rgba(155,48,255,.28);color:var(--m);font-family:var(--FD);font-size:8px;letter-spacing:1px;padding:2px 6px;border-radius:1px">TEAM</div>

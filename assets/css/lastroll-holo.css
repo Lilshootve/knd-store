@@ -16,25 +16,25 @@
 
 /* ── ROOT TOKENS ── */
 :root {
-  --lr-void: #010508;
-  --lr-deep: #020c14;
-  --lr-surface: #04131c;
-  --lr-glass: rgba(6,24,36,.78);
-  --lr-c: #00e8ff;
-  --lr-c2: #00a8bb;
-  --lr-cg: rgba(0,232,255,.12);
-  --lr-cb: rgba(0,232,255,.22);
-  --lr-m: #9b30ff;
-  --lr-mg: rgba(155,48,255,.12);
-  --lr-gold: #ffcc00;
-  --lr-green: #00ff99;
-  --lr-red: #ff2255;
-  --lr-t1: rgba(220,248,255,.95);
-  --lr-t2: rgba(155,215,235,.62);
-  --lr-t3: rgba(90,165,190,.38);
-  --lr-FD: 'Orbitron', monospace;
-  --lr-FB: 'Rajdhani', sans-serif;
-  --lr-FM: 'Share Tech Mono', monospace;
+  --lr-void: var(--void);
+  --lr-deep: var(--deep);
+  --lr-surface: var(--surface);
+  --lr-glass: var(--glass);
+  --lr-c: var(--c);
+  --lr-c2: var(--c2);
+  --lr-cg: var(--cg);
+  --lr-cb: var(--cb);
+  --lr-m: var(--m);
+  --lr-mg: var(--mg);
+  --lr-gold: var(--gold);
+  --lr-green: var(--green);
+  --lr-red: var(--red);
+  --lr-t1: var(--t1);
+  --lr-t2: var(--t2);
+  --lr-t3: var(--t3);
+  --lr-FD: var(--FD);
+  --lr-FB: var(--FB);
+  --lr-FM: var(--FM);
 }
 
 /* ── PAGE RESET (only inside .lastroll-game) ── */

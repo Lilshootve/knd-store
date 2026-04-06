@@ -3,10 +3,10 @@
  * Overrides futuristic iris.css for Stripe/Linear-style shell only.
  */
 .iris-page.iris-page--saas {
-  --iris-bg: #111111;
-  --iris-text: #ffffff;
-  --iris-text-muted: #a1a1a1;
-  --iris-border: #1f1f1f;
+  --iris-bg: var(--bg-surface);
+  --iris-text: var(--text-primary);
+  --iris-text-muted: var(--text-secondary);
+  --iris-border: var(--border);
 
   flex: 1;
   display: flex;
@@ -30,7 +30,7 @@
   right: 0.75rem;
   z-index: 5;
   border: 1px solid var(--iris-border);
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--text-primary) 6%, transparent);
   color: var(--iris-text-muted);
   border-radius: 8px;
   box-shadow: none !important;
@@ -210,7 +210,7 @@
 }
 
 .iris-page.iris-page--saas .iris-confirm-msg {
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--text-primary) 6%, transparent);
   border-color: var(--iris-border);
   box-shadow: none !important;
 }

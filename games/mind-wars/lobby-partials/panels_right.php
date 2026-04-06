@@ -37,7 +37,7 @@ $online = (int) ($L['online_hint'] ?? 0);
           </div>
           <div class="mc-badge hot">RANKED</div>
         </div>
-        <div class="mode-card" style="--mc:#9b30ff;--mc-rgb:155,48,255" data-open-mm="pve">
+        <div class="mode-card" style="--mc:var(--accent-primary);--mc-rgb:214,207,199" data-open-mm="pve">
           <div class="mc-ico">🤖</div>
           <div class="mc-info">
             <div class="mc-mname">PvE</div>

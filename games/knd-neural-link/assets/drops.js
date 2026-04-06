@@ -8,7 +8,7 @@ const RARITY_COLORS = {
   common:    '#4a8a9a',
   rare:      '#1a6aee',
   special:   '#18aa6a',
-  epic:      '#9b30ff',
+  epic:      '#d6cfc7',
   legendary: '#ffcc00',
 };
 const RARITY_LABELS = {

@@ -1,17 +1,6 @@
-/* KND Store - Estilos Principales */
+@import url('/assets/css/knd-tokens.css');
 
-/* Variables CSS */
-:root {
-    --knd-neon-blue: #259cae;
-    --knd-electric-purple: #ae2565;
-    --knd-gunmetal-gray: #2c2c2c;
-    --knd-black: #000000;
-    --knd-white: #ffffff;
-    --knd-dark-blue: #0a0a0a;
-    --knd-light-blue: #1a1a2e;
-    --knd-accent-cyan: #00d4ff;
-    --knd-accent-magenta: #ff00ff;
-}
+/* KND Store - Estilos Principales (colors: knd-tokens.css) */
 
 /* KND DROP SCANNER */
 
@@ -30,19 +19,15 @@
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    border: 2px solid rgba(0, 212, 255, 0.75);
-    box-shadow:
-      0 0 12px rgba(0, 212, 255, 0.35),
-      inset 0 0 12px rgba(0, 212, 255, 0.18);
+    border: 2px solid color-mix(in srgb, var(--accent-action) 65%, transparent);
+    box-shadow: none;
     animation: kndScannerOrbit 1.15s linear infinite;
   }
   
   .knd-drop-scanner-ring--delay {
     inset: 6px;
-    border-color: rgba(167, 139, 250, 0.8);
-    box-shadow:
-      0 0 12px rgba(167, 139, 250, 0.35),
-      inset 0 0 12px rgba(167, 139, 250, 0.18);
+    border-color: color-mix(in srgb, var(--accent-primary) 55%, transparent);
+    box-shadow: none;
     animation-duration: 1.6s;
     animation-direction: reverse;
   }
@@ -51,11 +36,8 @@
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background: radial-gradient(circle, #ffffff 0%, #00d4ff 45%, #0b1220 100%);
-    box-shadow:
-      0 0 10px rgba(255,255,255,.45),
-      0 0 20px rgba(0,212,255,.55),
-      0 0 30px rgba(167,139,250,.25);
+    background: color-mix(in srgb, var(--accent-action) 40%, var(--bg-card));
+    box-shadow: none;
     animation: kndScannerPulse .95s ease-in-out infinite;
   }
   
@@ -77,10 +59,7 @@
     
   }
   .drop-capsule.scanning {
-    box-shadow:
-      0 0 0 1px rgba(0,212,255,.25),
-      0 0 18px rgba(0,212,255,.18),
-      0 0 34px rgba(167,139,250,.10);
+    box-shadow: 0 0 0 1px var(--accent-action-veil-25);
   }
   
   .drop-capsule.scanning .drop-capsule-inner {

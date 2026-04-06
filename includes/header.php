@@ -17,7 +17,7 @@ function generateHeader($title = 'KND Store - Tienda Galáctica', $description =
     $header .= '    <title>' . htmlspecialchars($title) . '</title>' . "\n";
     $header .= '    <meta name="description" content="' . htmlspecialchars($description) . '">' . "\n";
     $header .= '    <meta name="robots" content="index, follow">' . "\n";
-    $header .= '    <meta name="theme-color" content="#010508">' . "\n";
+    $header .= '    <meta name="theme-color" content="#0B0B0B">' . "\n";
     $header .= '    <meta name="author" content="KND Store">' . "\n";
     $header .= '    <meta name="keywords" content="knd, store, gaming, technology, digital services, apparel, streetwear, ecommerce">' . "\n";
     if ($extraHead) {
@@ -26,6 +26,8 @@ function generateHeader($title = 'KND Store - Tienda Galáctica', $description =
     $header .= $favicon;
     $header .= '    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">' . "\n";
     $header .= '    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css?v=652">' . "\n";
+    $kndTokensPath = __DIR__ . '/../assets/css/knd-tokens.css';
+    $header .= '    <link rel="stylesheet" href="/assets/css/knd-tokens.css?v=' . (is_file($kndTokensPath) ? (int) filemtime($kndTokensPath) : 0) . '">' . "\n";
     $header .= '    <link rel="stylesheet" href="/assets/css/style.css?v=' . @filemtime(__DIR__ . '/../assets/css/style.css') . '">' . "\n";
     $header .= '    <link rel="stylesheet" href="/assets/css/levels.css?v=' . (file_exists(__DIR__ . '/../assets/css/levels.css') ? filemtime(__DIR__ . '/../assets/css/levels.css') : 0) . '">' . "\n";
     $header .= '    <link rel="stylesheet" href="/assets/css/knd-ui.css?v=' . (file_exists(__DIR__ . '/../assets/css/knd-ui.css') ? filemtime(__DIR__ . '/../assets/css/knd-ui.css') : 0) . '">' . "\n";
@@ -190,12 +192,12 @@ function generateNavigation() {
     $nav .= '          <a class="knd-dropdown-item' . ($current_page === 'order.php' ? ' active' : '') . '" href="/order.php"><i class="fas fa-cart-shopping me-2"></i>' . t('nav.my_orders', 'My Orders') . '</a>' . "\n";
     $nav .= '          <a class="knd-dropdown-item' . ($current_page === 'track-order.php' ? ' active' : '') . '" href="/track-order.php"><i class="fas fa-magnifying-glass me-2"></i>' . t('nav.track_order', 'Track Order') . '</a>' . "\n";
     $nav .= '          <a class="knd-dropdown-item" href="/contact.php"><i class="fas fa-headset me-2"></i>' . t('nav.support', 'Support') . '</a>' . "\n";
-    $nav .= '          <div style="border-top:1px solid rgba(255,255,255,0.1);margin:6px 0;"></div>' . "\n";
+    $nav .= '          <div style="border-top:1px solid var(--border);margin:6px 0;"></div>' . "\n";
     if ($drLoggedIn) {
         $nav .= '          <a class="knd-dropdown-item' . ($current_page === 'my-profile.php' ? ' active' : '') . '" href="/my-profile.php"><i class="fas fa-user-shield me-2"></i>' . t('nav.profile', 'My Profile') . '</a>' . "\n";
         $nav .= '          <a class="knd-dropdown-item' . ($current_page === 'support-credits.php' ? ' active' : '') . '" href="/support-credits.php"><i class="fas fa-coins me-2"></i>' . t('nav.credits', 'Credits') . '</a>' . "\n";
         $nav .= '          <a class="knd-dropdown-item' . ($current_page === 'rewards.php' ? ' active' : '') . '" href="/rewards.php"><i class="fas fa-gift me-2"></i>' . t('nav.rewards', 'Rewards') . '</a>' . "\n";
-        $nav .= '          <div style="border-top:1px solid rgba(255,255,255,0.1);margin:6px 0;"></div>' . "\n";
+        $nav .= '          <div style="border-top:1px solid var(--border);margin:6px 0;"></div>' . "\n";
         $nav .= '          <a class="knd-dropdown-item" href="/logout.php"><i class="fas fa-sign-out-alt me-2"></i>' . t('nav.logout', 'Logout') . '</a>' . "\n";
     } else {
         $nav .= '          <a class="knd-dropdown-item' . ($current_page === 'auth.php' ? ' active' : '') . '" href="/auth.php"><i class="fas fa-sign-in-alt me-2"></i>' . t('nav.login', 'Login') . ' / ' . t('nav.register', 'Register') . '</a>' . "\n";

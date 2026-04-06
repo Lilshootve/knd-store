@@ -31,11 +31,11 @@
     '<div class="hs-legs"><div class="hs-leg"></div><div class="hs-leg"></div></div></div>';
 
   const RARITY_BAR = {
-    common: '#4a8a9a',
-    special: '#18aa6a',
-    rare: '#1a6aee',
-    epic: '#9b30ff',
-    legendary: '#ffcc00'
+    common: '#a1a1a1',
+    special: '#22c55e',
+    rare: '#22d3ee',
+    epic: '#d6cfc7',
+    legendary: '#eab308'
   };
 
   const BATTLE_SUBTEXTS = [
@@ -393,11 +393,11 @@
       body.innerHTML = '<div class="mc-desc" style="padding:8px">No missions today.</div>';
       return;
     }
-    const colors = { daily: '#00e8ff', weekly: '#9b30ff', event: '#ffcc00' };
+    const colors = { daily: 'var(--accent-action)', weekly: 'var(--accent-primary)', event: 'var(--color-warning)' };
     missions.forEach(function (m) {
       const pct = m.target > 0 ? Math.round((m.progress / m.target) * 100) : 0;
       const typ = 'daily';
-      const col = colors[typ] || '#00e8ff';
+      const col = colors[typ] || 'var(--accent-action)';
       const el = document.createElement('div');
       el.className = 'mission-card fade-in';
       el.style.setProperty('--mc', col);
@@ -1215,7 +1215,7 @@
       resize();
     },
     _spawnParticle: function (canvas) {
-      var colors = ['rgba(0,232,255', 'rgba(155,48,255', 'rgba(255,204,0'];
+      var colors = ['rgba(34,211,238', 'rgba(214,207,199', 'rgba(234,179,8'];
       var c = colors[Math.floor(Math.random() * colors.length)];
       return {
         x: Math.random() * canvas.width,
@@ -1309,7 +1309,7 @@
         y: Math.random() * c.height,
         r: Math.random() * 1.5,
         speed: 0.002 + Math.random() * 0.008,
-        col: Math.random() > 0.7 ? 'rgba(155,48,255,' : 'rgba(0,232,255,'
+        col: Math.random() > 0.7 ? 'rgba(214,207,199,' : 'rgba(34,211,238,'
       };
     });
     function draw() {
@@ -1331,7 +1331,7 @@
   function initLivePreview() {
     const container = document.getElementById('live-preview');
     if (!container) return;
-    var colors = ['rgba(0,232,255,', 'rgba(155,48,255,', 'rgba(255,204,0,'];
+    var colors = ['rgba(34,211,238,', 'rgba(214,207,199,', 'rgba(234,179,8,'];
     setInterval(function () {
       if (document.hidden) return;
       var p = document.createElement('div');

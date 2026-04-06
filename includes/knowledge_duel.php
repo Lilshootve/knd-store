@@ -128,7 +128,7 @@ function kd_pick_enemy(PDO $pdo): array {
     $pool = kd_enemy_pool();
     $n = count($pool);
     if ($n === 0) {
-        $entry = ['name' => 'Neural Entity', 'quote' => '', 'theme' => '#9b30ff'];
+        $entry = ['name' => 'Neural Entity', 'quote' => '', 'theme' => '#d6cfc7'];
     } else {
         $entry = $pool[random_int(0, $n - 1)];
     }
@@ -144,7 +144,7 @@ function kd_pick_enemy(PDO $pdo): array {
     return [
         'name' => (string) ($entry['name'] ?? 'Neural Entity'),
         'quote' => (string) ($entry['quote'] ?? ''),
-        'theme' => (string) ($entry['theme'] ?? '#9b30ff'),
+        'theme' => (string) ($entry['theme'] ?? '#d6cfc7'),
         'avatar_path' => $url,
         'mw_avatar_id' => $mwId,
     ];

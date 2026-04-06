@@ -46,6 +46,7 @@ $embed = isset($_GET['embed']) && $_GET['embed'] === '1';
 <?php
 $seoTitle = 'Sign in | KND Store';
 $seoDesc  = 'Sign in to KND Store — your workspace for retail and AI-assisted operations.';
+$kndTokensV = file_exists(__DIR__ . '/assets/css/knd-tokens.css') ? filemtime(__DIR__ . '/assets/css/knd-tokens.css') : 0;
 $authCssV = file_exists(__DIR__ . '/assets/css/auth.css') ? filemtime(__DIR__ . '/assets/css/auth.css') : 0;
 $saasCssV = file_exists(__DIR__ . '/assets/css/saas.css') ? filemtime(__DIR__ . '/assets/css/saas.css') : 0;
 $authSplitCssV = file_exists(__DIR__ . '/assets/css/auth-split.css') ? filemtime(__DIR__ . '/assets/css/auth-split.css') : 0;
@@ -65,6 +66,7 @@ if ($embed) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/knd-tokens.css?v=<?php echo (int) $kndTokensV; ?>">
     <link rel="stylesheet" href="/assets/css/auth.css?v=<?php echo $authCssV; ?>">
     <link rel="stylesheet" href="/assets/css/saas.css?v=<?php echo $saasCssV; ?>">
     <link rel="stylesheet" href="/assets/css/auth-split.css?v=<?php echo $authSplitCssV; ?>">

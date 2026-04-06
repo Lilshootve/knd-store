@@ -33,6 +33,7 @@ require_once BASE_PATH . '/includes/favicon_links.php';
 <?php echo generateFaviconLinks(); ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/knd-tokens.css?v=<?php echo is_file(__DIR__ . '/../../assets/css/knd-tokens.css') ? (int) filemtime(__DIR__ . '/../../assets/css/knd-tokens.css') : 0; ?>">
 <link rel="stylesheet" href="/assets/css/levels.css?v=<?php echo file_exists(__DIR__ . '/../../assets/css/levels.css') ? filemtime(__DIR__ . '/../../assets/css/levels.css') : 0; ?>">
 <?php
 if (!$embed) {

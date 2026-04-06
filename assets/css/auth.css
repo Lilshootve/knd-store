@@ -1,22 +1,22 @@
 /* KND Access — layout from knd-access-concept.html (scoped to .auth-page) */
 
 body.auth-page {
-  --ka-void: #010508;
-  --ka-deep: #020a10;
-  --ka-surface: #04131c;
-  --ka-c: #00e8ff;
-  --ka-c2: #00a8bb;
-  --ka-cg: rgba(0, 232, 255, 0.12);
-  --ka-cb: rgba(0, 232, 255, 0.22);
-  --ka-m: #d44fff;
-  --ka-m2: #9b30ff;
-  --ka-gold: #ffcc00;
-  --ka-green: #00ff99;
-  --ka-red: #ff2255;
-  --ka-t1: rgba(220, 248, 255, 0.95);
-  --ka-t2: rgba(155, 215, 235, 0.62);
-  --ka-t3: rgba(90, 165, 190, 0.38);
-  --ka-t4: rgba(60, 120, 145, 0.2);
+  --ka-void: var(--void);
+  --ka-deep: var(--deep);
+  --ka-surface: var(--surface);
+  --ka-c: var(--c);
+  --ka-c2: var(--c2);
+  --ka-cg: var(--cg);
+  --ka-cb: var(--cb);
+  --ka-m: var(--m);
+  --ka-m2: var(--m2);
+  --ka-gold: var(--gold);
+  --ka-green: var(--green);
+  --ka-red: var(--red);
+  --ka-t1: var(--t1);
+  --ka-t2: var(--t2);
+  --ka-t3: var(--t3);
+  --ka-t4: var(--t4);
   --ka-fd: 'Orbitron', monospace;
   --ka-fb: 'Rajdhani', sans-serif;
   --ka-fm: 'Share Tech Mono', monospace;

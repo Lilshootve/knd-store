@@ -142,11 +142,11 @@
       body.innerHTML = '<div class="mc-desc" style="padding:8px">No missions today.</div>';
       return;
     }
-    var colors = { daily: '#00e8ff', weekly: '#9b30ff', event: '#ffcc00' };
+    var colors = { daily: 'var(--accent-action)', weekly: 'var(--accent-primary)', event: 'var(--color-warning)' };
     missions.forEach(function (m) {
       var pct = m.target > 0 ? Math.round((m.progress / m.target) * 100) : 0;
       var typ = 'daily';
-      var col = colors[typ] || '#00e8ff';
+      var col = colors[typ] || 'var(--accent-action)';
       var el = document.createElement('div');
       el.className = 'mission-card fade-in';
       el.style.setProperty('--mc', col);

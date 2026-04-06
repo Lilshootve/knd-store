@@ -86,7 +86,7 @@ $packs = [
         'rates'       => knl_pack_rates_ui_rows('premium'),
         'pity_legendary' => $raw['premium']['pity_legendary'],
         'pity_epic'      => $raw['premium']['pity_epic'],
-        'color'          => '#9b30ff',
+        'color'          => '#d6cfc7',
         'icon'           => 'link_premium',
     ],
     'legendary' => [

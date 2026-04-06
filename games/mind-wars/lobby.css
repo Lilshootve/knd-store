@@ -22,17 +22,17 @@ div{box-sizing:content-box}
   --border:   rgba(255,255,255,0.055);
   --border2:  rgba(255,255,255,0.10);
 
-  --c:        #00e8ff;
-  --c2:       #00a8bb;
-  --cg:       rgba(0,232,255,.12);
-  --cgd:      rgba(0,232,255,.08);
-  --cb:       rgba(0,232,255,.2);
-  --cg2:      rgba(0,232,255,.06);
+  --c:        var(--accent-action);
+  --c2:       color-mix(in srgb, var(--accent-action) 72%, var(--bg-main));
+  --cg:       var(--accent-action-subtle);
+  --cgd:      color-mix(in srgb, var(--accent-action) 8%, transparent);
+  --cb:       var(--accent-action-border);
+  --cg2:      var(--accent-action-subtle);
 
-  --m:        #9b30ff;
-  --m2:       #6b00cc;
-  --mg:       rgba(155,48,255,.12);
-  --mb:       rgba(155,48,255,.25);
+  --m:        var(--accent-primary);
+  --m2:       var(--accent-primary-muted);
+  --mg:       color-mix(in srgb, var(--accent-primary) 12%, transparent);
+  --mb:       color-mix(in srgb, var(--accent-primary) 25%, transparent);
 
   --gold:     #ffcc00;
   --gold2:    #ff9900;

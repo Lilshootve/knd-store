@@ -30,6 +30,7 @@ require_once BASE_PATH . '/includes/favicon_links.php';
 <?php echo generateFaviconLinks(); ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/knd-tokens.css?v=<?= is_file(BASE_PATH . '/assets/css/knd-tokens.css') ? (int) filemtime(BASE_PATH . '/assets/css/knd-tokens.css') : 0 ?>">
 <link rel="stylesheet" href="/games/knd-neural-link/assets/drops.css?v=<?= (int) $cssV ?>">
 </head>
 <body>

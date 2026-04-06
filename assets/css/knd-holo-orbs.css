@@ -22,10 +22,7 @@
   transform: scale(0.85);
   transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.2, 0.9, 0.2, 1);
   will-change: transform, opacity;
-  box-shadow:
-    0 0 20px rgba(0, 232, 255, 0.35),
-    0 0 48px rgba(155, 48, 255, 0.2),
-    inset 0 0 14px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 1px var(--accent-action-border);
 }
 
 .knd-holo-orb.knd-holo-orb--visible {
@@ -58,29 +55,23 @@
 
 /* Rarity / type skins */
 .knd-holo-orb.knd-orb--xp {
-  color: rgba(0, 232, 255, 0.9);
-  background: radial-gradient(circle at 30% 25%, rgba(180, 250, 255, 0.45), rgba(0, 40, 60, 0.75) 60%, rgba(0, 20, 40, 0.9));
-  border: 1px solid rgba(0, 232, 255, 0.45);
+  color: var(--accent-action);
+  background: color-mix(in srgb, var(--accent-action) 22%, var(--bg-surface));
+  border: 1px solid var(--accent-action-border);
 }
 
 .knd-holo-orb.knd-orb--ke {
-  color: rgba(155, 48, 255, 0.95);
-  background: radial-gradient(circle at 30% 25%, rgba(230, 200, 255, 0.4), rgba(40, 0, 60, 0.8) 55%, rgba(20, 0, 35, 0.92));
-  border: 1px solid rgba(200, 120, 255, 0.5);
-  box-shadow:
-    0 0 22px rgba(155, 48, 255, 0.4),
-    0 0 50px rgba(0, 232, 255, 0.12),
-    inset 0 0 14px rgba(255, 255, 255, 0.12);
+  color: var(--accent-primary);
+  background: color-mix(in srgb, var(--accent-primary) 28%, var(--bg-surface));
+  border: 1px solid color-mix(in srgb, var(--accent-primary) 40%, transparent);
+  box-shadow: none;
 }
 
 .knd-holo-orb.knd-orb--knd_points {
-  color: rgba(255, 214, 0, 0.85);
-  background: radial-gradient(circle at 30% 25%, rgba(255, 240, 180, 0.5), rgba(60, 45, 0, 0.82) 55%, rgba(30, 22, 0, 0.95));
-  border: 1px solid rgba(255, 214, 0, 0.55);
-  box-shadow:
-    0 0 24px rgba(255, 214, 0, 0.35),
-    0 0 40px rgba(0, 232, 255, 0.15),
-    inset 0 0 14px rgba(255, 255, 255, 0.18);
+  color: var(--color-warning);
+  background: color-mix(in srgb, var(--color-warning) 24%, var(--bg-surface));
+  border: 1px solid color-mix(in srgb, var(--color-warning) 35%, transparent);
+  box-shadow: none;
 }
 
 .knd-holo-orb.knd-orb--pop {
@@ -115,7 +106,7 @@
   font-weight: 800;
   letter-spacing: 0.08em;
   color: #00e8ff;
-  text-shadow: 0 0 12px rgba(0, 232, 255, 0.7);
+  text-shadow: none;
   pointer-events: none;
   white-space: nowrap;
   opacity: 0;
@@ -124,7 +115,7 @@
 
 .knd-holo-orb-float.knd-float--ke {
   color: #d8a8ff;
-  text-shadow: 0 0 14px rgba(155, 48, 255, 0.8);
+  text-shadow: none;
 }
 
 .knd-holo-orb-float.knd-float--knd_points {
@@ -294,14 +285,13 @@
   border-radius: 14px;
   background: conic-gradient(
     from 0deg,
-    rgba(0, 232, 255, 0.65),
-    rgba(155, 48, 255, 0.5),
-    rgba(255, 214, 0, 0.45),
-    rgba(0, 200, 255, 0.35),
-    rgba(0, 232, 255, 0.65)
+    var(--accent-action),
+    var(--accent-primary),
+    var(--color-warning),
+    var(--accent-action)
   );
   animation: kndHudRingRotate 14s linear infinite;
-  opacity: 0.55;
+  opacity: 0.2;
   z-index: 0;
 }
 
@@ -319,8 +309,8 @@
     0deg,
     transparent,
     transparent 2px,
-    rgba(0, 232, 255, 0.03) 2px,
-    rgba(0, 232, 255, 0.03) 3px
+    var(--accent-action-subtle) 2px,
+    var(--accent-action-subtle) 3px
   );
   pointer-events: none;
   z-index: 2;
@@ -345,11 +335,8 @@
   padding: 10px 14px 11px;
   border-radius: 11px;
   background: linear-gradient(145deg, rgba(6, 14, 22, 0.82), rgba(4, 8, 16, 0.92));
-  border: 1px solid rgba(0, 232, 255, 0.22);
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.45) inset,
-    0 12px 40px rgba(0, 0, 0, 0.55),
-    0 0 32px rgba(0, 120, 180, 0.12);
+  border: 1px solid var(--accent-action-border);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--bg-main) 45%, transparent) inset, 0 8px 28px color-mix(in srgb, var(--bg-main) 65%, transparent);
   backdrop-filter: blur(14px) saturate(1.2);
   -webkit-backdrop-filter: blur(14px) saturate(1.2);
   overflow: hidden;
@@ -359,7 +346,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(120% 80% at 10% 0%, rgba(0, 232, 255, 0.08), transparent 55%);
+  background: radial-gradient(120% 80% at 10% 0%, var(--accent-action-subtle), transparent 55%);
   pointer-events: none;
 }
 
@@ -376,8 +363,8 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #fff, rgba(0, 232, 255, 0.9));
-  box-shadow: 0 0 10px rgba(0, 232, 255, 0.7);
+  background: radial-gradient(circle at 30% 30%, var(--bg-card), var(--accent-action));
+  box-shadow: none;
   animation: kndHudGlyphPulse 1.8s ease-in-out infinite;
 }
 
@@ -459,37 +446,37 @@
 }
 
 .knd-holo-hud__cell--xp.knd-holo-hud__cell--bump {
-  border-color: rgba(0, 232, 255, 0.45);
-  box-shadow: 0 0 18px rgba(0, 232, 255, 0.2);
+  border-color: var(--accent-action-border);
+  box-shadow: none;
 }
 
 .knd-holo-hud__cell--ke.knd-holo-hud__cell--bump {
-  border-color: rgba(200, 120, 255, 0.55);
-  box-shadow: 0 0 18px rgba(155, 48, 255, 0.25);
+  border-color: color-mix(in srgb, var(--accent-primary) 40%, transparent);
+  box-shadow: none;
 }
 
 .knd-holo-hud__cell--kp.knd-holo-hud__cell--bump {
-  border-color: rgba(255, 214, 0, 0.5);
-  box-shadow: 0 0 18px rgba(255, 214, 0, 0.18);
+  border-color: color-mix(in srgb, var(--color-warning) 40%, transparent);
+  box-shadow: none;
 }
 
 .knd-holo-hud__label {
   font-size: 7px;
   font-weight: 700;
   letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--text-secondary);
 }
 
 .knd-holo-hud__cell--xp .knd-holo-hud__label {
-  color: rgba(0, 232, 255, 0.45);
+  color: var(--accent-action);
 }
 
 .knd-holo-hud__cell--ke .knd-holo-hud__label {
-  color: rgba(200, 160, 255, 0.5);
+  color: var(--accent-primary);
 }
 
 .knd-holo-hud__cell--kp .knd-holo-hud__label {
-  color: rgba(255, 214, 0, 0.5);
+  color: var(--color-warning);
 }
 
 .knd-holo-hud__value {
@@ -498,13 +485,13 @@
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
   color: #e8fbff;
-  text-shadow: 0 0 14px rgba(0, 232, 255, 0.35);
+  text-shadow: none;
   line-height: 1.1;
 }
 
 .knd-holo-hud__cell--ke .knd-holo-hud__value {
   color: #ead4ff;
-  text-shadow: 0 0 14px rgba(155, 48, 255, 0.4);
+  text-shadow: none;
 }
 
 .knd-holo-hud__cell--kp .knd-holo-hud__value {
@@ -529,12 +516,12 @@
 
 .knd-holo-hud__last--xp {
   color: #7eefff;
-  text-shadow: 0 0 12px rgba(0, 232, 255, 0.65);
+  text-shadow: none;
 }
 
 .knd-holo-hud__last--ke {
   color: #dcb8ff;
-  text-shadow: 0 0 12px rgba(155, 48, 255, 0.65);
+  text-shadow: none;
 }
 
 .knd-holo-hud__last--kp {

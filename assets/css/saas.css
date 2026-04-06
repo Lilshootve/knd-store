@@ -3,14 +3,9 @@
  * Palette: black #0B0B0B, white #FFFFFF, gray #A1A1A1, beige #F5F5DC
  */
 
+/* SaaS tokens: knd-tokens.css (--knd-saas-*) */
+
 :root {
-  --knd-saas-bg: #0b0b0b;
-  --knd-saas-surface: #ffffff;
-  --knd-saas-muted: #a1a1a1;
-  --knd-saas-accent: #f5f5dc;
-  --knd-saas-text: #ffffff;
-  --knd-saas-text-inverse: #0b0b0b;
-  --knd-saas-border: rgba(255, 255, 255, 0.12);
   --knd-saas-radius: 8px;
   --knd-saas-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
@@ -74,7 +69,7 @@ body.knd-saas-app {
 }
 
 .knd-saas-link:hover {
-  color: var(--knd-saas-text);
+  color: var(--accent-action);
 }
 
 .knd-saas-btn {
@@ -94,7 +89,7 @@ body.knd-saas-app {
 }
 
 .knd-saas-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--text-primary) 8%, transparent);
 }
 
 .knd-saas-btn--primary {
@@ -143,7 +138,7 @@ body.knd-saas-app {
 }
 
 .knd-saas-panel {
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--text-primary) 5%, transparent);
   border: 1px solid var(--knd-saas-border);
   border-radius: 12px;
   padding: 1.25rem;

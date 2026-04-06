@@ -224,7 +224,7 @@
                 var tool = self.config.jobType || 'text2img';
                 var mode = 'style';
                 if (tool === '3d_vertex') {
-                  preview.innerHTML = '<model-viewer src="' + proxyPreview + '" camera-controls auto-rotate exposure="0.9" style="width:100%;height:400px;background:#050816;border-radius:12px;"></model-viewer>';
+                  preview.innerHTML = '<model-viewer src="' + proxyPreview + '" camera-controls auto-rotate exposure="0.9" style="width:100%;height:400px;background:var(--bg-main);border-radius:12px;"></model-viewer>';
                 } else {
                   preview.innerHTML = '<img src="' + proxyPreview + '" alt="Result" class="img-fluid rounded" style="max-height:400px;" data-job-id="' + jobId + '" data-job-tool="' + tool + '" data-job-mode="' + mode + '">';
                 }
@@ -1019,7 +1019,7 @@
       var html = '';
       html += '<div class="labs-job-viewer-preview knd-details-preview">';
       if (J.status === 'done' && imgUrl && isGlb) {
-        html += '<model-viewer src="' + imgUrlEsc + '" camera-controls auto-rotate style="width:100%;height:100%;min-height:220px;background:#050816;"></model-viewer>';
+        html += '<model-viewer src="' + imgUrlEsc + '" camera-controls auto-rotate style="width:100%;height:100%;min-height:220px;background:var(--bg-main);"></model-viewer>';
       } else if (J.status === 'done' && imgUrl) {
         html += '<img src="' + imgUrlEsc + '" alt="Result" class="labs-job-viewer-img">';
       } else {

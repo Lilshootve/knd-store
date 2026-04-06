@@ -19,7 +19,7 @@
   --knd-cg:      rgba(0,232,255,.12);
   --knd-cb:      rgba(0,232,255,.22);
 
-  --knd-m:       #9b30ff;       /* magenta-purple */
+  --knd-m:       var(--accent-primary);
   --knd-mg:      rgba(155,48,255,.12);
   --knd-mb:      rgba(155,48,255,.25);
 
@@ -40,7 +40,7 @@
   --rc-common:    #4a8a9a;
   --rc-rare:      #1a6aee;
   --rc-special:   #18aa6a;
-  --rc-epic:      #9b30ff;
+  --rc-epic:      var(--accent-primary);
   --rc-legendary: #ffcc00;
 }
 

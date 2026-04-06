@@ -3,29 +3,7 @@
  * Stripe / Linear / Notion: neutral, trustworthy. No gradients, no glow.
  */
 
-:root {
-  --knd-auth-bg: #0b0b0b;
-  --knd-auth-card: #ffffff;
-  --knd-auth-input-bg: #f3f3f1;
-  --knd-auth-border: #e5e5e5;
-  --knd-auth-text: #111111;
-  --knd-auth-text-muted: #6b6b6b;
-  --knd-auth-placeholder: #8a8a8a;
-  --knd-auth-beige: #d6cfc7;
-  --knd-auth-cyan: #22d3ee;
-  --knd-auth-cyan-ring: rgba(34, 211, 238, 0.22);
-  /* Warm brown accents inside the auth card (replaces cyan in form UI) */
-  --knd-auth-card-accent: #5c4a3d;
-  --knd-auth-card-accent-hover: #3d3028;
-  --knd-auth-card-accent-ring: rgba(92, 74, 61, 0.22);
-  --knd-auth-card-accent-surface: #efeae5;
-  --knd-auth-btn-hover: #000000;
-  --knd-auth-error: #dc2626;
-  --knd-auth-error-bg: rgba(220, 38, 38, 0.06);
-  --knd-auth-transition: 150ms ease;
-  --knd-auth-font-ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --knd-auth-font-brand: "Orbitron", system-ui, sans-serif;
-}
+/* Auth color tokens: knd-tokens.css (--knd-auth-*) */
 
 body.knd-auth-split-page #bg {
   display: none !important;

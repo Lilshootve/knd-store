@@ -2,6 +2,14 @@
 (function () {
     'use strict';
 
+    function kndCssVar(name) {
+        try {
+            return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '';
+        } catch (e) {
+            return '';
+        }
+    }
+
     /* ── Inject game-over animation CSS ── */
     var _lrStyle = document.createElement('style');
     _lrStyle.textContent = [
@@ -11,11 +19,11 @@
         '@keyframes lrGoFade{to{opacity:1;transform:translateY(0)}}',
         '@keyframes lrConfetti{0%{opacity:.9;transform:translateY(0) rotate(0)}50%{opacity:.8}100%{opacity:0;transform:translateY(320px) rotate(var(--rot,600deg))}}',
         '.lr-go-kp{margin-top:10px;font-family:var(--lr-FM,"Share Tech Mono",monospace);font-size:1rem;letter-spacing:1.5px}',
-        '.lr-go-kp.win{color:#00ff99}',
-        '.lr-go-kp.lose{color:rgba(255,255,255,.45)}',
+        '.lr-go-kp.win{color:var(--color-success)}',
+        '.lr-go-kp.lose{color:var(--text-secondary)}',
         '.lr-go-stat{text-align:center;opacity:0;transform:translateY(10px);animation:lrGoFade .4s ease forwards}',
-        '.lr-go-sv{font-family:var(--lr-FD,Orbitron,monospace);font-size:22px;font-weight:700;color:var(--lr-c,#00e8ff);text-shadow:0 0 10px rgba(0,232,255,.4)}',
-        '.lr-go-sl{font-family:var(--lr-FM,"Share Tech Mono",monospace);font-size:7px;letter-spacing:2.5px;color:rgba(155,215,235,.4);text-transform:uppercase;margin-top:2px}',
+        '.lr-go-sv{font-family:var(--lr-FD,Orbitron,monospace);font-size:22px;font-weight:700;color:var(--accent-action);text-shadow:none}',
+        '.lr-go-sl{font-family:var(--lr-FM,"Share Tech Mono",monospace);font-size:7px;letter-spacing:2.5px;color:var(--text-secondary);text-transform:uppercase;margin-top:2px}',
     ].join('\n');
     document.head.appendChild(_lrStyle);
 
@@ -469,14 +477,14 @@
             timerProgress.style.width = pct + '%';
 
             if (left <= 2) {
-                timerValue.style.color = '#ff4444';
-                timerProgress.style.background = '#ff4444';
+                timerValue.style.color = 'var(--color-danger)';
+                timerProgress.style.background = 'var(--color-danger)';
             } else if (left <= 4) {
-                timerValue.style.color = '#ffaa00';
-                timerProgress.style.background = '#ffaa00';
+                timerValue.style.color = 'var(--color-warning)';
+                timerProgress.style.background = 'var(--color-warning)';
             } else {
-                timerValue.style.color = 'var(--knd-neon-blue)';
-                timerProgress.style.background = 'var(--knd-neon-blue)';
+                timerValue.style.color = 'var(--accent-action)';
+                timerProgress.style.background = 'var(--accent-action)';
             }
 
             if (left <= 0 && !timeoutPollSent && !gameFinished) {
@@ -504,15 +512,15 @@
             var p2Card = document.getElementById('player2-card');
             p1Card.classList.remove('active');
             p2Card.classList.remove('active');
-            p1Card.style.borderColor = 'rgba(37,156,174,0.3)';
-            p2Card.style.borderColor = 'rgba(174,37,101,0.3)';
+            p1Card.style.borderColor = 'color-mix(in srgb, var(--accent-action) 28%, transparent)';
+            p2Card.style.borderColor = 'color-mix(in srgb, var(--accent-primary) 32%, transparent)';
             if (s.game.status === 'playing' && s.game.turn_user_id) {
                 if (s.players.p1 && s.game.turn_user_id === s.players.p1.id) {
                     p1Card.classList.add('active');
-                    p1Card.style.borderColor = '#259cae';
+                    p1Card.style.borderColor = 'var(--accent-action)';
                 } else if (s.players.p2 && s.game.turn_user_id === s.players.p2.id) {
                     p2Card.classList.add('active');
-                    p2Card.style.borderColor = '#ae2565';
+                    p2Card.style.borderColor = 'var(--accent-primary)';
                 }
             }
 
@@ -536,10 +544,10 @@
             }
             if (s.game.current_max <= 10) {
                 maxEl.classList.add('danger');
-                maxEl.style.color = '#ff4444';
+                maxEl.style.color = 'var(--color-danger)';
             } else if (s.game.current_max <= 50) {
                 maxEl.classList.add('warning');
-                maxEl.style.color = '#ffaa00';
+                maxEl.style.color = 'var(--color-warning)';
             } else {
                 maxEl.style.color = '';
             }
@@ -577,7 +585,7 @@
                 btnRoll.disabled = true;
             } else if (s.game.status === 'playing' && !isRolling) {
                 if (s.me.can_roll) {
-                    turnInfo.innerHTML = '<span style="color: var(--knd-neon-blue);">' + (TEXTS.yourTurn || 'Your turn!') + '</span>';
+                    turnInfo.innerHTML = '<span style="color: var(--accent-action);">' + (TEXTS.yourTurn || 'Your turn!') + '</span>';
                     btnRoll.disabled = false;
                 } else {
                     var oppName = s.game.turn_user_id === (s.players.p1 ? s.players.p1.id : 0) ?
@@ -636,7 +644,7 @@
             var html = '';
             rolls.forEach(function (r, i) {
                 var isFatal = parseInt(r.roll_value) === 1;
-                var color = isFatal ? '#ff4444' : (parseInt(r.roll_value) <= 10 ? '#ffaa00' : '#ccc');
+                var color = isFatal ? 'var(--color-danger)' : (parseInt(r.roll_value) <= 10 ? 'var(--color-warning)' : 'var(--text-secondary)');
                 var itemClass = 'd-flex justify-content-between align-items-center py-1 roll-item' + (isFatal ? ' fatal' : '') + ' border-bottom border-secondary';
                 html += '<div class="' + itemClass + '">';
                 html += '<span class="small">';
@@ -683,23 +691,30 @@
                 ? (iWon ? (TEXTS.timeoutOpponent || 'Opponent timed out!') : (TEXTS.timeoutYou || 'You lost by timeout!'))
                 : (iWon ? (TEXTS.youWin || 'YOU WIN!') : (TEXTS.youLose || 'YOU LOSE!'));
 
-            var accentColor = iWon ? 'var(--lr-green, #00ff99)' : 'var(--lr-red, #ff2255)';
+            var accentColor = iWon ? 'var(--color-success)' : 'var(--color-danger)';
             var bgGrad = iWon
-                ? 'linear-gradient(180deg, rgba(0,255,136,.06), rgba(0,40,30,.15))'
-                : 'linear-gradient(180deg, rgba(255,34,85,.06), rgba(40,0,10,.15))';
+                ? 'color-mix(in srgb, var(--color-success) 8%, var(--bg-main))'
+                : 'color-mix(in srgb, var(--color-danger) 8%, var(--bg-main))';
 
             panel.style.background = bgGrad;
-            panel.style.border = '1px solid ' + (iWon ? 'rgba(0,255,136,.25)' : 'rgba(255,34,85,.25)');
+            panel.style.border = '1px solid ' + (iWon ? 'color-mix(in srgb, var(--color-success) 28%, transparent)' : 'color-mix(in srgb, var(--color-danger) 28%, transparent)');
             panel.style.position = 'relative';
             panel.style.overflow = 'hidden';
 
             /* Top accent line */
-            var accentLine = '<div style="position:absolute;top:0;left:0;right:0;height:2px;background:' + accentColor + ';box-shadow:0 0 20px ' + accentColor + ';transform:scaleX(0);animation:lrGoLine .5s cubic-bezier(.2,.8,.2,1) forwards;"></div>';
+            var accentLine = '<div style="position:absolute;top:0;left:0;right:0;height:2px;background:' + accentColor + ';box-shadow:none;transform:scaleX(0);animation:lrGoLine .5s cubic-bezier(.2,.8,.2,1) forwards;"></div>';
 
             /* Confetti for win */
             var confettiHtml = '';
             if (iWon) {
-                var colors = ['#00e8ff','#9b30ff','#ffcc00','#00ff99','#ff2255','#fff'];
+                var colors = [
+                    kndCssVar('--accent-action'),
+                    kndCssVar('--accent-primary'),
+                    kndCssVar('--color-warning'),
+                    kndCssVar('--color-success'),
+                    kndCssVar('--text-primary')
+                ].filter(function (x) { return x; });
+                if (!colors.length) colors = ['#22d3ee', '#d6cfc7', '#ffffff'];
                 for (var ci = 0; ci < 35; ci++) {
                     var c = colors[Math.floor(Math.random() * colors.length)];
                     confettiHtml += '<div style="position:absolute;left:' + (Math.random()*100) + '%;top:-8px;width:' + (3+Math.random()*5) + 'px;height:' + (5+Math.random()*8) + 'px;background:' + c + ';border-radius:' + (Math.random()>.5?'50%':'1px') + ';opacity:0;animation:lrConfetti ' + (2+Math.random()*2.5) + 's ease-in ' + (Math.random()*1) + 's forwards;"></div>';
@@ -710,7 +725,7 @@
             var iconBlock = '';
             if (isTimeout) {
                 iconBlock =
-                    '<div class="lr-go-icon" style="font-size:3.5rem;margin-bottom:8px;filter:drop-shadow(0 0 20px ' + accentColor + ');opacity:0;animation:lrGoPop .5s cubic-bezier(.15,1.2,.3,1) .2s forwards;">' +
+                    '<div class="lr-go-icon" style="font-size:3.5rem;margin-bottom:8px;filter:none;opacity:0;animation:lrGoPop .5s cubic-bezier(.15,1.2,.3,1) .2s forwards;">' +
                     '⏰' +
                     '</div>';
             }
@@ -724,7 +739,7 @@
                 '<div style="position:relative;z-index:2;">' +
                 iconBlock +
                 /* Title */
-                '<div style="font-family:var(--lr-FD,Orbitron,monospace);font-size:clamp(28px,5vw,42px);font-weight:900;letter-spacing:6px;color:' + accentColor + ';text-shadow:0 0 30px ' + accentColor + ';opacity:0;animation:lrGoSlam .4s cubic-bezier(.15,1,.3,1) .4s forwards;">' +
+                '<div style="font-family:var(--lr-FD,Orbitron,monospace);font-size:clamp(28px,5vw,42px);font-weight:900;letter-spacing:6px;color:' + accentColor + ';text-shadow:none;opacity:0;animation:lrGoSlam .4s cubic-bezier(.15,1,.3,1) .4s forwards;">' +
                     mainText +
                 '</div>' +
                 kpMsg +
@@ -866,20 +881,20 @@
             var secondsLeft = REMATCH_COUNTDOWN;
 
             rematchPopupInstance = Swal.fire({
-                title: '<span style="color:#259cae;">&#8635; Rematch Request</span>',
-                html: '<div style="font-size:1rem;color:rgba(255,255,255,0.85);">' +
+                title: '<span style="color:var(--accent-action);">&#8635; Rematch Request</span>',
+                html: '<div style="font-size:1rem;color:var(--text-primary);">' +
                       '<strong>' + escHtml(opponentName) + '</strong> wants a rematch!' +
                       '</div>' +
-                      '<div id="swal-rematch-cd" style="margin-top:12px;font-family:Orbitron,monospace;font-size:1.6rem;font-weight:900;color:#259cae;">' + secondsLeft + '</div>' +
-                      '<div style="font-size:0.7rem;color:rgba(255,255,255,0.35);margin-top:4px;">Auto-decline in <span id="swal-cd-label">' + secondsLeft + '</span>s</div>',
+                      '<div id="swal-rematch-cd" style="margin-top:12px;font-family:Orbitron,monospace;font-size:1.6rem;font-weight:900;color:var(--accent-action);">' + secondsLeft + '</div>' +
+                      '<div style="font-size:0.7rem;color:var(--text-secondary);margin-top:4px;">Auto-decline in <span id="swal-cd-label">' + secondsLeft + '</span>s</div>',
                 confirmButtonText: '<i class="fas fa-check me-1"></i> ACCEPT',
                 cancelButtonText: '<i class="fas fa-times me-1"></i> DECLINE',
                 showCancelButton: true,
                 allowOutsideClick: false,
                 allowEscapeKey: true,
-                background: 'rgba(12,16,30,0.95)',
-                color: '#e0e0e0',
-                backdrop: 'rgba(0,0,0,0.7)',
+                background: 'color-mix(in srgb, var(--bg-surface) 94%, transparent)',
+                color: 'var(--text-primary)',
+                backdrop: 'var(--overlay-scrim)',
                 customClass: {
                     popup: 'dr-swal-popup',
                     confirmButton: 'dr-swal-accept',
@@ -905,8 +920,8 @@
                             title: 'Rematch declined',
                             showConfirmButton: false,
                             timer: 2500,
-                            background: 'rgba(12,16,30,0.9)',
-                            color: '#e0e0e0'
+                            background: 'color-mix(in srgb, var(--bg-surface) 92%, transparent)',
+                            color: 'var(--text-primary)'
                         });
                     }
                 }
@@ -918,7 +933,7 @@
                 var cdLabel = document.getElementById('swal-cd-label');
                 if (cdEl) cdEl.textContent = Math.max(0, secondsLeft);
                 if (cdLabel) cdLabel.textContent = Math.max(0, secondsLeft);
-                if (secondsLeft <= 3 && cdEl) cdEl.style.color = '#ff4444';
+                if (secondsLeft <= 3 && cdEl) cdEl.style.color = 'var(--color-danger)';
                 if (secondsLeft <= 0) {
                     clearInterval(rematchAutoDeclineTimer);
                     rematchAutoDeclineTimer = null;

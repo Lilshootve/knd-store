@@ -10,7 +10,7 @@
   --c2:      #00a8bb;
   --cg:      rgba(0,232,255,.12);
   --cb:      rgba(0,232,255,.22);
-  --m:       #9b30ff;
+  --m:       var(--accent-primary);
   --mg:      rgba(155,48,255,.12);
   --gold:    #ffcc00;
   --green:   #00ff99;

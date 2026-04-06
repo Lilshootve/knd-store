@@ -109,7 +109,10 @@ ob_start();
 require __DIR__ . '/../games/mind-wars/lobby-partials/topbar.php';
 $topbarHtml = ob_get_clean();
 
+$tokensCss = __DIR__ . '/../assets/css/knd-tokens.css';
+$tokensCssV = is_file($tokensCss) ? filemtime($tokensCss) : 0;
 $headInject = "\n" . generateFaviconLinks() . "\n"
+    . '<link rel="stylesheet" href="/assets/css/knd-tokens.css?v=' . (int) $tokensCssV . '">' . "\n"
     . '<link rel="stylesheet" href="/assets/css/levels.css?v=' . (int) $levelsCssV . '">' . "\n"
     . '<link rel="stylesheet" href="/games/mind-wars/lobby.css?v=' . (int) $lobbyCssV . '">' . "\n";
 if (stripos($html, '</head>') !== false) {

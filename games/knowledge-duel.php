@@ -104,6 +104,7 @@ if (!$embed) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="/assets/css/knd-tokens.css?v=<?php echo is_file(__DIR__ . '/../assets/css/knd-tokens.css') ? (int) filemtime(__DIR__ . '/../assets/css/knd-tokens.css') : 0; ?>">
 <link rel="stylesheet" href="/assets/css/levels.css?v=<?php echo $vL; ?>">
 <link rel="stylesheet" href="/games/mind-wars/lobby.css?v=<?php echo $vLo; ?>">
 <link rel="stylesheet" href="/games/mind-wars/mw-avatar-cards.css?v=<?php echo $vMw; ?>">

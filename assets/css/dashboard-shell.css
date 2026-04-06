@@ -3,13 +3,13 @@
  * Tokens: dark neutral SaaS; no glow / neon; sidebar-only chrome.
  */
 :root {
-  --knd-dash-bg: #0b0b0b;
-  --knd-dash-surface: #111111;
-  --knd-dash-border: #1f1f1f;
-  --knd-dash-text: #ffffff;
-  --knd-dash-muted: #a1a1a1;
-  --knd-dash-accent: #d6cfc7;
-  --knd-dash-action: #22d3ee;
+  --knd-dash-bg: var(--bg-main);
+  --knd-dash-surface: var(--bg-surface);
+  --knd-dash-border: var(--border);
+  --knd-dash-text: var(--text-primary);
+  --knd-dash-muted: var(--text-secondary);
+  --knd-dash-accent: var(--accent-primary);
+  --knd-dash-action: var(--accent-action);
   --knd-dash-radius: 8px;
   --knd-dash-sidebar-w: 240px;
   --knd-dash-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -55,7 +55,7 @@ body.knd-saas-dashboard .glass-card-neon {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--overlay-scrim);
   z-index: 400;
   opacity: 0;
   pointer-events: none;

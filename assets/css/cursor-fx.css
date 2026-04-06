@@ -5,12 +5,8 @@
  */
 
 :root {
-  /* Tiny lens — hugging the pointer */
+  /* Tiny lens — hugging the pointer (colors: knd-tokens.css --knd-cfx-*) */
   --knd-cfx-disc: 52px;
-  --knd-cfx-cyan: rgb(62, 239, 255);
-  --knd-cfx-violet: rgb(196, 92, 255);
-  --knd-cfx-ember: rgb(255, 160, 72);
-  --knd-cfx-void-core: #010306;
   --knd-cfx-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 

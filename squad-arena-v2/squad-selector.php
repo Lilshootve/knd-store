@@ -17,28 +17,25 @@ $levelsCssV = is_file($levelsCss) ? filemtime($levelsCss) : 0;
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Mind Wars Squad — Squad Select</title>
+<link rel="stylesheet" href="/assets/css/knd-tokens.css?v=<?php echo (int) @filemtime(__DIR__ . '/../assets/css/knd-tokens.css'); ?>">
 <link rel="stylesheet" href="/assets/css/levels.css?v=<?php echo (int) $levelsCssV; ?>">
 <link rel="stylesheet" href="/games/mind-wars/mw-avatar-cards.css?v=<?php echo (int) $mwCardCssV; ?>">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&display=swap');
 
 :root {
-  --FD: 'Orbitron', monospace;
-  --t1: rgba(220,245,255,0.93);
-  --t2: rgba(150,210,230,0.6);
-  --t3: rgba(90,160,185,0.38);
-  --bg: #02040e;
-  --panel: rgba(3,8,22,0.94);
-  --cyan: #00e5ff;
-  --cyan2: #0af;
-  --gold: #ffd600;
-  --purple: #c158ff;
-  --red: #ff3d56;
-  --green: #00ff88;
-  --border: rgba(0,229,255,0.18);
-  --border-hot: rgba(0,229,255,0.55);
-  --text: #cce8ff;
-  --text-dim: rgba(150,190,230,0.5);
+  --bg: var(--bg-main);
+  --panel: var(--glass);
+  --cyan: var(--accent-action);
+  --cyan2: var(--c2);
+  --gold: var(--color-warning);
+  --purple: var(--accent-primary);
+  --red: var(--color-danger);
+  --green: var(--color-success);
+  --border: var(--accent-action-border);
+  --border-hot: var(--accent-action-veil-25);
+  --text: var(--text-primary);
+  --text-dim: var(--text-secondary);
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }

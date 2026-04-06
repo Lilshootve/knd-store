@@ -14,17 +14,17 @@ $rankLabel = $pos !== null ? '#' . (int) $pos : '—';
     <div class="logo-hex" aria-hidden="true">
       <svg viewBox="0 0 32 32" fill="none" width="32" height="32">
         <polygon points="16,2 28,9 28,23 16,30 4,23 4,9"
-          stroke="url(#mw-lobby-hexg)" stroke-width="1.5" fill="rgba(0,232,255,0.06)"/>
+          stroke="url(#mw-lobby-hexg)" stroke-width="1.5" fill="var(--accent-action-subtle)"/>
         <polygon points="16,8 23,12 23,20 16,24 9,20 9,12"
-          stroke="url(#mw-lobby-hexg2)" stroke-width="1" fill="rgba(0,232,255,0.04)" opacity="0.6"/>
+          stroke="url(#mw-lobby-hexg2)" stroke-width="1" fill="var(--accent-action-subtle)" opacity="0.6"/>
         <defs>
           <linearGradient id="mw-lobby-hexg" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#00e8ff"/>
-            <stop offset="100%" stop-color="#9b30ff"/>
+            <stop offset="0%" stop-color="var(--accent-action)"/>
+            <stop offset="100%" stop-color="var(--accent-primary)"/>
           </linearGradient>
           <linearGradient id="mw-lobby-hexg2" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#9b30ff"/>
-            <stop offset="100%" stop-color="#00e8ff"/>
+            <stop offset="0%" stop-color="var(--accent-primary)"/>
+            <stop offset="100%" stop-color="var(--accent-action)"/>
           </linearGradient>
         </defs>
       </svg>

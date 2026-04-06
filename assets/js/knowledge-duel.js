@@ -737,7 +737,7 @@
         enemyName:         data.enemy_name,
         enemyAvatarPath:   data.enemy_avatar_path || '',
         enemyQuote:        data.enemy_quote || '',
-        enemyTheme:        data.enemy_theme || '#9b30ff',
+        enemyTheme:        data.enemy_theme || '#d6cfc7',
         questions:         data.questions || [],
         index:             0,
         answers:           {},

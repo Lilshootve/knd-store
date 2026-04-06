@@ -1,0 +1,181 @@
+/**
+ * KND Store — canonical design tokens (single source of truth for color).
+ * Load immediately after Bootstrap, before all other /assets/css/* store sheets.
+ *
+ * theme-color meta in PHP must stay a literal hex matching --bg-main: #0B0B0B
+ */
+
+:root {
+  /* ─── Canonical palette (edit here to retheme the platform) ─── */
+  --bg-main: #0b0b0b;
+  --bg-surface: #111111;
+  --bg-card: #ffffff;
+  --border: #1f1f1f;
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1a1;
+  --text-dark: #111111;
+  --input-bg: #f3f3f1;
+  --accent-primary: #d6cfc7;
+  --accent-action: #22d3ee;
+
+  /* Derived (no raw hex in feature CSS — use these) */
+  --accent-action-muted: color-mix(in srgb, var(--accent-action) 35%, transparent);
+  --accent-action-ring: color-mix(in srgb, var(--accent-action) 22%, transparent);
+  --accent-action-subtle: color-mix(in srgb, var(--accent-action) 12%, transparent);
+  --accent-action-border: color-mix(in srgb, var(--accent-action) 22%, transparent);
+  --accent-action-veil-03: color-mix(in srgb, var(--accent-action) 6%, transparent);
+  --accent-action-veil-05: color-mix(in srgb, var(--accent-action) 8%, transparent);
+  --accent-action-veil-08: color-mix(in srgb, var(--accent-action) 12%, transparent);
+  --accent-action-veil-10: color-mix(in srgb, var(--accent-action) 14%, transparent);
+  --accent-action-veil-12: color-mix(in srgb, var(--accent-action) 16%, transparent);
+  --accent-action-veil-15: color-mix(in srgb, var(--accent-action) 20%, transparent);
+  --accent-action-veil-20: color-mix(in srgb, var(--accent-action) 26%, transparent);
+  --accent-action-veil-25: color-mix(in srgb, var(--accent-action) 32%, transparent);
+  --accent-primary-veil-06: color-mix(in srgb, var(--accent-primary) 10%, transparent);
+  --accent-primary-veil-08: color-mix(in srgb, var(--accent-primary) 12%, transparent);
+  --accent-primary-muted: color-mix(in srgb, var(--accent-primary) 55%, var(--bg-main));
+  --border-on-light: #e5e5e5;
+  --overlay-scrim: color-mix(in srgb, var(--bg-main) 60%, transparent);
+
+  /* Semantic (games / status — restrained, not neon) */
+  --color-success: #22c55e;
+  --color-warning: #ca8a04;
+  --color-danger: #ef4444;
+
+  /* Bootstrap 5.3 bridge (dark theme pages) */
+  --bs-body-bg: var(--bg-main);
+  --bs-body-color: var(--text-primary);
+  --bs-border-color: var(--border);
+  --bs-link-color: var(--accent-action);
+  --bs-link-hover-color: color-mix(in srgb, var(--accent-action) 82%, white);
+  --bs-primary: var(--accent-primary);
+  --bs-primary-rgb: 214, 207, 199;
+  --bs-secondary-color: var(--text-secondary);
+
+  /* ─── knd-skin legacy (orbit / topbar / games) ─── */
+  --void: var(--bg-main);
+  --deep: var(--bg-surface);
+  --surface: var(--bg-surface);
+  --glass: color-mix(in srgb, var(--bg-surface) 78%, transparent);
+  --glassl: color-mix(in srgb, var(--bg-surface) 55%, transparent);
+  --c: var(--accent-action);
+  --c2: color-mix(in srgb, var(--accent-action) 72%, var(--bg-main));
+  --cg: var(--accent-action-subtle);
+  --cb: var(--accent-action-border);
+  --m: var(--accent-primary);
+  --m2: var(--accent-primary-muted);
+  --mg: color-mix(in srgb, var(--accent-primary) 14%, transparent);
+  --gold: var(--color-warning);
+  --green: var(--color-success);
+  --red: var(--color-danger);
+  --orange: color-mix(in srgb, var(--color-warning) 65%, var(--color-danger));
+  --t1: color-mix(in srgb, var(--text-primary) 96%, var(--text-secondary));
+  --t2: color-mix(in srgb, var(--text-primary) 45%, var(--text-secondary));
+  --t3: var(--text-secondary);
+  --t4: color-mix(in srgb, var(--text-secondary) 45%, transparent);
+
+  /* Typography tokens (families loaded in knd-skin.css @import) */
+  --FD: 'Orbitron', monospace;
+  --FB: 'Rajdhani', sans-serif;
+  --FM: 'Share Tech Mono', monospace;
+  --knd-fs-2xs: 9px;
+  --knd-fs-xs: 10px;
+  --knd-fs-sm: 11px;
+
+  /* ─── knd-ui.css legacy ─── */
+  --knd-bg: var(--bg-main);
+  --knd-bg-alt: var(--bg-surface);
+  --knd-surface: var(--bg-surface);
+  --knd-surface-alt: color-mix(in srgb, var(--bg-surface) 94%, white);
+  --knd-border: color-mix(in srgb, var(--border) 55%, transparent);
+  --knd-border-mid: color-mix(in srgb, var(--border) 70%, var(--accent-action) 6%);
+  --knd-accent: var(--accent-action);
+  --knd-accent-soft: color-mix(in srgb, var(--accent-action) 70%, white);
+  --knd-cyan: var(--accent-action);
+  --knd-cyan-soft: color-mix(in srgb, var(--accent-action) 72%, white);
+  --knd-violet: var(--accent-primary);
+  --knd-magenta: var(--accent-primary);
+  --knd-text: var(--text-primary);
+  --knd-text-alt: var(--text-secondary);
+  --knd-muted: var(--text-secondary);
+  --knd-radius: 12px;
+  --knd-radius-sm: 8px;
+  --knd-shadow: 0 1px 0 color-mix(in srgb, var(--border) 75%, transparent);
+  --knd-btn-primary-start: color-mix(in srgb, var(--accent-primary) 92%, white);
+  --knd-btn-primary-mid: var(--accent-primary);
+  --knd-btn-primary-end: color-mix(in srgb, var(--accent-primary) 85%, var(--bg-main));
+  --knd-btn-primary-border: color-mix(in srgb, var(--accent-primary) 40%, var(--border));
+  --knd-btn-primary-text: var(--text-dark);
+  --knd-btn-primary-shadow: 0 4px 14px color-mix(in srgb, var(--bg-main) 65%, transparent);
+  --knd-btn-primary-shadow-hover: 0 6px 18px color-mix(in srgb, var(--bg-main) 72%, transparent);
+  --knd-spacing: 1rem;
+  --knd-transition: 0.2s ease;
+
+  /* ─── style.css legacy ─── */
+  --knd-neon-blue: var(--accent-action);
+  --knd-electric-purple: var(--accent-primary);
+  --knd-gunmetal-gray: var(--border);
+  --knd-black: var(--bg-main);
+  --knd-white: var(--bg-card);
+  --knd-dark-blue: var(--bg-main);
+  --knd-light-blue: var(--bg-surface);
+  --knd-accent-cyan: var(--accent-action);
+  --knd-accent-magenta: var(--accent-primary);
+
+  /* ─── SaaS shell ─── */
+  --knd-saas-bg: var(--bg-main);
+  --knd-saas-surface: var(--bg-card);
+  --knd-saas-muted: var(--text-secondary);
+  --knd-saas-accent: var(--accent-primary);
+  --knd-saas-text: var(--text-primary);
+  --knd-saas-text-inverse: var(--text-dark);
+  --knd-saas-border: color-mix(in srgb, var(--border) 85%, transparent);
+
+  /* ─── Auth split (card-on-dark) ─── */
+  --knd-auth-bg: var(--bg-main);
+  --knd-auth-card: var(--bg-card);
+  --knd-auth-input-bg: var(--input-bg);
+  --knd-auth-border: var(--border-on-light);
+  --knd-auth-text: var(--text-dark);
+  --knd-auth-text-muted: color-mix(in srgb, var(--text-dark) 45%, var(--text-secondary));
+  --knd-auth-placeholder: color-mix(in srgb, var(--text-secondary) 80%, var(--text-dark));
+  --knd-auth-beige: var(--accent-primary);
+  --knd-auth-cyan: var(--accent-action);
+  --knd-auth-cyan-ring: var(--accent-action-ring);
+  --knd-auth-card-accent: color-mix(in srgb, var(--text-dark) 72%, var(--accent-primary));
+  --knd-auth-card-accent-hover: color-mix(in srgb, var(--text-dark) 88%, var(--accent-primary));
+  --knd-auth-card-accent-ring: color-mix(in srgb, var(--accent-primary) 22%, transparent);
+  --knd-auth-card-accent-surface: color-mix(in srgb, var(--accent-primary) 18%, var(--bg-card));
+  --knd-auth-btn-hover: var(--text-dark);
+  --knd-auth-error: var(--color-danger);
+  --knd-auth-error-bg: color-mix(in srgb, var(--color-danger) 8%, transparent);
+  --knd-auth-transition: 150ms ease;
+  --knd-auth-font-ui: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --knd-auth-font-brand: "Orbitron", system-ui, sans-serif;
+
+  /* ─── Lastroll / deathroll lobby legacy ─── */
+  --lr-void: var(--void);
+  --lr-deep: var(--deep);
+  --lr-surface: var(--surface);
+  --lr-glass: var(--glass);
+  --lr-c: var(--c);
+  --lr-c2: var(--c2);
+  --lr-cg: var(--cg);
+  --lr-cb: var(--cb);
+  --lr-m: var(--m);
+  --lr-gold: var(--gold);
+  --lr-green: var(--green);
+  --lr-red: var(--red);
+  --lr-t1: var(--t1);
+  --lr-t2: var(--t2);
+  --lr-t3: var(--t3);
+  --lr-FD: var(--FD);
+  --lr-FB: var(--FB);
+  --lr-FM: var(--FM);
+
+  /* ─── Cursor FX (muted; avoid violet — use tokens) ─── */
+  --knd-cfx-cyan: color-mix(in srgb, var(--accent-action) 85%, white);
+  --knd-cfx-violet: color-mix(in srgb, var(--accent-primary) 70%, var(--bg-surface));
+  --knd-cfx-ember: color-mix(in srgb, var(--accent-primary) 50%, var(--color-warning));
+  --knd-cfx-void-core: var(--bg-main);
+}

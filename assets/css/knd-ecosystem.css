@@ -2,22 +2,7 @@
  * KND Ecosystem landing — scoped under .knd-ecosystem (no global body/html overrides).
  */
 .knd-ecosystem {
-  --void: #010508;
-  --deep: #020a10;
-  --surface: #04131c;
-  --glass: rgba(6, 24, 36, 0.72);
-  --c: #00e8ff;
-  --c2: #00a8bb;
-  --m: #d44fff;
-  --m2: #9b30ff;
-  --gold: #ffcc00;
-  --t1: rgba(220, 248, 255, 0.95);
-  --t2: rgba(155, 215, 235, 0.62);
-  --t3: rgba(90, 165, 190, 0.38);
-  --t4: rgba(60, 120, 145, 0.2);
-  --FD: "Orbitron", monospace;
-  --FB: "Rajdhani", sans-serif;
-  --FM: "Share Tech Mono", monospace;
+  /* Colors: knd-tokens.css (:root --void, --t1, …) */
   position: relative;
   z-index: 1;
   color: var(--t1);

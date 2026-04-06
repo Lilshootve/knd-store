@@ -9,8 +9,8 @@
   --c2: #00a8bb;
   --cg: rgba(0, 232, 255, 0.12);
   --cb: rgba(0, 232, 255, 0.22);
-  --m: #d44fff;
-  --m2: #9b30ff;
+  --m: var(--accent-primary);
+  --m2: var(--accent-primary-muted);
   --mg: rgba(212, 79, 255, 0.12);
   --gold: #ffcc00;
   --green: #00ff99;

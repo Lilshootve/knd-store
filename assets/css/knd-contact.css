@@ -8,7 +8,7 @@
   --glass: rgba(6, 24, 36, 0.72);
   --c: #00e8ff;
   --c2: #00a8bb;
-  --m: #d44fff;
+  --m: var(--accent-primary);
   --gold: #ffcc00;
   --green: #00ff99;
   --red: #ff2255;
