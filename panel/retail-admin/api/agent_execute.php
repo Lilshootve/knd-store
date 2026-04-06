@@ -3,7 +3,7 @@
  * POST /retail-admin/api/agent_execute.php
  * Session + CSRF → forwards to /api/agent/execute.php (worker token server-side only).
  *
- * Body (JSON): { "tool": "...", "input": {...}, "simulate"?: bool, "confirm_id"?: string, "currency"?: string }
+ * Body (JSON): { "tool": "...", "input": {...}, "simulate"?: bool, "confirm_id"?: string, "currency"?: string, "user_id"?: string|int (required for retail when using Bearer-only auth) }
  */
 
 declare(strict_types=1);
@@ -27,35 +27,41 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$csrfBypass = false;
-
-if (trim((string) (knd_env('KND_DISABLE_CSRF') ?? '')) === '1') {
-    $csrfBypass = true;
-}
-
-if (!$csrfBypass) {
-    $expectedAgent = knd_agents_token();
-    if ($expectedAgent !== '') {
-        $authHeader = knd_request_authorization_header();
-        $provided = '';
-        if (str_starts_with($authHeader, 'Bearer ')) {
-            $provided = trim(substr($authHeader, 7));
-        }
-        if ($provided !== '' && hash_equals($expectedAgent, $provided)) {
-            $csrfBypass = true;
-        }
+$bearerAuth = false;
+$expectedAgent = knd_agents_token();
+if ($expectedAgent !== '') {
+    $authHeader = knd_request_authorization_header();
+    $provided = '';
+    if (str_starts_with($authHeader, 'Bearer ')) {
+        $provided = trim(substr($authHeader, 7));
+    }
+    if ($provided !== '' && hash_equals($expectedAgent, $provided)) {
+        $bearerAuth = true;
     }
 }
 
+$csrfBypass = trim((string) (knd_env('KND_DISABLE_CSRF') ?? '')) === '1' || $bearerAuth;
+
 if ($csrfBypass) {
     error_log('[agent_execute] CSRF bypass via token or env');
+}
+if ($bearerAuth) {
+    error_log('[agent_execute] AUTH bypass via token');
 }
 
 if (!$csrfBypass) {
     csrf_guard();
 }
 
-api_require_login();
+if (!$bearerAuth && !is_logged_in()) {
+    http_response_code(401);
+    header('Content-Type: application/json');
+    echo json_encode([
+        'ok'    => false,
+        'error' => ['code' => 'AUTH_REQUIRED', 'message' => 'You must be logged in.'],
+    ]);
+    exit;
+}
 
 $raw = file_get_contents('php://input');
 $payload = is_string($raw) && $raw !== '' ? json_decode($raw, true) : null;
@@ -84,8 +90,19 @@ $simulate = !empty($payload['simulate']);
 $confirmId = isset($payload['confirm_id']) && is_string($payload['confirm_id']) ? $payload['confirm_id'] : null;
 $currency = isset($payload['currency']) && is_string($payload['currency']) ? $payload['currency'] : null;
 
-$uid = current_user_id();
-if ($uid === null || $uid <= 0) {
+if ($bearerAuth) {
+    $uid = 0;
+    if (isset($payload['user_id']) && (is_string($payload['user_id']) || is_int($payload['user_id']))) {
+        $uid = (int) $payload['user_id'];
+    }
+} else {
+    $uid = current_user_id();
+    if ($uid === null) {
+        $uid = 0;
+    }
+}
+
+if (!$bearerAuth && $uid <= 0) {
     http_response_code(401);
     echo json_encode(['ok' => false, 'error' => 'Not logged in']);
     exit;
