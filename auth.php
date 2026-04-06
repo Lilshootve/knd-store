@@ -98,7 +98,7 @@ if ($embed) {
             <div class="knd-auth-split__brand-inner">
                 <span class="knd-auth-split__mark" aria-hidden="true"></span>
                 <h1 class="knd-auth-split__title">KND Store</h1>
-                <p class="knd-auth-split__tagline">Automate your business with AI</p>
+                <p class="knd-auth-split__tagline"><?php echo t('dr.auth.brand_tagline', 'Your Universe'); ?></p>
                 <a class="knd-auth-split__back" href="/index.php"><?php echo t('dr.auth.back_to_site', 'Back to site'); ?></a>
             </div>
         </aside>
