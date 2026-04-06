@@ -25,19 +25,28 @@ if (!$pdo) { json_error('DB_CONNECTION_FAILED', 'Database connection failed.', 5
 $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
 rate_limit_guard($pdo, "login:{$ip}", 10, 300);
 
-$username = trim($_POST['username'] ?? '');
+$identifier = trim((string) ($_POST['login'] ?? $_POST['email'] ?? $_POST['username'] ?? ''));
 $password = $_POST['password'] ?? '';
 
-if ($username === '' || $password === '') {
-    json_error('MISSING_FIELDS', 'Username and password are required.');
+if ($identifier === '' || $password === '') {
+    json_error('MISSING_FIELDS', 'Email and password are required.');
 }
 
-$stmt = $pdo->prepare('SELECT id, username, password_hash, email, email_verified FROM users WHERE username = ? LIMIT 1');
-$stmt->execute([$username]);
+if (str_contains($identifier, '@')) {
+    $stmt = $pdo->prepare(
+        'SELECT id, username, password_hash, email, email_verified FROM users WHERE LOWER(email) = LOWER(?) LIMIT 1'
+    );
+    $stmt->execute([$identifier]);
+} else {
+    $stmt = $pdo->prepare(
+        'SELECT id, username, password_hash, email, email_verified FROM users WHERE username = ? LIMIT 1'
+    );
+    $stmt->execute([$identifier]);
+}
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$user || !password_verify($password, $user['password_hash'])) {
-    json_error('INVALID_CREDENTIALS', 'Invalid username or password.');
+    json_error('INVALID_CREDENTIALS', 'Invalid email or password.');
 }
 
 auth_login((int) $user['id'], $user['username']);

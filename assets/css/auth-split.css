@@ -1,0 +1,487 @@
+/**
+ * KND Store — split-screen auth (login / register)
+ * Dark brand panel + light form card. No animations.
+ */
+
+:root {
+  --knd-auth-bg: #0b0b0b;
+  --knd-auth-accent: #2ee6d6;
+  --knd-auth-accent-dim: rgba(46, 230, 214, 0.35);
+  --knd-auth-card: #f7f7f7;
+  --knd-auth-card-border: #e8e8e8;
+  --knd-auth-text: #1a1a1a;
+  --knd-auth-text-muted: #525252;
+  --knd-auth-placeholder: #737373;
+}
+
+/* Full-height split; hide global chrome for focused auth */
+body.knd-auth-split-page #bg {
+  display: none !important;
+}
+
+body.knd-auth-split-page header.knd-admin-topbar {
+  display: none !important;
+}
+
+body.knd-auth-split-page.auth-page.knd-saas-app {
+  background: var(--knd-auth-bg) !important;
+  min-height: 100vh;
+}
+
+body.knd-auth-split-page .knd-access-shell {
+  padding: 0;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* ── Split grid ───────────────────────────────────────── */
+.knd-auth-split {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(320px, 1.1fr);
+  min-height: 100vh;
+  width: 100%;
+}
+
+.knd-auth-split__brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(2rem, 5vw, 4rem);
+  background: var(--knd-auth-bg);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle vertical accent — minimal KND signal */
+.knd-auth-split__brand::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 3px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    var(--knd-auth-accent-dim) 20%,
+    var(--knd-auth-accent) 50%,
+    var(--knd-auth-accent-dim) 80%,
+    transparent
+  );
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.knd-auth-split__brand-inner {
+  max-width: 320px;
+  position: relative;
+  z-index: 1;
+}
+
+.knd-auth-split__mark {
+  display: block;
+  width: 40px;
+  height: 3px;
+  background: var(--knd-auth-accent);
+  border-radius: 2px;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+.knd-auth-split__title {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.5rem, 3vw, 1.875rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.knd-auth-split__tagline {
+  margin: 0 0 2rem;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: #a1a1a1;
+  font-weight: 400;
+  max-width: 28ch;
+}
+
+.knd-auth-split__back {
+  font-size: 0.8125rem;
+  color: #737373;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.knd-auth-split__back:hover {
+  color: var(--knd-auth-accent);
+}
+
+/* ── Form column ─────────────────────────────────────── */
+.knd-auth-split__main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  background: #0e0e0e;
+}
+
+.knd-auth-split__card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--knd-auth-card);
+  border: 1px solid var(--knd-auth-card-border);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  padding: clamp(1.75rem, 4vw, 2.25rem);
+}
+
+.knd-auth-split .knd-access-form-panel {
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+}
+
+/* Tabs: Sign in / Create account */
+.knd-auth-split .knd-access-tab-switch {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--knd-auth-card-border);
+  padding-bottom: 0;
+}
+
+.knd-auth-split .knd-access-tab-btn {
+  flex: 1;
+  text-align: center;
+  padding: 0.65rem 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--knd-auth-text-muted);
+  border: none;
+  background: transparent !important;
+  cursor: pointer;
+  margin-bottom: -1px;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.knd-auth-split .knd-access-tab-btn::after {
+  height: 2px;
+  left: 15%;
+  right: 15%;
+  background: var(--knd-auth-accent);
+}
+
+body.knd-auth-split-page #knd-auth-tab-login:checked ~ .knd-access-tab-switch label[for="knd-auth-tab-login"],
+body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-access-tab-switch label[for="knd-auth-tab-register"] {
+  color: var(--knd-auth-text) !important;
+  font-weight: 600;
+}
+
+body.knd-auth-split-page #knd-auth-tab-login:checked ~ .knd-access-tab-switch label[for="knd-auth-tab-login"]::after,
+body.knd-auth-split-page #knd-auth-tab-register:checked ~ .knd-access-tab-switch label[for="knd-auth-tab-register"]::after {
+  transform: scaleX(1);
+}
+
+/* Headings inside card */
+.knd-auth-split .knd-access-form-heading h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--knd-auth-text);
+  letter-spacing: -0.02em;
+  text-transform: none;
+  margin: 0 0 0.35rem;
+}
+
+.knd-auth-split .knd-access-form-heading p {
+  font-size: 0.875rem;
+  color: var(--knd-auth-text-muted);
+  margin: 0 0 1.25rem;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Fields — shared */
+.knd-auth-split .knd-access-field,
+.knd-auth-field {
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.knd-auth-split .knd-access-field--password,
+.knd-auth-field--password {
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.knd-auth-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--knd-auth-text);
+  margin-bottom: 0.35rem;
+}
+
+.knd-auth-split .knd-access-input,
+.knd-auth-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.9375rem;
+  border: 1px solid #d4d4d4;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--knd-auth-text);
+  font-family: "Inter", system-ui, sans-serif;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.knd-auth-split .knd-access-input::placeholder,
+.knd-auth-input::placeholder {
+  color: var(--knd-auth-placeholder);
+}
+
+.knd-auth-split .knd-access-input:hover,
+.knd-auth-input:hover {
+  border-color: #c4c4c4;
+}
+
+.knd-auth-split .knd-access-input:focus,
+.knd-auth-input:focus {
+  outline: none;
+  border-color: var(--knd-auth-accent);
+  box-shadow: 0 0 0 3px rgba(46, 230, 214, 0.15);
+}
+
+.knd-auth-split .knd-access-input-icon {
+  display: none;
+}
+
+.knd-auth-split .knd-access-pwd-toggle {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  border: none;
+  background: none;
+  color: var(--knd-auth-text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.knd-auth-split .knd-access-field--password .knd-access-input,
+.knd-auth-field--password .knd-auth-input {
+  padding-right: 4rem;
+}
+
+/* Remember + forgot row */
+.knd-auth-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.knd-auth-remember {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--knd-auth-text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.knd-auth-remember input {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--knd-auth-accent);
+}
+
+.knd-auth-inline-link {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--knd-auth-text-muted);
+  text-decoration: none;
+}
+
+.knd-auth-inline-link:hover {
+  color: var(--knd-auth-text);
+}
+
+/* Hide old checkbox row styling on login — we use knd-auth-row */
+.knd-auth-split #form-login .knd-access-check-row {
+  display: none;
+}
+
+.knd-auth-split #form-login .knd-auth-row .knd-access-check-row {
+  display: none;
+}
+
+/* Primary button */
+.knd-auth-split .knd-access-btn,
+.knd-auth-btn {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.knd-auth-split .knd-access-btn-primary,
+.knd-auth-btn--primary {
+  background: var(--knd-auth-text);
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.knd-auth-split .knd-access-btn-primary:hover,
+.knd-auth-btn--primary:hover {
+  background: #000000;
+}
+
+.knd-auth-split .knd-access-btn-outline {
+  background: #ffffff;
+  color: var(--knd-auth-text);
+  border: 1px solid #d4d4d4;
+}
+
+.knd-auth-split .knd-access-btn-outline:hover {
+  background: #fafafa;
+}
+
+.knd-auth-footer-text {
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--knd-auth-text-muted);
+  margin: 0;
+}
+
+.knd-auth-footer-text a,
+.knd-auth-split .knd-access-auth-link {
+  color: var(--knd-auth-text);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.knd-auth-footer-text a:hover,
+.knd-auth-split .knd-access-auth-link:hover {
+  color: var(--knd-auth-accent);
+}
+
+.knd-auth-split .knd-access-auth-links {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Register: show hints */
+.knd-auth-split .knd-access-input-hint {
+  font-size: 0.75rem;
+  color: var(--knd-auth-text-muted);
+  margin-top: 0.35rem;
+}
+
+/* Alerts */
+.knd-auth-split .knd-access-alert {
+  margin-top: 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+
+/* Aux panels (forgot / verify) */
+.knd-auth-split .knd-access-aux-panel {
+  color: var(--knd-auth-text);
+}
+
+.knd-auth-split .knd-access-aux-panel .knd-access-form-heading h2 {
+  text-transform: none;
+}
+
+/* Panels: override auth.css flex + animation (no motion per product brief) */
+body.knd-auth-split-page #auth-main-stack > .knd-access-auth-panel {
+  display: none !important;
+}
+
+body.knd-auth-split-page #knd-auth-tab-login:checked ~ #panel-login,
+body.knd-auth-split-page #knd-auth-tab-register:checked ~ #panel-register {
+  display: block !important;
+  animation: none !important;
+}
+
+body.knd-auth-split-page #knd-auth-tab-login:checked ~ #panel-register,
+body.knd-auth-split-page #knd-auth-tab-register:checked ~ #panel-login {
+  display: none !important;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 900px) {
+  .knd-auth-split {
+    grid-template-columns: 1fr;
+    min-height: 100vh;
+  }
+
+  .knd-auth-split__brand {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 2rem 1.5rem 1.5rem;
+    justify-content: flex-start;
+  }
+
+  .knd-auth-split__brand::before {
+    top: 0;
+    bottom: auto;
+    left: 1.5rem;
+    right: 1.5rem;
+    width: auto;
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--knd-auth-accent-dim) 15%,
+      var(--knd-auth-accent) 50%,
+      var(--knd-auth-accent-dim) 85%,
+      transparent
+    );
+  }
+
+  .knd-auth-split__brand-inner {
+    max-width: none;
+  }
+
+  .knd-auth-split__main {
+    padding: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .knd-auth-split__card {
+    max-width: none;
+  }
+}
+
+/* Embed: single column, hide brand for space */
+body.arena-embed.knd-auth-split-page .knd-auth-split__brand {
+  display: none;
+}
+
+body.arena-embed.knd-auth-split-page .knd-auth-split {
+  grid-template-columns: 1fr;
+}
+
+body.arena-embed.knd-auth-split-page .knd-auth-split__main {
+  background: var(--knd-auth-bg);
+}
+
+body.arena-embed.knd-auth-split-page .knd-auth-split__card {
+  background: var(--knd-auth-card);
+}

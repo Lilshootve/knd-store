@@ -48,6 +48,7 @@ $seoTitle = 'KND Access — Sign In';
 $seoDesc  = 'Sign in to your KND ecosystem. Access KND Arena, LastRoll, Support Credits, and more.';
 $authCssV = file_exists(__DIR__ . '/assets/css/auth.css') ? filemtime(__DIR__ . '/assets/css/auth.css') : 0;
 $saasCssV = file_exists(__DIR__ . '/assets/css/saas.css') ? filemtime(__DIR__ . '/assets/css/saas.css') : 0;
+$authSplitCssV = file_exists(__DIR__ . '/assets/css/auth-split.css') ? filemtime(__DIR__ . '/assets/css/auth-split.css') : 0;
 $arenaEmbedCssV = file_exists(__DIR__ . '/assets/css/arena-embed.css') ? filemtime(__DIR__ . '/assets/css/arena-embed.css') : 0;
 
 if ($embed) {
@@ -64,9 +65,10 @@ if ($embed) {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/auth.css?v=<?php echo $authCssV; ?>">
     <link rel="stylesheet" href="/assets/css/saas.css?v=<?php echo $saasCssV; ?>">
+    <link rel="stylesheet" href="/assets/css/auth-split.css?v=<?php echo $authSplitCssV; ?>">
     <link rel="stylesheet" href="/assets/css/arena-embed.css?v=<?php echo $arenaEmbedCssV; ?>">
 </head>
-<body class="arena-embed auth-page knd-access-page knd-saas-app">
+<body class="arena-embed auth-page knd-access-page knd-saas-app knd-auth-split-page">
 <div class="arena-embed-inner">
 <?php
 } else {
@@ -81,21 +83,26 @@ if ($embed) {
     $ogHead  .= '    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">' . "\n";
     $ogHead  .= '    <link rel="stylesheet" href="/assets/css/auth.css?v=' . $authCssV . '">' . "\n";
     $ogHead  .= '    <link rel="stylesheet" href="/assets/css/saas.css?v=' . $saasCssV . '">' . "\n";
+    $ogHead  .= '    <link rel="stylesheet" href="/assets/css/auth-split.css?v=' . $authSplitCssV . '">' . "\n";
     echo generateHeader($seoTitle, $seoDesc, $ogHead);
 }
 ?>
 
 <?php if (!$embed) echo generateNavigation(); ?>
 
-<section class="knd-access-shell" aria-label="KND Access">
-    <div class="knd-access-container">
+<section class="knd-access-shell" aria-label="KND Store — Sign in">
+    <div class="knd-auth-split">
+        <aside class="knd-auth-split__brand">
+            <div class="knd-auth-split__brand-inner">
+                <span class="knd-auth-split__mark" aria-hidden="true"></span>
+                <h1 class="knd-auth-split__title">KND Store</h1>
+                <p class="knd-auth-split__tagline">Automate your business with AI</p>
+                <a class="knd-auth-split__back" href="/index.php"><?php echo t('dr.auth.back_to_site', 'Back to site'); ?></a>
+            </div>
+        </aside>
 
-        <div class="knd-access-brand knd-saas-access-brand">
-            <div class="knd-saas-access-logo">KND Store</div>
-            <div class="knd-access-brand-tagline knd-saas-access-tagline"><?php echo t('dr.auth.brand_tagline', 'Sign in to your workspace'); ?></div>
-            <p class="knd-saas-access-sub"><?php echo t('dr.auth.brand_secure', 'Secure session · Encrypted credentials'); ?></p>
-        </div>
-
+        <div class="knd-auth-split__main">
+        <div class="knd-auth-split__card">
         <div class="knd-access-form-panel">
 
             <div id="auth-main-stack"<?php echo $showVerify ? ' style="display:none"' : ''; ?>>
@@ -103,62 +110,61 @@ if ($embed) {
                 <input type="radio" name="knd-auth-tab" id="knd-auth-tab-login" class="knd-access-tab-radio" value="login" checked autocomplete="off"<?php echo $showVerify ? ' tabindex="-1"' : ''; ?>>
                 <input type="radio" name="knd-auth-tab" id="knd-auth-tab-register" class="knd-access-tab-radio" value="register" autocomplete="off"<?php echo $showVerify ? ' tabindex="-1"' : ''; ?>>
                 <div class="knd-access-tab-switch" id="auth-tab-switch" role="tablist"<?php echo $showVerify ? ' style="display:none"' : ''; ?>>
-                    <label for="knd-auth-tab-login" class="knd-access-tab-btn" id="knd-label-login" role="tab"><?php echo t('dr.auth.login', 'Login'); ?></label>
-                    <label for="knd-auth-tab-register" class="knd-access-tab-btn" id="knd-label-register" role="tab"><?php echo t('dr.auth.register', 'Register'); ?></label>
+                    <label for="knd-auth-tab-login" class="knd-access-tab-btn" id="knd-label-login" role="tab"><?php echo t('dr.auth.tab_sign_in', 'Sign in'); ?></label>
+                    <label for="knd-auth-tab-register" class="knd-access-tab-btn" id="knd-label-register" role="tab"><?php echo t('dr.auth.tab_create_account', 'Create account'); ?></label>
                 </div>
 
                 <div id="panel-login" class="knd-access-auth-panel" role="tabpanel" aria-labelledby="knd-label-login">
                     <div class="knd-access-form-heading">
-                        <h2><?php echo t('dr.auth.signal_in', 'SIGNAL IN'); ?></h2>
-                        <p><?php echo t('dr.auth.signal_in_sub', 'ACCESS YOUR KND ACCOUNT'); ?></p>
+                        <h2><?php echo t('dr.auth.welcome_back', 'Welcome back'); ?></h2>
+                        <p><?php echo t('dr.auth.sign_in_workspace', 'Sign in to your workspace'); ?></p>
                     </div>
-                    <form id="form-login" autocomplete="on">
+                    <form id="form-login" autocomplete="on" novalidate>
                         <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-                        <div class="knd-access-field">
-                            <input type="text" name="username" id="login-username" class="knd-access-input" placeholder="<?php echo htmlspecialchars(t('dr.auth.username', 'Username'), ENT_QUOTES); ?>" required minlength="3" maxlength="24" pattern="[A-Za-z0-9_]+" autocomplete="username">
-                            <span class="knd-access-input-icon" aria-hidden="true">◆</span>
+                        <div class="knd-access-field knd-auth-field">
+                            <label class="knd-auth-label" for="login-email"><?php echo t('dr.auth.email', 'Email'); ?></label>
+                            <input type="email" name="login" id="login-email" class="knd-access-input knd-auth-input" placeholder="you@company.com" required maxlength="255" autocomplete="email" inputmode="email">
                         </div>
-                        <div class="knd-access-field knd-access-field--password">
-                            <input type="password" name="password" id="login-password" class="knd-access-input" placeholder="<?php echo htmlspecialchars(t('dr.auth.password', 'Password'), ENT_QUOTES); ?>" required minlength="8" autocomplete="current-password">
-                            <span class="knd-access-input-icon" aria-hidden="true">🔒</span>
-                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="login-password" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>">👁</button>
+                        <div class="knd-access-field knd-access-field--password knd-auth-field knd-auth-field--password">
+                            <label class="knd-auth-label" for="login-password"><?php echo t('dr.auth.password', 'Password'); ?></label>
+                            <input type="password" name="password" id="login-password" class="knd-access-input knd-auth-input" placeholder="••••••••" required minlength="8" autocomplete="current-password">
+                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="login-password" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>"><?php echo t('dr.auth.show', 'Show'); ?></button>
                         </div>
-                        <label class="knd-access-check-row" for="remember-login">
-                            <input type="checkbox" id="remember-login" name="remember_login" class="knd-access-check-sr">
-                            <span class="knd-access-check-box" aria-hidden="true"></span>
-                            <span class="knd-access-check-label"><?php echo t('dr.auth.remember_login', 'Remember username and password on this device'); ?></span>
-                        </label>
-                        <button type="submit" class="knd-access-btn knd-access-btn-primary">
-                            <span class="auth-btn-text">⚡ <?php echo t('dr.auth.access_platform', 'Access Platform'); ?></span>
+                        <div class="knd-auth-row">
+                            <label class="knd-auth-remember" for="remember-login">
+                                <input type="checkbox" id="remember-login" name="remember_login" value="1">
+                                <?php echo t('dr.auth.remember_me', 'Remember me'); ?>
+                            </label>
+                            <a href="#" id="link-forgot" class="knd-auth-inline-link"><?php echo t('dr.auth.forgot_password', 'Forgot password?'); ?></a>
+                        </div>
+                        <button type="submit" class="knd-access-btn knd-access-btn-primary knd-auth-btn knd-auth-btn--primary">
+                            <?php echo t('dr.auth.log_in', 'Log in'); ?>
                         </button>
-                        <div class="knd-access-auth-links">
-                            <a href="#" id="link-forgot" class="knd-access-auth-link"><?php echo t('dr.auth.forgot_link', 'Forgot your password or username?'); ?></a>
-                            <a href="#" id="link-to-register" class="knd-access-auth-link"><?php echo t('dr.auth.no_account', "Don't have an account? Register"); ?></a>
-                        </div>
+                        <p class="knd-auth-footer-text"><?php echo t('dr.auth.no_account_prompt', "Don't have an account?"); ?> <a href="#" id="link-to-register"><?php echo t('dr.auth.create_account', 'Create account'); ?></a></p>
                     </form>
                 </div>
 
                 <div id="panel-register" class="knd-access-auth-panel" role="tabpanel" aria-labelledby="knd-label-register">
                     <div class="knd-access-form-heading">
-                        <h2><?php echo t('dr.auth.new_signal', 'NEW SIGNAL'); ?></h2>
-                        <p><?php echo t('dr.auth.new_signal_sub', 'CREATE YOUR KND IDENTITY'); ?></p>
+                        <h2><?php echo t('dr.auth.create_workspace', 'Create your workspace'); ?></h2>
+                        <p><?php echo t('dr.auth.create_workspace_sub', 'Start with a username and business email'); ?></p>
                     </div>
                     <form id="form-register" autocomplete="on">
                         <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-                        <div class="knd-access-field">
-                            <input type="text" name="username" id="reg-username" class="knd-access-input" placeholder="<?php echo htmlspecialchars(t('dr.auth.username', 'Username'), ENT_QUOTES); ?>" required minlength="3" maxlength="24" pattern="[A-Za-z0-9_]+" autocomplete="username">
-                            <span class="knd-access-input-icon" aria-hidden="true">◆</span>
+                        <div class="knd-access-field knd-auth-field">
+                            <label class="knd-auth-label" for="reg-username"><?php echo t('dr.auth.username', 'Username'); ?></label>
+                            <input type="text" name="username" id="reg-username" class="knd-access-input knd-auth-input" placeholder="your_name" required minlength="3" maxlength="24" pattern="[A-Za-z0-9_]+" autocomplete="username">
                             <div class="knd-access-input-hint"><?php echo t('dr.auth.username_hint', '3-24 chars: letters, numbers, underscore'); ?></div>
                         </div>
-                        <div class="knd-access-field">
-                            <input type="email" name="email" id="reg-email" class="knd-access-input" placeholder="<?php echo htmlspecialchars(t('dr.auth.email', 'Email'), ENT_QUOTES); ?>" required maxlength="255" autocomplete="email">
-                            <span class="knd-access-input-icon" aria-hidden="true">✉</span>
+                        <div class="knd-access-field knd-auth-field">
+                            <label class="knd-auth-label" for="reg-email"><?php echo t('dr.auth.email', 'Email'); ?></label>
+                            <input type="email" name="email" id="reg-email" class="knd-access-input knd-auth-input" placeholder="you@company.com" required maxlength="255" autocomplete="email">
                             <div class="knd-access-input-hint"><?php echo t('dr.auth.email_hint', 'We\'ll send a verification code'); ?></div>
                         </div>
-                        <div class="knd-access-field knd-access-field--password">
-                            <input type="password" name="password" id="reg-password" class="knd-access-input" placeholder="<?php echo htmlspecialchars(t('dr.auth.password', 'Password'), ENT_QUOTES); ?>" required minlength="8" autocomplete="new-password">
-                            <span class="knd-access-input-icon" aria-hidden="true">🔒</span>
-                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reg-password" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>">👁</button>
+                        <div class="knd-access-field knd-access-field--password knd-auth-field knd-auth-field--password">
+                            <label class="knd-auth-label" for="reg-password"><?php echo t('dr.auth.password', 'Password'); ?></label>
+                            <input type="password" name="password" id="reg-password" class="knd-access-input knd-auth-input" placeholder="••••••••" required minlength="8" autocomplete="new-password">
+                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reg-password" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>"><?php echo t('dr.auth.show', 'Show'); ?></button>
                             <div class="knd-access-pwd-strength">
                                 <div class="knd-access-pwd-str-seg"></div>
                                 <div class="knd-access-pwd-str-seg"></div>
@@ -168,17 +174,15 @@ if ($embed) {
                             <div class="knd-access-pwd-str-label" id="reg-pwd-str-label"></div>
                             <div class="knd-access-input-hint knd-access-input-hint--below-strength"><?php echo t('dr.auth.password_hint', 'Minimum 8 characters'); ?></div>
                         </div>
-                        <div class="knd-access-field knd-access-field--password">
-                            <input type="password" name="password_confirm" id="reg-password-confirm" class="knd-access-input" placeholder="<?php echo htmlspecialchars(t('dr.auth.confirm_password', 'Confirm Password'), ENT_QUOTES); ?>" required minlength="8" autocomplete="new-password">
-                            <span class="knd-access-input-icon" aria-hidden="true">🔒</span>
-                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reg-password-confirm" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>">👁</button>
+                        <div class="knd-access-field knd-access-field--password knd-auth-field knd-auth-field--password">
+                            <label class="knd-auth-label" for="reg-password-confirm"><?php echo t('dr.auth.confirm_password', 'Confirm password'); ?></label>
+                            <input type="password" name="password_confirm" id="reg-password-confirm" class="knd-access-input knd-auth-input" placeholder="••••••••" required minlength="8" autocomplete="new-password">
+                            <button type="button" class="knd-access-pwd-toggle" data-knd-toggle-pwd="reg-password-confirm" aria-label="<?php echo htmlspecialchars(t('dr.auth.toggle_password', 'Toggle password visibility'), ENT_QUOTES); ?>"><?php echo t('dr.auth.show', 'Show'); ?></button>
                         </div>
-                        <button type="submit" class="knd-access-btn knd-access-btn-outline">
-                            <span class="auth-btn-text">⬡ <?php echo t('dr.auth.register', 'Register'); ?></span>
+                        <button type="submit" class="knd-access-btn knd-access-btn-primary knd-auth-btn knd-auth-btn--primary">
+                            <?php echo t('dr.auth.register', 'Create account'); ?>
                         </button>
-                        <div class="knd-access-auth-links">
-                            <a href="#" id="link-to-login" class="knd-access-auth-link"><?php echo t('dr.auth.have_account', 'Already have an account? Log in'); ?></a>
-                        </div>
+                        <p class="knd-auth-footer-text"><?php echo t('dr.auth.have_account_prompt', 'Already have an account?'); ?> <a href="#" id="link-to-login"><?php echo t('dr.auth.sign_in', 'Sign in'); ?></a></p>
                     </form>
                 </div>
 
@@ -270,6 +274,8 @@ if ($embed) {
             </div>
 
         </div>
+        </div>
+        </div>
     </div>
 </section>
 
@@ -283,7 +289,7 @@ const REDIRECT = <?php echo json_encode($redirect); ?>;
 const SHOW_VERIFY = <?php echo $showVerify ? 'true' : 'false'; ?>;
 const LOGIN_STORAGE_KEY = 'knd_auth_saved_login_v1';
 const loginForm = document.getElementById('form-login');
-const loginUsernameInput = loginForm ? loginForm.querySelector('input[name="username"]') : null;
+const loginEmailInput = loginForm ? loginForm.querySelector('input[name="login"]') : null;
 const loginPasswordInput = loginForm ? loginForm.querySelector('input[name="password"]') : null;
 const loginRememberInput = document.getElementById('remember-login');
 
@@ -338,18 +344,19 @@ if (SHOW_VERIFY) {
 }
 
 function loadRememberedLogin() {
-    if (!loginUsernameInput || !loginPasswordInput || !loginRememberInput) return;
+    if (!loginEmailInput || !loginPasswordInput || !loginRememberInput) return;
     try {
         const raw = localStorage.getItem(LOGIN_STORAGE_KEY);
         if (!raw) return;
         const saved = JSON.parse(raw);
         if (!saved || typeof saved !== 'object') return;
 
-        const username = typeof saved.username === 'string' ? saved.username : '';
+        const loginVal = typeof saved.login === 'string' ? saved.login
+            : (typeof saved.username === 'string' ? saved.username : '');
         const password = typeof saved.password === 'string' ? saved.password : '';
-        if (!username || !password) return;
+        if (!loginVal || !password) return;
 
-        loginUsernameInput.value = username;
+        loginEmailInput.value = loginVal;
         loginPasswordInput.value = password;
         loginRememberInput.checked = true;
     } catch (error) {
@@ -357,9 +364,9 @@ function loadRememberedLogin() {
     }
 }
 
-function saveRememberedLogin(username, password) {
+function saveRememberedLogin(loginVal, password) {
     try {
-        localStorage.setItem(LOGIN_STORAGE_KEY, JSON.stringify({ username, password }));
+        localStorage.setItem(LOGIN_STORAGE_KEY, JSON.stringify({ login: loginVal, password }));
     } catch (error) {
         console.warn('Could not save remembered login data:', error);
     }
@@ -393,7 +400,7 @@ if (loginForm) loginForm.addEventListener('submit', function(e) {
         btn.disabled = true;
     }
     const fd = new FormData(this);
-    const username = loginUsernameInput ? loginUsernameInput.value.trim() : '';
+    const loginVal = loginEmailInput ? loginEmailInput.value.trim() : '';
     const password = loginPasswordInput ? loginPasswordInput.value : '';
     const shouldRemember = !!(loginRememberInput && loginRememberInput.checked);
     fetch('/api/auth/login.php', { method: 'POST', body: fd, credentials: 'same-origin' })
@@ -405,8 +412,8 @@ if (loginForm) loginForm.addEventListener('submit', function(e) {
                 btn.disabled = false;
             }
             if (d.ok) {
-                if (shouldRemember && username && password) {
-                    saveRememberedLogin(username, password);
+                if (shouldRemember && loginVal && password) {
+                    saveRememberedLogin(loginVal, password);
                 } else {
                     clearRememberedLogin();
                 }

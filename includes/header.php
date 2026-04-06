@@ -61,7 +61,7 @@ function generateHeader($title = 'KND Store - Tienda Galáctica', $description =
         $bodyClass .= ' arena-info-page';
     }
     if ($current_page === 'auth.php') {
-        $bodyClass .= ' auth-page knd-saas-app';
+        $bodyClass .= ' auth-page knd-saas-app knd-auth-split-page';
     }
     if ($current_page === 'dashboard.php') {
         $bodyClass .= ' knd-saas-app knd-saas-dashboard';
