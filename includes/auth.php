@@ -8,7 +8,10 @@ function is_logged_in(): bool {
 }
 
 function current_user_id(): ?int {
-    return $_SESSION['dr_user_id'] ?? null;
+    if (!isset($_SESSION['dr_user_id']) || $_SESSION['dr_user_id'] === '' || $_SESSION['dr_user_id'] === false) {
+        return null;
+    }
+    return (int) $_SESSION['dr_user_id'];
 }
 
 function current_username(): ?string {

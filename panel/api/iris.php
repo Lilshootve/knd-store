@@ -270,6 +270,8 @@ try {
 }
 
 // ── Forward to Next.js ────────────────────────────────────────────────────────
+// Producción: definir en .env IRIS_AGENTS_CHAT_URL=https://tu-dominio.com/api/iris/chat
+// (si falta, el default 127.0.0.1 provoca 503 en el servidor público).
 
 $upstream = knd_env('IRIS_AGENTS_CHAT_URL', 'http://127.0.0.1:3000/api/iris/chat') ?? 'http://127.0.0.1:3000/api/iris/chat';
 $upstream = trim($upstream) ?: 'http://127.0.0.1:3000/api/iris/chat';

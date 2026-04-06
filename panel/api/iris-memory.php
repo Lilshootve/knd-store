@@ -26,31 +26,50 @@ if (!is_logged_in()) {
     exit;
 }
 
-$userId = (int) current_user_id();
+$uid = current_user_id();
+if ($uid === null || $uid < 1) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Authentication required']);
+    exit;
+}
+$userId = $uid;
 
 function mem_db(): ?PDO
 {
-    $pdo = getDBConnection();
-    return $pdo ?: null;
+    try {
+        $pdo = getDBConnection();
+        return $pdo ?: null;
+    } catch (Throwable $e) {
+        error_log('[iris-mem-api] getDBConnection: ' . $e->getMessage());
+        return null;
+    }
 }
 
-function mem_ensure_table(PDO $pdo): void
+function mem_ensure_table(PDO $pdo): bool
 {
     static $done = false;
-    if ($done) return;
-    $done = true;
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS iris_user_memory (
-            user_id    INT UNSIGNED  NOT NULL,
-            fact_key   VARCHAR(100)  NOT NULL,
-            fact_value VARCHAR(1000) NOT NULL,
-            updated_at DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (user_id, fact_key)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-    ");
+    if ($done) {
+        return true;
+    }
+    try {
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS iris_user_memory (
+                user_id    INT UNSIGNED  NOT NULL,
+                fact_key   VARCHAR(100)  NOT NULL,
+                fact_value VARCHAR(1000) NOT NULL,
+                updated_at DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                PRIMARY KEY (user_id, fact_key)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ");
+        $done = true;
+        return true;
+    } catch (Throwable $e) {
+        error_log('[iris-mem-api] mem_ensure_table: ' . $e->getMessage());
+        return false;
+    }
 }
 
-$method = $_SERVER['REQUEST_METHOD'];
+$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 try {
     $pdo = mem_db();
@@ -63,7 +82,12 @@ try {
         if ($method === 'POST')   { echo json_encode(['saved' => false, 'error' => 'db_unavailable']); exit; }
     }
 
-    mem_ensure_table($pdo);
+    if (!mem_ensure_table($pdo)) {
+        error_log('[iris-mem-api] DDL failed; degrading like db_unavailable');
+        if ($method === 'GET')    { echo json_encode(['facts' => []]); exit; }
+        if ($method === 'DELETE') { echo json_encode(['deleted' => false, 'error' => 'db_unavailable']); exit; }
+        if ($method === 'POST')   { echo json_encode(['saved' => false, 'error' => 'db_unavailable']); exit; }
+    }
 
     // ── GET ───────────────────────────────────────────────────────────────────
     if ($method === 'GET') {
@@ -74,7 +98,11 @@ try {
         $stmt->execute([$userId]);
         $facts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        echo json_encode(['facts' => $facts], JSON_UNESCAPED_UNICODE);
+        $jsonFlags = JSON_UNESCAPED_UNICODE;
+        if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+            $jsonFlags |= JSON_INVALID_UTF8_SUBSTITUTE;
+        }
+        echo json_encode(['facts' => $facts], $jsonFlags);
         exit;
     }
 
