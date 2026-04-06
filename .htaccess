@@ -104,6 +104,11 @@
 # Redirección de HTTP a HTTPS
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # Pass Authorization to PHP (Apache/CGI often drops it; mod_rewrite internal redirects too).
+    # execute.php reads HTTP_AUTHORIZATION / REDIRECT_HTTP_AUTHORIZATION via knd_request_authorization_header().
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
     
     # Redirigir HTTP a HTTPS
     RewriteCond %{HTTPS} off
