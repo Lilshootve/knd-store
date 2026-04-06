@@ -16,6 +16,7 @@ require_once BASE_PATH . '/includes/env.php';
 require_once BASE_PATH . '/includes/session.php';
 require_once BASE_PATH . '/includes/auth.php';
 require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/iris_memory_mysql.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -47,26 +48,7 @@ function mem_db(): ?PDO
 
 function mem_ensure_table(PDO $pdo): bool
 {
-    static $done = false;
-    if ($done) {
-        return true;
-    }
-    try {
-        $pdo->exec("
-            CREATE TABLE IF NOT EXISTS iris_user_memory (
-                user_id    INT UNSIGNED  NOT NULL,
-                fact_key   VARCHAR(100)  NOT NULL,
-                fact_value VARCHAR(1000) NOT NULL,
-                updated_at DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                PRIMARY KEY (user_id, fact_key)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        ");
-        $done = true;
-        return true;
-    } catch (Throwable $e) {
-        error_log('[iris-mem-api] mem_ensure_table: ' . $e->getMessage());
-        return false;
-    }
+    return knd_iris_ensure_user_memory_table($pdo);
 }
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';

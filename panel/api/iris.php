@@ -23,6 +23,7 @@ require_once BASE_PATH . '/includes/env.php';
 require_once BASE_PATH . '/includes/session.php';
 require_once BASE_PATH . '/includes/auth.php';
 require_once BASE_PATH . '/includes/config.php';
+require_once BASE_PATH . '/includes/iris_memory_mysql.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -102,15 +103,9 @@ function iris_ensure_tables(PDO $pdo): void
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
 
-    $pdo->exec("
-        CREATE TABLE IF NOT EXISTS iris_user_memory (
-            user_id    INT UNSIGNED  NOT NULL,
-            fact_key   VARCHAR(100)  NOT NULL,
-            fact_value VARCHAR(1000) NOT NULL,
-            updated_at DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            PRIMARY KEY (user_id, fact_key)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-    ");
+    if (!knd_iris_ensure_user_memory_table($pdo)) {
+        throw new RuntimeException('iris_user_memory schema ensure failed');
+    }
 }
 
 function iris_load_memory(PDO $pdo, int $userId): array
