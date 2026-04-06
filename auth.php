@@ -50,6 +50,7 @@ $authCssV = file_exists(__DIR__ . '/assets/css/auth.css') ? filemtime(__DIR__ . 
 $saasCssV = file_exists(__DIR__ . '/assets/css/saas.css') ? filemtime(__DIR__ . '/assets/css/saas.css') : 0;
 $authSplitCssV = file_exists(__DIR__ . '/assets/css/auth-split.css') ? filemtime(__DIR__ . '/assets/css/auth-split.css') : 0;
 $authSplitJsV = file_exists(__DIR__ . '/assets/js/auth-split.js') ? filemtime(__DIR__ . '/assets/js/auth-split.js') : 0;
+$authJsV = file_exists(__DIR__ . '/assets/js/auth.js') ? filemtime(__DIR__ . '/assets/js/auth.js') : 0;
 $arenaEmbedCssV = file_exists(__DIR__ . '/assets/css/arena-embed.css') ? filemtime(__DIR__ . '/assets/css/arena-embed.css') : 0;
 
 if ($embed) {
@@ -293,7 +294,7 @@ if ($embed) {
 </section>
 
 <?php if (!$embed): ?><script src="/assets/js/navigation-extend.js"></script><?php endif; ?>
-<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/auth.js?v=<?php echo (int) $authJsV; ?>"></script>
 <script src="/assets/js/auth-split.js?v=<?php echo (int) $authSplitJsV; ?>"></script>
 
 <?php if (!$embed) echo generateFooter(); ?>

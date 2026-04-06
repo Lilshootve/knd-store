@@ -107,30 +107,74 @@
     });
   }
 
-  function initPasswordToggles() {
-    function onDocClick(e) {
-      var t = e.target;
-      if (!t || !t.closest) return;
-      var btn = t.closest('.knd-access-pwd-toggle[data-knd-toggle-pwd]');
-      if (!btn) return;
-      e.preventDefault();
-      var id = btn.getAttribute('data-knd-toggle-pwd');
-      var inp = id ? document.getElementById(id) : null;
-      if (!inp || !document.documentElement.contains(inp)) return;
-      var showL = btn.getAttribute('data-label-show') || 'Show';
-      var hideL = btn.getAttribute('data-label-hide') || 'Hide';
-      if (inp.type === 'password') {
-        inp.type = 'text';
-        btn.textContent = hideL;
-        btn.setAttribute('aria-pressed', 'true');
-      } else {
-        inp.type = 'password';
-        btn.textContent = showL;
-        btn.setAttribute('aria-pressed', 'false');
-      }
+  function kndTogglePasswordForButton(btn) {
+    if (!btn || !btn.getAttribute) return;
+    var id = btn.getAttribute('data-knd-toggle-pwd');
+    var inp = id ? document.getElementById(id) : null;
+    if (!inp) return;
+    var showL = btn.getAttribute('data-label-show') || 'Show';
+    var hideL = btn.getAttribute('data-label-hide') || 'Hide';
+    var isPwd = inp.type === 'password' || (inp.getAttribute('type') || '').toLowerCase() === 'password';
+    var next = isPwd ? 'text' : 'password';
+    try {
+      inp.type = next;
+    } catch (err) {
+      inp.setAttribute('type', next);
     }
-    document.addEventListener('click', onDocClick, false);
+    if (next === 'text') {
+      btn.textContent = hideL;
+      btn.setAttribute('aria-pressed', 'true');
+    } else {
+      btn.textContent = showL;
+      btn.setAttribute('aria-pressed', 'false');
+    }
   }
+
+  /** Inline fallback / embed shells: keeps working even if init order changes */
+  window.kndAuthTogglePasswordBtn = function (btn) {
+    kndTogglePasswordForButton(btn);
+    return false;
+  };
+
+  function bindPasswordToggleButtons() {
+    document.querySelectorAll('.knd-access-pwd-toggle[data-knd-toggle-pwd]:not([data-knd-pwd-bound])').forEach(function (btn) {
+      btn.setAttribute('data-knd-pwd-bound', '1');
+      function onPtr(e) {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        /* Do not preventDefault on pointerdown — that suppresses the synthetic click in some UAs. */
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+        btn.__kndPwdPtr = true;
+        kndTogglePasswordForButton(btn);
+      }
+      function onClick(e) {
+        e.preventDefault();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+        if (btn.__kndPwdPtr) {
+          btn.__kndPwdPtr = false;
+          return;
+        }
+        kndTogglePasswordForButton(btn);
+      }
+      if (window.PointerEvent) {
+        btn.addEventListener('pointerdown', onPtr, { capture: true, passive: true });
+      } else {
+        btn.addEventListener('mousedown', onPtr, { capture: true, passive: true });
+        btn.addEventListener(
+          'touchstart',
+          function (e) {
+            if (e.touches.length !== 1) return;
+            if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+            btn.__kndPwdPtr = true;
+            kndTogglePasswordForButton(btn);
+          },
+          { capture: true, passive: true }
+        );
+      }
+      btn.addEventListener('click', onClick, { capture: true, passive: false });
+    });
+  }
+
+  window.kndAuthBindPasswordToggles = bindPasswordToggleButtons;
 
   function syncCodeWrap(wrap) {
     if (!wrap) return;
@@ -202,10 +246,12 @@
 
   function init() {
     initAuthStars();
-    initPasswordToggles();
+    bindPasswordToggleButtons();
     initPasswordStrengthSegments();
     initCodeWraps();
   }
+
+  bindPasswordToggleButtons();
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
