@@ -111,18 +111,27 @@
     document.querySelectorAll('.knd-access-pwd-toggle[data-knd-toggle-pwd]').forEach(function (btn) {
       var showL = btn.getAttribute('data-label-show') || 'Show';
       var hideL = btn.getAttribute('data-label-hide') || 'Hide';
-      btn.addEventListener('click', function () {
-        var id = btn.getAttribute('data-knd-toggle-pwd');
-        var inp = id ? document.getElementById(id) : null;
-        if (!inp) return;
-        if (inp.type === 'password') {
-          inp.type = 'text';
-          btn.textContent = hideL;
-        } else {
-          inp.type = 'password';
-          btn.textContent = showL;
-        }
-      });
+      btn.addEventListener(
+        'click',
+        function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var id = btn.getAttribute('data-knd-toggle-pwd');
+          var inp = id ? document.getElementById(id) : null;
+          if (!inp) return;
+          var show = inp.getAttribute('type') === 'password' || inp.type === 'password';
+          if (show) {
+            inp.setAttribute('type', 'text');
+            btn.textContent = hideL;
+            btn.setAttribute('aria-pressed', 'true');
+          } else {
+            inp.setAttribute('type', 'password');
+            btn.textContent = showL;
+            btn.setAttribute('aria-pressed', 'false');
+          }
+        },
+        true
+      );
     });
   }
 

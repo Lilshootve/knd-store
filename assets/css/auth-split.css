@@ -14,6 +14,11 @@
   --knd-auth-beige: #d6cfc7;
   --knd-auth-cyan: #22d3ee;
   --knd-auth-cyan-ring: rgba(34, 211, 238, 0.22);
+  /* Warm brown accents inside the auth card (replaces cyan in form UI) */
+  --knd-auth-card-accent: #5c4a3d;
+  --knd-auth-card-accent-hover: #3d3028;
+  --knd-auth-card-accent-ring: rgba(92, 74, 61, 0.22);
+  --knd-auth-card-accent-surface: #efeae5;
   --knd-auth-btn-hover: #000000;
   --knd-auth-error: #dc2626;
   --knd-auth-error-bg: rgba(220, 38, 38, 0.06);
@@ -298,6 +303,23 @@ body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:f
   opacity: 1;
 }
 
+/* Hide browser-native password reveal (duplicate "Show") — we use .knd-access-pwd-toggle */
+.knd-auth-split input[type="password"]::-ms-reveal,
+.knd-auth-split input[type="password"]::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.knd-auth-split input[type="password"]::-webkit-credentials-auto-fill-button {
+  display: none !important;
+  visibility: hidden;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
 .knd-auth-split .knd-access-input:hover,
 .knd-auth-input:hover {
   border-color: #d0d0d0;
@@ -306,8 +328,8 @@ body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:f
 .knd-auth-split .knd-access-input:focus,
 .knd-auth-input:focus {
   outline: none;
-  border-color: var(--knd-auth-cyan);
-  box-shadow: 0 0 0 3px var(--knd-auth-cyan-ring);
+  border-color: var(--knd-auth-card-accent);
+  box-shadow: 0 0 0 3px var(--knd-auth-card-accent-ring);
 }
 
 .knd-auth-split .knd-access-input.knd-auth-input--error,
@@ -320,23 +342,38 @@ body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:f
   display: none;
 }
 
+.knd-auth-split .knd-access-field--password,
+.knd-auth-split .knd-auth-field--password {
+  isolation: isolate;
+}
+
 .knd-auth-split .knd-access-pwd-toggle {
   position: absolute;
-  right: 10px;
-  bottom: 10px;
-  border: none;
-  background: none;
-  color: var(--knd-auth-cyan);
+  right: 8px;
+  bottom: 8px;
+  z-index: 2;
+  border: 1px solid rgba(92, 74, 61, 0.55);
+  border-radius: 6px;
+  background: var(--knd-auth-card-accent-surface);
+  color: var(--knd-auth-card-accent);
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  padding: 0.25rem 0.35rem;
+  padding: 0.28rem 0.45rem;
   font-family: var(--knd-auth-font-ui);
-  transition: opacity var(--knd-auth-transition);
+  line-height: 1.1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  transition:
+    background var(--knd-auth-transition),
+    color var(--knd-auth-transition),
+    border-color var(--knd-auth-transition),
+    box-shadow var(--knd-auth-transition);
 }
 
 .knd-auth-split .knd-access-pwd-toggle:hover {
-  opacity: 0.85;
+  background: #e3dcd4;
+  color: var(--knd-auth-card-accent-hover);
+  border-color: rgba(61, 48, 40, 0.65);
 }
 
 .knd-auth-split .knd-access-field--password .knd-access-input,
@@ -373,14 +410,15 @@ body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:f
 .knd-auth-inline-link {
   font-size: 0.8125rem;
   font-weight: 500;
-  color: var(--knd-auth-cyan);
+  color: var(--knd-auth-card-accent);
   text-decoration: none;
   font-family: var(--knd-auth-font-ui);
-  transition: opacity var(--knd-auth-transition);
+  transition: color var(--knd-auth-transition), opacity var(--knd-auth-transition);
 }
 
 .knd-auth-inline-link:hover {
-  opacity: 0.85;
+  color: var(--knd-auth-card-accent-hover);
+  opacity: 1;
   text-decoration: underline;
 }
 
@@ -421,11 +459,13 @@ body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:f
 .knd-auth-split .knd-access-btn-outline {
   background: var(--knd-auth-card);
   color: var(--knd-auth-text);
-  border: 1px solid var(--knd-auth-border);
+  border: 1px solid rgba(92, 74, 61, 0.35);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .knd-auth-split .knd-access-btn-outline:hover {
-  background: var(--knd-auth-input-bg);
+  background: var(--knd-auth-card-accent-surface);
+  border-color: rgba(61, 48, 40, 0.45);
 }
 
 .knd-auth-footer-text {
@@ -437,24 +477,26 @@ body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:f
 }
 
 .knd-auth-footer-text a {
-  color: var(--knd-auth-cyan);
-  font-weight: 500;
+  color: var(--knd-auth-card-accent);
+  font-weight: 600;
   text-decoration: none;
 }
 
 .knd-auth-footer-text a:hover {
+  color: var(--knd-auth-card-accent-hover);
   text-decoration: underline;
 }
 
 .knd-auth-split .knd-access-auth-link {
-  color: var(--knd-auth-cyan);
-  font-weight: 500;
+  color: var(--knd-auth-card-accent);
+  font-weight: 600;
   text-decoration: none;
   font-size: 0.875rem;
   font-family: var(--knd-auth-font-ui);
 }
 
 .knd-auth-split .knd-access-auth-link:hover {
+  color: var(--knd-auth-card-accent-hover);
   text-decoration: underline;
 }
 
@@ -541,8 +583,8 @@ body.knd-auth-split-page .knd-auth-split input.knd-auth-input:-webkit-autofill:f
 
 .knd-auth-split .knd-access-code-digit:focus {
   outline: none;
-  border-color: var(--knd-auth-cyan);
-  box-shadow: 0 0 0 3px var(--knd-auth-cyan-ring);
+  border-color: var(--knd-auth-card-accent);
+  box-shadow: 0 0 0 3px var(--knd-auth-card-accent-ring);
 }
 
 /* Tab panels: cross-fade + light vertical motion (radios ~ .knd-auth-panels …) */
