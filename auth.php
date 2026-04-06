@@ -21,11 +21,14 @@ if (is_logged_in()) {
         if ($evRow && !empty($evRow['email']) && (int) $evRow['email_verified'] === 0) {
             $showVerify = true;
         } else {
-            header('Location: /games/mind-wars/lobby.php');
+            if ($pdo) {
+                auth_refresh_session_tenant($pdo);
+            }
+            header('Location: /dashboard.php');
             exit;
         }
     } else {
-        header('Location: /games/mind-wars/lobby.php');
+        header('Location: /dashboard.php');
         exit;
     }
 }
@@ -33,7 +36,7 @@ $showVerify = $showVerify ?? false;
 
 $rawRedirect = $_GET['redirect'] ?? '';
 if ($rawRedirect === '' || !str_starts_with($rawRedirect, '/') || str_contains($rawRedirect, '://') || str_contains($rawRedirect, '\\')) {
-    $rawRedirect = '/games/mind-wars/lobby.php';
+    $rawRedirect = '/dashboard.php';
 }
 $redirect = htmlspecialchars($rawRedirect, ENT_QUOTES);
 $csrfToken = csrf_token();
@@ -44,6 +47,7 @@ $embed = isset($_GET['embed']) && $_GET['embed'] === '1';
 $seoTitle = 'KND Access — Sign In';
 $seoDesc  = 'Sign in to your KND ecosystem. Access KND Arena, LastRoll, Support Credits, and more.';
 $authCssV = file_exists(__DIR__ . '/assets/css/auth.css') ? filemtime(__DIR__ . '/assets/css/auth.css') : 0;
+$saasCssV = file_exists(__DIR__ . '/assets/css/saas.css') ? filemtime(__DIR__ . '/assets/css/saas.css') : 0;
 $arenaEmbedCssV = file_exists(__DIR__ . '/assets/css/arena-embed.css') ? filemtime(__DIR__ . '/assets/css/arena-embed.css') : 0;
 
 if ($embed) {
@@ -57,11 +61,12 @@ if ($embed) {
     <title><?php echo htmlspecialchars($seoTitle); ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/auth.css?v=<?php echo $authCssV; ?>">
+    <link rel="stylesheet" href="/assets/css/saas.css?v=<?php echo $saasCssV; ?>">
     <link rel="stylesheet" href="/assets/css/arena-embed.css?v=<?php echo $arenaEmbedCssV; ?>">
 </head>
-<body class="arena-embed auth-page knd-access-page">
+<body class="arena-embed auth-page knd-access-page knd-saas-app">
 <div class="arena-embed-inner">
 <?php
 } else {
@@ -73,41 +78,22 @@ if ($embed) {
     $ogHead  .= '    <meta name="twitter:description" content="' . htmlspecialchars($seoDesc) . '">' . "\n";
     $ogHead  .= '    <link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
     $ogHead  .= '    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
-    $ogHead  .= '    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">' . "\n";
+    $ogHead  .= '    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">' . "\n";
     $ogHead  .= '    <link rel="stylesheet" href="/assets/css/auth.css?v=' . $authCssV . '">' . "\n";
+    $ogHead  .= '    <link rel="stylesheet" href="/assets/css/saas.css?v=' . $saasCssV . '">' . "\n";
     echo generateHeader($seoTitle, $seoDesc, $ogHead);
 }
 ?>
-
-<div id="knd-access-bg" aria-hidden="true">
-    <div class="knd-access-bg-horizon"></div>
-    <div class="knd-access-bg-floor"></div>
-</div>
-<div id="knd-access-stars" aria-hidden="true"></div>
 
 <?php if (!$embed) echo generateNavigation(); ?>
 
 <section class="knd-access-shell" aria-label="KND Access">
     <div class="knd-access-container">
 
-        <div class="knd-access-brand">
-            <div class="knd-access-brand-hex">
-                <svg viewBox="0 0 100 100" fill="none" aria-hidden="true">
-                    <polygon points="50,3 95,25 95,75 50,97 5,75 5,25" stroke="rgba(0,232,255,.3)" stroke-width="1" fill="rgba(0,232,255,.03)"/>
-                    <polygon points="50,12 85,30 85,70 50,88 15,70 15,30" stroke="rgba(0,232,255,.15)" stroke-width="0.5" fill="none"/>
-                    <polygon points="50,22 74,35 74,65 50,78 26,65 26,35" stroke="rgba(212,79,255,.12)" stroke-width="0.5" fill="rgba(212,79,255,.02)"/>
-                </svg>
-                <span class="knd-access-brand-hex-inner" aria-hidden="true">⬡</span>
-            </div>
-            <div class="knd-access-brand-title">KND</div>
-            <div class="knd-access-brand-tagline"><?php echo t('dr.auth.brand_tagline', 'Enter the Ecosystem'); ?></div>
-            <div class="knd-access-brand-sub"><?php echo t('dr.auth.brand_sub', "KNOWLEDGE 'N DEVELOPMENT — WHERE DIGITAL INNOVATION BEGINS"); ?></div>
-            <div class="knd-access-brand-dots" aria-hidden="true">
-                <span class="knd-access-brand-dot"></span>
-                <span class="knd-access-brand-dot"></span>
-                <span class="knd-access-brand-dot"></span>
-            </div>
-            <p class="knd-access-brand-foot"><?php echo t('dr.auth.brand_secure', 'SECURE · ENCRYPTED · PRIVATE'); ?></p>
+        <div class="knd-access-brand knd-saas-access-brand">
+            <div class="knd-saas-access-logo">KND Store</div>
+            <div class="knd-access-brand-tagline knd-saas-access-tagline"><?php echo t('dr.auth.brand_tagline', 'Sign in to your workspace'); ?></div>
+            <p class="knd-saas-access-sub"><?php echo t('dr.auth.brand_secure', 'Secure session · Encrypted credentials'); ?></p>
         </div>
 
         <div class="knd-access-form-panel">

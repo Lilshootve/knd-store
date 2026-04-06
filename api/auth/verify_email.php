@@ -64,6 +64,8 @@ try {
         'UPDATE users SET email_verified = 1, email_verify_code = NULL, email_verify_expires = NULL, updated_at = ? WHERE id = ?'
     )->execute([$now, $userId]);
 
+    auth_refresh_session_tenant($pdo);
+
     json_success(['verified' => true]);
 } catch (\Throwable $e) {
     error_log('verify_email error: ' . $e->getMessage());

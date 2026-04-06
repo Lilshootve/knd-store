@@ -85,6 +85,17 @@ try {
              VALUES (?, 'adjustment', 0, 'earn', 'available', ?, ?, ?, ?)"
         )->execute([$userId, WELCOME_BONUS_KP, $now, $expiresAt, $now]);
 
+        $bizName = mb_substr($username . ' Store', 0, 100);
+        $pdo->prepare(
+            'INSERT INTO businesses (name, base_currency, owner_user_id, active, created_at)
+             VALUES (?, \'USD\', ?, 1, ?)'
+        )->execute([$bizName, $userId, $now]);
+        $businessId = (int) $pdo->lastInsertId();
+        $pdo->prepare(
+            'INSERT INTO business_users (business_id, user_id, role, created_at)
+             VALUES (?, ?, \'admin\', ?)'
+        )->execute([$businessId, $userId, $now]);
+
         $pdo->commit();
     } catch (\Throwable $e) {
         $pdo->rollBack();
@@ -92,6 +103,7 @@ try {
     }
 
     auth_login($userId, $username);
+    auth_refresh_session_tenant($pdo);
 
     $subject = 'KND Store — Email Verification Code';
     $body = "Hi {$username},\n\nYour verification code is: {$verifyCode}\n\nThis code expires in 15 minutes.\n\nIf you didn't register, ignore this email.\n\n— KND Store";

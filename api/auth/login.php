@@ -41,6 +41,7 @@ if (!$user || !password_verify($password, $user['password_hash'])) {
 }
 
 auth_login((int) $user['id'], $user['username']);
+auth_refresh_session_tenant($pdo);
 
 $emailPending = !empty($user['email']) && isset($user['email_verified']) && (int) $user['email_verified'] === 0;
 

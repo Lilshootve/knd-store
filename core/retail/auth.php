@@ -51,6 +51,7 @@ function retail_require_business(?PDO $pdo = null): void
          FROM business_users bu
          INNER JOIN businesses b ON b.id = bu.business_id
          WHERE bu.user_id = ? AND b.active = 1
+         ORDER BY bu.id ASC
          LIMIT 1'
     );
     $stmt->execute([$userId]);
@@ -137,6 +138,7 @@ function retail_resolve_business_for_gateway(PDO $pdo, ?int $userId): bool
          FROM business_users bu
          INNER JOIN businesses b ON b.id = bu.business_id
          WHERE bu.user_id = ? AND b.active = 1
+         ORDER BY bu.id ASC
          LIMIT 1'
     );
     $stmt->execute([$userId]);

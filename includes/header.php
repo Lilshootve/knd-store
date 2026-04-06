@@ -61,7 +61,10 @@ function generateHeader($title = 'KND Store - Tienda Galáctica', $description =
         $bodyClass .= ' arena-info-page';
     }
     if ($current_page === 'auth.php') {
-        $bodyClass .= ' auth-page';
+        $bodyClass .= ' auth-page knd-saas-app';
+    }
+    if ($current_page === 'dashboard.php') {
+        $bodyClass .= ' knd-saas-app knd-saas-dashboard';
     }
     if ($isAdmin) {
         $bodyClass .= ' admin-page';
@@ -86,9 +89,9 @@ function generateNavigation() {
 
     $ecosystemActive = ($current_page === 'ecosystem.php');
 
-    $accountActive = in_array($current_page, ['order.php', 'track-order.php', 'auth.php', 'support-credits.php', 'rewards.php', 'my-profile.php'], true);
+    $accountActive = in_array($current_page, ['order.php', 'track-order.php', 'auth.php', 'dashboard.php', 'support-credits.php', 'rewards.php', 'my-profile.php'], true);
 
-    $drLoggedIn = !empty($_SESSION['dr_user_id']);
+    $drLoggedIn = !empty($_SESSION['dr_user_id']) || !empty($_SESSION['user_id']);
     $drUsername = $drLoggedIn ? htmlspecialchars($_SESSION['dr_username'] ?? '') : '';
 
     $creditsBadgeHtml = '';

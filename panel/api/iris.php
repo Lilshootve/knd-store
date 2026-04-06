@@ -3,7 +3,7 @@
  * Iris — same-origin proxy + conversation & memory manager.
  *
  * Responsibilities:
- *  1. Fix session key: uses $_SESSION['dr_user_id'] (kndstore user system)
+ *  1. User identity from PHP session only (current_user_id); no client user_id impersonation
  *  2. Auto-create MySQL tables on first request (DDL-on-demand)
  *  3. Load user memory facts from MySQL → pass as user_memory to Next.js
  *  4. Manage conversation_id: create new / validate existing
@@ -62,18 +62,8 @@ $clientConvId = isset($body['conversation_id']) && is_int($body['conversation_id
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
-$userId     = current_user_id();   // int|null — uses $_SESSION['dr_user_id']
+$userId     = current_user_id();   // int|null — session only (no client user_id)
 $isLoggedIn = $userId !== null;
-
-// Panel Iris sits behind admin_users login; many admins have no dr_user_id. Allow an
-// explicit JSON user_id for retail/agent calls (same-origin + admin session only).
-if (!$isLoggedIn && !empty($_SESSION['admin_logged_in']) && isset($body['user_id'])) {
-    $candidate = filter_var($body['user_id'], FILTER_VALIDATE_INT);
-    if (is_int($candidate) && $candidate > 0) {
-        $userId     = $candidate;
-        $isLoggedIn = true;
-    }
-}
 
 $irisMode  = !empty($_SESSION['admin_logged_in']) ? 'admin' : 'public';
 

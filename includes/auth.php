@@ -4,18 +4,40 @@
 require_once __DIR__ . '/session.php';
 
 function is_logged_in(): bool {
-    return !empty($_SESSION['dr_user_id']);
+    return !empty($_SESSION['dr_user_id']) || !empty($_SESSION['user_id']);
 }
 
 function current_user_id(): ?int {
-    if (!isset($_SESSION['dr_user_id']) || $_SESSION['dr_user_id'] === '' || $_SESSION['dr_user_id'] === false) {
-        return null;
+    if (!empty($_SESSION['dr_user_id'])) {
+        return (int) $_SESSION['dr_user_id'];
     }
-    return (int) $_SESSION['dr_user_id'];
+    if (!empty($_SESSION['user_id'])) {
+        return (int) $_SESSION['user_id'];
+    }
+    return null;
 }
 
 function current_username(): ?string {
     return $_SESSION['dr_username'] ?? null;
+}
+
+/**
+ * Primary workspace business (first membership by business_users.id ASC).
+ * Future: user-selected tenant; see current_business_ids().
+ */
+function current_business_id(): ?int {
+    if (!isset($_SESSION['business_id']) || $_SESSION['business_id'] === '' || $_SESSION['business_id'] === false) {
+        return null;
+    }
+    return (int) $_SESSION['business_id'];
+}
+
+/** All active business IDs for the user (same order as primary). */
+function current_business_ids(): array {
+    if (empty($_SESSION['business_ids']) || !is_array($_SESSION['business_ids'])) {
+        return [];
+    }
+    return array_values(array_filter(array_map('intval', $_SESSION['business_ids']), static fn (int $id) => $id > 0));
 }
 
 // Note: config.php (not in git) also defines isLoggedIn() and getCurrentUser().
@@ -26,6 +48,58 @@ function auth_login(int $userId, string $username): void {
     session_regenerate_id(true);
     $_SESSION['dr_user_id'] = $userId;
     $_SESSION['dr_username'] = $username;
+    $_SESSION['user_id'] = $userId;
+}
+
+/**
+ * Load tenant memberships into session: business_id (primary) and business_ids (all).
+ */
+function auth_refresh_session_tenant(?PDO $pdo = null): void
+{
+    if (!is_logged_in()) {
+        unset($_SESSION['business_id'], $_SESSION['business_ids']);
+        return;
+    }
+
+    if ($pdo === null) {
+        require_once __DIR__ . '/config.php';
+        $pdo = getDBConnection();
+    }
+    if (!$pdo) {
+        unset($_SESSION['business_id'], $_SESSION['business_ids']);
+        return;
+    }
+
+    $uid = current_user_id();
+    if (!$uid) {
+        unset($_SESSION['business_id'], $_SESSION['business_ids']);
+        return;
+    }
+
+    $stmt = $pdo->prepare(
+        'SELECT bu.business_id
+         FROM business_users bu
+         INNER JOIN businesses b ON b.id = bu.business_id
+         WHERE bu.user_id = ? AND b.active = 1
+         ORDER BY bu.id ASC'
+    );
+    $stmt->execute([$uid]);
+    $ids = [];
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $bid = (int) ($row['business_id'] ?? 0);
+        if ($bid > 0) {
+            $ids[] = $bid;
+        }
+    }
+
+    if ($ids === []) {
+        unset($_SESSION['business_id'], $_SESSION['business_ids']);
+        return;
+    }
+
+    $primaryBusinessId = $ids[0];
+    $_SESSION['business_id'] = $primaryBusinessId;
+    $_SESSION['business_ids'] = $ids;
 }
 
 function auth_logout(): void {

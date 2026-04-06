@@ -15,6 +15,13 @@ require_once $kndRoot . '/includes/footer.php';
 // Require login — memory and conversation history only work for registered users
 require_login();
 
+$pdoIris = getDBConnection();
+if ($pdoIris) {
+    auth_refresh_session_tenant($pdoIris);
+}
+$irisStoreUserId = current_user_id();
+$irisBusinessId  = current_business_id();
+
 $irisApiUrl  = '/api/iris.php';
 $irisConvApi = '/api/iris-conversations.php';
 $irisMemApi  = '/api/iris-memory.php';
@@ -34,6 +41,12 @@ $desc  = t('iris.public.meta.description', 'Ask Iris — your KND assistant.');
 $apiAttr     = htmlspecialchars($irisApiUrl,  ENT_QUOTES, 'UTF-8');
 $convApiAttr = htmlspecialchars($irisConvApi, ENT_QUOTES, 'UTF-8');
 $memApiAttr  = htmlspecialchars($irisMemApi,  ENT_QUOTES, 'UTF-8');
+$agentUidAttr = $irisStoreUserId !== null && $irisStoreUserId > 0
+    ? htmlspecialchars((string) (int) $irisStoreUserId, ENT_QUOTES, 'UTF-8')
+    : '';
+$bizIdAttr = $irisBusinessId !== null && $irisBusinessId > 0
+    ? htmlspecialchars((string) (int) $irisBusinessId, ENT_QUOTES, 'UTF-8')
+    : '';
 
 echo generateHeader($title, $desc, $extraHead, true);
 echo generateNavigation();
@@ -64,7 +77,9 @@ echo generateNavigation();
     <div class="iris-container" id="iris-container"
         data-iris-api="<?php echo $apiAttr; ?>"
         data-iris-conv-api="<?php echo $convApiAttr; ?>"
-        data-iris-mem-api="<?php echo $memApiAttr; ?>">
+        data-iris-mem-api="<?php echo $memApiAttr; ?>"
+        data-agent-user-id="<?php echo $agentUidAttr; ?>"
+        <?php if ($bizIdAttr !== ''): ?>data-business-id="<?php echo $bizIdAttr; ?>" data-business-type="retail"<?php endif; ?>>
 
         <div class="iris-core idle" id="iris-core" aria-hidden="true">
             <svg class="iris-hex-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">

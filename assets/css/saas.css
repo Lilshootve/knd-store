@@ -1,0 +1,276 @@
+/**
+ * KND Store — minimal SaaS shell (auth + dashboard)
+ * Palette: black #0B0B0B, white #FFFFFF, gray #A1A1A1, beige #F5F5DC
+ */
+
+:root {
+  --knd-saas-bg: #0b0b0b;
+  --knd-saas-surface: #ffffff;
+  --knd-saas-muted: #a1a1a1;
+  --knd-saas-accent: #f5f5dc;
+  --knd-saas-text: #ffffff;
+  --knd-saas-text-inverse: #0b0b0b;
+  --knd-saas-border: rgba(255, 255, 255, 0.12);
+  --knd-saas-radius: 8px;
+  --knd-saas-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body.knd-saas-app {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--knd-saas-bg);
+  color: var(--knd-saas-text);
+  font-family: var(--knd-saas-font);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.knd-saas-skip:focus {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  z-index: 100;
+  padding: 8px 12px;
+  background: var(--knd-saas-surface);
+  color: var(--knd-saas-text-inverse);
+  clip: auto;
+  width: auto;
+  height: auto;
+}
+
+.knd-saas-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--knd-saas-border);
+  background: var(--knd-saas-bg);
+}
+
+.knd-saas-brand {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-size: 1rem;
+  color: var(--knd-saas-text);
+  text-decoration: none;
+}
+
+.knd-saas-brand:hover {
+  color: var(--knd-saas-accent);
+}
+
+.knd-saas-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.knd-saas-link {
+  color: var(--knd-saas-muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.knd-saas-link:hover {
+  color: var(--knd-saas-text);
+}
+
+.knd-saas-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--knd-saas-radius);
+  border: 1px solid var(--knd-saas-border);
+  background: transparent;
+  color: var(--knd-saas-text);
+  cursor: pointer;
+  text-decoration: none;
+  font-family: inherit;
+}
+
+.knd-saas-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.knd-saas-btn--primary {
+  background: var(--knd-saas-surface);
+  color: var(--knd-saas-text-inverse);
+  border-color: var(--knd-saas-surface);
+}
+
+.knd-saas-btn--primary:hover {
+  filter: brightness(0.95);
+}
+
+.knd-saas-main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.knd-saas-hero {
+  margin-bottom: 2rem;
+}
+
+.knd-saas-hero h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--knd-saas-text);
+}
+
+.knd-saas-hero-meta {
+  margin: 0;
+  color: var(--knd-saas-muted);
+  font-size: 0.9375rem;
+}
+
+.knd-saas-badge {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--knd-saas-text-inverse);
+  background: var(--knd-saas-accent);
+  border-radius: 4px;
+}
+
+.knd-saas-panel {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--knd-saas-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.knd-saas-panel--iris {
+  min-height: 420px;
+}
+
+.knd-saas-panel h2 {
+  margin: 0 0 1rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--knd-saas-muted);
+}
+
+.knd-saas-empty {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--knd-saas-muted);
+  font-size: 0.9375rem;
+}
+
+.knd-saas-empty strong {
+  display: block;
+  color: var(--knd-saas-text);
+  margin-bottom: 0.5rem;
+}
+
+/* Iris sits inside panel — subtle contrast */
+.knd-saas-panel--iris .iris-page,
+.knd-saas-panel--iris .iris-container {
+  max-width: 100%;
+}
+
+/* ── Auth page (overrides legacy cyberpunk auth.css when body has .knd-saas-app) ── */
+body.auth-page.knd-saas-app {
+  --ka-void: var(--knd-saas-bg);
+  --ka-deep: var(--knd-saas-bg);
+  --ka-surface: rgba(255, 255, 255, 0.06);
+  --ka-t1: var(--knd-saas-text);
+  --ka-t2: var(--knd-saas-muted);
+  --ka-t3: var(--knd-saas-muted);
+  --ka-fb: "Inter", var(--knd-saas-font);
+  --ka-fd: "Inter", var(--knd-saas-font);
+  --ka-fm: ui-monospace, monospace;
+  --ka-c: var(--knd-saas-accent);
+  --ka-c2: var(--knd-saas-muted);
+  background: var(--knd-saas-bg) !important;
+  color: var(--knd-saas-text);
+  font-family: "Inter", var(--knd-saas-font) !important;
+}
+
+body.auth-page.knd-saas-app #knd-access-bg,
+body.auth-page.knd-saas-app #knd-access-stars {
+  display: none !important;
+}
+
+body.auth-page.knd-saas-app:not(.arena-embed) {
+  height: auto;
+  min-height: 100vh;
+  overflow: auto;
+}
+
+.knd-saas-access-brand {
+  text-align: left;
+}
+
+.knd-saas-access-logo {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--knd-saas-text);
+  margin-bottom: 0.35rem;
+}
+
+.knd-saas-access-tagline {
+  font-size: 0.9375rem !important;
+  color: var(--knd-saas-muted) !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+.knd-saas-access-sub {
+  margin: 0.75rem 0 0;
+  font-size: 0.75rem;
+  color: var(--knd-saas-muted);
+  opacity: 0.85;
+}
+
+body.auth-page.knd-saas-app .knd-access-shell {
+  min-height: auto;
+  padding: 2rem 1rem 3rem;
+}
+
+body.auth-page.knd-saas-app .knd-access-container {
+  max-width: 420px;
+  margin: 0 auto;
+  gap: 2rem;
+}
+
+body.auth-page.knd-saas-app .knd-access-form-panel {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--knd-saas-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+body.auth-page.knd-saas-app .knd-access-input {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--knd-saas-border);
+  color: var(--knd-saas-text);
+}
+
+body.auth-page.knd-saas-app .knd-access-btn-primary {
+  background: var(--knd-saas-surface);
+  color: var(--knd-saas-text-inverse);
+  border-color: var(--knd-saas-surface);
+}
+
+body.auth-page.knd-saas-app .knd-access-btn-outline {
+  border-color: var(--knd-saas-border);
+  color: var(--knd-saas-text);
+}
+
+body.knd-saas-dashboard #bg {
+  opacity: 0.35;
+}

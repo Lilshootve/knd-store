@@ -39,6 +39,19 @@
   var agentUidRaw = container.getAttribute("data-agent-user-id") || "";
   var agentUserId = parseInt(agentUidRaw, 10);
   if (isNaN(agentUserId) || agentUserId <= 0) agentUserId = null;
+  var agentBidRaw = container.getAttribute("data-business-id") || "";
+  var agentBusinessId = parseInt(agentBidRaw, 10);
+  if (isNaN(agentBusinessId) || agentBusinessId <= 0) agentBusinessId = null;
+  var agentBusinessType = (container.getAttribute("data-business-type") || "").trim() || null;
+
+  /** Server is authoritative; included for parity / logging. */
+  function irisTenantBody() {
+    var o = {};
+    if (agentUserId !== null) o.user_id = agentUserId;
+    if (agentBusinessId !== null) o.business_id = agentBusinessId;
+    if (agentBusinessType) o.business_type = agentBusinessType;
+    return o;
+  }
 
   var state           = "idle";
   var idleTimer       = null;
@@ -226,7 +239,7 @@
           confirm: true,
           confirm_id: confirmId,
           conversation_id: conversationId,
-        }, agentUserId !== null ? { user_id: agentUserId } : {})),
+        }, irisTenantBody())),
         mode: "cors",
         credentials: creds(apiUrl),
       });
@@ -325,7 +338,7 @@
           message: prompt,
           context: { includeLastRun: true },
           conversation_id: conversationId,
-        }, agentUserId !== null ? { user_id: agentUserId } : {})),
+        }, irisTenantBody())),
         mode: "cors",
         credentials: creds(apiUrl),
       });
