@@ -23,9 +23,8 @@
   transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.2, 0.9, 0.2, 1);
   will-change: transform, opacity;
   box-shadow:
-    0 0 20px rgba(0, 232, 255, 0.35),
-    0 0 48px rgba(155, 48, 255, 0.2),
-    inset 0 0 14px rgba(255, 255, 255, 0.15);
+    0 0 0 1px var(--knd-action-15),
+    inset 0 0 12px rgba(255, 255, 255, 0.08);
 }
 
 .knd-holo-orb.knd-holo-orb--visible {
@@ -58,19 +57,18 @@
 
 /* Rarity / type skins */
 .knd-holo-orb.knd-orb--xp {
-  color: rgba(0, 232, 255, 0.9);
-  background: radial-gradient(circle at 30% 25%, rgba(180, 250, 255, 0.45), rgba(0, 40, 60, 0.75) 60%, rgba(0, 20, 40, 0.9));
-  border: 1px solid rgba(0, 232, 255, 0.45);
+  color: var(--accent-action);
+  background: radial-gradient(circle at 30% 25%, var(--knd-action-12), color-mix(in srgb, var(--bg-surface) 85%, transparent) 60%, var(--bg-main));
+  border: 1px solid var(--knd-action-25);
 }
 
 .knd-holo-orb.knd-orb--ke {
-  color: rgba(155, 48, 255, 0.95);
-  background: radial-gradient(circle at 30% 25%, rgba(230, 200, 255, 0.4), rgba(40, 0, 60, 0.8) 55%, rgba(20, 0, 35, 0.92));
-  border: 1px solid rgba(200, 120, 255, 0.5);
+  color: var(--accent-primary);
+  background: radial-gradient(circle at 30% 25%, var(--knd-accent-12), color-mix(in srgb, var(--bg-surface) 88%, transparent) 55%, var(--bg-main));
+  border: 1px solid var(--knd-accent-12);
   box-shadow:
-    0 0 22px rgba(155, 48, 255, 0.4),
-    0 0 50px rgba(0, 232, 255, 0.12),
-    inset 0 0 14px rgba(255, 255, 255, 0.12);
+    0 0 0 1px var(--knd-accent-12),
+    inset 0 0 12px rgba(255, 255, 255, 0.08);
 }
 
 .knd-holo-orb.knd-orb--knd_points {

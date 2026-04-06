@@ -1,16 +1,16 @@
 /* Iris — scoped under .iris-page */
 
 .iris-page {
-  --iris-bg: #03050e;
-  --iris-bg-mid: #080c1a;
-  --iris-accent: #7c5cff;
-  --iris-cyan: #00d4ff;
-  --iris-glow: rgba(124, 92, 255, 0.45);
-  --iris-glow-cyan: rgba(0, 212, 255, 0.35);
-  --iris-text: rgba(255, 255, 255, 0.92);
-  --iris-text-muted: rgba(255, 255, 255, 0.55);
-  --iris-text-dim: rgba(255, 255, 255, 0.35);
-  --iris-border-soft: rgba(255, 255, 255, 0.06);
+  --iris-bg: var(--bg-main);
+  --iris-bg-mid: var(--bg-surface);
+  --iris-accent: var(--accent-primary);
+  --iris-cyan: var(--accent-action);
+  --iris-glow: var(--knd-accent-10);
+  --iris-glow-cyan: var(--knd-action-12);
+  --iris-text: var(--text-primary);
+  --iris-text-muted: var(--text-secondary);
+  --iris-text-dim: color-mix(in srgb, var(--text-secondary) 65%, transparent);
+  --iris-border-soft: var(--knd-white-06);
 
   flex: 1;
   display: flex;
@@ -18,10 +18,7 @@
   min-height: min(100dvh, calc(100vh - 120px));
   color: var(--iris-text);
   background: var(--iris-bg);
-  background-image:
-    radial-gradient(ellipse 100% 70% at 50% 35%, rgba(124, 92, 255, 0.14), transparent 55%),
-    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(0, 212, 255, 0.07), transparent 50%),
-    linear-gradient(180deg, var(--iris-bg) 0%, var(--iris-bg-mid) 100%);
+  background-image: linear-gradient(180deg, var(--iris-bg) 0%, var(--iris-bg-mid) 100%);
   position: relative;
   overflow-x: hidden;
 }
@@ -69,9 +66,9 @@
 }
 
 .iris-hex-glow {
-  filter: drop-shadow(0 0 20px var(--iris-glow)) drop-shadow(0 0 40px rgba(124, 92, 255, 0.2));
+  filter: none;
   transform-origin: 100px 100px;
-  transition: filter 0.45s ease;
+  transition: opacity 0.45s ease;
 }
 
 .iris-core.idle .iris-hex-glow {
@@ -80,24 +77,23 @@
 
 .iris-core.thinking .iris-hex-glow {
   animation: iris-hex-pulse 1.4s ease-in-out infinite;
-  filter: drop-shadow(0 0 28px var(--iris-glow)) drop-shadow(0 0 48px rgba(0, 212, 255, 0.25));
+  filter: none;
 }
 
 .iris-core.responding .iris-hex-glow {
   animation: iris-hex-pulse-fast 0.85s ease-in-out infinite;
-  filter: drop-shadow(0 0 36px var(--iris-glow-cyan)) drop-shadow(0 0 56px var(--iris-glow))
-    drop-shadow(0 0 80px rgba(124, 92, 255, 0.35));
+  filter: none;
 }
 
 @keyframes iris-hex-breathe {
   0%,
   100% {
     opacity: 0.88;
-    filter: drop-shadow(0 0 16px var(--iris-glow)) drop-shadow(0 0 32px rgba(124, 92, 255, 0.15));
+    filter: none;
   }
   50% {
     opacity: 1;
-    filter: drop-shadow(0 0 28px var(--iris-glow)) drop-shadow(0 0 44px rgba(0, 212, 255, 0.2));
+    filter: none;
   }
 }
 
@@ -177,8 +173,8 @@
   color: var(--iris-text);
   background: rgba(12, 18, 36, 0.55);
   box-shadow:
-    0 0 0 1px rgba(124, 92, 255, 0.08),
-    0 0 24px rgba(124, 92, 255, 0.12),
+    0 0 0 1px rgba(214, 207, 199, 0.08),
+    0 0 24px rgba(214, 207, 199, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
   transition: box-shadow 0.2s ease, opacity 0.2s ease;
 }
@@ -189,9 +185,9 @@
 
 .iris-input:focus {
   box-shadow:
-    0 0 0 1px rgba(124, 92, 255, 0.22),
-    0 0 32px rgba(124, 92, 255, 0.22),
-    0 0 48px rgba(0, 212, 255, 0.1),
+    0 0 0 1px rgba(214, 207, 199, 0.22),
+    0 0 32px rgba(214, 207, 199, 0.22),
+    0 0 48px rgba(34, 211, 238, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
@@ -213,8 +209,8 @@
   color: var(--iris-text-muted);
   margin: 0 0 1rem;
   padding: 0.75rem 1rem;
-  background: rgba(124, 92, 255, 0.08);
-  border: 1px solid rgba(124, 92, 255, 0.2);
+  background: rgba(214, 207, 199, 0.08);
+  border: 1px solid rgba(214, 207, 199, 0.2);
   border-radius: 8px;
   white-space: pre-wrap;
 }
@@ -241,9 +237,9 @@
 .iris-confirm-btn:active { transform: scale(0.96); }
 
 .iris-confirm-btn--ok {
-  background: linear-gradient(135deg, var(--iris-accent), #5e3de8);
-  color: #fff;
-  box-shadow: 0 0 16px rgba(124, 92, 255, 0.35);
+  background: var(--accent-primary);
+  color: var(--text-dark);
+  box-shadow: none;
 }
 
 .iris-confirm-btn--cancel {
@@ -255,18 +251,18 @@
 /* ── Data state (core animation) ─────────────────────────────────────────── */
 .iris-core.data .iris-hex-glow {
   animation: iris-hex-data 2.4s ease-in-out infinite;
-  filter: drop-shadow(0 0 24px rgba(0, 212, 255, 0.5)) drop-shadow(0 0 48px rgba(124, 92, 255, 0.3));
+  filter: none;
 }
 
 @keyframes iris-hex-data {
   0%,
   100% {
     opacity: 0.9;
-    filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.4)) drop-shadow(0 0 40px rgba(124, 92, 255, 0.2));
+    filter: none;
   }
   50% {
     opacity: 1;
-    filter: drop-shadow(0 0 32px rgba(0, 212, 255, 0.65)) drop-shadow(0 0 60px rgba(124, 92, 255, 0.35));
+    filter: none;
   }
 }
 
@@ -300,9 +296,9 @@
 .iris-data-scroll {
   overflow-x: auto;
   border-radius: 8px;
-  border: 1px solid rgba(124, 92, 255, 0.18);
-  background: rgba(8, 12, 26, 0.6);
-  box-shadow: 0 0 24px rgba(124, 92, 255, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(214, 207, 199, 0.18);
+  background: color-mix(in srgb, var(--bg-surface) 85%, transparent);
+  box-shadow: none;
 }
 
 .iris-data-table {
@@ -315,8 +311,8 @@
 }
 
 .iris-data-table thead {
-  background: rgba(124, 92, 255, 0.12);
-  border-bottom: 1px solid rgba(124, 92, 255, 0.22);
+  background: rgba(214, 207, 199, 0.12);
+  border-bottom: 1px solid rgba(214, 207, 199, 0.22);
 }
 
 .iris-data-table th {
@@ -341,7 +337,7 @@
 }
 
 .iris-data-table tbody tr:hover td {
-  background: rgba(124, 92, 255, 0.06);
+  background: rgba(214, 207, 199, 0.06);
 }
 
 /* Scrollbar styling for data scroll container */
@@ -352,7 +348,7 @@
   background: transparent;
 }
 .iris-data-scroll::-webkit-scrollbar-thumb {
-  background: rgba(124, 92, 255, 0.35);
+  background: rgba(214, 207, 199, 0.35);
   border-radius: 2px;
 }
 
@@ -363,7 +359,7 @@
   line-height: 1.5;
   color: var(--iris-text-muted);
   background: rgba(8, 12, 26, 0.6);
-  border: 1px solid rgba(124, 92, 255, 0.18);
+  border: 1px solid rgba(214, 207, 199, 0.18);
   border-radius: 8px;
   padding: 0.75rem 1rem;
   overflow-x: auto;
@@ -396,7 +392,7 @@
   height: 2.25rem;
   border: none;
   border-radius: 8px;
-  background: rgba(124, 92, 255, 0.12);
+  background: rgba(214, 207, 199, 0.12);
   color: var(--iris-text-muted);
   display: flex;
   align-items: center;
@@ -406,7 +402,7 @@
 }
 
 .iris-menu-btn:hover {
-  background: rgba(124, 92, 255, 0.22);
+  background: rgba(214, 207, 199, 0.22);
   color: var(--iris-text);
 }
 
@@ -419,7 +415,7 @@
   width: 16rem;
   z-index: 110;
   background: rgba(5, 8, 18, 0.97);
-  border-right: 1px solid rgba(124, 92, 255, 0.14);
+  border-right: 1px solid rgba(214, 207, 199, 0.14);
   display: flex;
   flex-direction: column;
   transform: translateX(-100%);
@@ -488,9 +484,9 @@
 .iris-new-conv-btn {
   margin: 0.6rem 0.75rem;
   padding: 0.5rem 0.75rem;
-  border: 1px solid rgba(124, 92, 255, 0.28);
+  border: 1px solid rgba(214, 207, 199, 0.28);
   border-radius: 8px;
-  background: rgba(124, 92, 255, 0.08);
+  background: rgba(214, 207, 199, 0.08);
   color: var(--iris-text-muted);
   font-family: "Rajdhani", system-ui, sans-serif;
   font-size: 0.82rem;
@@ -503,7 +499,7 @@
 }
 
 .iris-new-conv-btn:hover {
-  background: rgba(124, 92, 255, 0.16);
+  background: rgba(214, 207, 199, 0.16);
   color: var(--iris-text);
 }
 
@@ -517,7 +513,7 @@
 
 .iris-conv-list::-webkit-scrollbar { width: 3px; }
 .iris-conv-list::-webkit-scrollbar-track { background: transparent; }
-.iris-conv-list::-webkit-scrollbar-thumb { background: rgba(124, 92, 255, 0.3); border-radius: 2px; }
+.iris-conv-list::-webkit-scrollbar-thumb { background: rgba(214, 207, 199, 0.3); border-radius: 2px; }
 
 .iris-conv-item {
   display: flex;
@@ -530,7 +526,7 @@
 
 .iris-conv-item:hover,
 .iris-conv-item.active {
-  background: rgba(124, 92, 255, 0.1);
+  background: rgba(214, 207, 199, 0.1);
 }
 
 .iris-conv-item__btn {
@@ -579,7 +575,7 @@
 
 .iris-conv-item__del:hover {
   background: rgba(255, 80, 80, 0.12);
-  color: #ff6b6b;
+  color: var(--knd-error);
 }
 
 .iris-conv-loading {
@@ -611,7 +607,7 @@
 
 .iris-chat::-webkit-scrollbar { width: 3px; }
 .iris-chat::-webkit-scrollbar-track { background: transparent; }
-.iris-chat::-webkit-scrollbar-thumb { background: rgba(124, 92, 255, 0.3); border-radius: 2px; }
+.iris-chat::-webkit-scrollbar-thumb { background: rgba(214, 207, 199, 0.3); border-radius: 2px; }
 
 /* Shrink the hex core once chat is active */
 .iris-container.has-chat .iris-core {
@@ -651,8 +647,8 @@
 }
 
 .iris-chat-msg--user .iris-chat-msg__bubble {
-  background: rgba(124, 92, 255, 0.18);
-  border: 1px solid rgba(124, 92, 255, 0.28);
+  background: rgba(214, 207, 199, 0.18);
+  border: 1px solid rgba(214, 207, 199, 0.28);
   color: var(--iris-text);
   border-bottom-right-radius: 4px;
 }
@@ -689,7 +685,7 @@
   height: 2rem;
   border: none;
   border-radius: 50%;
-  background: rgba(124, 92, 255, 0.12);
+  background: rgba(214, 207, 199, 0.12);
   color: var(--iris-text-muted);
   cursor: pointer;
   display: flex;
@@ -700,7 +696,7 @@
 }
 
 .iris-mem-btn:hover {
-  background: rgba(124, 92, 255, 0.24);
+  background: rgba(214, 207, 199, 0.24);
   color: var(--iris-text);
 }
 
@@ -716,7 +712,7 @@
   height: 14px;
   border-radius: 7px;
   background: var(--iris-accent);
-  color: #fff;
+  color: var(--text-primary);
   font-size: 0.6rem;
   font-weight: 700;
   line-height: 14px;
@@ -738,13 +734,13 @@
   max-height: 60vh;
   z-index: 200;
   background: rgba(5, 8, 18, 0.97);
-  border: 1px solid rgba(124, 92, 255, 0.22);
+  border: 1px solid rgba(214, 207, 199, 0.22);
   border-radius: 12px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   backdrop-filter: blur(12px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 24px rgba(124, 92, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 24px rgba(214, 207, 199, 0.12);
 }
 
 .iris-mem-panel[hidden] {
@@ -799,7 +795,7 @@
 
 .iris-mem-list::-webkit-scrollbar { width: 3px; }
 .iris-mem-list::-webkit-scrollbar-track { background: transparent; }
-.iris-mem-list::-webkit-scrollbar-thumb { background: rgba(124, 92, 255, 0.3); border-radius: 2px; }
+.iris-mem-list::-webkit-scrollbar-thumb { background: rgba(214, 207, 199, 0.3); border-radius: 2px; }
 
 .iris-mem-item {
   display: flex;
@@ -810,7 +806,7 @@
 }
 
 .iris-mem-item:hover {
-  background: rgba(124, 92, 255, 0.07);
+  background: rgba(214, 207, 199, 0.07);
 }
 
 .iris-mem-item__key {
@@ -861,7 +857,7 @@
 }
 
 .iris-mem-item__del:hover {
-  color: #ff6b6b;
+  color: var(--knd-error);
 }
 
 .iris-mem-empty {

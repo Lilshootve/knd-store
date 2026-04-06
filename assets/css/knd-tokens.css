@@ -1,0 +1,117 @@
+/**
+ * KND Store — global design tokens (single source of truth).
+ * Load first, before Bootstrap and all other KND stylesheets.
+ */
+
+:root {
+  --bg-main: #0b0b0b;
+  --bg-surface: #111111;
+  --bg-elevated: #141414;
+  --bg-card: #ffffff;
+
+  --border: #1f1f1f;
+  --border-subtle: #e5e5e5;
+  --border-on-dark: rgba(255, 255, 255, 0.08);
+  --border-on-dark-mid: rgba(255, 255, 255, 0.12);
+
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1a1;
+  --text-dark: #111111;
+  --text-muted: #6b6b6b;
+  --text-placeholder: #8a8a8a;
+
+  --input-bg: #f3f3f1;
+
+  --accent-primary: #d6cfc7;
+  --accent-action: #22d3ee;
+
+  /* Alpha helpers (accent-action #22d3ee = rgb 34, 211, 238) */
+  --knd-action-03: rgba(34, 211, 238, 0.03);
+  --knd-action-04: rgba(34, 211, 238, 0.04);
+  --knd-action-05: rgba(34, 211, 238, 0.05);
+  --knd-action-06: rgba(34, 211, 238, 0.06);
+  --knd-action-08: rgba(34, 211, 238, 0.08);
+  --knd-action-10: rgba(34, 211, 238, 0.1);
+  --knd-action-12: rgba(34, 211, 238, 0.12);
+  --knd-action-15: rgba(34, 211, 238, 0.15);
+  --knd-action-18: rgba(34, 211, 238, 0.18);
+  --knd-action-20: rgba(34, 211, 238, 0.2);
+  --knd-action-22: rgba(34, 211, 238, 0.22);
+  --knd-action-25: rgba(34, 211, 238, 0.25);
+  --knd-action-30: rgba(34, 211, 238, 0.3);
+  --knd-action-40: rgba(34, 211, 238, 0.4);
+  --knd-action-ring: rgba(34, 211, 238, 0.22);
+
+  /* Alpha helpers (accent-primary #d6cfc7 ≈ rgb 214, 207, 199) */
+  --knd-accent-06: rgba(214, 207, 199, 0.06);
+  --knd-accent-08: rgba(214, 207, 199, 0.08);
+  --knd-accent-10: rgba(214, 207, 199, 0.1);
+  --knd-accent-12: rgba(214, 207, 199, 0.12);
+
+  --knd-white-02: rgba(255, 255, 255, 0.02);
+  --knd-white-04: rgba(255, 255, 255, 0.04);
+  --knd-white-06: rgba(255, 255, 255, 0.06);
+  --knd-white-08: rgba(255, 255, 255, 0.08);
+  --knd-white-10: rgba(255, 255, 255, 0.1);
+
+  --knd-overlay-scrim: rgba(0, 0, 0, 0.5);
+  --knd-overlay-scrim-soft: rgba(0, 0, 0, 0.45);
+
+  --knd-success: #15803d;
+  --knd-success-bg: rgba(22, 163, 74, 0.08);
+  --knd-success-border: rgba(22, 163, 74, 0.2);
+  --knd-warning: #ca8a04;
+  --knd-error: #dc2626;
+  --knd-error-bg: rgba(220, 38, 38, 0.06);
+  --knd-error-border: rgba(220, 38, 38, 0.2);
+  --knd-error-ring: rgba(220, 38, 38, 0.12);
+
+  --knd-saas-radius: 8px;
+  --knd-saas-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --knd-saas-bg: var(--bg-main);
+  --knd-saas-surface: var(--bg-card);
+  --knd-saas-muted: var(--text-secondary);
+  --knd-saas-accent: var(--accent-primary);
+  --knd-saas-text: var(--text-primary);
+  --knd-saas-text-inverse: var(--text-dark);
+  --knd-saas-border: var(--border-on-dark-mid);
+
+  --knd-dash-bg: var(--bg-main);
+  --knd-dash-surface: var(--bg-surface);
+  --knd-dash-border: var(--border);
+  --knd-dash-text: var(--text-primary);
+  --knd-dash-muted: var(--text-secondary);
+  --knd-dash-accent: var(--accent-primary);
+  --knd-dash-action: var(--accent-action);
+
+  --knd-auth-bg: var(--bg-main);
+  --knd-auth-card: var(--bg-card);
+  --knd-auth-input-bg: var(--input-bg);
+  --knd-auth-border: var(--border-subtle);
+  --knd-auth-text: var(--text-dark);
+  --knd-auth-text-muted: var(--text-muted);
+  --knd-auth-placeholder: var(--text-placeholder);
+  --knd-auth-beige: var(--accent-primary);
+  --knd-auth-cyan: var(--accent-action);
+  --knd-auth-cyan-ring: var(--knd-action-ring);
+  --knd-auth-btn-hover: #000000;
+  --knd-auth-error: var(--knd-error);
+  --knd-auth-error-bg: var(--knd-error-bg);
+
+  --iris-bg: var(--bg-surface);
+  --iris-text: var(--text-primary);
+  --iris-text-muted: var(--text-secondary);
+  --iris-border: var(--border);
+
+  /* Legacy aliases (style.css, JS, inline) */
+  --knd-accent-cyan: var(--accent-action);
+  --knd-neon-blue: var(--accent-action);
+  --knd-electric-purple: var(--accent-primary);
+  --knd-gunmetal-gray: var(--bg-surface);
+  --knd-black: #000000;
+  --knd-white: #ffffff;
+  --knd-dark-blue: var(--bg-main);
+  --knd-light-blue: var(--bg-surface);
+  --knd-accent-magenta: var(--accent-primary);
+}

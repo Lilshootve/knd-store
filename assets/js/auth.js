@@ -78,8 +78,14 @@
     if (label) {
       label.textContent = s.label;
       if (document.body.classList.contains('knd-auth-split-page')) {
-        var splitColors = ['#6b6b6b', '#dc2626', '#ca8a04', '#ca8a04', '#15803d'];
-        label.style.color = splitColors[s.level] || '#6b6b6b';
+        var splitColors = [
+          'var(--text-muted)',
+          'var(--knd-error)',
+          'var(--knd-warning)',
+          'var(--knd-warning)',
+          'var(--knd-success)'
+        ];
+        label.style.color = splitColors[s.level] || 'var(--text-muted)';
       } else if (s.level === 0) {
         label.style.color = 'var(--ka-t4)';
       } else if (s.level === 1) {

@@ -1,19 +1,7 @@
 /**
  * KND Store — minimal SaaS shell (auth + dashboard)
- * Palette: black #0B0B0B, white #FFFFFF, gray #A1A1A1, beige #F5F5DC
+ * Tokens: assets/css/knd-tokens.css
  */
-
-:root {
-  --knd-saas-bg: #0b0b0b;
-  --knd-saas-surface: #ffffff;
-  --knd-saas-muted: #a1a1a1;
-  --knd-saas-accent: #f5f5dc;
-  --knd-saas-text: #ffffff;
-  --knd-saas-text-inverse: #0b0b0b;
-  --knd-saas-border: rgba(255, 255, 255, 0.12);
-  --knd-saas-radius: 8px;
-  --knd-saas-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-}
 
 body.knd-saas-app {
   margin: 0;
@@ -74,7 +62,7 @@ body.knd-saas-app {
 }
 
 .knd-saas-link:hover {
-  color: var(--knd-saas-text);
+  color: var(--accent-action);
 }
 
 .knd-saas-btn {
@@ -94,17 +82,17 @@ body.knd-saas-app {
 }
 
 .knd-saas-btn:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--knd-white-06);
 }
 
 .knd-saas-btn--primary {
-  background: var(--knd-saas-surface);
-  color: var(--knd-saas-text-inverse);
-  border-color: var(--knd-saas-surface);
+  background: var(--accent-primary);
+  color: var(--text-dark);
+  border-color: var(--accent-primary);
 }
 
 .knd-saas-btn--primary:hover {
-  filter: brightness(0.95);
+  filter: brightness(0.92);
 }
 
 .knd-saas-main {
@@ -143,7 +131,7 @@ body.knd-saas-app {
 }
 
 .knd-saas-panel {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--knd-white-04);
   border: 1px solid var(--knd-saas-border);
   border-radius: 12px;
   padding: 1.25rem;
@@ -185,7 +173,7 @@ body.knd-saas-app {
 body.auth-page.knd-saas-app {
   --ka-void: var(--knd-saas-bg);
   --ka-deep: var(--knd-saas-bg);
-  --ka-surface: rgba(255, 255, 255, 0.06);
+  --ka-surface: var(--knd-white-06);
   --ka-t1: var(--knd-saas-text);
   --ka-t2: var(--knd-saas-muted);
   --ka-t3: var(--knd-saas-muted);
@@ -248,22 +236,22 @@ body.auth-page.knd-saas-app .knd-access-container {
 }
 
 body.auth-page.knd-saas-app .knd-access-form-panel {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--knd-white-04);
   border: 1px solid var(--knd-saas-border);
   border-radius: 12px;
   padding: 1.5rem;
 }
 
 body.auth-page.knd-saas-app .knd-access-input {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--knd-white-06);
   border-color: var(--knd-saas-border);
   color: var(--knd-saas-text);
 }
 
 body.auth-page.knd-saas-app .knd-access-btn-primary {
-  background: var(--knd-saas-surface);
-  color: var(--knd-saas-text-inverse);
-  border-color: var(--knd-saas-surface);
+  background: var(--accent-primary);
+  color: var(--text-dark);
+  border-color: var(--accent-primary);
 }
 
 body.auth-page.knd-saas-app .knd-access-btn-outline {

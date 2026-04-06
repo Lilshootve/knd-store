@@ -13,11 +13,12 @@ function generateHeader($title = 'KND Store - Tienda Galáctica', $description =
     $header .= '<html lang="en" data-bs-theme="dark">' . "\n";
     $header .= '<head>' . "\n";
     $header .= '    <meta charset="UTF-8">' . "\n";
+    $header .= '    <link rel="stylesheet" href="/assets/css/knd-tokens.css?v=' . @filemtime(__DIR__ . '/../assets/css/knd-tokens.css') . '">' . "\n";
     $header .= '    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">' . "\n";
     $header .= '    <title>' . htmlspecialchars($title) . '</title>' . "\n";
     $header .= '    <meta name="description" content="' . htmlspecialchars($description) . '">' . "\n";
     $header .= '    <meta name="robots" content="index, follow">' . "\n";
-    $header .= '    <meta name="theme-color" content="#010508">' . "\n";
+    $header .= '    <meta name="theme-color" content="#0b0b0b">' . "\n";
     $header .= '    <meta name="author" content="KND Store">' . "\n";
     $header .= '    <meta name="keywords" content="knd, store, gaming, technology, digital services, apparel, streetwear, ecommerce">' . "\n";
     if ($extraHead) {
@@ -190,12 +191,12 @@ function generateNavigation() {
     $nav .= '          <a class="knd-dropdown-item' . ($current_page === 'order.php' ? ' active' : '') . '" href="/order.php"><i class="fas fa-cart-shopping me-2"></i>' . t('nav.my_orders', 'My Orders') . '</a>' . "\n";
     $nav .= '          <a class="knd-dropdown-item' . ($current_page === 'track-order.php' ? ' active' : '') . '" href="/track-order.php"><i class="fas fa-magnifying-glass me-2"></i>' . t('nav.track_order', 'Track Order') . '</a>' . "\n";
     $nav .= '          <a class="knd-dropdown-item" href="/contact.php"><i class="fas fa-headset me-2"></i>' . t('nav.support', 'Support') . '</a>' . "\n";
-    $nav .= '          <div style="border-top:1px solid rgba(255,255,255,0.1);margin:6px 0;"></div>' . "\n";
+    $nav .= '          <div class="knd-dropdown-sep" role="presentation"></div>' . "\n";
     if ($drLoggedIn) {
         $nav .= '          <a class="knd-dropdown-item' . ($current_page === 'my-profile.php' ? ' active' : '') . '" href="/my-profile.php"><i class="fas fa-user-shield me-2"></i>' . t('nav.profile', 'My Profile') . '</a>' . "\n";
         $nav .= '          <a class="knd-dropdown-item' . ($current_page === 'support-credits.php' ? ' active' : '') . '" href="/support-credits.php"><i class="fas fa-coins me-2"></i>' . t('nav.credits', 'Credits') . '</a>' . "\n";
         $nav .= '          <a class="knd-dropdown-item' . ($current_page === 'rewards.php' ? ' active' : '') . '" href="/rewards.php"><i class="fas fa-gift me-2"></i>' . t('nav.rewards', 'Rewards') . '</a>' . "\n";
-        $nav .= '          <div style="border-top:1px solid rgba(255,255,255,0.1);margin:6px 0;"></div>' . "\n";
+        $nav .= '          <div class="knd-dropdown-sep" role="presentation"></div>' . "\n";
         $nav .= '          <a class="knd-dropdown-item" href="/logout.php"><i class="fas fa-sign-out-alt me-2"></i>' . t('nav.logout', 'Logout') . '</a>' . "\n";
     } else {
         $nav .= '          <a class="knd-dropdown-item' . ($current_page === 'auth.php' ? ' active' : '') . '" href="/auth.php"><i class="fas fa-sign-in-alt me-2"></i>' . t('nav.login', 'Login') . ' / ' . t('nav.register', 'Register') . '</a>' . "\n";

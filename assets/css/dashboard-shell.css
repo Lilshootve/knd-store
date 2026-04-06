@@ -1,18 +1,11 @@
 /**
  * KND Store — primary app shell (dashboard route only)
- * Tokens: dark neutral SaaS; no glow / neon; sidebar-only chrome.
+ * Tokens: knd-tokens.css (--knd-dash-*)
  */
 :root {
-  --knd-dash-bg: #0b0b0b;
-  --knd-dash-surface: #111111;
-  --knd-dash-border: #1f1f1f;
-  --knd-dash-text: #ffffff;
-  --knd-dash-muted: #a1a1a1;
-  --knd-dash-accent: #d6cfc7;
-  --knd-dash-action: #22d3ee;
   --knd-dash-radius: 8px;
   --knd-dash-sidebar-w: 240px;
-  --knd-dash-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --knd-dash-font: var(--knd-saas-font);
 }
 
 /* Kill legacy skin leaks inside app shell */
@@ -55,7 +48,7 @@ body.knd-saas-dashboard .glass-card-neon {
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--knd-overlay-scrim);
   z-index: 400;
   opacity: 0;
   pointer-events: none;
@@ -137,13 +130,13 @@ body.knd-saas-dashboard .glass-card-neon {
 
 .knd-dash-nav a:hover,
 .knd-dash-nav button.knd-dash-nav-link:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--knd-white-04);
   color: var(--knd-dash-text);
 }
 
 .knd-dash-nav a.knd-dash-nav--active {
-  background: rgba(214, 207, 199, 0.12);
-  color: var(--knd-dash-accent);
+  background: var(--knd-action-08);
+  color: var(--knd-dash-action);
   font-weight: 500;
 }
 
@@ -346,7 +339,7 @@ body.knd-saas-dashboard .glass-card-neon {
 }
 
 .knd-btn-action:hover {
-  background: rgba(34, 211, 238, 0.08);
+  background: var(--knd-action-08);
 }
 
 .knd-activity-list {
@@ -412,7 +405,7 @@ body.knd-saas-dashboard .glass-card-neon {
 }
 
 .knd-data-table tbody tr:hover td {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--knd-white-02);
 }
 
 .knd-dash-empty {
