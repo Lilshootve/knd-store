@@ -138,6 +138,9 @@
     # KND Drop (Neural Link — current drop; knd-drop.php is legacy)
     RewriteRule ^drop/?$ /games/knd-neural-link/drops.php [L]
 
+    # Units collection friendly URL
+    RewriteRule ^Units/?$ /tools/cards/index.html [L]
+
     # KND LastRoll friendly URLs
     RewriteRule ^lastroll/?$ /death-roll-lobby.php [L]
     RewriteRule ^lastroll/game/?$ /death-roll-game.php [QSA,L]
