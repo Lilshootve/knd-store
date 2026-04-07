@@ -11,7 +11,7 @@ header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 require_once BASE_PATH . '/includes/session.php';
 require_once BASE_PATH . '/includes/config.php';
 require_once BASE_PATH . '/includes/auth.php';
-require_once BASE_PATH . '/includes/squad_battle_bootstrap.php';
+require_once BASE_PATH . '/squad-arena-v2/includes/squad_battle_bootstrap.php';
 
 api_require_login();
 

@@ -48,7 +48,7 @@ if ($pdo && $userId > 0) {
     if (is_array($eng) && isset($eng['ally_mw_ids']) && is_array($eng['ally_mw_ids'])
         && is_array($active) && isset($active['ally_mw_ids']) && is_array($active['ally_mw_ids'])
         && $eng['ally_mw_ids'] === $active['ally_mw_ids']) {
-        require_once BASE_PATH . '/includes/squad_battle_bootstrap.php';
+        require_once BASE_PATH . '/squad-arena-v2/includes/squad_battle_bootstrap.php';
         $result = squad_v2_build_battle_payload($pdo, $userId, $eng['ally_mw_ids']);
         if ($result['ok'] ?? false) {
             $token = (string) ($active['battle_token'] ?? '');
