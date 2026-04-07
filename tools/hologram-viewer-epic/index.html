@@ -6,7 +6,7 @@
 <title>Holographic Viewer</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { overflow: hidden; background: #000; font-family: 'Courier New', monospace; }
+  body { overflow: hidden; background: transparent; font-family: 'Courier New', monospace; }
   #canvas-container { width: 100vw; height: 100vh; position: relative; }
   canvas { display: block; }
 
@@ -168,21 +168,17 @@ bgMesh.frustumCulled = false;
 scene.add(bgMesh);
 
 /** Mind Wars lobby iframe: match lobby --void (#010508), drop teal gradient quad (avoids “grey box”). */
-const LOBBY_VOID_HEX = 0x010508;
 if (new URLSearchParams(window.location.search).get('embed') === '1') {
-  document.body.style.background = '#010508';
+  document.documentElement.style.background = 'transparent';
+  document.body.style.background = 'transparent';
   const cc = document.getElementById('canvas-container');
-  if (cc) cc.style.background = '#010508';
+  if (cc) cc.style.background = 'transparent';
   const gridOv = document.getElementById('grid-overlay');
-  if (gridOv) {
-    gridOv.style.backgroundImage =
-      'linear-gradient(rgba(0,232,255,.016) 1px, transparent 1px), linear-gradient(90deg, rgba(0,232,255,.016) 1px, transparent 1px)';
-    gridOv.style.backgroundSize = '56px 56px';
-  }
+  if (gridOv) gridOv.style.display = 'none';
   scene.remove(bgMesh);
   bgGeo.dispose();
   bgMat.dispose();
-  renderer.setClearColor(LOBBY_VOID_HEX, 1);
+  renderer.setClearColor(0x000000, 0);
   const scanEarly = document.getElementById('scan-line');
   if (scanEarly) scanEarly.style.display = 'none';
 }
@@ -547,6 +543,7 @@ async function init() {
     };
     hide('#status-panel');
     hide('#bottom-bar');
+    hide('#grid-overlay');
     document.querySelectorAll('.corner-bracket').forEach((el) => { el.style.display = 'none'; });
   }
 
