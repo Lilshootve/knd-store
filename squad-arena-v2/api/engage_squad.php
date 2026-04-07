@@ -1,9 +1,9 @@
 <?php
+declare(strict_types=1);
 /**
  * Store ordered squad (3× mw_avatars.id) in session for battlefield.php.
  */
 require_once __DIR__ . '/../../config/bootstrap.php';
-declare(strict_types=1);
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');

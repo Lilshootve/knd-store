@@ -1,9 +1,9 @@
 <?php
+declare(strict_types=1);
 /**
  * Mind Wars Squad Arena v2 — authenticated battlefield with DB-driven squads.
  */
 require_once __DIR__ . '/../config/bootstrap.php';
-declare(strict_types=1);
 
 require_once BASE_PATH . '/includes/session.php';
 require_once BASE_PATH . '/includes/config.php';
