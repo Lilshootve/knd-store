@@ -173,7 +173,13 @@ document.addEventListener('DOMContentLoaded', function () {
 HTML;
 
 $inject = '<script>window.__MW_BATTLE_INIT__=' . $bootJson . ';</script>' . "\n"
-    . '<script>window.MW_BATTLEFIELD_HEADER=' . $Ljson . ';</script>' . "\n" . $bootScript;
+    . '<script>window.MW_BATTLEFIELD_HEADER=' . $Ljson . ';</script>' . "\n"
+    . '<script>(function(){'
+    . 'if(typeof window.showSurrenderConfirm!=="function"){window.showSurrenderConfirm=function(){var el=document.getElementById("surrender-confirm");if(el)el.classList.add("show");};}'
+    . 'if(typeof window.closeSurrenderConfirm!=="function"){window.closeSurrenderConfirm=function(){var el=document.getElementById("surrender-confirm");if(el)el.classList.remove("show");};}'
+    . 'if(typeof window.confirmSurrender!=="function"){window.confirmSurrender=async function(){if(window.__SQUAD_ARENA_SURRENDERING||window.__SQUAD_ARENA_SHOW_RESULT_DONE)return;window.__SQUAD_ARENA_SURRENDERING=true;try{window.closeSurrenderConfirm&&window.closeSurrenderConfirm();if(typeof G!=="undefined"&&G&&G.phase!=="done"){G.phase="done";}if(typeof showResult==="function"){await showResult(false);}}catch(e){console.warn("confirmSurrender:",e);}};}'
+    . '})();</script>' . "\n"
+    . $bootScript;
 
 if (stripos($html, '</head>') !== false) {
     $html = str_ireplace('</head>', $inject . "\n</head>", $html, $count);
@@ -278,6 +284,11 @@ async function confirmSurrender(){
     try { await showResult(false); } catch (e) { console.warn('confirmSurrender:', e); }
   }
 }
+
+// Exponer explícitamente en window para onclick inline.
+window.showSurrenderConfirm = showSurrenderConfirm;
+window.closeSurrenderConfirm = closeSurrenderConfirm;
+window.confirmSurrender = confirmSurrender;
 
 // Fallback UI: si el botón no se pudo inyectar vía PHP (cambio de template),
 // lo creamos aquí para que siempre exista.
