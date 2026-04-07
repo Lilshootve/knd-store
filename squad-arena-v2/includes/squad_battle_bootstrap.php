@@ -1,10 +1,10 @@
 <?php
+declare(strict_types=1);
 /**
  * Squad Arena v2 — build battle JSON from mw_avatars + user inventory.
  * Used by battlefield.php (not loaded on public static pages).
  */
 require_once __DIR__ . '/../../config/bootstrap.php';
-declare(strict_types=1);
 
 if (!function_exists('mw_get_user_avatars')
     || !function_exists('mw_skill_display_name')
