@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * KND Neural Link — open_drop.php
  * POST JSON: { "drop_type": "standard"|"premium"|"legendary" }
@@ -7,7 +8,6 @@
  */
 
 require_once __DIR__ . '/../../../config/bootstrap.php';
-declare(strict_types=1);
 
 // ── Sandbox: true = KP real, pity real, inventario, log. false = dry-run (sin escrituras). ──
 $SANDBOX_MODE = true;

@@ -1425,7 +1425,9 @@
 
     document.getElementById('tb-avatar-btn').addEventListener('click', function () { openOverlay('av-overlay'); });
     var qaChange = document.getElementById('qa-change-avatar');
-    if (qaChange) qaChange.addEventListener('click', function () { openOverlay('av-overlay'); });
+    if (qaChange) qaChange.addEventListener('click', function () {
+      window.location.assign('/tools/cards/index.html');
+    });
     document.getElementById('av-panel-change').addEventListener('click', function () { openOverlay('av-overlay'); });
     document.getElementById('avp-inspect').addEventListener('click', function () { openOverlay('av-overlay'); });
     document.getElementById('notif-btn').addEventListener('click', function () { openOverlay('notif-overlay'); });

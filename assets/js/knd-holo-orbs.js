@@ -10,6 +10,7 @@
 
   /** Desktop / non-touch gate */
   function isOrbEnvironment() {
+    if (document.querySelector("[data-no-holo-orb]")) return false;
     if (window.matchMedia && !window.matchMedia("(pointer: fine)").matches) return false;
     if (window.matchMedia && !window.matchMedia("(hover: hover)").matches) return false;
     if (window.innerWidth < 1024) return false;

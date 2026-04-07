@@ -1,11 +1,11 @@
 <?php
+declare(strict_types=1);
 /**
  * KND Neural Link — get_drop_rates.php
  * GET optional ?type=standard|premium|legendary
  */
 
 require_once __DIR__ . '/../../../config/bootstrap.php';
-declare(strict_types=1);
 
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');

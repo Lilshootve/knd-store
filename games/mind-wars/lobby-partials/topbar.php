@@ -9,7 +9,7 @@ $ranking = $L['ranking'] ?? [];
 $pos = $ranking['estimated_position'] ?? null;
 $rankLabel = $pos !== null ? '#' . (int) $pos : '—';
 ?>
-<header class="topbar">
+<header class="topbar" data-no-holo-orb>
   <a class="tb-logo" href="/index.php" title="KND Store — Inicio">
     <div class="logo-hex" aria-hidden="true">
       <svg viewBox="0 0 32 32" fill="none" width="32" height="32">
@@ -60,8 +60,6 @@ $rankLabel = $pos !== null ? '#' . (int) $pos : '—';
       <span id="cc-energy">—</span>
     </div>
   </div>
-
-  <div id="knd-holo-yield-mount" class="tb-holo-yield-mount" aria-hidden="true"></div>
 
   <div class="tb-controls">
     <div class="tb-icon-btn" id="notif-btn" title="Notifications">🔔

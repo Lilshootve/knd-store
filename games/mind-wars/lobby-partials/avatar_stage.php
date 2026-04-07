@@ -95,7 +95,7 @@ $lck = $stats ? max(0, min(100, (int) ($stats['luck'] ?? 0))) : 0;
       <span class="bb-icon">⚔</span> BATTLE
     </button>
     <div class="quick-actions">
-      <button type="button" class="qa-btn" id="qa-change-avatar">⬡ CHANGE AVATAR</button>
+      <button type="button" class="qa-btn" id="qa-change-avatar">UNITS</button>
       <button type="button" class="qa-btn" id="qa-inventory">🎒 INVENTORY</button>
       <button type="button" class="qa-btn" id="qa-neural-link">🧬 NEURAL LINK</button>
     </div>
