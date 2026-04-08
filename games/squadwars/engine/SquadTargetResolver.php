@@ -30,10 +30,6 @@ final class SquadTargetResolver
             return $this->resolveWithSkillFallback($actor, $action, $units, $opp, $skill);
         }
 
-        if ($act === 'defend') {
-            return [$this->withId($actor)];
-        }
-
         if ($act === 'heal') {
             return $this->resolveHealTargets($actor, $action, $units, $side);
         }
@@ -45,7 +41,7 @@ final class SquadTargetResolver
     {
         $targets = $this->resolve($actor, $action, $units, $skill);
         $act = (string) ($action['action'] ?? '');
-        return $targets !== [] || $act === 'defend';
+        return $targets !== [];
     }
 
     /**

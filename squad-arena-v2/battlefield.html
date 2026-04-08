@@ -369,18 +369,16 @@ header.topbar{flex-shrink:0}
 #ah-inner{padding:6px 12px 8px;min-height:0}
 .ah-row-squad{display:flex;gap:8px;align-items:stretch}
 
-/* Per-ally: grid [ avatar-card ×2 rows | 3×2 skill tiles ] — passive not shown as tile */
-.pu-pack{flex:1;display:grid;grid-template-columns:minmax(100px,12.5vw) repeat(3,var(--ahsq));
+/* Per-ally: grid [ avatar-card ×2 rows | 2×2 skill tiles ] — passive not shown as tile */
+.pu-pack{flex:1;display:grid;grid-template-columns:minmax(100px,12.5vw) repeat(2,var(--ahsq));
   grid-template-rows:var(--ahsq) var(--ahsq);gap:8px;min-width:0;
   background:rgba(0,232,255,.03);border:1px solid rgba(0,232,255,.1);border-radius:var(--r);padding:6px 8px}
 .pu-pack.unit-dead{opacity:.28;pointer-events:none;filter:grayscale(.75)}
 .pu-pack>.avatar-card.ac-hud{grid-column:1;grid-row:1/span 2;align-self:stretch;min-height:0;margin:0}
 .pu-pack>.skc:nth-child(2){grid-column:2;grid-row:1}
 .pu-pack>.skc:nth-child(3){grid-column:3;grid-row:1}
-.pu-pack>.skc:nth-child(4){grid-column:4;grid-row:1}
-.pu-pack>.skc:nth-child(5){grid-column:2;grid-row:2}
-.pu-pack>.skc:nth-child(6){grid-column:3;grid-row:2}
-.pu-pack>.skc:nth-child(7){grid-column:4;grid-row:2}
+.pu-pack>.skc:nth-child(4){grid-column:2;grid-row:2}
+.pu-pack>.skc:nth-child(5){grid-column:3;grid-row:2}
 
 /* ── tools/cards/index.html — avatar-card (compact HUD) ─────────── */
 #apanel .avatar-card.ac-hud{position:relative;background:rgba(2,10,22,.92);border:1px solid rgba(0,232,255,.12);border-radius:var(--r);
@@ -598,14 +596,12 @@ header.topbar{flex-shrink:0}
   .uh{min-width:82px}.unm{font-size:6.5px}.uf-i{font-size:34px}.pb{width:90px;height:26px}.uhp{width:65px}
   #ability-hud{--ahsq:min(72px,28vw)}
   .ah-row-squad{flex-direction:column;gap:10px}
-  #apanel .pu-pack{grid-template-columns:repeat(3,1fr);grid-template-rows:auto var(--ahsq) var(--ahsq)}
-  #apanel .pu-pack>.avatar-card.ac-hud{grid-column:1/span 3;grid-row:1;max-height:none;min-height:0}
+  #apanel .pu-pack{grid-template-columns:repeat(2,1fr);grid-template-rows:auto var(--ahsq) var(--ahsq)}
+  #apanel .pu-pack>.avatar-card.ac-hud{grid-column:1/span 2;grid-row:1;max-height:none;min-height:0}
   #apanel .pu-pack>.skc:nth-child(2){grid-column:1;grid-row:2}
   #apanel .pu-pack>.skc:nth-child(3){grid-column:2;grid-row:2}
-  #apanel .pu-pack>.skc:nth-child(4){grid-column:3;grid-row:2}
-  #apanel .pu-pack>.skc:nth-child(5){grid-column:1;grid-row:3}
-  #apanel .pu-pack>.skc:nth-child(6){grid-column:2;grid-row:3}
-  #apanel .pu-pack>.skc:nth-child(7){grid-column:3;grid-row:3}
+  #apanel .pu-pack>.skc:nth-child(4){grid-column:1;grid-row:3}
+  #apanel .pu-pack>.skc:nth-child(5){grid-column:2;grid-row:3}
   .skd{display:none}.skn{font-size:10px}
 }
 /* Phones/tablets landscape + narrow desktops: more canvas, readable HUD */
@@ -825,7 +821,7 @@ header.topbar{flex-shrink:0}
     <div id="to-units"></div>
   </div>
 
-  <!-- ABILITY HUD: avatar-card + 4 skill tiles (attack, defend, ability, special) + spacer -->
+  <!-- ABILITY HUD: avatar-card + 2×2 skill tiles (attack, ability, special + placeholder) -->
   <div id="ability-hud">
     <div class="hud-label">⬡ SQUAD INTERFACE</div>
     <div id="apanel">
@@ -909,21 +905,18 @@ const DEMO_AS=[
     level:5,pos:'front',modelGlb:'/assets/avatars/models/legendary/nicola_tesla.glb',abilities:[
       {type:'passive',name:'Spark of Genius',desc:'Energy gain +1 on crit hits',cd:0,maxCd:0,passive:true},
       {type:'attack',name:'Strike',desc:'Basic attack (1⚡)',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
-      {type:'defense',name:'Defend',desc:'Reduce damage taken until next turn (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
       {type:'ability',name:'Lightning Conductor',desc:'Channel damage + restore 15% max HP (self)',dmg:1.2,healPct:.15,target:'self',cd:0,maxCd:3,cost:'2⚡',eCost:2,cardTone:'hybrid'},
       {type:'special',name:'Storm Protocol',desc:'Massive AOE lightning — hits all enemies',dmg:.7,target:'all',cd:0,maxCd:0,cost:'5⚡',eCost:5,cardTone:'damage'}]},
   {id:2,name:'MARIE CURIE',class:'Controller',rarity:'epic',icon:'☢️',mind:45,focus:55,speed:30,luck:35,
     level:4,pos:'mid',modelGlb:'/assets/avatars/models/epic/marie_curie.glb',abilities:[
       {type:'passive',name:'Radiation Aura',desc:'Enemies take 5% more damage each round',cd:0,maxCd:0,passive:true},
       {type:'attack',name:'Strike',desc:'Basic attack (1⚡)',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
-      {type:'defense',name:'Defend',desc:'Brace (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
       {type:'ability',name:'Radium Glow',desc:'Heal lowest HP ally for 20%',healPct:.20,target:'lowest_ally',dmg:0,cd:0,maxCd:2,cost:'2⚡',eCost:2,cardTone:'heal'},
       {type:'special',name:'Nuclear Meltdown',desc:'Devastating single-target ignore defense',dmg:1.4,ignoreDef:true,target:'any',cd:0,maxCd:0,cost:'5⚡',eCost:5,cardTone:'damage'}]},
   {id:3,name:'DRACULA',class:'Striker',rarity:'legendary',icon:'🧛',mind:50,focus:40,speed:50,luck:40,
     level:5,pos:'back',modelGlb:'/assets/avatars/models/epic/dracula.glb',abilities:[
       {type:'passive',name:'Blood Pact',desc:'Heal 12% of damage dealt',cd:0,maxCd:0,passive:true,lifesteal:.12},
       {type:'attack',name:'Strike',desc:'Basic attack (1⚡)',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
-      {type:'defense',name:'Defend',desc:'Brace (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
       {type:'ability',name:'Crimson Bite',desc:'Strike any target + lifesteal',dmg:1.1,lifesteal:.12,target:'any',cd:0,maxCd:3,cost:'2⚡',eCost:2,cardTone:'damage'},
       {type:'special',name:'Night Domination',desc:'AOE damage + restore 18% max HP (self)',dmg:.8,healPct:.18,target:'self',cd:0,maxCd:0,cost:'5⚡',eCost:5,cardTone:'hybrid'}]}
 ];
@@ -932,21 +925,18 @@ const DEMO_ES=[
     level:5,pos:'front',modelGlb:'/assets/avatars/models/legendary/kraken.glb',abilities:[
       {type:'passive',name:'Deep Armor',desc:'Reduce incoming damage by 15%',cd:0,maxCd:0,passive:true,dmgReduction:.15},
       {type:'attack',name:'Strike',desc:'Basic attack',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
-      {type:'defense',name:'Defend',desc:'Brace (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
       {type:'ability',name:'Deep Regen',desc:'Regenerate 12% max HP (self)',healPct:.12,target:'self',dmg:0,cd:0,maxCd:2,cost:'2⚡',eCost:2,cardTone:'heal'},
       {type:'special',name:'Leviathan Crush',desc:'Massive AOE tidal impact',dmg:.6,target:'all',cd:0,maxCd:0,cost:'5⚡',eCost:5,cardTone:'damage'}]},
   {id:102,name:'MORGANA',class:'Controller',rarity:'epic',icon:'🔮',mind:50,focus:55,speed:35,luck:40,
     level:4,pos:'mid',modelGlb:'/assets/avatars/models/epic/morgana.glb',abilities:[
       {type:'passive',name:'Cursed Presence',desc:'5% damage reduction above 50% HP',cd:0,maxCd:0,passive:true},
       {type:'attack',name:'Strike',desc:'Basic attack',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
-      {type:'defense',name:'Defend',desc:'Brace (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
       {type:'ability',name:'Shadow Mend',desc:'Heal lowest ally 18%',healPct:.18,target:'lowest_ally',dmg:0,cd:0,maxCd:2,cost:'2⚡',eCost:2,cardTone:'heal'},
       {type:'special',name:'Stone Eternity',desc:'High damage ignore defense',dmg:1.3,ignoreDef:true,target:'any',cd:0,maxCd:0,cost:'5⚡',eCost:5,cardTone:'control'}]},
   {id:103,name:'CLEOPATRA',class:'Strategist',rarity:'epic',icon:'👑',mind:48,focus:45,speed:40,luck:50,
     level:4,pos:'back',modelGlb:'/assets/avatars/models/epic/pericles.glb',abilities:[
       {type:'passive',name:'Golden Aura',desc:'Allies gain +5% crit chance',cd:0,maxCd:0,passive:true},
       {type:'attack',name:'Strike',desc:'Basic attack',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
-      {type:'defense',name:'Defend',desc:'Brace (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
       {type:'ability',name:'Royal Grace',desc:'Heal all allies 10%',healPct:.10,target:'all_allies',dmg:0,cd:0,maxCd:3,cost:'2⚡',eCost:2,cardTone:'heal'},
       {type:'special',name:'Nile Flood',desc:'AOE damage to all',dmg:.7,target:'all',cd:0,maxCd:0,cost:'5⚡',eCost:5,cardTone:'damage'}]}
 ];
@@ -1269,14 +1259,11 @@ function buildHUD(){
   G.allies.forEach(u=>{
     const dead=u.hp<=0;
     let act=u.abilities.filter(a=>!a.passive);
-    if(boot&&boot.hideDefendSlot){
-      act=act.filter(a=>!(a.defend===true||String(a.type||'').toLowerCase()==='defense'||String(a.type||'').toLowerCase()==='defend'));
-    }
+    act=act.filter(a=>!(a.defend===true||String(a.type||'').toLowerCase()==='defense'||String(a.type||'').toLowerCase()==='defend'));
     const pack=document.createElement('div');
     pack.className='pu-pack'+(dead?' unit-dead':'');
     pack.appendChild(collectionCardEl(u));
     for(let i=0;i<4;i++)pack.appendChild(mountSkillCard(u,act[i],dead));
-    pack.appendChild(mountSkillCard(u,null,dead));
     row.appendChild(pack);
   });
 }
@@ -1342,16 +1329,10 @@ async function executeTurnLocal(){
   for(const u of order){
     const ab=G.actions[u.id];if(!ab||u.hp<=0)continue;
     await sl(200);
-    if(ab.defend===true||ab.type==='defense'||ab.type==='defend'){
-      u.defending=true;
-      if(window.MWArenaThree)await MWArenaThree.playDefendVisual(u,'player');
-      lg(`<span class="actor">${u.name}</span> <span class="ht">DEFENDS</span> — reduced incoming damage this round`,'pa');
-    }else{
-      const hasHeal=ab.healPct!=null&&Number(ab.healPct)>0;
-      const hasDmg=ab.dmg!=null&&Number(ab.dmg)>0;
-      if(hasHeal)await doHeal(u,ab);
-      if(hasDmg)await doAtk(u,ab);
-    }
+    const hasHeal=ab.healPct!=null&&Number(ab.healPct)>0;
+    const hasDmg=ab.dmg!=null&&Number(ab.dmg)>0;
+    if(hasHeal)await doHeal(u,ab);
+    if(hasDmg)await doAtk(u,ab);
     if(ab.maxCd>0)ab.cd=ab.maxCd;
     const pay=ab.eCost!==undefined&&ab.eCost!==null?Number(ab.eCost):0;
     u.energy=Math.min(MW.MAX_ENERGY,u.energy-pay+MW.E_GAIN_ATK);
@@ -1512,11 +1493,6 @@ function buildSquadwarsActionsFromG(){
     const ab=G.actions[u.id];
     if(!ab){
       out.push({unitId:pid,action:'attack',targetScope:'slot_enemy',targetSlot:'front'});
-      continue;
-    }
-    const t=String(ab.type||'').toLowerCase();
-    if(ab.defend===true||t==='defense'||t==='defend'){
-      out.push({unitId:pid,action:'defend'});
       continue;
     }
     const hasDmg=ab.dmg!=null&&Number(ab.dmg)>0;
@@ -1733,17 +1709,11 @@ async function aiTurn(){
     });if(!usable.length)continue;
     const low=en.hp/en.maxHp<.35;const heals=usable.filter(s=>s.healPct);
     const dmgers=usable.filter(s=>s.dmg);
-    const defenders=usable.filter(s=>s.defend===true||s.type==='defense');
-    let ab=low&&heals.length?heals[0]:dmgers.length?dmgers[~~(Math.random()*dmgers.length)]:(defenders.length&&Math.random()<.22?defenders[0]:usable[0]);
+    let ab=low&&heals.length?heals[0]:(dmgers.length?dmgers[~~(Math.random()*dmgers.length)]:usable[0]);
     await sl(250);
-    if(ab.defend===true||ab.type==='defense'||ab.type==='defend'){
-      en.defending=true;
-      if(AX)await AX.playDefendVisual(en,'enemy');
-      lg(`<span class="actor">${en.name}</span> <span class="ht">DEFENDS</span>`,'ea');
-    }else{
-      const hasHeal=ab.healPct!=null&&Number(ab.healPct)>0;
-      const hasDmg=ab.dmg!=null&&Number(ab.dmg)>0;
-      if(hasHeal){
+    const hasHeal=ab.healPct!=null&&Number(ab.healPct)>0;
+    const hasDmg=ab.dmg!=null&&Number(ab.dmg)>0;
+    if(hasHeal){
         let tgts=ab.target==='self'?[en]:ab.target==='lowest_ally'?[G.enemies.filter(e=>e.hp>0).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0]]:
           ab.target==='all_allies'?G.enemies.filter(e=>e.hp>0):[en];
         for(const t of tgts){
@@ -1804,7 +1774,6 @@ async function aiTurn(){
           }
           renderUnits();await sl(180);
         }
-      }
       }
     }
     if(ab.maxCd>0)ab.cd=ab.maxCd;

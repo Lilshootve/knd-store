@@ -129,6 +129,11 @@ final class SquadSimEngine
             return false;
         }
 
+        if ((string) ($action['action'] ?? '') === 'defend') {
+            $events[] = ['type' => 'invalid_action', 'reason' => 'defend_disabled'];
+            return false;
+        }
+
         if ((string) ($action['action'] ?? '') === 'heal') {
             $cost = max(0, (int) ($action['energyCost'] ?? 0));
             if ((int) ($unit['energy'] ?? 0) < $cost) {

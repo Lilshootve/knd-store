@@ -402,17 +402,6 @@ function squad_v2_build_abilities_from_row(array $row, int $eAtk, int $eAbl, int
     return [
         $passiveAb,
         $strike,
-        [
-            'type' => 'defense',
-            'name' => 'Defend',
-            'desc' => 'Brace: reduce damage taken until your next turn (0⚡).',
-            'cd' => 0,
-            'maxCd' => 0,
-            'cost' => '0⚡',
-            'eCost' => 0,
-            'defend' => true,
-            'mwCode' => '',
-        ],
         $abilitySlot,
         $specialSlot,
     ];
@@ -672,7 +661,6 @@ function squad_v2_build_battle_payload(PDO $pdo, int $userId, array $orderedMwId
             'abilities' => [
                 ['type' => 'passive', 'name' => 'Shell', 'desc' => '', 'cd' => 0, 'maxCd' => 0, 'passive' => true, 'mwCode' => ''],
                 ['type' => 'attack', 'name' => 'Strike', 'desc' => '', 'dmg' => 1, 'target' => 'default', 'cd' => 0, 'maxCd' => 0, 'cost' => $eAtk . '⚡', 'eCost' => $eAtk, 'mwCode' => ''],
-                ['type' => 'defense', 'name' => 'Defend', 'desc' => '', 'cd' => 0, 'maxCd' => 0, 'cost' => '0⚡', 'eCost' => 0, 'defend' => true, 'mwCode' => ''],
                 ['type' => 'ability', 'name' => 'Hit', 'desc' => '', 'dmg' => 1, 'target' => 'default', 'cd' => 0, 'maxCd' => $ablCooldown, 'cost' => $eAbl . '⚡', 'eCost' => $eAbl, 'mwCode' => '', 'cardTone' => 'damage'],
                 ['type' => 'special', 'name' => 'Burst', 'desc' => '', 'dmg' => 0.6, 'target' => 'all', 'cd' => 0, 'maxCd' => 0, 'cost' => $eSpl . '⚡', 'eCost' => $eSpl, 'mwCode' => '', 'cardTone' => 'damage'],
             ],

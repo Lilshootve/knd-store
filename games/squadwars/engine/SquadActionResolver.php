@@ -32,16 +32,6 @@ final class SquadActionResolver
         if ($kind === 'attack') {
             return $this->executeAttack($actor, $targets);
         }
-        if ($kind === 'defend') {
-            return [
-                'events' => [],
-                'hit_success' => false,
-                'targets_hit' => [],
-                'effects' => [],
-                'self_effects' => [['type' => 'defend', 'turns' => 1]],
-                'meta' => ['action' => 'defend'],
-            ];
-        }
         if ($kind === 'heal') {
             return $this->executeHealPct($actor, $targets, $action);
         }
