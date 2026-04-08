@@ -2,7 +2,8 @@
 declare(strict_types=1);
 
 /**
- * Orden global: initiative = speed + rand(0,10); desempate luck, luego random estable por ronda (usar seed en meta si hace falta).
+ * Orden global: initiative = speed + rand(1,25) para que speed siga primando pero haya mezcla cuando están parejos;
+ * desempate luck, luego moneda (rng inyectable en tests).
  */
 final class InitiativeTimeline
 {
@@ -29,7 +30,7 @@ final class InitiativeTimeline
             }
             $speed = (int) ($u['stats']['speed'] ?? 0);
             $luck = (int) ($u['stats']['luck'] ?? 0);
-            $init = $speed + $roll(0, 10);
+            $init = $speed + $roll(1, 25);
             $rows[] = ['id' => (string) $id, 'init' => $init, 'luck' => $luck];
         }
 

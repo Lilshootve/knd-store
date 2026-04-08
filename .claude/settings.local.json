@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep \"INSERT INTO \\\\`mw_avatars\\\\`\" \"c:/KND-Agents/backend/kndstore/sql/u354862096_kndstore.sql\")",
+      "Read(//c/KND-Agents/backend/kndstore/**)"
+    ]
+  }
+}

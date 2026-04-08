@@ -49,6 +49,7 @@ final class SquadSimEngine
             if (!is_array($unit) || empty($unit['alive'])) {
                 continue;
             }
+            $events[] = ['type' => 'actor_turn', 'unitId' => $unitId];
             $unit['id'] = $unitId;
 
             $action = $state['plannedActions']['actions'][$unitId] ?? null;

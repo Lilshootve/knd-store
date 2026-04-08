@@ -957,7 +957,7 @@ function normalizeUnitForBattle(u,isEnemySlot){
 }
 
 /* ── STATE (var: Three.js arena + pick-target need global G) ── */
-var G={round:1,turn:'player',phase:'select',dd:0,dt:0,allies:[],enemies:[],actions:{},pendingPickEnemy:null};
+var G={round:1,turn:'player',phase:'select',dd:0,dt:0,allies:[],enemies:[],actions:{},pendingPickEnemy:null,swLastTimeline:null,swPlaybackActiveId:''};
 
 /* ── PHP-MATCHING DAMAGE CALC ── */
 function calcDmg(atk,def,mult=1.0,ignoreDef=false){
@@ -1013,6 +1013,10 @@ function applyServerUnitsToG(st){
       });
     }
   });
+  const tl=st.timeline;
+  if(Array.isArray(tl)&&tl.length){
+    G.swLastTimeline=tl.map(function(x){return String(x);});
+  }
   renderUnits();
 }
 
@@ -1155,9 +1159,24 @@ function renderTurnOrder(){
   var host=document.getElementById('to-units');
   if(!host) return;
   host.innerHTML='';
+  var enemyTurn=G.turn==='enemy';
+  var playbackId=G.phase==='anim'&&G.swPlaybackActiveId?String(G.swPlaybackActiveId):'';
+  /* SquadWars servidor: misma fila que el motor (speed + tirada), no bloque aliados|enemigos. */
+  if(window.KND_SQUADWARS_API&&G.swLastTimeline&&G.swLastTimeline.length){
+    G.swLastTimeline.forEach(function(sid){
+      var u=swUnitByServerId(sid);
+      if(!u||u.hp<=0)return;
+      var div=document.createElement('div');
+      div.className='to-unit'+(u.isEnemy?' enemy-turn':'');
+      if(playbackId&&sid===playbackId)div.classList.add('active-turn');
+      else if(!playbackId&&((u.isEnemy&&enemyTurn)||(!u.isEnemy&&!enemyTurn)))div.classList.add('active-turn');
+      div.textContent=((u.name||'?')+'').toUpperCase();
+      host.appendChild(div);
+    });
+    return;
+  }
   var aliveA=G.allies.filter(function(u){return u&&u.hp>0;});
   var aliveE=G.enemies.filter(function(u){return u&&u.hp>0;});
-  var enemyTurn=G.turn==='enemy';
   function chip(u,isEnemy){
     var div=document.createElement('div');
     div.className='to-unit'+(isEnemy?' enemy-turn':'');
@@ -1573,7 +1592,43 @@ async function playbackSquadwarsEvents(events){
     const ev=list[i];
     if(!ev||typeof ev!=='object')continue;
     const typ=String(ev.type||'');
-    if(typ==='energy'||typ==='synergy_trigger'||typ==='action_lost_control')continue;
+    if(typ==='energy'||typ==='synergy_trigger')continue;
+    if(typ==='actor_turn'){
+      G.swPlaybackActiveId=String(ev.unitId||'');
+      if(typeof renderTurnOrder==='function')renderTurnOrder();
+      await sl(38);
+      continue;
+    }
+    if(typ==='action_lost_control'){
+      const u=swUnitByServerId(ev.unitId);
+      const nm=u?(u.name||'?'):String(ev.unitId||'?');
+      lg(`<span class="actor">${escHtml(nm)}</span> <span class="dt">no actúa</span> (stun/freeze/bloqueo)`,'sys');
+      await sl(48);
+      continue;
+    }
+    if(typ==='bleed_tick'){
+      const tgt=swUnitByServerId(ev.unitId);
+      const v=Number(ev.value)||0;
+      await sl(36);
+      if(tgt&&AX){
+        AX.flashUnitById(tgt.id);
+        AX.popOnUnit(tgt.id,'-'+v,'damage');
+      }
+      await swPlaybackApplyDamageToUnit(tgt,v);
+      if(tgt)lg(`<span class="actor">${escHtml(tgt.name||'?')}</span> bleed: <span class="dt">-${v}</span>`,'pa');
+      await sl(72);
+      continue;
+    }
+    if(typ==='regen_tick'){
+      const tgt=swUnitByServerId(ev.unitId);
+      const v=Number(ev.value)||0;
+      await sl(32);
+      if(tgt&&AX)AX.popOnUnit(tgt.id,'+'+v,'heal');
+      swPlaybackApplyHealToUnit(tgt,v);
+      if(tgt)lg(`<span class="actor">${escHtml(tgt.name||'?')}</span> regen: <span class="ht">+${v}</span>`,'pa');
+      await sl(58);
+      continue;
+    }
     if(typ==='damage'){
       const tgt=swUnitByServerId(ev.target);
       const src=swUnitByServerId(ev.source);
@@ -1636,6 +1691,8 @@ async function playbackSquadwarsEvents(events){
       await sl(postD);
     }
   }
+  G.swPlaybackActiveId='';
+  if(typeof renderTurnOrder==='function')renderTurnOrder();
   if(AX&&typeof AX.resetStrikeCamera==='function')await AX.resetStrikeCamera();
 }
 
@@ -1711,6 +1768,10 @@ async function executeTurnSquadwarsServer(){
     const d=j.data;
     vm.version=Number(d.stateVersion)||vm.version;
     vm.round=Number(d.nextSubmitRound)||(vm.round+1);
+    if(Array.isArray(d.timelineUsed)&&d.timelineUsed.length){
+      G.swLastTimeline=d.timelineUsed.map(function(x){return String(x);});
+    }
+    if(typeof renderTurnOrder==='function')renderTurnOrder();
     await playbackSquadwarsEvents(d.events);
     const r2=await fetch(api.getBattleStateUrl,{credentials:'same-origin'});
     const j2=await r2.json().catch(()=>null);
