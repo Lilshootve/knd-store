@@ -354,7 +354,7 @@ const oRings=[], oLights=[];
 (function(){
   const g=new THREE.Group();
   const baseMat=new THREE.MeshStandardMaterial({color:0x080c1e,metalness:.65,roughness:.28,emissive:0x18104a,emissiveIntensity:.6});
-  g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(6,6.5,.5,6),baseMat),{position:{x:0,y:.25,z:0}}));
+  const baseCyl=new THREE.Mesh(new THREE.CylinderGeometry(6,6.5,.5,6),baseMat); baseCyl.position.set(0,.25,0); g.add(baseCyl);
   const rm=new THREE.MeshStandardMaterial({color:0x00e8ff,emissive:0x00e8ff,emissiveIntensity:1.5});
   const r0=new THREE.Mesh(new THREE.TorusGeometry(5.8,.05,4,6),rm); r0.rotation.x=Math.PI/2; r0.position.y=.52; g.add(r0);
   [[4,.4],[2.8,.4],[1.8,.35]].forEach(([rad,h],i)=>{const s=new THREE.Mesh(new THREE.CylinderGeometry(rad,rad+.6,h,6),baseMat); s.position.y=.72+i*.6; g.add(s);});
