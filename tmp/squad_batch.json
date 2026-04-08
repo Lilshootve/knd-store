@@ -1,0 +1,514 @@
+{
+    "battles_requested": 100,
+    "max_rounds_cap": 60,
+    "vary_hp": true,
+    "player_wins": 68,
+    "enemy_wins": 32,
+    "incomplete": 0,
+    "errors": 0,
+    "avg_rounds_finished": 7.35,
+    "min_rounds_finished": 5,
+    "max_rounds_finished": 9,
+    "details": [
+        {
+            "battle": 1,
+            "outcome": "enemy",
+            "rounds": 6
+        },
+        {
+            "battle": 2,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 3,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 4,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 5,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 6,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 7,
+            "outcome": "enemy",
+            "rounds": 9
+        },
+        {
+            "battle": 8,
+            "outcome": "player",
+            "rounds": 7
+        },
+        {
+            "battle": 9,
+            "outcome": "player",
+            "rounds": 7
+        },
+        {
+            "battle": 10,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 11,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 12,
+            "outcome": "enemy",
+            "rounds": 7
+        },
+        {
+            "battle": 13,
+            "outcome": "player",
+            "rounds": 7
+        },
+        {
+            "battle": 14,
+            "outcome": "enemy",
+            "rounds": 8
+        },
+        {
+            "battle": 15,
+            "outcome": "player",
+            "rounds": 7
+        },
+        {
+            "battle": 16,
+            "outcome": "enemy",
+            "rounds": 7
+        },
+        {
+            "battle": 17,
+            "outcome": "enemy",
+            "rounds": 8
+        },
+        {
+            "battle": 18,
+            "outcome": "player",
+            "rounds": 7
+        },
+        {
+            "battle": 19,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 20,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 21,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 22,
+            "outcome": "enemy",
+            "rounds": 9
+        },
+        {
+            "battle": 23,
+            "outcome": "enemy",
+            "rounds": 7
+        },
+        {
+            "battle": 24,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 25,
+            "outcome": "player",
+            "rounds": 7
+        },
+        {
+            "battle": 26,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 27,
+            "outcome": "player",
+            "rounds": 7
+        },
+        {
+            "battle": 28,
+            "outcome": "enemy",
+            "rounds": 8
+        },
+        {
+            "battle": 29,
+            "outcome": "enemy",
+            "rounds": 8
+        },
+        {
+            "battle": 30,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 31,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 32,
+            "outcome": "player",
+            "rounds": 7
+        },
+        {
+            "battle": 33,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 34,
+            "outcome": "player",
+            "rounds": 9
+        },
+        {
+            "battle": 35,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 36,
+            "outcome": "enemy",
+            "rounds": 8
+        },
+        {
+            "battle": 37,
+            "outcome": "player",
+            "rounds": 7
+        },
+        {
+            "battle": 38,
+            "outcome": "enemy",
+            "rounds": 8
+        },
+        {
+            "battle": 39,
+            "outcome": "enemy",
+            "rounds": 8
+        },
+        {
+            "battle": 40,
+            "outcome": "enemy",
+            "rounds": 8
+        },
+        {
+            "battle": 41,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 42,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 43,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 44,
+            "outcome": "enemy",
+            "rounds": 8
+        },
+        {
+            "battle": 45,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 46,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 47,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 48,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 49,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 50,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 51,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 52,
+            "outcome": "enemy",
+            "rounds": 8
+        },
+        {
+            "battle": 53,
+            "outcome": "player",
+            "rounds": 5
+        },
+        {
+            "battle": 54,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 55,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 56,
+            "outcome": "enemy",
+            "rounds": 8
+        },
+        {
+            "battle": 57,
+            "outcome": "player",
+            "rounds": 9
+        },
+        {
+            "battle": 58,
+            "outcome": "enemy",
+            "rounds": 7
+        },
+        {
+            "battle": 59,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 60,
+            "outcome": "enemy",
+            "rounds": 8
+        },
+        {
+            "battle": 61,
+            "outcome": "player",
+            "rounds": 7
+        },
+        {
+            "battle": 62,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 63,
+            "outcome": "enemy",
+            "rounds": 9
+        },
+        {
+            "battle": 64,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 65,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 66,
+            "outcome": "enemy",
+            "rounds": 7
+        },
+        {
+            "battle": 67,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 68,
+            "outcome": "enemy",
+            "rounds": 8
+        },
+        {
+            "battle": 69,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 70,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 71,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 72,
+            "outcome": "enemy",
+            "rounds": 7
+        },
+        {
+            "battle": 73,
+            "outcome": "enemy",
+            "rounds": 7
+        },
+        {
+            "battle": 74,
+            "outcome": "enemy",
+            "rounds": 6
+        },
+        {
+            "battle": 75,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 76,
+            "outcome": "player",
+            "rounds": 9
+        },
+        {
+            "battle": 77,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 78,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 79,
+            "outcome": "enemy",
+            "rounds": 8
+        },
+        {
+            "battle": 80,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 81,
+            "outcome": "enemy",
+            "rounds": 8
+        },
+        {
+            "battle": 82,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 83,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 84,
+            "outcome": "player",
+            "rounds": 7
+        },
+        {
+            "battle": 85,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 86,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 87,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 88,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 89,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 90,
+            "outcome": "enemy",
+            "rounds": 8
+        },
+        {
+            "battle": 91,
+            "outcome": "enemy",
+            "rounds": 9
+        },
+        {
+            "battle": 92,
+            "outcome": "enemy",
+            "rounds": 8
+        },
+        {
+            "battle": 93,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 94,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 95,
+            "outcome": "player",
+            "rounds": 8
+        },
+        {
+            "battle": 96,
+            "outcome": "player",
+            "rounds": 7
+        },
+        {
+            "battle": 97,
+            "outcome": "enemy",
+            "rounds": 7
+        },
+        {
+            "battle": 98,
+            "outcome": "player",
+            "rounds": 6
+        },
+        {
+            "battle": 99,
+            "outcome": "player",
+            "rounds": 7
+        },
+        {
+            "battle": 100,
+            "outcome": "enemy",
+            "rounds": 8
+        }
+    ]
+}

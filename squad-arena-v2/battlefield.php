@@ -166,45 +166,47 @@ if ($Ljson === false) {
     $Ljson = '{}';
 }
 
+/*
+ * Topbar solo: las animaciones / Three.js / ataques están en battlefield.html
+ * (init → showVsIntro → renderUnits → MWArenaThree.boot). Un boot extra aquí
+ * duplicaba el arranque y podía diferir del .html abierto solo.
+ */
 $bootScript = <<<'HTML'
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   var d = window.MW_BATTLEFIELD_HEADER;
-  if (d) {
-    var u = d.user || {};
-    var cur = d.currencies || {};
-    var rank = d.ranking || {};
-    var sel = d.selected_avatar;
-    var un = document.getElementById('tb-username');
-    if (un) un.textContent = u.username || '—';
-    var tlvl = document.getElementById('tb-level');
-    if (tlvl) {
-      var pos = rank.estimated_position != null ? '#' + rank.estimated_position : '—';
-      tlvl.textContent = 'LVL ' + (u.level || 1) + ' · ' + pos;
-    }
-    var xpFill = document.getElementById('tb-xpfill');
-    if (xpFill) xpFill.style.width = Math.min(100, Math.max(0, u.xp_fill_pct || 0)) + '%';
-    var cc = document.getElementById('cc-coins');
-    if (cc) cc.textContent = Number(cur.knd_points_available || 0).toLocaleString();
-    var cg = document.getElementById('cc-gems');
-    if (cg) cg.textContent = Number(cur.fragments_total || 0).toLocaleString();
-    var tbThumb = document.getElementById('tb-avatar-thumb');
-    var tbRing = document.getElementById('tb-avatar-ring');
-    if (tbThumb) {
-      var url = sel ? (sel.display_image_url || d.hero_image_url || '') : (d.hero_image_url || '');
-      if (url) {
-        tbThumb.innerHTML = '<img src="' + encodeURI(url).replace(/'/g, '%27') + '" alt="">';
-        if (tbRing) tbRing.style.display = '';
-      } else {
-        tbThumb.textContent = '⬡';
-        if (tbRing) tbRing.style.display = 'none';
-      }
+  if (!d) {
+    return;
+  }
+  var u = d.user || {};
+  var cur = d.currencies || {};
+  var rank = d.ranking || {};
+  var sel = d.selected_avatar;
+  var un = document.getElementById('tb-username');
+  if (un) un.textContent = u.username || '—';
+  var tlvl = document.getElementById('tb-level');
+  if (tlvl) {
+    var pos = rank.estimated_position != null ? '#' + rank.estimated_position : '—';
+    tlvl.textContent = 'LVL ' + (u.level || 1) + ' · ' + pos;
+  }
+  var xpFill = document.getElementById('tb-xpfill');
+  if (xpFill) xpFill.style.width = Math.min(100, Math.max(0, u.xp_fill_pct || 0)) + '%';
+  var cc = document.getElementById('cc-coins');
+  if (cc) cc.textContent = Number(cur.knd_points_available || 0).toLocaleString();
+  var cg = document.getElementById('cc-gems');
+  if (cg) cg.textContent = Number(cur.fragments_total || 0).toLocaleString();
+  var tbThumb = document.getElementById('tb-avatar-thumb');
+  var tbRing = document.getElementById('tb-avatar-ring');
+  if (tbThumb) {
+    var url = sel ? (sel.display_image_url || d.hero_image_url || '') : (d.hero_image_url || '');
+    if (url) {
+      tbThumb.innerHTML = '<img src="' + encodeURI(url).replace(/'/g, '%27') + '" alt="">';
+      if (tbRing) tbRing.style.display = '';
+    } else {
+      tbThumb.textContent = '⬡';
+      if (tbRing) tbRing.style.display = 'none';
     }
   }
-  if (!window.MWArenaThree) return;
-  var container = document.getElementById('three-container');
-  if (!container) return;
-  MWArenaThree.boot(container);
 });
 </script>
 HTML;

@@ -101,7 +101,7 @@ $online = (int) ($L['online_hint'] ?? 0);
           </div>
           <div class="mc-badge ranked">PREDICT</div>
         </a>
-        <a href="/squad-arena-v2/squad-selector.php" class="mode-card mode-card--link" style="--mc:#7c3aed;--mc-rgb:124,58,237">
+        <a href="/games/mind-wars-squad/play.php" class="mode-card mode-card--link" style="--mc:#7c3aed;--mc-rgb:124,58,237">
           <div class="mc-ico">👥</div>
           <div class="mc-info">
             <div class="mc-mname">Mind Wars Squad (3v3)</div>
