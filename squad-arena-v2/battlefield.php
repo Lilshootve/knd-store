@@ -49,13 +49,49 @@ if ($pdo && $userId > 0) {
         && is_array($active) && isset($active['ally_mw_ids']) && is_array($active['ally_mw_ids'])
         && $eng['ally_mw_ids'] === $active['ally_mw_ids']) {
         require_once BASE_PATH . '/squad-arena-v2/includes/squad_battle_bootstrap.php';
-        $result = squad_v2_build_battle_payload($pdo, $userId, $eng['ally_mw_ids']);
+        $cached = $active['battle_payload'] ?? null;
+        if (squad_v2_battle_payload_matches_squad(is_array($cached) ? $cached : null, $eng['ally_mw_ids'])) {
+            /** @var array{ok:true,allies:list<mixed>,enemies:list<mixed>} $result */
+            $result = [
+                'ok' => true,
+                'allies' => $cached['allies'],
+                'enemies' => $cached['enemies'],
+            ];
+        } else {
+            $result = squad_v2_build_battle_payload($pdo, $userId, $eng['ally_mw_ids']);
+        }
         if ($result['ok'] ?? false) {
             $token = (string) ($active['battle_token'] ?? '');
             if ($token === '') {
                 $bootErr = 'no_battle_token';
                 unset($_SESSION['squad_arena_v2_engagement']);
             } else {
+                $squadwarsApi = null;
+                try {
+                    require_once BASE_PATH . '/games/squadwars/bootstrap.php';
+                    require_once BASE_PATH . '/games/squadwars/infrastructure/SquadBattleRepository.php';
+                    require_once __DIR__ . '/includes/squad_v2_squadwars_bridge.php';
+                    $swState = squad_v2_squadwars_state_from_payload(
+                        $userId,
+                        $result['allies'] ?? [],
+                        $result['enemies'] ?? []
+                    );
+                    $swRepo = new SquadBattleRepository($pdo);
+                    $swRepo->createBattle($swState);
+                    $swBattleToken = (string) ($swState['battleId'] ?? '');
+                    if ($swBattleToken !== '') {
+                        $_SESSION['squad_arena_v2_active']['squadwars_battle_token'] = $swBattleToken;
+                        $squadwarsApi = [
+                            'enabled' => true,
+                            'battleToken' => $swBattleToken,
+                            'getBattleStateUrl' => '/games/squadwars/api/get_battle_state.php',
+                            'submitRoundUrl' => '/games/squadwars/api/submit_round.php',
+                        ];
+                    }
+                } catch (Throwable $e) {
+                    error_log('battlefield.php squadwars persist skipped: ' . $e->getMessage());
+                }
+
                 $boot = [
                     'allies' => $result['allies'],
                     'enemies' => $result['enemies'],
@@ -63,6 +99,7 @@ if ($pdo && $userId > 0) {
                     'battleToken' => $token,
                     'csrfToken' => csrf_token(),
                     'submitResultUrl' => '/squad-arena-v2/api/submit_result.php',
+                    'squadwars' => $squadwarsApi,
                 ];
                 unset($_SESSION['squad_arena_v2_engagement']);
             }

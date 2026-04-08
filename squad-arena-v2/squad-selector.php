@@ -1071,7 +1071,6 @@ function showBigPreview(av) {
     av.passive && { type:'PASSIVE', name:av.passive.split(':')[0], desc:av.passive.split(':')[1]?.trim() },
     av.ability && { type:'ABILITY', name:av.ability.split(':')[0], desc:av.ability.split(':')[1]?.trim() },
     av.special && { type:'SPECIAL', name:av.special.split(':')[0], desc:av.special.split(':')[1]?.trim() },
-    av.heal    && { type:'HEAL',    name:av.heal.split(':')[0],    desc:av.heal.split(':')[1]?.trim() },
   ].filter(Boolean);
 
   previewInfo.innerHTML = `

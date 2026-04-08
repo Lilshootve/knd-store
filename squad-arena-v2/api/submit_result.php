@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
+
 /**
  * Squad Arena v2 — apply Mind Wars PVE-style rewards after a client-resolved battle.
  * Mirrors api/mind-wars/pve_submit.php (XP, KE on squad lead avatar, season rank) with session-bound battle_token.
  */
 require_once __DIR__ . '/../../config/bootstrap.php';
-declare(strict_types=1);
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
@@ -21,6 +22,7 @@ require_once BASE_PATH . '/includes/mind_wars.php';
 require_once BASE_PATH . '/includes/knowledge_duel.php';
 require_once BASE_PATH . '/includes/squad_v2_reward_helpers.php';
 require_once BASE_PATH . '/includes/mind_wars_rewards.php';
+require_once BASE_PATH . '/squad-arena-v2/includes/squad_battle_bootstrap.php';
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -105,6 +107,12 @@ try {
     }
 
     $_SESSION['squad_arena_v2_active']['rewards_claimed'] = true;
+
+    $swTok = trim((string) ($_SESSION['squad_arena_v2_active']['squadwars_battle_token'] ?? ''));
+    if ($swTok !== '') {
+        squad_v2_delete_squadwars_battle_by_token($pdo, $swTok);
+        unset($_SESSION['squad_arena_v2_active']['squadwars_battle_token']);
+    }
 
     if ($result === 'win' && is_file(BASE_PATH . '/includes/knd_badges.php')) {
         require_once BASE_PATH . '/includes/knd_badges.php';

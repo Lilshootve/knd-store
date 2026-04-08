@@ -484,3 +484,75 @@ Stack trace:
 Stack trace:
 #0 {main}
   thrown in E:\repo\kndstore\api\avatar\migrate_fav.php on line 5
+[07-Apr-2026 12:33:36 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[07-Apr-2026 12:34:42 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[07-Apr-2026 12:38:12 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[07-Apr-2026 14:26:44 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [2006] MySQL server has gone away
+[07-Apr-2026 14:26:46 America/Mexico_City] PHP Notice:  fwrite(): Write of 22 bytes failed with errno=22 Invalid argument in C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php on line 286
+[07-Apr-2026 14:26:46 America/Mexico_City] PHP Notice:  fwrite(): Write of 109 bytes failed with errno=22 Invalid argument in C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php on line 288
+[07-Apr-2026 14:26:46 America/Mexico_City] PHP Notice:  fwrite(): Write of 22 bytes failed with errno=22 Invalid argument in C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php on line 258
+[07-Apr-2026 14:26:46 America/Mexico_City] PHP Notice:  fwrite(): Write of 79 bytes failed with errno=22 Invalid argument in C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php on line 290
+[07-Apr-2026 14:26:46 America/Mexico_City] PHP Notice:  fwrite(): Write of 109 bytes failed with errno=22 Invalid argument in C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php on line 260
+[07-Apr-2026 14:26:46 America/Mexico_City] PHP Notice:  fwrite(): Write of 78 bytes failed with errno=22 Invalid argument in C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php on line 291
+[07-Apr-2026 14:26:46 America/Mexico_City] PHP Notice:  fwrite(): Write of 79 bytes failed with errno=22 Invalid argument in C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php on line 262
+[07-Apr-2026 14:26:46 America/Mexico_City] PHP Notice:  fwrite(): Write of 78 bytes failed with errno=22 Invalid argument in C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php on line 263
+[07-Apr-2026 14:26:49 America/Mexico_City] PHP Notice:  fwrite(): Write of 22 bytes failed with errno=22 Invalid argument in C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php on line 224
+[07-Apr-2026 14:26:49 America/Mexico_City] PHP Notice:  fwrite(): Write of 55 bytes failed with errno=22 Invalid argument in C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php on line 226
+[07-Apr-2026 14:26:49 America/Mexico_City] PHP Notice:  fwrite(): Write of 79 bytes failed with errno=22 Invalid argument in C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php on line 228
+[07-Apr-2026 14:26:49 America/Mexico_City] PHP Notice:  fwrite(): Write of 78 bytes failed with errno=22 Invalid argument in C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php on line 229
+[07-Apr-2026 14:26:53 America/Mexico_City] PHP Notice:  fwrite(): Write of 22 bytes failed with errno=22 Invalid argument in C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php on line 187
+[07-Apr-2026 14:26:53 America/Mexico_City] PHP Notice:  fwrite(): Write of 130 bytes failed with errno=22 Invalid argument in C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php on line 189
+[07-Apr-2026 14:26:53 America/Mexico_City] PHP Notice:  fwrite(): Write of 79 bytes failed with errno=22 Invalid argument in C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php on line 191
+[07-Apr-2026 14:26:53 America/Mexico_City] PHP Notice:  fwrite(): Write of 78 bytes failed with errno=22 Invalid argument in C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php on line 192
+[07-Apr-2026 14:44:20 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[07-Apr-2026 14:44:39 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[07-Apr-2026 14:56:38 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [2002] No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión
+[07-Apr-2026 14:58:44 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'u354862096_lilshoot'@'156.236.142.54' (using password: YES)
+[07-Apr-2026 14:58:46 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'u354862096_lilshoot'@'156.236.142.54' (using password: YES)
+[07-Apr-2026 15:00:53 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'u354862096_lilshoot'@'156.236.142.54' (using password: YES)
+[07-Apr-2026 15:01:54 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [2006] MySQL server has gone away
+[07-Apr-2026 17:23:50 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'u354862096_lilshoot'@'localhost' (using password: YES)
+[07-Apr-2026 17:56:11 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'u354862096_lilshoot'@'localhost' (using password: YES)
+[07-Apr-2026 17:59:28 America/Mexico_City] PHP Fatal error:  Uncaught RuntimeException: Missing required environment variable: DB_PASS in C:\KND-Agents\backend\kndstore\includes\env.php:328
+Stack trace:
+#0 C:\KND-Agents\backend\kndstore\includes\config.php(65): knd_env_required('DB_PASS')
+#1 C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php(268): require_once('C:\\KND-Agents\\b...')
+#2 {main}
+  thrown in C:\KND-Agents\backend\kndstore\includes\env.php on line 328
+[07-Apr-2026 17:59:35 America/Mexico_City] PHP Fatal error:  Uncaught RuntimeException: Missing required environment variable: DB_PASS in C:\KND-Agents\backend\kndstore\includes\env.php:328
+Stack trace:
+#0 C:\KND-Agents\backend\kndstore\includes\config.php(65): knd_env_required('DB_PASS')
+#1 C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php(268): require_once('C:\\KND-Agents\\b...')
+#2 {main}
+  thrown in C:\KND-Agents\backend\kndstore\includes\env.php on line 328
+[07-Apr-2026 17:59:49 America/Mexico_City] Error de conexión a la base de datos: SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: YES)
+[07-Apr-2026 17:59:59 America/Mexico_City] PHP Fatal error:  Uncaught RuntimeException: Missing required environment variable: DB_PASS in C:\KND-Agents\backend\kndstore\includes\env.php:328
+Stack trace:
+#0 C:\KND-Agents\backend\kndstore\includes\config.php(65): knd_env_required('DB_PASS')
+#1 C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php(268): require_once('C:\\KND-Agents\\b...')
+#2 {main}
+  thrown in C:\KND-Agents\backend\kndstore\includes\env.php on line 328
+[07-Apr-2026 18:00:05 America/Mexico_City] PHP Fatal error:  Uncaught RuntimeException: Missing required environment variable: DB_PASS in C:\KND-Agents\backend\kndstore\includes\env.php:328
+Stack trace:
+#0 C:\KND-Agents\backend\kndstore\includes\config.php(65): knd_env_required('DB_PASS')
+#1 C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php(268): require_once('C:\\KND-Agents\\b...')
+#2 {main}
+  thrown in C:\KND-Agents\backend\kndstore\includes\env.php on line 328
+[07-Apr-2026 18:02:10 America/Mexico_City] PHP Fatal error:  Uncaught RuntimeException: Missing required environment variable: DB_PASS in C:\KND-Agents\backend\kndstore\includes\env.php:328
+Stack trace:
+#0 C:\KND-Agents\backend\kndstore\includes\config.php(65): knd_env_required('DB_PASS')
+#1 C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php(5): require_once('C:\\KND-Agents\\b...')
+#2 {main}
+  thrown in C:\KND-Agents\backend\kndstore\includes\env.php on line 328
+[07-Apr-2026 18:02:15 America/Mexico_City] PHP Fatal error:  Uncaught RuntimeException: Missing required environment variable: DB_PASS in C:\KND-Agents\backend\kndstore\includes\env.php:328
+Stack trace:
+#0 C:\KND-Agents\backend\kndstore\includes\config.php(65): knd_env_required('DB_PASS')
+#1 C:\KND-Agents\backend\kndstore\scripts\audit_mw_skill_sources.php(5): require_once('C:\\KND-Agents\\b...')
+#2 {main}
+  thrown in C:\KND-Agents\backend\kndstore\includes\env.php on line 328
+[07-Apr-2026 18:02:23 America/Mexico_City] PHP Fatal error:  Uncaught RuntimeException: Missing required environment variable: DB_PASS in C:\KND-Agents\backend\kndstore\includes\env.php:328
+Stack trace:
+#0 C:\KND-Agents\backend\kndstore\includes\config.php(65): knd_env_required('DB_PASS')
+#1 Command line code(1): require('C:\\KND-Agents\\b...')
+#2 {main}
+  thrown in C:\KND-Agents\backend\kndstore\includes\env.php on line 328

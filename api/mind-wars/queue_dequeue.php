@@ -11,7 +11,7 @@ require_once BASE_PATH . '/includes/auth.php';
 require_once BASE_PATH . '/includes/csrf.php';
 require_once BASE_PATH . '/includes/json.php';
 require_once BASE_PATH . '/includes/rate_limit.php';
-require_once BASE_PATH . '/includes/mind_wars.php';
+require_once BASE_PATH . '/games/mindwars1v1/bootstrap.php';
 
 try {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

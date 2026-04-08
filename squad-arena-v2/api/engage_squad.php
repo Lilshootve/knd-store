@@ -66,6 +66,14 @@ if (!($probe['ok'] ?? false)) {
     exit;
 }
 
+$prev = $_SESSION['squad_arena_v2_active'] ?? null;
+if (is_array($prev)) {
+    $prevSw = trim((string) ($prev['squadwars_battle_token'] ?? ''));
+    if ($prevSw !== '') {
+        squad_v2_delete_squadwars_battle_by_token($pdo, $prevSw);
+    }
+}
+
 $_SESSION['squad_arena_v2_engagement'] = [
     'ally_mw_ids' => $ordered,
     'mode' => $mode,
@@ -78,6 +86,10 @@ $_SESSION['squad_arena_v2_active'] = [
     'mode' => $mode,
     'ts' => time(),
     'rewards_claimed' => false,
+    'battle_payload' => [
+        'allies' => $probe['allies'],
+        'enemies' => $probe['enemies'],
+    ],
 ];
 
 echo json_encode(['ok' => true, 'mode' => $mode], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

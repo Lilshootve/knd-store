@@ -12,6 +12,7 @@ if (!function_exists('mw_get_user_avatars')
     require_once BASE_PATH . '/includes/mind_wars.php';
 }
 require_once BASE_PATH . '/includes/mw_avatar_models.php';
+require_once BASE_PATH . '/includes/mw_dynamic_skills.php';
 
 /**
  * Human-readable skill line from DB text column and/or Mind Wars code registries.
@@ -121,63 +122,221 @@ function squad_v2_passive_dmg_reduction_for_code(string $mwCode): ?float
     }
 }
 
-/**
- * @return array{name:string,desc:string,healPct:float,target:string,maxCd:int,mwCode:string}
- */
-function squad_v2_parse_heal_for_bootstrap(array $row, string $defaultName, float $defaultHealPct): array
+/** @param list<array<string,mixed>> $payload */
+function squad_v2_effect_payload_has_control(array $payload): bool
 {
-    $healRaw = $row['heal'] ?? null;
-    $healStr = $healRaw !== null ? trim((string) $healRaw) : '';
-    $out = [
-        'name' => $defaultName,
-        'desc' => '',
-        'healPct' => $defaultHealPct,
-        'target' => 'self',
-        'maxCd' => 2,
-        'mwCode' => '',
+    $controlTypes = [
+        'stun' => true,
+        'freeze' => true,
+        'ability_lock' => true,
+        'speed_down' => true,
+        'weaken' => true,
+        'focus_down' => true,
+        'random_debuff' => true,
+        'stat_shuffle' => true,
     ];
-    if ($healStr === '' || $healStr === '0') {
-        return $out;
+    foreach ($payload as $fx) {
+        if (!is_array($fx)) {
+            continue;
+        }
+        $t = (string) ($fx['type'] ?? '');
+        if (isset($controlTypes[$t])) {
+            return true;
+        }
     }
-    if ($healStr !== '' && $healStr[0] === '{') {
-        $hj = json_decode($healStr, true);
-        if (is_array($hj)) {
-            $out['name'] = (string) ($hj['name'] ?? $out['name']);
-            $out['desc'] = (string) ($hj['desc'] ?? $out['desc']);
-            if (isset($hj['healPct'])) {
-                $out['healPct'] = (float) $hj['healPct'];
-            }
-            if (isset($hj['target'])) {
-                $out['target'] = (string) $hj['target'];
-            }
-            if (isset($hj['maxCd'])) {
-                $out['maxCd'] = (int) $hj['maxCd'];
-            }
-            if (isset($hj['mwCode'])) {
-                $out['mwCode'] = (string) $hj['mwCode'];
+
+    return false;
+}
+
+/**
+ * Curación / soporte explícito en effect_payload (no columna heal).
+ *
+ * @param list<array<string,mixed>> $payload
+ * @return array{healPct:float,target:string}|null
+ */
+function squad_v2_heal_from_effect_payload(array $payload, string $scope, string $fallbackRules): ?array
+{
+    $sum = 0.0;
+    $target = 'self';
+    foreach ($payload as $fx) {
+        if (!is_array($fx)) {
+            continue;
+        }
+        $type = (string) ($fx['type'] ?? '');
+        $effT = (string) ($fx['target'] ?? '');
+        if ($type === 'heal') {
+            $sum += (float) ($fx['value'] ?? 0);
+            if ($effT === 'all_allies') {
+                $target = 'all_allies';
+            } elseif ($effT === 'single_ally' || $scope === 'single_ally') {
+                $target = str_contains(strtolower($fallbackRules), 'lowest') ? 'lowest_ally' : 'self';
+            } elseif ($effT !== '') {
+                $target = $effT === 'self' ? 'self' : $target;
             }
         }
-
-        return $out;
+        if ($type === 'regen') {
+            $v = (float) ($fx['value'] ?? 0);
+            $dur = max(1, (int) ($fx['duration'] ?? 1));
+            $sum += $v * min($dur, 3);
+            if ($effT === 'all_allies') {
+                $target = 'all_allies';
+            } elseif ($effT === 'single_ally' || ($scope === 'single_ally' && $effT === '')) {
+                $target = str_contains(strtolower($fallbackRules), 'lowest') ? 'lowest_ally' : 'self';
+            }
+        }
     }
-    $h = squad_v2_split_skill($healStr);
-    if ($h['name'] !== '—') {
-        $out['name'] = $h['name'];
-        $out['desc'] = $h['desc'];
+    if ($sum <= 0) {
+        return null;
     }
 
-    return $out;
+    if ($scope === 'all_allies') {
+        $target = 'all_allies';
+    }
+    if ($scope === 'single_ally' && $target === 'self' && str_contains(strtolower($fallbackRules), 'lowest')) {
+        $target = 'lowest_ally';
+    }
+
+    return ['healPct' => min(0.95, $sum), 'target' => $target];
+}
+
+function squad_v2_client_target_from_skill_json(array $d, string $defaultTarget): string
+{
+    $scope = strtolower((string) ($d['target_scope'] ?? ''));
+    $hit = strtolower((string) ($d['hit_type'] ?? ''));
+    if ($scope === 'all_enemies' || ($hit === 'aoe' && str_contains($scope, 'enemy'))) {
+        return 'all';
+    }
+    if ($scope === 'single_ally' || $scope === 'all_allies') {
+        $fb = strtolower((string) ($d['fallback_rules'] ?? ''));
+        if ($scope === 'all_allies') {
+            return 'all_allies';
+        }
+
+        return str_contains($fb, 'lowest') ? 'lowest_ally' : 'self';
+    }
+
+    return $defaultTarget;
+}
+
+/**
+ * Tono de carta para el HUD (ability/special): damage|heal|support|control|hybrid|defense.
+ *
+ * @param array<string,mixed> $d Decoded ability_data o special_data
+ */
+function squad_v2_skill_card_tone(array $d): string
+{
+    $tags = [];
+    foreach ($d['tags'] ?? [] as $t) {
+        if (is_string($t) && $t !== '') {
+            $tags[] = strtolower($t);
+        }
+    }
+    $payload = $d['effect_payload'] ?? [];
+    $payload = is_array($payload) ? $payload : [];
+    $bp = (float) ($d['base_power'] ?? 0);
+    $hasHealFx = squad_v2_heal_from_effect_payload($payload, (string) ($d['target_scope'] ?? ''), (string) ($d['fallback_rules'] ?? '')) !== null;
+    $tagHeal = in_array('heal', $tags, true);
+    $tagSupport = in_array('support', $tags, true);
+    $tagDefense = in_array('defense', $tags, true);
+    $tagDamage = in_array('damage', $tags, true);
+    $tagControl = in_array('control', $tags, true);
+    $hasCleanse = false;
+    $allyShield = false;
+    $allyEnergy = false;
+    foreach ($payload as $fx) {
+        if (!is_array($fx)) {
+            continue;
+        }
+        $ty = (string) ($fx['type'] ?? '');
+        if ($ty === 'cleanse') {
+            $hasCleanse = true;
+        }
+        if ($ty === 'shield' && (($fx['target'] ?? '') === 'single_ally' || ($fx['target'] ?? '') === 'all_allies')) {
+            $allyShield = true;
+        }
+        if ($ty === 'energy_gain' && (($fx['target'] ?? '') === 'all_allies' || ($fx['target'] ?? '') === 'single_ally')) {
+            $allyEnergy = true;
+        }
+    }
+    $hasControl = $tagControl || squad_v2_effect_payload_has_control($payload);
+    $hasDamage = $bp > 0.0001 || $tagDamage;
+
+    if (($hasHealFx || $tagHeal) && $hasDamage) {
+        return 'hybrid';
+    }
+    if ($hasHealFx || ($tagHeal && $bp <= 0.0001)) {
+        return 'heal';
+    }
+    if (($hasCleanse || $allyShield || $allyEnergy || $tagSupport) && !$hasDamage) {
+        return 'support';
+    }
+    if ($tagDefense && !$hasHealFx && $bp <= 0.0001) {
+        return 'defense';
+    }
+    if ($hasControl && !$hasDamage) {
+        return 'control';
+    }
+    if ($hasControl && $hasDamage) {
+        return 'hybrid';
+    }
+
+    return 'damage';
+}
+
+/**
+ * @param array<string,mixed> $base ability/special skeleton
+ * @param array<string,mixed> $d   decoded JSON
+ * @return array<string,mixed>
+ */
+function squad_v2_merge_combat_skill_json(array $base, array $d, int $defaultEnergy, int $defaultCd): array
+{
+    if ($d === []) {
+        $base['cardTone'] = 'damage';
+
+        return $base;
+    }
+    $e = (int) ($d['energy_cost'] ?? $defaultEnergy);
+    $base['eCost'] = max(0, $e);
+    $base['cost'] = $base['eCost'] . '⚡';
+    $cd = (int) ($d['cooldown'] ?? $defaultCd);
+    $base['maxCd'] = max(0, $cd);
+    $defTgt = (string) ($base['target'] ?? 'default');
+    $base['target'] = squad_v2_client_target_from_skill_json($d, $defTgt);
+    $bp = (float) ($d['base_power'] ?? 0);
+    if ($bp > 0.0001) {
+        $base['dmg'] = max(0.25, min(1.85, $bp / 75.0));
+    }
+    $payload = $d['effect_payload'] ?? [];
+    $payload = is_array($payload) ? $payload : [];
+    $healInfo = squad_v2_heal_from_effect_payload(
+        $payload,
+        (string) ($d['target_scope'] ?? ''),
+        (string) ($d['fallback_rules'] ?? '')
+    );
+    if ($healInfo !== null) {
+        $base['healPct'] = $healInfo['healPct'];
+        $base['target'] = $healInfo['target'];
+    }
+    $base['cardTone'] = squad_v2_skill_card_tone($d);
+    $noDirectHit = $bp <= 0.0001;
+    if ($noDirectHit && ($healInfo !== null || in_array($base['cardTone'], ['support', 'control'], true))) {
+        $base['dmg'] = 0;
+    }
+
+    return $base;
 }
 
 /**
  * @return list<array<string,mixed>>
  */
-function squad_v2_build_abilities_from_row(array $row, string $defaultHealName, float $defaultHealPct, int $eAtk, int $eAbl, int $eSpl, int $eHeal, int $ablCooldown): array
+function squad_v2_build_abilities_from_row(array $row, int $eAtk, int $eAbl, int $eSpl, int $ablCooldown): array
 {
     $passive = squad_v2_skill_bundle($row, 'passive', 'passive_code', 'passive');
     $abl = squad_v2_skill_bundle($row, 'ability', 'ability_code', 'ability');
     $spc = squad_v2_skill_bundle($row, 'special', 'special_code', 'special');
-    $healParsed = squad_v2_parse_heal_for_bootstrap($row, $defaultHealName, $defaultHealPct);
+    $abilityData = mwd_decode_skill_json($row['ability_data'] ?? null);
+    $specialData = mwd_decode_skill_json($row['special_data'] ?? null);
+    $basicData = mwd_decode_skill_json($row['basic_data'] ?? null);
 
     $passiveAb = [
         'type' => 'passive',
@@ -193,20 +352,56 @@ function squad_v2_build_abilities_from_row(array $row, string $defaultHealName, 
         $passiveAb['dmgReduction'] = $dr;
     }
 
+    $strike = [
+        'type' => 'attack',
+        'name' => 'Strike',
+        'desc' => 'Basic attack (' . $eAtk . '⚡), same energy rules as Mind Wars.',
+        'dmg' => 1.0,
+        'target' => 'default',
+        'cd' => 0,
+        'maxCd' => 0,
+        'cost' => $eAtk . '⚡',
+        'eCost' => $eAtk,
+        'mwCode' => '',
+    ];
+    if ($basicData !== []) {
+        $bbp = (float) ($basicData['base_power'] ?? 0);
+        if ($bbp > 0.0001) {
+            $strike['dmg'] = max(0.3, min(1.6, $bbp / 75.0));
+        }
+    }
+
+    $abilitySlot = [
+        'type' => 'ability',
+        'name' => $abl['name'] !== '—' ? $abl['name'] : 'Ability',
+        'desc' => $abl['desc'],
+        'dmg' => 1.0,
+        'target' => 'default',
+        'cd' => 0,
+        'maxCd' => $ablCooldown,
+        'cost' => $eAbl . '⚡',
+        'eCost' => $eAbl,
+        'mwCode' => $abl['mwCode'],
+    ];
+    $abilitySlot = squad_v2_merge_combat_skill_json($abilitySlot, $abilityData, $eAbl, $ablCooldown);
+
+    $specialSlot = [
+        'type' => 'special',
+        'name' => $spc['name'] !== '—' ? $spc['name'] : 'Special',
+        'desc' => $spc['desc'],
+        'dmg' => 0.75,
+        'target' => 'all',
+        'cd' => 0,
+        'maxCd' => 0,
+        'cost' => $eSpl . '⚡',
+        'eCost' => $eSpl,
+        'mwCode' => $spc['mwCode'],
+    ];
+    $specialSlot = squad_v2_merge_combat_skill_json($specialSlot, $specialData, $eSpl, 0);
+
     return [
         $passiveAb,
-        [
-            'type' => 'attack',
-            'name' => 'Strike',
-            'desc' => 'Basic attack (' . $eAtk . '⚡), same energy rules as Mind Wars.',
-            'dmg' => 1.0,
-            'target' => 'default',
-            'cd' => 0,
-            'maxCd' => 0,
-            'cost' => $eAtk . '⚡',
-            'eCost' => $eAtk,
-            'mwCode' => '',
-        ],
+        $strike,
         [
             'type' => 'defense',
             'name' => 'Defend',
@@ -218,42 +413,8 @@ function squad_v2_build_abilities_from_row(array $row, string $defaultHealName, 
             'defend' => true,
             'mwCode' => '',
         ],
-        [
-            'type' => 'ability',
-            'name' => $abl['name'] !== '—' ? $abl['name'] : 'Ability',
-            'desc' => $abl['desc'],
-            'dmg' => 1.0,
-            'target' => 'default',
-            'cd' => 0,
-            'maxCd' => $ablCooldown,
-            'cost' => $eAbl . '⚡',
-            'eCost' => $eAbl,
-            'mwCode' => $abl['mwCode'],
-        ],
-        [
-            'type' => 'special',
-            'name' => $spc['name'] !== '—' ? $spc['name'] : 'Special',
-            'desc' => $spc['desc'],
-            'dmg' => 0.75,
-            'target' => 'all',
-            'cd' => 0,
-            'maxCd' => 0,
-            'cost' => $eSpl . '⚡',
-            'eCost' => $eSpl,
-            'mwCode' => $spc['mwCode'],
-        ],
-        [
-            'type' => 'heal',
-            'name' => $healParsed['name'],
-            'desc' => $healParsed['desc'],
-            'healPct' => $healParsed['healPct'],
-            'target' => $healParsed['target'],
-            'cd' => 0,
-            'maxCd' => $healParsed['maxCd'],
-            'cost' => $eHeal . '⚡',
-            'eCost' => $eHeal,
-            'mwCode' => $healParsed['mwCode'],
-        ],
+        $abilitySlot,
+        $specialSlot,
     ];
 }
 
@@ -267,8 +428,9 @@ function squad_v2_fetch_mw_row(PDO $pdo, int $mwId): ?array
     }
     $sql = 'SELECT a.id, a.name, a.rarity, a.class, a.image AS mw_image,
                    s.mind, s.focus, s.speed, s.luck,
-                   sk.passive, sk.ability, sk.special, sk.heal,
-                   sk.passive_code, sk.ability_code, sk.special_code
+                   sk.passive, sk.ability, sk.special,
+                   sk.passive_code, sk.ability_code, sk.special_code,
+                   sk.basic_data, sk.passive_data, sk.ability_data, sk.special_data
             FROM mw_avatars a
             LEFT JOIN mw_avatar_stats s ON s.avatar_id = a.id
             LEFT JOIN mw_avatar_skills sk ON sk.avatar_id = a.id
@@ -285,7 +447,8 @@ function squad_v2_fetch_mw_row(PDO $pdo, int $mwId): ?array
             $sql2 = 'SELECT a.id, a.name, a.rarity, a.class, a.image AS mw_image,
                             s.mind, s.focus, s.speed, s.luck,
                             sk.passive, sk.ability, sk.special,
-                            sk.passive_code, sk.ability_code, sk.special_code
+                            sk.passive_code, sk.ability_code, sk.special_code,
+                            sk.basic_data, sk.passive_data, sk.ability_data, sk.special_data
                      FROM mw_avatars a
                      LEFT JOIN mw_avatar_stats s ON s.avatar_id = a.id
                      LEFT JOIN mw_avatar_skills sk ON sk.avatar_id = a.id
@@ -294,9 +457,6 @@ function squad_v2_fetch_mw_row(PDO $pdo, int $mwId): ?array
             $stmt = $pdo->prepare($sql2);
             $stmt->execute([$mwId]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($row) {
-                $row['heal'] = null;
-            }
 
             return $row ?: null;
         } catch (Throwable $e2) {
@@ -357,7 +517,6 @@ function squad_v2_build_battle_payload(PDO $pdo, int $userId, array $orderedMwId
     $eAtk = defined('MW_ENERGY_ATTACK_COST') ? (int) MW_ENERGY_ATTACK_COST : 1;
     $eAbl = defined('MW_ENERGY_ABILITY_COST') ? (int) MW_ENERGY_ABILITY_COST : 2;
     $eSpl = defined('MW_MAX_ENERGY') ? (int) MW_MAX_ENERGY : 5;
-    $eHeal = $eAbl;
     $ablCooldown = 3;
 
     $allies = [];
@@ -386,7 +545,7 @@ function squad_v2_build_battle_payload(PDO $pdo, int $userId, array $orderedMwId
         $modelGlb = mw_resolve_avatar_model_url($mwId, $name, $rarity);
         $modelGlbUrl = $modelGlb !== null && $modelGlb !== '' ? $modelGlb : '';
 
-        $abilities = squad_v2_build_abilities_from_row($row, 'Restore', 0.15, $eAtk, $eAbl, $eSpl, $eHeal, $ablCooldown);
+        $abilities = squad_v2_build_abilities_from_row($row, $eAtk, $eAbl, $eSpl, $ablCooldown);
         $allyLvl = (int) ($levelByMw[$mwId] ?? 1);
         $st = squad_v2_mw_scaled_unit_stats($row, $allyLvl);
 
@@ -465,7 +624,7 @@ function squad_v2_build_battle_payload(PDO $pdo, int $userId, array $orderedMwId
         $enemyModelGlb = mw_resolve_avatar_model_url($eid, $name, $rarity);
         $enemyModelGlbUrl = $enemyModelGlb !== null && $enemyModelGlb !== '' ? $enemyModelGlb : '';
 
-        $abilities = squad_v2_build_abilities_from_row($row, 'Regen', 0.12, $eAtk, $eAbl, $eSpl, $eHeal, $ablCooldown);
+        $abilities = squad_v2_build_abilities_from_row($row, $eAtk, $eAbl, $eSpl, $ablCooldown);
         $est = squad_v2_mw_scaled_unit_stats($row, $lvl);
 
         $enemies[] = [
@@ -514,12 +673,56 @@ function squad_v2_build_battle_payload(PDO $pdo, int $userId, array $orderedMwId
                 ['type' => 'passive', 'name' => 'Shell', 'desc' => '', 'cd' => 0, 'maxCd' => 0, 'passive' => true, 'mwCode' => ''],
                 ['type' => 'attack', 'name' => 'Strike', 'desc' => '', 'dmg' => 1, 'target' => 'default', 'cd' => 0, 'maxCd' => 0, 'cost' => $eAtk . '⚡', 'eCost' => $eAtk, 'mwCode' => ''],
                 ['type' => 'defense', 'name' => 'Defend', 'desc' => '', 'cd' => 0, 'maxCd' => 0, 'cost' => '0⚡', 'eCost' => 0, 'defend' => true, 'mwCode' => ''],
-                ['type' => 'ability', 'name' => 'Hit', 'desc' => '', 'dmg' => 1, 'target' => 'default', 'cd' => 0, 'maxCd' => $ablCooldown, 'cost' => $eAbl . '⚡', 'eCost' => $eAbl, 'mwCode' => ''],
-                ['type' => 'special', 'name' => 'Burst', 'desc' => '', 'dmg' => 0.6, 'target' => 'all', 'cd' => 0, 'maxCd' => 0, 'cost' => $eSpl . '⚡', 'eCost' => $eSpl, 'mwCode' => ''],
-                ['type' => 'heal', 'name' => 'Patch', 'desc' => '', 'healPct' => 0.1, 'target' => 'self', 'cd' => 0, 'maxCd' => 2, 'cost' => $eHeal . '⚡', 'eCost' => $eHeal, 'mwCode' => ''],
+                ['type' => 'ability', 'name' => 'Hit', 'desc' => '', 'dmg' => 1, 'target' => 'default', 'cd' => 0, 'maxCd' => $ablCooldown, 'cost' => $eAbl . '⚡', 'eCost' => $eAbl, 'mwCode' => '', 'cardTone' => 'damage'],
+                ['type' => 'special', 'name' => 'Burst', 'desc' => '', 'dmg' => 0.6, 'target' => 'all', 'cd' => 0, 'maxCd' => 0, 'cost' => $eSpl . '⚡', 'eCost' => $eSpl, 'mwCode' => '', 'cardTone' => 'damage'],
             ],
         ];
     }
 
     return ['ok' => true, 'allies' => $allies, 'enemies' => $enemies];
+}
+
+/**
+ * Valida que el snapshot de engage (aliados/enemigos) siga coincidiendo con los 3 mw_avatars.id elegidos.
+ *
+ * @param array<string, mixed>|null $payload Debe traer 'allies' y 'enemies' (listas de 3).
+ * @param list<int>                  $allyMwIds Orden del escuadrón
+ */
+function squad_v2_battle_payload_matches_squad(?array $payload, array $allyMwIds): bool
+{
+    if (!is_array($payload) || !isset($payload['allies'], $payload['enemies'])) {
+        return false;
+    }
+    $al = $payload['allies'];
+    $en = $payload['enemies'];
+    if (!is_array($al) || !is_array($en) || count($al) !== 3 || count($en) !== 3) {
+        return false;
+    }
+    $allyMwIds = array_values(array_map('intval', $allyMwIds));
+    if (count($allyMwIds) !== 3) {
+        return false;
+    }
+    foreach ($allyMwIds as $idx => $mid) {
+        $row = $al[$idx] ?? null;
+        if (!is_array($row) || (int) ($row['id'] ?? 0) !== (int) $mid) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Elimina fila SquadWars huérfana (nuevo engage o fin de batalla).
+ */
+function squad_v2_delete_squadwars_battle_by_token(?PDO $pdo, string $token): void
+{
+    if (!$pdo instanceof PDO || $token === '') {
+        return;
+    }
+    try {
+        $pdo->prepare('DELETE FROM knd_squadwars_battles WHERE battle_token = ? LIMIT 1')->execute([$token]);
+    } catch (Throwable $e) {
+        error_log('squad_v2_delete_squadwars_battle_by_token: ' . $e->getMessage());
+    }
 }

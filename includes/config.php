@@ -62,7 +62,8 @@ if (!defined('DB_HOST')) {
     define('DB_PORT', knd_env_required('DB_PORT'));
     define('DB_NAME', knd_env_required('DB_NAME'));
     define('DB_USER', knd_env_required('DB_USER'));
-    define('DB_PASS', knd_env_required('DB_PASS'));
+    // Permitir contraseña vacía (MySQL root local sin pass); no usar required aquí.
+    define('DB_PASS', (string) (knd_env('DB_PASS', '') ?? ''));
     define('DB_CHARSET', knd_env_required('DB_CHARSET'));
 }
 

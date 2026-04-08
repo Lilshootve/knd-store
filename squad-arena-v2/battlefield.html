@@ -825,7 +825,7 @@ header.topbar{flex-shrink:0}
     <div id="to-units"></div>
   </div>
 
-  <!-- ABILITY HUD: avatar-card + 3×2 skill tiles (attack, defend, ability, special, heal + spacer) -->
+  <!-- ABILITY HUD: avatar-card + 4 skill tiles (attack, defend, ability, special) + spacer -->
   <div id="ability-hud">
     <div class="hud-label">⬡ SQUAD INTERFACE</div>
     <div id="apanel">
@@ -866,7 +866,29 @@ const AT={
   attack:{c:'#ff4060',g:'rgba(255,64,96,.15)',i:'⚡',l:'ATTACK'},
   defense:{c:'#40c0ff',g:'rgba(64,192,255,.15)',i:'⬟',l:'DEFENSE'}
 };
+const SKILL_TONE={
+  heal:AT.heal,
+  support:{c:'#40d4a0',g:'rgba(64,212,160,.15)',i:'◇',l:'SUPPORT'},
+  control:{c:'#c94dff',g:'rgba(201,77,255,.15)',i:'⌁',l:'CONTROL'},
+  hybrid:{c:'#ff9933',g:'rgba(255,153,51,.15)',i:'⎔',l:'HYBRID'},
+  buff:{c:'#5cb3ff',g:'rgba(92,179,255,.15)',i:'⬟',l:'BUFF'}
+};
 function gt(t){return AT[(t||'ability').toLowerCase()]||AT.ability}
+/** Color / label for ability & special from server `cardTone`, else slot type. */
+function gtSkill(ab){
+  if(!ab)return AT.ability;
+  const ct=String(ab.cardTone||'').toLowerCase();
+  if(ct==='heal')return AT.heal;
+  if(ct==='support')return SKILL_TONE.support;
+  if(ct==='control')return SKILL_TONE.control;
+  if(ct==='hybrid')return SKILL_TONE.hybrid;
+  if(ct==='defense')return SKILL_TONE.buff;
+  if(ct==='damage'){
+    const ty=String(ab.type||'ability').toLowerCase();
+    return ty==='special'?AT.special:AT.ability;
+  }
+  return gt(ab.type);
+}
 
 /* ── PHP-MATCHING CONSTANTS ── */
 const MW={HP_BASE:1000,HP_PER_LVL:12,MAX_ENERGY:5,E_START:1,E_ATK:1,E_ABL:2,E_SPL:5,E_HEAL:2,
@@ -881,25 +903,22 @@ const DEMO_AS=[
       {type:'passive',name:'Spark of Genius',desc:'Energy gain +1 on crit hits',cd:0,maxCd:0,passive:true},
       {type:'attack',name:'Strike',desc:'Basic attack (1⚡)',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
       {type:'defense',name:'Defend',desc:'Reduce damage taken until next turn (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
-      {type:'ability',name:'Lightning Conductor',desc:'Channel electricity — high damage',dmg:1.2,target:'default',cd:0,maxCd:3,cost:'2⚡',eCost:2},
-      {type:'special',name:'Storm Protocol',desc:'Massive AOE lightning — hits all enemies',dmg:.7,target:'all',cd:0,maxCd:0,cost:'5⚡',eCost:5},
-      {type:'heal',name:'Field Charge',desc:'Restore 15% max HP to self',healPct:.15,target:'self',cd:0,maxCd:2,cost:'2⚡',eCost:2}]},
+      {type:'ability',name:'Lightning Conductor',desc:'Channel damage + restore 15% max HP (self)',dmg:1.2,healPct:.15,target:'self',cd:0,maxCd:3,cost:'2⚡',eCost:2,cardTone:'hybrid'},
+      {type:'special',name:'Storm Protocol',desc:'Massive AOE lightning — hits all enemies',dmg:.7,target:'all',cd:0,maxCd:0,cost:'5⚡',eCost:5,cardTone:'damage'}]},
   {id:2,name:'MARIE CURIE',class:'Controller',rarity:'epic',icon:'☢️',mind:45,focus:55,speed:30,luck:35,
     level:4,pos:'mid',modelGlb:'/assets/avatars/models/epic/marie_curie.glb',abilities:[
       {type:'passive',name:'Radiation Aura',desc:'Enemies take 5% more damage each round',cd:0,maxCd:0,passive:true},
       {type:'attack',name:'Strike',desc:'Basic attack (1⚡)',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
       {type:'defense',name:'Defend',desc:'Brace (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
-      {type:'ability',name:'Isotope Strike',desc:'Irradiate target — Mind-based damage',dmg:1.0,target:'default',cd:0,maxCd:3,cost:'2⚡',eCost:2},
-      {type:'special',name:'Nuclear Meltdown',desc:'Devastating single-target ignore defense',dmg:1.4,ignoreDef:true,target:'any',cd:0,maxCd:0,cost:'5⚡',eCost:5},
-      {type:'heal',name:'Radium Glow',desc:'Heal lowest HP ally for 20%',healPct:.20,target:'lowest_ally',cd:0,maxCd:2,cost:'2⚡',eCost:2}]},
+      {type:'ability',name:'Radium Glow',desc:'Heal lowest HP ally for 20%',healPct:.20,target:'lowest_ally',dmg:0,cd:0,maxCd:2,cost:'2⚡',eCost:2,cardTone:'heal'},
+      {type:'special',name:'Nuclear Meltdown',desc:'Devastating single-target ignore defense',dmg:1.4,ignoreDef:true,target:'any',cd:0,maxCd:0,cost:'5⚡',eCost:5,cardTone:'damage'}]},
   {id:3,name:'DRACULA',class:'Striker',rarity:'legendary',icon:'🧛',mind:50,focus:40,speed:50,luck:40,
     level:5,pos:'back',modelGlb:'/assets/avatars/models/epic/dracula.glb',abilities:[
       {type:'passive',name:'Blood Pact',desc:'Heal 12% of damage dealt',cd:0,maxCd:0,passive:true,lifesteal:.12},
       {type:'attack',name:'Strike',desc:'Basic attack (1⚡)',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
       {type:'defense',name:'Defend',desc:'Brace (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
-      {type:'ability',name:'Crimson Bite',desc:'Strike any target + lifesteal',dmg:1.1,lifesteal:.12,target:'any',cd:0,maxCd:3,cost:'2⚡',eCost:2},
-      {type:'special',name:'Night Domination',desc:'AOE damage + bleed all enemies',dmg:.8,target:'all',cd:0,maxCd:0,cost:'5⚡',eCost:5},
-      {type:'heal',name:'Dark Regeneration',desc:'Restore HP based on missing health',healPct:.18,target:'self',cd:0,maxCd:3,cost:'2⚡',eCost:2}]}
+      {type:'ability',name:'Crimson Bite',desc:'Strike any target + lifesteal',dmg:1.1,lifesteal:.12,target:'any',cd:0,maxCd:3,cost:'2⚡',eCost:2,cardTone:'damage'},
+      {type:'special',name:'Night Domination',desc:'AOE damage + restore 18% max HP (self)',dmg:.8,healPct:.18,target:'self',cd:0,maxCd:0,cost:'5⚡',eCost:5,cardTone:'hybrid'}]}
 ];
 const DEMO_ES=[
   {id:101,name:'KRAKEN',class:'Tank',rarity:'legendary',icon:'🐙',mind:55,focus:60,speed:30,luck:35,
@@ -907,25 +926,22 @@ const DEMO_ES=[
       {type:'passive',name:'Deep Armor',desc:'Reduce incoming damage by 15%',cd:0,maxCd:0,passive:true,dmgReduction:.15},
       {type:'attack',name:'Strike',desc:'Basic attack',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
       {type:'defense',name:'Defend',desc:'Brace (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
-      {type:'ability',name:'Abyssal Grip',desc:'Crush front target',dmg:1.0,target:'default',cd:0,maxCd:3,cost:'2⚡',eCost:2},
-      {type:'special',name:'Leviathan Crush',desc:'Massive AOE tidal impact',dmg:.6,target:'all',cd:0,maxCd:0,cost:'5⚡',eCost:5},
-      {type:'heal',name:'Deep Regen',desc:'Regenerate 12% HP',healPct:.12,target:'self',cd:0,maxCd:2,cost:'2⚡',eCost:2}]},
+      {type:'ability',name:'Deep Regen',desc:'Regenerate 12% max HP (self)',healPct:.12,target:'self',dmg:0,cd:0,maxCd:2,cost:'2⚡',eCost:2,cardTone:'heal'},
+      {type:'special',name:'Leviathan Crush',desc:'Massive AOE tidal impact',dmg:.6,target:'all',cd:0,maxCd:0,cost:'5⚡',eCost:5,cardTone:'damage'}]},
   {id:102,name:'MORGANA',class:'Controller',rarity:'epic',icon:'🔮',mind:50,focus:55,speed:35,luck:40,
     level:4,pos:'mid',modelGlb:'/assets/avatars/models/epic/morgana.glb',abilities:[
       {type:'passive',name:'Cursed Presence',desc:'5% damage reduction above 50% HP',cd:0,maxCd:0,passive:true},
       {type:'attack',name:'Strike',desc:'Basic attack',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
       {type:'defense',name:'Defend',desc:'Brace (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
-      {type:'ability',name:'Petrifying Gaze',desc:'Strike front/mid + stun chance',dmg:.9,target:'default',cd:0,maxCd:3,cost:'2⚡',eCost:2},
-      {type:'special',name:'Stone Eternity',desc:'High damage ignore defense',dmg:1.3,ignoreDef:true,target:'any',cd:0,maxCd:0,cost:'5⚡',eCost:5},
-      {type:'heal',name:'Shadow Mend',desc:'Heal lowest ally 18%',healPct:.18,target:'lowest_ally',cd:0,maxCd:2,cost:'2⚡',eCost:2}]},
+      {type:'ability',name:'Shadow Mend',desc:'Heal lowest ally 18%',healPct:.18,target:'lowest_ally',dmg:0,cd:0,maxCd:2,cost:'2⚡',eCost:2,cardTone:'heal'},
+      {type:'special',name:'Stone Eternity',desc:'High damage ignore defense',dmg:1.3,ignoreDef:true,target:'any',cd:0,maxCd:0,cost:'5⚡',eCost:5,cardTone:'control'}]},
   {id:103,name:'CLEOPATRA',class:'Strategist',rarity:'epic',icon:'👑',mind:48,focus:45,speed:40,luck:50,
     level:4,pos:'back',modelGlb:'/assets/avatars/models/epic/pericles.glb',abilities:[
       {type:'passive',name:'Golden Aura',desc:'Allies gain +5% crit chance',cd:0,maxCd:0,passive:true},
       {type:'attack',name:'Strike',desc:'Basic attack',dmg:1.0,target:'default',cd:0,maxCd:0,cost:'1⚡',eCost:1},
       {type:'defense',name:'Defend',desc:'Brace (0⚡)',cd:0,maxCd:0,cost:'0⚡',eCost:0,defend:true},
-      {type:'ability',name:'Pharaoh Decree',desc:'Strike any position',dmg:.95,target:'any',cd:0,maxCd:3,cost:'2⚡',eCost:2},
-      {type:'special',name:'Nile Flood',desc:'AOE damage to all',dmg:.7,target:'all',cd:0,maxCd:0,cost:'5⚡',eCost:5},
-      {type:'heal',name:'Royal Grace',desc:'Heal all allies 10%',healPct:.10,target:'all_allies',cd:0,maxCd:3,cost:'2⚡',eCost:2}]}
+      {type:'ability',name:'Royal Grace',desc:'Heal all allies 10%',healPct:.10,target:'all_allies',dmg:0,cd:0,maxCd:3,cost:'2⚡',eCost:2,cardTone:'heal'},
+      {type:'special',name:'Nile Flood',desc:'AOE damage to all',dmg:.7,target:'all',cd:0,maxCd:0,cost:'5⚡',eCost:5,cardTone:'damage'}]}
 ];
 
 function safeAttrUrl(s){
@@ -976,7 +992,48 @@ function resolveUnitHp(x){
   return calcHp(x.level);
 }
 
+/** Sincroniza HP/energía desde state.units (p1–p3 / e1–e3) tras submit_round. */
+function applyServerUnitsToG(st){
+  if(!st||typeof st!=='object')return;
+  const units=st.units||{};
+  const pairs=[['p1',G.allies,0],['p2',G.allies,1],['p3',G.allies,2],['e1',G.enemies,0],['e2',G.enemies,1],['e3',G.enemies,2]];
+  pairs.forEach(function(P){
+    const su=units[P[0]];const arr=P[1];const idx=P[2];
+    if(!arr||idx>=arr.length)return;
+    const gu=arr[idx];
+    if(!su||typeof su!=='object'||!gu)return;
+    gu.hp=Math.max(0,Math.round(Number(su.hp)||0));
+    gu.maxHp=Math.max(gu.hp,Math.round(Number(su.hp_max)||gu.maxHp||1));
+    gu.energy=Math.max(0,Math.min(MW.MAX_ENERGY,Math.round(Number(su.energy)||0)));
+  });
+  renderUnits();
+}
+
+async function squadwarsBootstrapVm(){
+  window.__SQUADWARS_VM={round:1,version:1};
+  const api=window.KND_SQUADWARS_API;
+  if(!api||!api.getBattleStateUrl)return;
+  try{
+    const r=await fetch(api.getBattleStateUrl,{credentials:'same-origin'});
+    const j=await r.json();
+    if(j&&j.ok&&j.data){
+      const d=j.data;
+      window.__SQUADWARS_VM={round:Number(d.round)||1,version:Number(d.stateVersion)||1};
+      if(d.state)applyServerUnitsToG(d.state);
+    }
+  }catch(e){console.warn('[SquadWars] bootstrap state',e);}
+}
+
 /* ── INIT ── */
+function beginBattleIntro(){
+  showVsIntro().then(function(){
+    renderUnits();buildHUD();updateConfirm();
+    showPh('ROUND 1 — FIGHT');
+    lg('Neural link established. Battle begins!','sys');
+    if(window.MWArenaSFX){MWArenaSFX.unlock();MWArenaSFX.playRoundStart();MWArenaSFX.startMusic();}
+  });
+}
+
 function init(){
   const boot=window.__MW_BATTLE_INIT__;
   const srcA=(boot&&Array.isArray(boot.allies)&&boot.allies.length)?boot.allies:DEMO_AS;
@@ -996,13 +1053,20 @@ function init(){
   G.actions={};
   G.pendingPickEnemy=null;
 
-  // ── VS INTRO SCREEN ──
-  showVsIntro().then(function(){
-    renderUnits();buildHUD();updateConfirm();
-    showPh('ROUND 1 — FIGHT');
-    lg('Neural link established. Battle begins!','sys');
-    if(window.MWArenaSFX){MWArenaSFX.unlock();MWArenaSFX.playRoundStart();MWArenaSFX.startMusic();}
-  });
+  /* SquadWars: fila en BD + submit_round autoritativo por ronda (enemigos IA = default motor: ataque front). */
+  if(boot&&boot.squadwars&&boot.squadwars.enabled&&boot.squadwars.battleToken){
+    const tok=encodeURIComponent(boot.squadwars.battleToken);
+    window.KND_SQUADWARS_API={
+      battleToken:boot.squadwars.battleToken,
+      getBattleStateUrl:(boot.squadwars.getBattleStateUrl||'')+'?battle_token='+tok,
+      submitRoundUrl:boot.squadwars.submitRoundUrl||'',
+      csrfToken:String(boot.csrfToken||'')
+    };
+    squadwarsBootstrapVm().then(beginBattleIntro,beginBattleIntro);
+  }else{
+    window.KND_SQUADWARS_API=null;
+    beginBattleIntro();
+  }
 }
 
 function showVsIntro(){
@@ -1177,7 +1241,7 @@ function mountSkillCard(u,ab,dead){
     ph.className='skc skph';
     return ph;
   }
-  const t=gt(ab.type);const ocd=ab.cd>0;
+  const t=gtSkill(ab);const ocd=ab.cd>0;
   const ec=ab.eCost!==undefined&&ab.eCost!==null?Number(ab.eCost):0;
   const noE=ec>u.energy;
   const selected=G.actions[u.id]===ab;
@@ -1200,7 +1264,7 @@ function buildHUD(){
     const pack=document.createElement('div');
     pack.className='pu-pack'+(dead?' unit-dead':'');
     pack.appendChild(collectionCardEl(u));
-    for(let i=0;i<5;i++)pack.appendChild(mountSkillCard(u,act[i],dead));
+    for(let i=0;i<4;i++)pack.appendChild(mountSkillCard(u,act[i],dead));
     pack.appendChild(mountSkillCard(u,null,dead));
     row.appendChild(pack);
   });
@@ -1212,7 +1276,8 @@ function selectAbility(unit,ab){
   else{
     G.actions[unit.id]=ab;
     if(window.MWArenaSFX)MWArenaSFX.playSelect();
-    if(ab.target==='any'&&!ab.healPct){
+    const pickEnemy=ab.target==='any'&&(ab.dmg!=null&&Number(ab.dmg)>0);
+    if(pickEnemy){
       G.pendingPickEnemy=null;
       if(window.MWArenaThree)MWArenaThree.setEnemyPickMode(true);
     }
@@ -1232,7 +1297,7 @@ function updateConfirm(){
   const aliveAllies=G.allies.filter(a=>a.hp>0);
   aliveAllies.forEach(u=>{
     const ab=G.actions[u.id];const s=document.createElement('div');s.className='cslot';
-    if(ab){const t=gt(ab.type);s.classList.add('filled');s.style.setProperty('--sc',t.c);s.style.setProperty('--sg',t.g);
+    if(ab){const t=gtSkill(ab);s.classList.add('filled');s.style.setProperty('--sc',t.c);s.style.setProperty('--sg',t.g);
       s.innerHTML=`<div class="cslot-i">${t.i}</div><div class="cslot-n">${u.name}: ${ab.name}</div>`}
     else{s.innerHTML=`<div class="cslot-e">— ${u.name} —</div>`}
     slots.appendChild(s);
@@ -1241,8 +1306,19 @@ function updateConfirm(){
   document.getElementById('send-btn').classList.toggle('rdy',allSet);
 }
 
-/* ── EXECUTE TURN ── */
+/* ── EXECUTE TURN ──
+   • Con KND_SQUADWARS_API: una sola lógica de combate (SquadSimEngine vía submit_round). Sin fallback a calcDmg/aiTurn.
+   • Sin API (demo / persistencia no disponible): executeTurnLocal (legado JS). */
 async function executeTurn(){
+  const alive=G.allies.filter(a=>a.hp>0);
+  if(!alive.every(u=>G.actions[u.id])||G.phase!=='select')return;
+  if(window.KND_SQUADWARS_API){
+    await executeTurnSquadwarsServer();
+    return;
+  }
+  await executeTurnLocal();
+}
+async function executeTurnLocal(){
   const alive=G.allies.filter(a=>a.hp>0);
   if(!alive.every(u=>G.actions[u.id])||G.phase!=='select')return;
   G.phase='anim';document.getElementById('send-btn').classList.remove('rdy');
@@ -1255,12 +1331,16 @@ async function executeTurn(){
   for(const u of order){
     const ab=G.actions[u.id];if(!ab||u.hp<=0)continue;
     await sl(200);
-    if(ab.healPct)await doHeal(u,ab);
-    else if(ab.defend===true||ab.type==='defense'||ab.type==='defend'){
+    if(ab.defend===true||ab.type==='defense'||ab.type==='defend'){
       u.defending=true;
       if(window.MWArenaThree)await MWArenaThree.playDefendVisual(u,'player');
       lg(`<span class="actor">${u.name}</span> <span class="ht">DEFENDS</span> — reduced incoming damage this round`,'pa');
-    }else await doAtk(u,ab);
+    }else{
+      const hasHeal=ab.healPct!=null&&Number(ab.healPct)>0;
+      const hasDmg=ab.dmg!=null&&Number(ab.dmg)>0;
+      if(hasHeal)await doHeal(u,ab);
+      if(hasDmg)await doAtk(u,ab);
+    }
     if(ab.maxCd>0)ab.cd=ab.maxCd;
     const pay=ab.eCost!==undefined&&ab.eCost!==null?Number(ab.eCost):0;
     u.energy=Math.min(MW.MAX_ENERGY,u.energy-pay+MW.E_GAIN_ATK);
@@ -1394,6 +1474,154 @@ function getValidTargets(unit,enemies){
   return a.length?[a[0]]:[];
 }
 
+function pickPrimaryEnemyForAbility(u,ab){
+  if(ab.healPct)return null;
+  if(ab.target==='all')return G.enemies.find(e=>e.hp>0)||null;
+  if(ab.target==='any'){
+    const pool=G.enemies.filter(e=>e.hp>0);
+    if(G.pendingPickEnemy&&pool.some(e=>e.id===G.pendingPickEnemy.id))return G.pendingPickEnemy;
+    return pool.length?pool.sort((a,b)=>a.hp-b.hp)[0]:null;
+  }
+  const ts=getValidTargets(u,G.enemies);
+  return ts.length?ts[0]:null;
+}
+function enemySlotFromUnit(en){
+  if(!en)return'front';
+  const p=String(en.pos||'').toLowerCase();
+  return(p==='front'||p==='mid'||p==='back')?p:'front';
+}
+/** Mapeo a acciones del motor simultáneo (skills MW requieren registro en servidor; hasta entonces ability/special ≈ attack). */
+function buildSquadwarsActionsFromG(){
+  const slots=['p1','p2','p3'];
+  const out=[];
+  for(let i=0;i<G.allies.length&&i<3;i++){
+    const u=G.allies[i];
+    const pid=slots[i];
+    if(!u||u.hp<=0)continue;
+    const ab=G.actions[u.id];
+    if(!ab){
+      out.push({unitId:pid,action:'attack',targetScope:'slot_enemy',targetSlot:'front'});
+      continue;
+    }
+    const t=String(ab.type||'').toLowerCase();
+    if(ab.defend===true||t==='defense'||t==='defend'){
+      out.push({unitId:pid,action:'defend'});
+      continue;
+    }
+    if(ab.healPct){
+      out.push({unitId:pid,action:'defend'});
+      continue;
+    }
+    const en=pickPrimaryEnemyForAbility(u,ab);
+    const slot=enemySlotFromUnit(en);
+    out.push({unitId:pid,action:'attack',targetScope:'slot_enemy',targetSlot:slot});
+  }
+  return out;
+}
+
+/** Si hay batalla persistida SquadWars, el único árbitro de daño/turnos es el servidor — no mezclar con calcDmg/aiTurn. */
+async function squadwarsTryResyncVm(){
+  const api=window.KND_SQUADWARS_API;
+  const vm=window.__SQUADWARS_VM;
+  if(!api||!vm)return;
+  try{
+    const r=await fetch(api.getBattleStateUrl,{credentials:'same-origin'});
+    const j=await r.json().catch(()=>null);
+    if(j&&j.ok&&j.data){
+      const d=j.data;
+      vm.round=Number(d.round)||vm.round;
+      vm.version=Number(d.stateVersion)||vm.version;
+      if(d.state)applyServerUnitsToG(d.state);
+      lg('<span class="ht">Estado alineado con el servidor. Vuelve a confirmar acciones.</span>','sys');
+    }
+  }catch(e){console.warn('[SquadWars] resync',e);}
+}
+async function squadwarsRecoverSubmitFailure(j,httpStatus){
+  G.phase='select';
+  const btn=document.getElementById('send-btn');
+  if(btn)btn.classList.add('rdy');
+  const code=(j&&j.error&&j.error.code)?String(j.error.code):'';
+  const msg=(j&&j.error&&j.error.message)?String(j.error.message):'submit_round rechazado';
+  lg('<span class="dt">SquadWars '+escHtml(code||String(httpStatus||'ERR'))+': '+escHtml(msg)+'</span>','sys');
+  await squadwarsTryResyncVm();
+  renderUnits();buildHUD();updateConfirm();
+}
+
+async function executeTurnSquadwarsServer(){
+  const api=window.KND_SQUADWARS_API;
+  const vm=window.__SQUADWARS_VM;
+  if(!api||!vm){
+    lg('<span class="dt">SquadWars API no inicializada. Recarga el battlefield.</span>','sys');
+    G.phase='select';
+    const b=document.getElementById('send-btn');
+    if(b)b.classList.add('rdy');
+    return;
+  }
+  G.phase='anim';
+  document.getElementById('send-btn').classList.remove('rdy');
+  G.pendingPickEnemy=null;
+  if(window.MWArenaThree)MWArenaThree.setEnemyPickMode(false);
+  if(window.MWArenaSFX)MWArenaSFX.playConfirm();
+  const actions=buildSquadwarsActionsFromG();
+  try{
+    const r=await fetch(api.submitRoundUrl,{
+      method:'POST',
+      credentials:'same-origin',
+      headers:{'Content-Type':'application/json','X-CSRF-Token':api.csrfToken},
+      body:JSON.stringify({
+        battle_token:api.battleToken,
+        round:vm.round,
+        actions:actions,
+        clientStateVersion:vm.version,
+        csrf_token:api.csrfToken
+      })
+    });
+    const j=await r.json().catch(()=>null);
+    if(!j||!j.ok||!j.data){
+      console.warn('[SquadWars] submit failed',j);
+      await squadwarsRecoverSubmitFailure(j,r.status);
+      return;
+    }
+    const d=j.data;
+    vm.version=Number(d.stateVersion)||vm.version;
+    vm.round=Number(d.nextSubmitRound)||(vm.round+1);
+    const r2=await fetch(api.getBattleStateUrl,{credentials:'same-origin'});
+    const j2=await r2.json().catch(()=>null);
+    if(j2&&j2.ok&&j2.data&&j2.data.state){
+      applyServerUnitsToG(j2.data.state);
+      vm.version=Number(j2.data.stateVersion)||vm.version;
+      vm.round=Number(j2.data.round)||vm.round;
+    }
+    screenFlash();
+    lg('<span class="sys">══ Round resolved (server) ══</span>','sys');
+    if(d.battleOver){
+      G.phase='done';
+      const won=String(d.winner||'')==='player';
+      setTimeout(function(){showResult(won);},500);
+      return;
+    }
+  }catch(err){
+    console.warn('[SquadWars] submit error',err);
+    await squadwarsRecoverSubmitFailure(null,0);
+    return;
+  }
+  G.allies.forEach(a=>{a.abilities.forEach(s=>{if(s.cd>0)s.cd--})});
+  G.actions={};
+  G.enemies.forEach(e=>{e.defending=false});
+  if(checkEnd())return;
+  G.round++;
+  G.turn='player';
+  G.phase='select';
+  document.getElementById('tl').textContent='YOUR TURN';
+  document.getElementById('tl').style.color='var(--c)';
+  document.getElementById('rl').textContent='ROUND '+G.round;
+  showPh('ROUND '+G.round);
+  if(window.MWArenaSFX)MWArenaSFX.playRoundStart();
+  G.enemies.forEach(a=>{a.abilities.forEach(s=>{if(s.cd>0)s.cd--})});
+  /* Energía y HP vienen del GET; CDs del HUD siguen siendo locales hasta mapear cooldowns del motor */
+  renderUnits();buildHUD();updateConfirm();
+}
+
 /* ── ENEMY AI ── */
 async function aiTurn(){
   const AX=window.MWArenaThree;
@@ -1410,20 +1638,25 @@ async function aiTurn(){
     const defenders=usable.filter(s=>s.defend===true||s.type==='defense');
     let ab=low&&heals.length?heals[0]:dmgers.length?dmgers[~~(Math.random()*dmgers.length)]:(defenders.length&&Math.random()<.22?defenders[0]:usable[0]);
     await sl(250);
-    if(ab.healPct){
-      let tgts=ab.target==='self'?[en]:ab.target==='lowest_ally'?[G.enemies.filter(e=>e.hp>0).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0]]:
-        ab.target==='all_allies'?G.enemies.filter(e=>e.hp>0):[en];
-      for(const t of tgts){
-        const h=Math.round(t.maxHp*ab.healPct);t.hp=Math.min(t.maxHp,t.hp+h);
-        if(AX)await AX.playHealVisual(en,t,h,'enemy');
-        lg(`<span class="actor">${en.name}</span> heals ${t.name}: <span class="ht">+${h}</span>`,'ea');
-        renderUnits();await sl(200);
-      }
-    } else if(ab.defend===true||ab.type==='defense'||ab.type==='defend'){
+    if(ab.defend===true||ab.type==='defense'||ab.type==='defend'){
       en.defending=true;
       if(AX)await AX.playDefendVisual(en,'enemy');
       lg(`<span class="actor">${en.name}</span> <span class="ht">DEFENDS</span>`,'ea');
-    } else {
+    }else{
+      const hasHeal=ab.healPct!=null&&Number(ab.healPct)>0;
+      const hasDmg=ab.dmg!=null&&Number(ab.dmg)>0;
+      if(hasHeal){
+        let tgts=ab.target==='self'?[en]:ab.target==='lowest_ally'?[G.enemies.filter(e=>e.hp>0).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp)[0]]:
+          ab.target==='all_allies'?G.enemies.filter(e=>e.hp>0):[en];
+        for(const t of tgts){
+          if(!t)continue;
+          const h=Math.round(t.maxHp*ab.healPct);t.hp=Math.min(t.maxHp,t.hp+h);
+          if(AX)await AX.playHealVisual(en,t,h,'enemy');
+          lg(`<span class="actor">${en.name}</span> heals ${t.name}: <span class="ht">+${h}</span>`,'ea');
+          renderUnits();await sl(200);
+        }
+      }
+      if(hasDmg){
       let tgts=ab.target==='all'?G.allies.filter(a=>a.hp>0):ab.target==='any'?[G.allies.filter(a=>a.hp>0).sort((a,b)=>a.hp-b.hp)[0]].filter(Boolean):getValidTargets(en,G.allies);
       const specAll=ab.target==='all'&&String(ab.type||'').toLowerCase()==='special'&&AX;
       if(specAll){
@@ -1473,6 +1706,7 @@ async function aiTurn(){
           }
           renderUnits();await sl(180);
         }
+      }
       }
     }
     if(ab.maxCd>0)ab.cd=ab.maxCd;

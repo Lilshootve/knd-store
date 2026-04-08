@@ -43,6 +43,10 @@
   --t-heal:     #20e080;
   --t-attack:   #ff4060;
   --t-defense:  #40c0ff;
+  --t-support:  #40d4a0;
+  --t-control:  #c94dff;
+  --t-hybrid:   #ff9933;
+  --t-buff:     #5cb3ff;
 
   --font-display: 'Orbitron', monospace;
   --font-body:    'Rajdhani', sans-serif;
@@ -739,9 +743,29 @@ const ABILITY_TYPES = {
   defense:  { color: '#40c0ff', glow: 'rgba(64,192,255,0.2)', icon: '⬟', label: 'DEFENSE'  },
 };
 
+const CARD_TONE = {
+  heal:    { color: '#20e080', glow: 'rgba(32,224,128,0.2)',  icon: '✚', label: 'HEAL'    },
+  support: { color: '#40d4a0', glow: 'rgba(64,212,160,0.2)', icon: '◇', label: 'SUPPORT' },
+  control: { color: '#c94dff', glow: 'rgba(201,77,255,0.2)',  icon: '⌁', label: 'CONTROL' },
+  hybrid:  { color: '#ff9933', glow: 'rgba(255,153,51,0.2)', icon: '⎔', label: 'HYBRID'  },
+  defense: { color: '#5cb3ff', glow: 'rgba(92,179,255,0.2)',  icon: '⬟', label: 'BUFF'    },
+};
+
 function getType(t) {
   const key = (t || 'ability').toLowerCase();
   return ABILITY_TYPES[key] || ABILITY_TYPES.ability;
+}
+
+/** Slot type + optional cardTone (matches Squad Arena v2 / PHP `cardTone`). */
+function getSkillStyle(ability) {
+  const ct = String(ability.cardTone || '').toLowerCase();
+  if (ct && CARD_TONE[ct]) {
+    return CARD_TONE[ct];
+  }
+  if (ct === 'damage' && (ability.type === 'ability' || ability.type === 'special')) {
+    return getType(ability.type);
+  }
+  return getType(ability.type);
 }
 
 /* ── DEMO DATA ────────────────────────────────────────────────────────────────── */
@@ -752,9 +776,10 @@ const DEMO_AVATARS = [
     thumb: '/assets/avatars/thumbs/dracula_new.png',
     abilities: [
       { type: 'passive',  name: 'Blood Pact',         description: 'Heal based on damage dealt to enemies.',         cooldown: 0 },
-      { type: 'attack',   name: 'Crimson Bite',        description: 'Damage + reduce healing received by target.',    cooldown: 2 },
-      { type: 'special',  name: 'Night Domination',    description: 'Apply Bleed + Anti-Heal + Fear chance.',         cooldown: 4 },
-      { type: 'heal',     name: 'Dark Regeneration',   description: 'Restore HP proportional to missing health.',     cooldown: 3 },
+      { type: 'attack',   name: 'Strike',             description: 'Basic attack (1⚡).',                             cooldown: 0 },
+      { type: 'defense',  name: 'Defend',             description: 'Brace — reduce damage until next turn.',         cooldown: 0 },
+      { type: 'ability',  name: 'Crimson Bite',       description: 'Damage + reduce healing received by target.',    cooldown: 2, cardTone: 'damage' },
+      { type: 'special',  name: 'Night Domination',   description: 'AOE damage + self heal (from skill JSON).', cooldown: 4, cardTone: 'hybrid' },
     ]
   },
   {
@@ -762,9 +787,10 @@ const DEMO_AVATARS = [
     thumb: '/assets/avatars/thumbs/lincoln.png',
     abilities: [
       { type: 'passive',  name: 'Iron Will',            description: 'Reduce damage taken when HP falls below 40%.',   cooldown: 0 },
-      { type: 'ability',  name: 'Emancipation Strike',  description: 'Attack + free an ally from debuffs.',            cooldown: 2 },
-      { type: 'special',  name: 'Empire Collapse',      description: 'Scaling massive damage based on enemy buffs.',   cooldown: 5 },
-      { type: 'defense',  name: 'Fortify the Union',    description: 'Raise defense for all allies for 2 turns.',      cooldown: 3 },
+      { type: 'attack',   name: 'Strike',               description: 'Basic attack.',                                  cooldown: 0 },
+      { type: 'defense',  name: 'Defend',               description: 'Brace.',                                         cooldown: 0 },
+      { type: 'ability',  name: 'Emancipation Strike',  description: 'Attack + cleanse ally; team buffs.',             cooldown: 2, cardTone: 'support' },
+      { type: 'special',  name: 'Empire Collapse',      description: 'Scaling massive damage based on enemy buffs.',   cooldown: 5, cardTone: 'damage' },
     ]
   },
   {
@@ -772,16 +798,17 @@ const DEMO_AVATARS = [
     thumb: '/assets/avatars/thumbs/achilles.png',
     abilities: [
       { type: 'passive',  name: 'Divine Armor',         description: 'Immune to critical hits while above 50% HP.',    cooldown: 0 },
-      { type: 'attack',   name: 'Spear of Pelion',      description: 'High-damage pierce that ignores defense.',       cooldown: 2 },
-      { type: 'special',  name: 'Wrath of Achilles',    description: 'Enter rage: +40% attack, ignore pain for 2t.',   cooldown: 5 },
-      { type: 'heal',     name: 'River Styx Dip',       description: 'Cleanse all debuffs and recover 15% HP.',        cooldown: 4 },
+      { type: 'attack',   name: 'Strike',               description: 'Basic attack.',                                  cooldown: 0 },
+      { type: 'defense',  name: 'Defend',               description: 'Brace.',                                         cooldown: 0 },
+      { type: 'ability',  name: 'River Styx Dip',       description: 'Cleanse debuffs + recover 15% HP (from skill JSON).', cooldown: 4, cardTone: 'heal' },
+      { type: 'special',  name: 'Wrath of Achilles',    description: 'Rage + control pressure.',                        cooldown: 5, cardTone: 'control' },
     ]
   },
 ];
 
 /* ── BUILD FULL CARD ─────────────────────────────────────────────────────────── */
 function buildAbilityCard(ability, avatarName, opts = {}) {
-  const t = getType(ability.type);
+  const t = getSkillStyle(ability);
   const cd = ability.cooldown || 0;
   const isOnCd = opts.onCooldown || false;
   const isSelected = opts.selected || false;
@@ -849,7 +876,7 @@ let selectedCards = [];
 DEMO_AVATARS.forEach(av => {
   av.abilities.forEach((ab, i) => {
     const card = buildAbilityCard(ab, av.name, {
-      onCooldown: i === 0 && av.id === 69, // demo: Achilles passive on cooldown
+      onCooldown: av.id === 69 && i === 3, // demo: Achilles "River Styx Dip" on cooldown
       cdRemaining: 3,
     });
     card.style.animationDelay = `${i * 0.06 + (DEMO_AVATARS.indexOf(av) * 0.12)}s`;
@@ -881,7 +908,7 @@ function updateConfirmPanel() {
     slot.className = 'confirm-slot';
     const sel = selectedCards[i];
     if (sel) {
-      const t = getType(sel.ability.type);
+      const t = getSkillStyle(sel.ability);
       slot.classList.add('filled');
       slot.style.setProperty('--slot-color', t.color);
       slot.style.setProperty('--slot-glow', t.glow);
@@ -932,11 +959,12 @@ DEMO_AVATARS.forEach((av, avIdx) => {
 
   hudRow.appendChild(strip);
 
-  // Build mini buttons
+  // Build mini buttons — same 4 + passive model: tray shows non-passive only
   const abilitiesEl = strip.querySelector(`#strip-${av.id}`);
-  av.abilities.forEach((ab, i) => {
-    const t = getType(ab.type);
-    const onCd = (i === 3 && avIdx === 2); // demo cooldown
+  const battleAbs = av.abilities.filter(a => a.type !== 'passive');
+  battleAbs.forEach((ab, i) => {
+    const t = getSkillStyle(ab);
+    const onCd = (i === 3 && avIdx === 2); // demo: last slot on Achilles
     const cdNum = 2;
     const btn = document.createElement('div');
     btn.className = 'strip-ability-btn' + (onCd ? ' on-cd' : '') + (!isActive ? ' disabled' : '');
@@ -978,6 +1006,9 @@ function showTooltip(e, ability, t) {
   statsEl.innerHTML = '';
   if (ability.cooldown > 0) {
     statsEl.innerHTML += `<div class="tooltip-stat">COOLDOWN <span class="tooltip-stat-val">${ability.cooldown}T</span></div>`;
+  }
+  if (ability.cardTone) {
+    statsEl.innerHTML += `<div class="tooltip-stat">CARD TONE <span class="tooltip-stat-val">${String(ability.cardTone).toUpperCase()}</span></div>`;
   }
   if (ability.type === 'passive') {
     statsEl.innerHTML += `<div class="tooltip-stat">TRIGGER <span class="tooltip-stat-val">AUTO</span></div>`;

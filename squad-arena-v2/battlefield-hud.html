@@ -306,41 +306,69 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
 
 <script>
 const RC={legendary:'#ffd600',epic:'#c158ff',rare:'#4488ff',special:'#00ffcc',common:'#44aaaa'};
-const SC={passive:'#00e8ff',ability:'#c158ff',special:'#ffd600',heal:'#00ff88'};
+const SC={passive:'#00e8ff',ability:'#c158ff',special:'#ffd600',heal:'#00ff88',attack:'#ff4060',defense:'#40c0ff'};
+const TONE={support:'#40d4a0',control:'#c94dff',hybrid:'#ff9933',buff:'#5cb3ff'};
 const PM={enemy:{back:{x:24,y:20},mid:{x:50,y:27},front:{x:76,y:33}},ally:{front:{x:24,y:53},mid:{x:50,y:60},back:{x:76,y:67}}};
+
+function skillRowColor(sk){
+  const ct=String(sk.cardTone||'').toLowerCase();
+  if(ct==='heal')return SC.heal;
+  if(ct==='support')return TONE.support;
+  if(ct==='control')return TONE.control;
+  if(ct==='hybrid')return TONE.hybrid;
+  if(ct==='defense')return TONE.buff;
+  if(ct==='damage'&&(sk.type==='ability'||sk.type==='special'))return sk.type==='special'?SC.special:SC.ability;
+  return SC[sk.type]||SC.ability;
+}
+function skillRowLabel(sk){
+  const ct=String(sk.cardTone||'').toLowerCase();
+  if(ct==='heal')return 'HEAL';
+  if(ct==='support')return 'SUPPORT';
+  if(ct==='control')return 'CONTROL';
+  if(ct==='hybrid')return 'HYBRID';
+  if(ct==='defense')return 'BUFF';
+  if(ct==='damage'&&(sk.type==='ability'||sk.type==='special'))return sk.type==='special'?'SPECIAL':'ABILITY';
+  return String(sk.type||'skill').toUpperCase();
+}
 
 const AS=[
   {id:1,name:'NIKOLA TESLA',class:'Strategist',rarity:'legendary',icon:'⚡',mind:88,focus:72,speed:65,luck:40,maxHp:320,hp:320,pos:'front',
-    skills:[{type:'ability',name:'Tesla Coil',desc:'Electrocute front — Mind×1.2',dmg:1.2,target:'front',cd:0,maxCd:0,cost:'—'},
-      {type:'special',name:'AC Overload',desc:'Chain lightning ALL — Mind×0.6',dmg:.6,target:'all',cd:0,maxCd:3,cost:'3 CD'},
-      {type:'heal',name:'Field Charge',desc:'Restore 15% HP to self',healPct:.15,target:'self',cd:0,maxCd:2,cost:'2 CD'},
+    skills:[{type:'attack',name:'Strike',desc:'Basic attack — front',dmg:1,target:'front',cd:0,maxCd:0,cost:'1⚡'},
+      {type:'defense',name:'Defend',desc:'Brace — reduce incoming damage',defend:true,cd:0,maxCd:0,cost:'0⚡'},
+      {type:'ability',name:'Field Coil',desc:'Front hit + restore 15% max HP (self)',dmg:1.2,healPct:.15,healTarget:'self',target:'front',cardTone:'hybrid',cd:0,maxCd:2,cost:'2 CD'},
+      {type:'special',name:'AC Overload',desc:'Chain lightning ALL — Mind×0.6',dmg:.6,target:'all',cardTone:'damage',cd:0,maxCd:3,cost:'3 CD'},
       {type:'passive',name:'Resonance',desc:'10% stun on hit',passive:true}]},
   {id:2,name:'MARIE CURIE',class:'Controller',rarity:'epic',icon:'☢️',mind:75,focus:85,speed:50,luck:35,maxHp:290,hp:290,pos:'mid',
-    skills:[{type:'ability',name:'Radiation Pulse',desc:'Irradiate front/mid — Mind×1.0',dmg:1.0,target:'front_mid',cd:0,maxCd:0,cost:'—'},
-      {type:'special',name:'Isotope Decay',desc:'Poison 8% HP/turn ×3',dot:true,target:'any',cd:0,maxCd:3,cost:'3 CD'},
-      {type:'heal',name:'Radium Glow',desc:'Heal lowest ally 20%',healPct:.20,target:'lowest_ally',cd:0,maxCd:2,cost:'2 CD'},
+    skills:[{type:'attack',name:'Strike',desc:'Basic attack',dmg:1,target:'front_mid',cd:0,maxCd:0,cost:'1⚡'},
+      {type:'defense',name:'Defend',desc:'Brace',defend:true,cd:0,maxCd:0,cost:'0⚡'},
+      {type:'ability',name:'Radium Glow',desc:'Heal lowest ally 20%',healPct:.20,target:'lowest_ally',dmg:0,cardTone:'heal',cd:0,maxCd:2,cost:'2 CD'},
+      {type:'special',name:'Isotope Decay',desc:'Poison 8% HP/turn ×3',dot:true,dmg:1,target:'any',cardTone:'control',cd:0,maxCd:3,cost:'3 CD'},
       {type:'passive',name:'Half-Life',desc:'DMG +5%/round',passive:true}]},
   {id:3,name:'DRACULA',class:'Striker',rarity:'legendary',icon:'🧛',mind:92,focus:55,speed:78,luck:50,maxHp:280,hp:280,pos:'back',
-    skills:[{type:'ability',name:'Blood Fang',desc:'ANY target Mind×1.1 + 20% lifesteal',dmg:1.1,lifesteal:.2,target:'any',cd:0,maxCd:0,cost:'—'},
-      {type:'special',name:'Crimson Night',desc:'AOE Mind×0.8 + heal 10%',dmg:.8,lifesteal:.1,target:'all',cd:0,maxCd:4,cost:'4 CD'},
-      {type:'heal',name:'Drain Life',desc:'Steal 15% target max HP',stealPct:.15,target:'any',cd:0,maxCd:2,cost:'2 CD'},
+    skills:[{type:'attack',name:'Strike',desc:'Basic attack',dmg:1,target:'front',cd:0,maxCd:0,cost:'1⚡'},
+      {type:'defense',name:'Defend',desc:'Brace',defend:true,cd:0,maxCd:0,cost:'0⚡'},
+      {type:'ability',name:'Blood Fang',desc:'ANY Mind×1.1 + 20% lifesteal',dmg:1.1,lifesteal:.2,target:'any',cardTone:'damage',cd:0,maxCd:0,cost:'2⚡'},
+      {type:'special',name:'Crimson Night',desc:'AOE Mind×0.8 + lifesteal + 10% self heal',dmg:.8,lifesteal:.1,healPct:.10,healTarget:'self',target:'all',cardTone:'hybrid',cd:0,maxCd:4,cost:'4 CD'},
       {type:'passive',name:'Immortal',desc:'Survive lethal 1HP once',passive:true}]}
 ];
 const ES=[
   {id:101,name:'KRAKEN',class:'Tank',rarity:'legendary',icon:'🐙',mind:60,focus:95,speed:30,luck:25,maxHp:420,hp:420,pos:'front',
-    skills:[{type:'ability',name:'Tentacle Slam',desc:'Crush front Mind×1.0',dmg:1.0,target:'front',cd:0,maxCd:0},
-      {type:'special',name:'Tidal Wave',desc:'AOE Mind×0.5',dmg:.5,target:'all',cd:0,maxCd:3},
-      {type:'heal',name:'Deep Regen',desc:'Regen 12%',healPct:.12,target:'self',cd:0,maxCd:2},
+    skills:[{type:'attack',name:'Strike',desc:'Basic',dmg:1,target:'front',cd:0,maxCd:0},
+      {type:'defense',name:'Defend',desc:'Brace',defend:true,cd:0,maxCd:0},
+      {type:'ability',name:'Deep Regen',desc:'Regen 12% self',healPct:.12,target:'self',dmg:0,cardTone:'heal',cd:0,maxCd:2},
+      {type:'special',name:'Tidal Wave',desc:'AOE Mind×0.5',dmg:.5,target:'all',cardTone:'damage',cd:0,maxCd:3},
       {type:'passive',name:'Abyssal Armor',desc:'-15% incoming DMG',passive:true}]},
   {id:102,name:'MORGANA',class:'Controller',rarity:'epic',icon:'🔮',mind:82,focus:78,speed:55,luck:45,maxHp:300,hp:300,pos:'mid',
-    skills:[{type:'ability',name:'Dark Binding',desc:'Front/mid Mind×0.9',dmg:.9,target:'front_mid',cd:0,maxCd:0},
-      {type:'special',name:'Dimension Rift',desc:'Mind×1.3 ignore DEF',dmg:1.3,ignoreDef:true,target:'any',cd:0,maxCd:3},
-      {type:'heal',name:'Shadow Mend',desc:'Heal lowest 18%',healPct:.18,target:'lowest_ally',cd:0,maxCd:2},
+    skills:[{type:'attack',name:'Strike',desc:'Basic',dmg:1,target:'front_mid',cd:0,maxCd:0},
+      {type:'defense',name:'Defend',desc:'Brace',defend:true,cd:0,maxCd:0},
+      {type:'ability',name:'Shadow Mend',desc:'Heal lowest ally 18%',healPct:.18,target:'lowest_ally',dmg:0,cardTone:'heal',cd:0,maxCd:2},
+      {type:'special',name:'Dimension Rift',desc:'Mind×1.3 ignore DEF',dmg:1.3,ignoreDef:true,target:'any',cardTone:'control',cd:0,maxCd:3},
       {type:'passive',name:'Seventeen Dimensions',desc:'5% dodge',passive:true}]},
   {id:103,name:'CLEOPATRA',class:'Strategist',rarity:'epic',icon:'👑',mind:78,focus:68,speed:62,luck:55,maxHp:280,hp:280,pos:'back',
-    skills:[{type:'ability',name:'Pharaoh Decree',desc:'ANY Mind×0.95',dmg:.95,target:'any',cd:0,maxCd:0},
-      {type:'special',name:'Nile Flood',desc:'AOE Mind×0.7',dmg:.7,target:'all',cd:0,maxCd:3},
-      {type:'heal',name:'Royal Grace',desc:'Heal all allies 10%',healPct:.10,target:'all_allies',cd:0,maxCd:3},
+    skills:[{type:'attack',name:'Strike',desc:'Basic',dmg:1,target:'any',cd:0,maxCd:0},
+      {type:'defense',name:'Defend',desc:'Brace',defend:true,cd:0,maxCd:0},
+      {type:'ability',name:'Royal Grace',desc:'Heal all allies 10%',healPct:.10,target:'all_allies',dmg:0,cardTone:'heal',cd:0,maxCd:3},
+      {type:'special',name:'Nile Flood',desc:'AOE Mind×0.7',dmg:.7,target:'all',cardTone:'damage',cd:0,maxCd:3},
       {type:'passive',name:'Golden Aura',desc:'+5% luck allies',passive:true}]}
 ];
 
@@ -391,9 +419,9 @@ function rSkills(u){
   const r=document.getElementById('skrow');r.innerHTML='';
   u.skills.forEach(sk=>{if(sk.passive)return;const oc=sk.cd>0;
     const d=document.createElement('div');d.className='skc'+(oc?' cdx':'');
-    d.style.setProperty('--skc',SC[sk.type]||'var(--c)');
+    d.style.setProperty('--skc',skillRowColor(sk));
     d.onclick=()=>{if(!oc)pickSk(sk,d)};
-    d.innerHTML=`<div class="skt">${sk.type}</div><div class="skn">${sk.name}</div><div class="skd">${sk.desc}</div><div class="skm"><span class="skcs">${sk.cost||'—'}</span>${oc?`<span class="skcv on">${sk.cd} CD</span>`:sk.maxCd>0?`<span class="skcv">CD:${sk.maxCd}</span>`:''}</div>`;
+    d.innerHTML=`<div class="skt">${skillRowLabel(sk)}</div><div class="skn">${sk.name}</div><div class="skd">${sk.desc}</div><div class="skm"><span class="skcs">${sk.cost||'—'}</span>${oc?`<span class="skcv on">${sk.cd} CD</span>`:sk.maxCd>0?`<span class="skcv">CD:${sk.maxCd}</span>`:''}</div>`;
     r.appendChild(d);
   });
 }
@@ -402,12 +430,21 @@ function pickSk(sk,el){
   if(G.phase!=='select')return;G.ss=sk;G.st=null;
   document.querySelectorAll('.skc').forEach(c=>c.classList.remove('sl'));el.classList.add('sl');
   document.querySelectorAll('.upl').forEach(e=>e.classList.remove('tgt'));
-  if(sk.healPct||sk.stealPct){
+  if(sk.defend===true||sk.type==='defense'){G.st=[G.su];$t('TARGET: SELF (DEFEND)');updS();return}
+  if(sk.stealPct){
+    if(sk.target==='any'||sk.target==='all'){$t('⬡ SELECT TARGET',true)}
+    else{const v=gV(G.su,sk,G.enemies);G.st=v.length?v:[G.su];$t(G.st.length?'TARGET: '+G.st[0].name:'')}
+    updS();return
+  }
+  const healOnly=sk.healPct&&!sk.dmg;
+  if(healOnly){
     if(sk.target==='self'){G.st=[G.su];$t('TARGET: SELF')}
     else if(sk.target==='lowest_ally'){const a=G.allies.filter(a=>a.hp>0).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp);G.st=a.length?[a[0]]:[];$t(G.st.length?'TARGET: '+G.st[0].name:'')}
     else if(sk.target==='all_allies'){G.st=G.allies.filter(a=>a.hp>0);$t('TARGET: ALL ALLIES')}
     else{$t('⬡ SELECT TARGET',true)}
-  }else if(sk.target==='all'){
+    updS();return
+  }
+  if(sk.target==='all'){
     G.st=G.enemies.filter(e=>e.hp>0);G.st.forEach(t=>{const e=document.getElementById('u-'+t.id);if(e)e.classList.add('tgt')});$t('TARGET: ALL ENEMIES');
   }else{
     const v=gV(G.su,sk,G.enemies);
@@ -420,7 +457,9 @@ function $t(t,o){document.getElementById('tinfo').innerHTML=o?`<span style="colo
 
 function pickT(en){
   if(G.phase!=='select'||!G.ss||en.hp<=0)return;
-  if(G.ss.target==='all')return;if(G.ss.healPct&&G.ss.target!=='any')return;
+  if(G.ss.target==='all')return;
+  if(G.ss.healPct&&G.ss.dmg)return;
+  if(G.ss.healPct&&!G.ss.dmg&&G.ss.target!=='any')return;
   const v=gV(G.su,G.ss,G.enemies);
   if(!v.find(x=>x.id===en.id)){lg(`Can't reach ${en.name} from ${G.su.pos.toUpperCase()}!`,'info');return}
   G.st=[en];document.querySelectorAll('.es').forEach(e=>e.classList.remove('tgt'));
@@ -445,7 +484,14 @@ async function executeTurn(){
   if(G.phase!=='select')return;const{su:u,ss:sk,st:tgts}=G;if(!u||!sk||!tgts||!tgts.length)return;
   G.phase='anim';document.getElementById('sbtn').classList.remove('rdy');
   const ue=document.getElementById('u-'+u.id);if(ue)ue.classList.add('act');await sl(200);
-  if(sk.healPct)await doH(u,sk,tgts);else if(sk.stealPct)await doSt(u,sk,tgts);else await doA(u,sk,tgts);
+  if(sk.defend===true||sk.type==='defense'){lg(`${u.name} DEFENDS`,'info')}
+  else if(sk.stealPct)await doSt(u,sk,tgts);
+  else{
+    const hasHeal=sk.healPct!=null&&Number(sk.healPct)>0;
+    const hasDmg=sk.dmg!=null&&Number(sk.dmg)>0;
+    if(hasHeal)await doH(u,sk,tgts);
+    if(hasDmg)await doA(u,sk,tgts);
+  }
   if(sk.maxCd>0)sk.cd=sk.maxCd;G.allies.forEach(a=>a.skills.forEach(s=>{if(s.cd>0)s.cd--}));
   await sl(300);if(ue)ue.classList.remove('act');
   document.querySelectorAll('.upl').forEach(e=>{e.classList.remove('tgt','sel')});
@@ -479,29 +525,51 @@ async function doA(atk,sk,tgts){
       if(sk.lifesteal){const h=Math.round(d*sk.lifesteal);atk.hp=Math.min(atk.maxHp,atk.hp+h);pop(atk.id,'+'+h,'heal');lg(`${atk.name} steals ${h} HP`,'heal')}}
     render();await sl(200)}
 }
-async function doH(u,sk,tgts){for(const t of tgts){const h=Math.round(t.maxHp*sk.healPct);t.hp=Math.min(t.maxHp,t.hp+h);pop(t.id,'+'+h,'heal');lg(`${u.name} heals ${t.name} +${h}`,'heal');render();await sl(250)}}
+async function doH(u,sk,tgts){
+  const ht=sk.healTarget!=null&&sk.healTarget!==''?sk.healTarget:sk.target;
+  let targets=[];
+  if(ht==='self')targets=[u];
+  else if(ht==='lowest_ally'){const a=G.allies.filter(a=>a.hp>0).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp);targets=a.length?[a[0]]:[]}
+  else if(ht==='all_allies')targets=G.allies.filter(a=>a.hp>0);
+  else targets=(tgts&&tgts.length)?tgts:[u];
+  for(const t of targets){if(!t)continue;const h=Math.round(t.maxHp*sk.healPct);t.hp=Math.min(t.maxHp,t.hp+h);pop(t.id,'+'+h,'heal');lg(`${u.name} heals ${t.name} +${h}`,'heal');render();await sl(250)}
+}
 async function doSt(u,sk,tgts){for(const t of tgts){const s=Math.round(t.maxHp*sk.stealPct);t.hp=Math.max(0,t.hp-s);u.hp=Math.min(u.maxHp,u.hp+s);G.dd+=s;pop(t.id,'-'+s,'damage');pop(u.id,'+'+s,'heal');lg(`${u.name} drains ${s} from ${t.name}`,'dmg');render();await sl(250)}}
 
 async function aiTurn(){
   for(const en of G.enemies.filter(e=>e.hp>0)){
     if(!G.allies.filter(a=>a.hp>0).length)break;
     const us=en.skills.filter(s=>!s.passive&&s.cd===0);if(!us.length)continue;
-    const lo=en.hp/en.maxHp<.35,hl=us.filter(s=>s.healPct);
-    let sk=lo&&hl.length?hl[0]:us.filter(s=>s.dmg).length?us.filter(s=>s.dmg)[~~(Math.random()*us.filter(s=>s.dmg).length)]:us[0];
-    let tg;
-    if(sk.healPct){if(sk.target==='self')tg=[en];else if(sk.target==='lowest_ally'){const sr=G.enemies.filter(e=>e.hp>0).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp);tg=[sr[0]]}
-      else if(sk.target==='all_allies')tg=G.enemies.filter(e=>e.hp>0);else tg=[en]}
-    else{const v=gV(en,sk,G.allies);tg=sk.target==='all'?G.allies.filter(a=>a.hp>0):v.length?[v[~~(Math.random()*v.length)]]:[];}
-    if(!tg||!tg.length)continue;
+    const lo=en.hp/en.maxHp<.35,hl=us.filter(s=>s.healPct&&!s.dmg);
+    const dm=us.filter(s=>s.dmg);
+    let sk=lo&&hl.length?hl[0]:dm.length?dm[~~(Math.random()*dm.length)]:us.filter(s=>s.defend)[0]||us[0];
+    let tgEnemy,tgHeal;
+    if(sk.defend===true||sk.type==='defense'){tgEnemy=[];tgHeal=[]}
+    else if(sk.healPct&&!sk.dmg){
+      if(sk.target==='self')tgHeal=[en];else if(sk.target==='lowest_ally'){const sr=G.enemies.filter(e=>e.hp>0).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp);tgHeal=sr.length?[sr[0]]:[]}
+      else if(sk.target==='all_allies')tgHeal=G.enemies.filter(e=>e.hp>0);else tgHeal=[en];
+      tgEnemy=[];
+    }else{
+      const v=gV(en,sk,G.allies);
+      tgEnemy=sk.target==='all'?G.allies.filter(a=>a.hp>0):v.length?[v[~~(Math.random()*v.length)]]:[];
+      tgHeal=[];
+    }
     const ee=document.getElementById('u-'+en.id);if(ee)ee.classList.add('act');await sl(300);
-    if(sk.healPct){for(const t of tg){const h=Math.round(t.maxHp*sk.healPct);t.hp=Math.min(t.maxHp,t.hp+h);pop(t.id,'+'+h,'heal');lg(`${en.name} heals ${t.name} +${h}`,'heal')}}
-    else{for(const t of tg){let d=Math.round(en.mind*(sk.dmg||1));const def=sk.ignoreDef?0:t.focus*.4;d=Math.max(1,Math.round(d-def));
-      const cr=Math.random()*100<en.luck;if(cr)d=Math.round(d*1.8);const ms=Math.random()*100<Math.max(0,(t.speed-en.speed)*.3);
-      fxFlash(t.id);await sl(300);
-      if(ms){pop(t.id,'MISS','miss');lg(`${en.name} → ${t.name}: MISS!`,'info')}
-      else{t.hp=Math.max(0,t.hp-d);if(t.hp<=0&&!t.imu){const im=t.skills?.find(s=>s.passive&&s.name==='Immortal');if(im){t.hp=1;t.imu=true;lg(`${t.name} IMMORTAL!`,'system')}}
-        G.dt+=d;pop(t.id,'-'+d,cr?'crit':'damage');fxImp(t.id,false);lg(`${en.name} → ${t.name}: ${d}${cr?' CRIT!':''}`,'dmg');
-        if(sk.lifesteal){const h=Math.round(d*sk.lifesteal);en.hp=Math.min(en.maxHp,en.hp+h);pop(en.id,'+'+h,'heal')}}await sl(200)}}
+    if(sk.defend===true||sk.type==='defense'){lg(`${en.name} DEFENDS`,'info')}
+    else{
+      if(sk.healPct){const ht=sk.healTarget||sk.target;let th=[];
+        if(ht==='self')th=[en];else if(ht==='lowest_ally'){const sr=G.enemies.filter(e=>e.hp>0).sort((a,b)=>a.hp/a.maxHp-b.hp/b.maxHp);th=sr.length?[sr[0]]:[]}
+        else if(ht==='all_allies')th=G.enemies.filter(e=>e.hp>0);else th=tgHeal;
+        for(const t of th){if(!t)continue;const h=Math.round(t.maxHp*sk.healPct);t.hp=Math.min(t.maxHp,t.hp+h);pop(t.id,'+'+h,'heal');lg(`${en.name} heals ${t.name} +${h}`,'heal')}}
+      if(sk.dmg){const tg=tgEnemy;if(!tg||!tg.length){if(ee)ee.classList.remove('act');render();await sl(350);continue}
+        for(const t of tg){let d=Math.round(en.mind*(sk.dmg||1));const def=sk.ignoreDef?0:t.focus*.4;d=Math.max(1,Math.round(d-def));
+          const cr=Math.random()*100<en.luck;if(cr)d=Math.round(d*1.8);const ms=Math.random()*100<Math.max(0,(t.speed-en.speed)*.3);
+          fxFlash(t.id);await sl(300);
+          if(ms){pop(t.id,'MISS','miss');lg(`${en.name} → ${t.name}: MISS!`,'info')}
+          else{t.hp=Math.max(0,t.hp-d);if(t.hp<=0&&!t.imu){const im=t.skills?.find(s=>s.passive&&s.name==='Immortal');if(im){t.hp=1;t.imu=true;lg(`${t.name} IMMORTAL!`,'system')}}
+            G.dt+=d;pop(t.id,'-'+d,cr?'crit':'damage');fxImp(t.id,false);lg(`${en.name} → ${t.name}: ${d}${cr?' CRIT!':''}`,'dmg');
+            if(sk.lifesteal){const h=Math.round(d*sk.lifesteal);en.hp=Math.min(en.maxHp,en.hp+h);pop(en.id,'+'+h,'heal')}}await sl(200)}}
+    }
     if(sk.maxCd>0)sk.cd=sk.maxCd;if(ee)ee.classList.remove('act');render();await sl(350);
   }
 }
