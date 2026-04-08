@@ -63,7 +63,9 @@ function knockback(target, fx, fz, dist, dur) {
   });
 }
 
-function executeAttack(actorSlot, targetSlot, damage, side, context, roll) {
+function executeAttack(actorSlot, targetSlot, damage, side, context, roll, opts) {
+  opts = opts || {};
+  var skipHp = !!opts.skipHpApply;
   return new Promise(function (resolve) {
     if (animating) { resolve(); return; }
     beginAnimation();
@@ -96,7 +98,7 @@ function executeAttack(actorSlot, targetSlot, damage, side, context, roll) {
         /* Delay damage number — impact registers visually first */
         setTimeout(function () {
           context.showDmgNumber('-' + damage, '#ff4444');
-          context.updateHP(tsl, targetSlot, damage);
+          if (!skipHp) context.updateHP(tsl, targetSlot, damage);
         }, 25);
         hitstop(65).then(function () {
           knockback(t, a.position.x, a.position.z, 0.25, 200);
@@ -122,7 +124,9 @@ function executeAttack(actorSlot, targetSlot, damage, side, context, roll) {
   });
 }
 
-function executeAbility(actorSlot, targetSlot, skillCode, damage, effects, side, context) {
+function executeAbility(actorSlot, targetSlot, skillCode, damage, effects, side, context, opts) {
+  opts = opts || {};
+  var skipHp = !!opts.skipHpApply;
   return new Promise(function (resolve) {
     if (animating) { resolve(); return; }
     beginAnimation();
@@ -151,7 +155,10 @@ function executeAbility(actorSlot, targetSlot, skillCode, damage, effects, side,
         if (sfx()) sfx().playHit(0.6);
         hitReaction(t, 0.8);
         setTimeout(function () {
-          if (damage > 0) { context.showDmgNumber('-' + damage, '#aa44ff'); context.updateHP(tsl, targetSlot, damage); }
+          if (damage > 0) {
+            context.showDmgNumber('-' + damage, '#aa44ff');
+            if (!skipHp) context.updateHP(tsl, targetSlot, damage);
+          }
         }, 25);
         hitstop(50).then(function () {
           knockback(t, a.position.x, a.position.z, 0.18, 180);
@@ -165,7 +172,9 @@ function executeAbility(actorSlot, targetSlot, skillCode, damage, effects, side,
   });
 }
 
-function executeSpecial(actorSlot, targetSlot, skillCode, damage, isAoE, aoeTargets, side, context) {
+function executeSpecial(actorSlot, targetSlot, skillCode, damage, isAoE, aoeTargets, side, context, opts) {
+  opts = opts || {};
+  var skipHp = !!opts.skipHpApply;
   return new Promise(function (resolve) {
     if (animating) { resolve(); return; }
     beginAnimation();
@@ -221,10 +230,12 @@ function executeSpecial(actorSlot, targetSlot, skillCode, damage, isAoE, aoeTarg
           /* Delay damage numbers — explosion registers first */
           setTimeout(function () {
             context.showDmgNumber('-' + damage, '#ffcc00');
-            if (isAoE && aoeTargets) {
-              aoeTargets.forEach(function (at) { if (at.damage > 0) context.updateHP(tsl, at.slot, at.damage); });
-            } else {
-              context.updateHP(tsl, targetSlot, damage);
+            if (!skipHp) {
+              if (isAoE && aoeTargets) {
+                aoeTargets.forEach(function (at) { if (at.damage > 0) context.updateHP(tsl, at.slot, at.damage); });
+              } else {
+                context.updateHP(tsl, targetSlot, damage);
+              }
             }
           }, 30);
           hitstop(80).then(function () {

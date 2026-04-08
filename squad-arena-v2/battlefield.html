@@ -845,8 +845,8 @@ header.topbar{flex-shrink:0}
 <script src="/squad-arena-v2/js/arena-sfx.js?v=fix10"></script>
 <script src="/squad-arena-v2/js/arena-vfx.js?v=fix9"></script>
 <script src="/squad-arena-v2/js/arena-status.js?v=fix9"></script>
-<script src="/squad-arena-v2/js/arena-three-canvas.js?v=fix10"></script>
-<script defer src="/squad-arena-v2/js/arena-actions.js?v=fix10"></script>
+<script src="/squad-arena-v2/js/arena-three-canvas.js?v=fix11"></script>
+<script defer src="/squad-arena-v2/js/arena-actions.js?v=fix11"></script>
 <script defer src="/squad-arena-v2/js/arena-playback.js?v=fix9"></script>
 <script>
 /*══════════════════════════════════════════════════════════════════
@@ -1002,6 +1002,16 @@ function applyServerUnitsToG(st){
     gu.hp=Math.max(0,Math.round(Number(su.hp)||0));
     gu.maxHp=Math.max(gu.hp,Math.round(Number(su.hp_max)||gu.maxHp||1));
     gu.energy=Math.max(0,Math.min(MW.MAX_ENERGY,Math.round(Number(su.energy)||0)));
+    const cds=su.cooldowns;
+    if(cds&&typeof cds==='object'&&gu.abilities){
+      gu.abilities.forEach(function(s){
+        if(!s||s.passive)return;
+        const k=String(s.mwCode||s.skillId||'');
+        if(k&&Object.prototype.hasOwnProperty.call(cds,k)){
+          s.cd=Math.max(0,parseInt(String(cds[k]),10)||0);
+        }
+      });
+    }
   });
   renderUnits();
 }
@@ -1549,19 +1559,23 @@ async function playbackSquadwarsEvents(events){
       const pre=seg.pre!=null?seg.pre:140;
       const post=seg.post!=null?seg.post:220;
       await sl(pre);
-      if(window.MWArenaSFX){
-        window.MWArenaSFX.unlock();
-        if(crit)window.MWArenaSFX.playCrit();
-        else if(typeof window.MWArenaSFX.playAttack==='function')window.MWArenaSFX.playAttack();
-        else window.MWArenaSFX.playHit(0.82);
-      }
-      if(AX&&src&&tgt&&typeof AX.focusStrikeCamera==='function'){
-        await AX.focusStrikeCamera(src,tgt,{crit});
-      }
-      if(tgt&&AX){
-        AX.flashUnitById(tgt.id);
-        await sl(crit?100:78);
-        AX.popOnUnit(tgt.id,'-'+v,'damage');
+      if(AX&&src&&tgt&&typeof AX.playAttackVisual==='function'){
+        const side=!src.isEnemy?'player':'enemy';
+        const abStub={type:'attack',name:'Strike'};
+        await AX.playAttackVisual(src,tgt,abStub,{damage:v,crit,evaded:false},side,{skipHpApply:true});
+      }else{
+        if(window.MWArenaSFX){
+          window.MWArenaSFX.unlock();
+          if(crit)window.MWArenaSFX.playCrit();
+          else if(typeof window.MWArenaSFX.playAttack==='function')window.MWArenaSFX.playAttack();
+          else window.MWArenaSFX.playHit(0.82);
+        }
+        if(AX&&src&&tgt&&typeof AX.focusStrikeCamera==='function')await AX.focusStrikeCamera(src,tgt,{crit});
+        if(tgt&&AX){
+          AX.flashUnitById(tgt.id);
+          await sl(crit?100:78);
+          AX.popOnUnit(tgt.id,'-'+v,'damage');
+        }
       }
       if(src&&tgt)lg(`<span class="actor">${(src.name||'?')}</span> → ${tgt.name}: <span class="dt">-${v}</span>${crit?' <span class="ct">CRIT</span>':''}`,'pa');
       await sl(post);
@@ -1636,6 +1650,12 @@ async function executeTurnSquadwarsServer(){
   G.pendingPickEnemy=null;
   if(window.MWArenaThree)MWArenaThree.setEnemyPickMode(false);
   if(window.MWArenaSFX)MWArenaSFX.playConfirm();
+  const usedAllyAbilities=new Map();
+  G.allies.forEach(function(u){
+    if(!u||u.hp<=0)return;
+    const ab=G.actions[u.id];
+    if(ab)usedAllyAbilities.set(u.id,ab);
+  });
   const actions=buildSquadwarsActionsFromG();
   try{
     const r=await fetch(api.submitRoundUrl,{
@@ -1667,6 +1687,9 @@ async function executeTurnSquadwarsServer(){
       vm.version=Number(j2.data.stateVersion)||vm.version;
       vm.round=Number(j2.data.round)||vm.round;
     }
+    usedAllyAbilities.forEach(function(ab){
+      if(ab&&ab.maxCd>0)ab.cd=ab.maxCd;
+    });
     lg('<span class="sys">══ Round resolved (server) ══</span>','sys');
     if(d.battleOver){
       G.phase='done';
@@ -1692,7 +1715,6 @@ async function executeTurnSquadwarsServer(){
   showPh('ROUND '+G.round);
   if(window.MWArenaSFX)MWArenaSFX.playRoundStart();
   G.enemies.forEach(a=>{a.abilities.forEach(s=>{if(s.cd>0)s.cd--})});
-  /* Energía y HP vienen del GET; CDs del HUD siguen siendo locales hasta mapear cooldowns del motor */
   renderUnits();buildHUD();updateConfirm();
 }
 

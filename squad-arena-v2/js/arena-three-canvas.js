@@ -1249,7 +1249,8 @@
     });
   }
 
-  function playAttackVisual(attacker, target, ab, r, side) {
+  function playAttackVisual(attacker, target, ab, r, side, playbackOpts) {
+    playbackOpts = playbackOpts || {};
     var ctx = getActionContext();
     var aslot = unitSlot(attacker);
     var tslot = unitSlot(target);
@@ -1264,12 +1265,12 @@
     }
     var typ = ab && ab.type ? String(ab.type).toLowerCase() : 'attack';
     if (typ === 'special') {
-      return executeSpecial(aslot, tslot, skillCodeFromAbility(ab), dmg, false, null, side, ctx);
+      return executeSpecial(aslot, tslot, skillCodeFromAbility(ab), dmg, false, null, side, ctx, playbackOpts);
     }
     if (typ === 'ability') {
-      return executeAbility(aslot, tslot, skillCodeFromAbility(ab), dmg, [], side, ctx);
+      return executeAbility(aslot, tslot, skillCodeFromAbility(ab), dmg, [], side, ctx, playbackOpts);
     }
-    return executeAttack(aslot, tslot, dmg, side, ctx, r);
+    return executeAttack(aslot, tslot, dmg, side, ctx, r, playbackOpts);
   }
 
   function playHealVisual(healer, targetUnit, amount, side) {
