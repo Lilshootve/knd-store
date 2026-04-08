@@ -90,9 +90,10 @@ $lck = $stats ? max(0, min(100, (int) ($stats['luck'] ?? 0))) : 0;
   </div>
 
   <div class="battle-zone">
-    <div class="battle-subtext" id="battle-subtext">READY FOR COMBAT</div>
-    <button type="button" class="battle-btn" id="battle-open-mm">
-      <span class="bb-icon">⚔</span> BATTLE
+    <div class="battle-subtext" id="battle-subtext">NEXUS ONLINE</div>
+    <button type="button" class="battle-btn" id="nexus-link-btn"
+            onclick="location.href='/games/arena-protocol/nexus-city.html'">
+      <span class="bb-icon">⬡</span> LINK PROTOCOL
     </button>
     <div class="quick-actions">
       <button type="button" class="qa-btn" id="qa-change-avatar">UNITS</button>
