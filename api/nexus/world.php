@@ -9,7 +9,6 @@ require_once BASE_PATH . '/includes/session.php';
 require_once BASE_PATH . '/includes/config.php';
 require_once BASE_PATH . '/includes/auth.php';
 require_once BASE_PATH . '/includes/json.php';
-require_once BASE_PATH . '/includes/mw_avatar_models.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     json_error('METHOD_NOT_ALLOWED', 'Only GET allowed', 405);
@@ -20,29 +19,33 @@ $uid = is_logged_in() ? (int)$_SESSION['user_id'] : null;
 
 try {
     // 1. Distritos + echo status por distrito
-    $districts = $pdo->query("
-        SELECT
-            d.id, d.name, d.era, d.tag, d.color_hex, d.icon, d.game_url,
-            d.pos_x, d.pos_z,
-            COUNT(e.avatar_id)                       AS total_echoes,
-            ROUND(AVG(e.resonance), 1)               AS avg_resonance,
-            SUM(e.status = 'active')                 AS echoes_active,
-            SUM(e.status IN ('ghost','forgotten'))   AS echoes_fading
-        FROM nexus_districts d
-        LEFT JOIN nexus_echo e ON e.district_id = d.id
-        GROUP BY d.id
-        ORDER BY d.sort_order
-    ")->fetchAll(PDO::FETCH_ASSOC);
+    try {
+        $districts = $pdo->query("
+            SELECT
+                d.id, d.name, d.era, d.tag, d.color_hex, d.icon, d.game_url,
+                d.pos_x, d.pos_z,
+                COUNT(e.avatar_id)                       AS total_echoes,
+                ROUND(AVG(e.resonance), 1)               AS avg_resonance,
+                SUM(e.status = 'active')                 AS echoes_active,
+                SUM(e.status IN ('ghost','forgotten'))   AS echoes_fading
+            FROM nexus_districts d
+            LEFT JOIN nexus_echo e ON e.district_id = d.id
+            GROUP BY d.id
+            ORDER BY d.sort_order
+        ")->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $_) { $districts = []; }
 
     // 2. Ecos por distrito (los 5 con más resonancia por zona)
-    $echos_raw = $pdo->query("
-        SELECT
-            e.avatar_id, e.district_id, e.resonance, e.status,
-            a.name, a.rarity, a.class, a.subrole, a.image
-        FROM nexus_echo e
-        JOIN mw_avatars a ON a.id = e.avatar_id
-        ORDER BY e.district_id, e.resonance DESC
-    ")->fetchAll(PDO::FETCH_ASSOC);
+    try {
+        $echos_raw = $pdo->query("
+            SELECT
+                e.avatar_id, e.district_id, e.resonance, e.status,
+                a.name, a.rarity, a.class, a.subrole, a.image
+            FROM nexus_echo e
+            JOIN mw_avatars a ON a.id = e.avatar_id
+            ORDER BY e.district_id, e.resonance DESC
+        ")->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $_) { $echos_raw = []; }
 
     $echoes_by_district = [];
     foreach ($echos_raw as $row) {
@@ -95,43 +98,61 @@ try {
     ")->fetch(PDO::FETCH_ASSOC);
 
     // 5. Jugadores online ahora (last_active en los últimos 3 minutos)
-    $online_count = $pdo->query("
-        SELECT COUNT(*) FROM nexus_player_state
-        WHERE last_active >= DATE_SUB(NOW(), INTERVAL 3 MINUTE)
-    ")->fetchColumn();
+    try {
+        $online_count = $pdo->query("
+            SELECT COUNT(*) FROM nexus_player_state
+            WHERE last_active >= DATE_SUB(NOW(), INTERVAL 3 MINUTE)
+        ")->fetchColumn();
+    } catch (PDOException $_) { $online_count = 0; }
 
     // 6. Apariencia y estado del jugador autenticado
     $player_data = null;
     if ($uid) {
-        $stmt = $pdo->prepare("
-            SELECT
-                u.username,
-                COALESCE(npa.display_name, u.username) AS display_name,
-                COALESCE(npa.color_body,  '#00e8ff')   AS color_body,
-                COALESCE(npa.color_visor, '#00e8ff')   AS color_visor,
-                COALESCE(npa.color_echo,  '#ffd600')   AS color_echo,
-                COALESCE(nps.pos_x, 0)                 AS pos_x,
-                COALESCE(nps.pos_z, 0)                 AS pos_z,
-                COALESCE(kux.level, 1)                 AS level,
-                kux.xp,
-                fa.id    AS mw_avatar_id,
-                fa.name  AS avatar_name,
-                fa.rarity AS avatar_rarity
-            FROM users u
-            LEFT JOIN nexus_player_appearance npa ON npa.user_id = u.id
-            LEFT JOIN nexus_player_state nps      ON nps.user_id = u.id
-            LEFT JOIN knd_user_xp kux             ON kux.user_id = u.id
-            LEFT JOIN mw_avatars fa               ON fa.id = u.favorite_avatar_id
-            WHERE u.id = ?
-        ");
-        $stmt->execute([$uid]);
-        $player_data = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Use a fallback query without nexus tables in case migration hasn't run
+        try {
+            $stmt = $pdo->prepare("
+                SELECT
+                    u.username,
+                    COALESCE(npa.display_name, u.username) AS display_name,
+                    COALESCE(npa.color_body,  '#00e8ff')   AS color_body,
+                    COALESCE(npa.color_visor, '#00e8ff')   AS color_visor,
+                    COALESCE(npa.color_echo,  '#ffd600')   AS color_echo,
+                    COALESCE(nps.pos_x, 0)                 AS pos_x,
+                    COALESCE(nps.pos_z, 0)                 AS pos_z,
+                    COALESCE(kux.level, 1)                 AS level,
+                    kux.xp,
+                    fa.id    AS mw_avatar_id,
+                    fa.name  AS avatar_name,
+                    fa.rarity AS avatar_rarity
+                FROM users u
+                LEFT JOIN nexus_player_appearance npa ON npa.user_id = u.id
+                LEFT JOIN nexus_player_state nps      ON nps.user_id = u.id
+                LEFT JOIN knd_user_xp kux             ON kux.user_id = u.id
+                LEFT JOIN mw_avatars fa               ON fa.id = u.favorite_avatar_id
+                WHERE u.id = ?
+            ");
+            $stmt->execute([$uid]);
+            $player_data = $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $_) {
+            // Nexus tables may not exist yet — degrade gracefully
+            $stmt2 = $pdo->prepare("SELECT username, COALESCE(kux.level,1) AS level, kux.xp, fa.id AS mw_avatar_id, fa.name AS avatar_name, fa.rarity AS avatar_rarity FROM users u LEFT JOIN knd_user_xp kux ON kux.user_id=u.id LEFT JOIN mw_avatars fa ON fa.id=u.favorite_avatar_id WHERE u.id=?");
+            $stmt2->execute([$uid]);
+            $row = $stmt2->fetch(PDO::FETCH_ASSOC) ?: [];
+            $player_data = array_merge(['display_name'=>$row['username']??'','color_body'=>'#00e8ff','color_visor'=>'#00e8ff','color_echo'=>'#ffd600','pos_x'=>0,'pos_z'=>0,'level'=>$row['level']??1,'xp'=>$row['xp']??0], $row);
+        }
         if ($player_data) {
-            $player_data['hero_model_url'] = mw_resolve_avatar_model_url(
-                $player_data['mw_avatar_id'] ? (int)$player_data['mw_avatar_id'] : null,
-                (string)($player_data['avatar_name'] ?? ''),
-                (string)($player_data['avatar_rarity'] ?? 'common')
-            );
+            // Resolve avatar GLB URL — wrapped defensively so any failure doesn't break the endpoint
+            $player_data['hero_model_url'] = null;
+            try {
+                require_once BASE_PATH . '/includes/mw_avatar_models.php';
+                if (function_exists('mw_resolve_avatar_model_url')) {
+                    $player_data['hero_model_url'] = mw_resolve_avatar_model_url(
+                        $player_data['mw_avatar_id'] ? (int)$player_data['mw_avatar_id'] : null,
+                        (string)($player_data['avatar_name'] ?? ''),
+                        (string)($player_data['avatar_rarity'] ?? 'common')
+                    );
+                }
+            } catch (Throwable $_) { /* non-fatal — hero will use fallback procedural model */ }
             unset($player_data['mw_avatar_id'], $player_data['avatar_name'], $player_data['avatar_rarity']);
         }
 
