@@ -18,7 +18,7 @@ require_once BASE_PATH . '/includes/csrf.php';
 require_once BASE_PATH . '/includes/json.php';
 require_once BASE_PATH . '/includes/rate_limit.php';
 
-if ($_SERVER['REQUEST_METHOD'] ?? '' !== 'POST') {
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     json_error('METHOD_NOT_ALLOWED', 'POST only.', 405);
 }
 
@@ -26,10 +26,6 @@ require_once BASE_PATH . '/games/squadwars/bootstrap.php';
 require_once BASE_PATH . '/games/squadwars/infrastructure/SquadBattleRepository.php';
 
 try {
-    if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
-        json_error('METHOD_NOT_ALLOWED', 'POST only.', 405);
-    }
-
     $pdo = getDBConnection();
     if (!$pdo instanceof PDO) {
         json_error('invalid_payload', 'Database connection failed.', 500);
