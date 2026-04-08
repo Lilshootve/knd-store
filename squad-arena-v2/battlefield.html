@@ -845,8 +845,8 @@ header.topbar{flex-shrink:0}
 <script src="/squad-arena-v2/js/arena-sfx.js?v=fix10"></script>
 <script src="/squad-arena-v2/js/arena-vfx.js?v=fix9"></script>
 <script src="/squad-arena-v2/js/arena-status.js?v=fix9"></script>
-<script src="/squad-arena-v2/js/arena-three-canvas.js?v=fix11"></script>
-<script defer src="/squad-arena-v2/js/arena-actions.js?v=fix11"></script>
+<script src="/squad-arena-v2/js/arena-three-canvas.js?v=fix12"></script>
+<script defer src="/squad-arena-v2/js/arena-actions.js?v=fix12"></script>
 <script defer src="/squad-arena-v2/js/arena-playback.js?v=fix9"></script>
 <script>
 /*══════════════════════════════════════════════════════════════════
@@ -1539,6 +1539,30 @@ function swUnitByServerId(sid){
   return m[String(sid||'')]||null;
 }
 
+/** Durante playback SquadWars: el daño real viene del servidor al final de ronda; aquí bajamos G.hp al vuelo para barras/HUD. */
+async function swPlaybackApplyDamageToUnit(tgt,dmg){
+  if(!tgt)return;
+  const v=Math.max(0,Math.round(Number(dmg)||0));
+  if(v<=0)return;
+  const cur=Math.max(0,Math.round(Number(tgt.hp)||0));
+  tgt.hp=Math.max(0,cur-v);
+  if(window.MWArenaThree&&typeof MWArenaThree.syncFromG==='function')MWArenaThree.syncFromG(G);
+  if(typeof buildHUD==='function')buildHUD();
+  if(tgt.hp<=0&&window.MWArenaThree&&typeof MWArenaThree.maybeDeathAnim==='function'){
+    await MWArenaThree.maybeDeathAnim(tgt,tgt.isEnemy?'enemy':'player');
+  }
+}
+function swPlaybackApplyHealToUnit(tgt,amt){
+  if(!tgt)return;
+  const v=Math.max(0,Math.round(Number(amt)||0));
+  if(v<=0)return;
+  const mh=Math.max(1,Math.round(Number(tgt.maxHp)||1));
+  const cur=Math.max(0,Math.round(Number(tgt.hp)||0));
+  tgt.hp=Math.min(mh,cur+v);
+  if(window.MWArenaThree&&typeof MWArenaThree.syncFromG==='function')MWArenaThree.syncFromG(G);
+  if(typeof buildHUD==='function')buildHUD();
+}
+
 /** Reproduce VFX a partir de eventos del motor (timeline fija + SFX por categoría attack/heal/special). */
 async function playbackSquadwarsEvents(events){
   const AX=window.MWArenaThree;
@@ -1563,6 +1587,7 @@ async function playbackSquadwarsEvents(events){
         const side=!src.isEnemy?'player':'enemy';
         const abStub={type:'attack',name:'Strike'};
         await AX.playAttackVisual(src,tgt,abStub,{damage:v,crit,evaded:false},side,{skipHpApply:true});
+        await swPlaybackApplyDamageToUnit(tgt,v);
       }else{
         if(window.MWArenaSFX){
           window.MWArenaSFX.unlock();
@@ -1576,6 +1601,7 @@ async function playbackSquadwarsEvents(events){
           await sl(crit?100:78);
           AX.popOnUnit(tgt.id,'-'+v,'damage');
         }
+        await swPlaybackApplyDamageToUnit(tgt,v);
       }
       if(src&&tgt)lg(`<span class="actor">${(src.name||'?')}</span> → ${tgt.name}: <span class="dt">-${v}</span>${crit?' <span class="ct">CRIT</span>':''}`,'pa');
       await sl(post);
@@ -1593,13 +1619,19 @@ async function playbackSquadwarsEvents(events){
       }else if(tgt&&AX){
         AX.popOnUnit(tgt.id,'+'+v,'heal');
       }
+      swPlaybackApplyHealToUnit(tgt,v);
       await sl(hpost);
     }else if(typ==='death'){
       const preD=(TL.death&&TL.death.pre!=null)?TL.death.pre:90;
       const postD=(TL.death&&TL.death.post!=null)?TL.death.post:280;
       await sl(preD);
-      if(window.MWArenaSFX&&window.MWArenaSFX.playDeath)window.MWArenaSFX.playDeath();
       const u=swUnitByServerId(ev.unitId);
+      if(u){
+        u.hp=0;
+        if(window.MWArenaThree&&typeof MWArenaThree.syncFromG==='function')MWArenaThree.syncFromG(G);
+        if(typeof buildHUD==='function')buildHUD();
+      }
+      /* SFX + disolución en executeUnitDeath; si el daño previo ya animó muerte, maybeDeathAnim sale al instante. */
       if(u&&AX)await AX.maybeDeathAnim(u,u.isEnemy?'enemy':'player');
       await sl(postD);
     }

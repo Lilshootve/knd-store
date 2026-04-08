@@ -284,14 +284,22 @@ function executeDefend(actorSlot, side, context) {
 
 function executeUnitDeath(slot, side, context) {
   return new Promise(function (resolve) {
-    if (animating) { resolve(); return; }
-    beginAnimation();
-    var units = side === 'player' ? context.player : context.enemy;
-    var t = units[slot];
-    if (!t || t.userData.isDead) { endAnimation(); resolve(); return; }
-    if (sfx()) sfx().playDeath();
-    context.setCinematicBars(true);
-    context.lerpCam(t.position.x * 0.4, 2.2, side === 'player' ? t.position.z + 3 : t.position.z - 3, t.position.x, 0.8, t.position.z, 350, function () {
+    var slotN = slot == null ? -1 : Number(slot);
+    if (slotN < 0 || slotN > 2) { resolve(); return; }
+    var waitStart = Date.now();
+    function enter() {
+      /* No devolver sin efecto si aún corre un ataque: antes se perdía toda la muerte en playback servidor. */
+      if (animating && Date.now() - waitStart < 5000) {
+        setTimeout(enter, 24);
+        return;
+      }
+      var units = side === 'player' ? context.player : context.enemy;
+      var t = units[slotN];
+      if (!t || t.userData.isDead) { resolve(); return; }
+      beginAnimation();
+      if (sfx()) sfx().playDeath();
+      context.setCinematicBars(true);
+      context.lerpCam(t.position.x * 0.4, 2.2, side === 'player' ? t.position.z + 3 : t.position.z - 3, t.position.x, 0.8, t.position.z, 350, function () {
       context.spawnParticles(t.position.x, 1.5, t.position.z, 0x4488ff, 90);
       context.spawnParticles(t.position.x, 0.8, t.position.z, 0xffffff, 50);
       context.flashScreen('rgba(255,255,255,0.6)', 0.3);
@@ -313,8 +321,11 @@ function executeUnitDeath(slot, side, context) {
       }
       dissolve();
     });
+    }
+    enter();
   });
 }
+
 
 function executeHealBetween(healerSlot, targetSlot, healAmount, side, context) {
   return new Promise(function (resolve) {

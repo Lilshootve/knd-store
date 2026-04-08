@@ -1286,6 +1286,7 @@
   function maybeDeathAnim(target, sideLabel) {
     if (!target || target.hp > 0) return Promise.resolve();
     var slot = unitSlot(target);
+    if (slot < 0 || slot > 2) return Promise.resolve();
     return executeUnitDeath(slot, sideLabel, getActionContext());
   }
 
