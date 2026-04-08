@@ -128,6 +128,19 @@ final class SquadSimEngine
             return false;
         }
 
+        if ((string) ($action['action'] ?? '') === 'heal') {
+            $cost = max(0, (int) ($action['energyCost'] ?? 0));
+            if ((int) ($unit['energy'] ?? 0) < $cost) {
+                $events[] = ['type' => 'invalid_action', 'reason' => 'insufficient_energy'];
+                return false;
+            }
+            $pct = (float) ($action['healPct'] ?? 0.0);
+            if ($pct <= 0.0) {
+                $events[] = ['type' => 'invalid_action', 'reason' => 'invalid_heal'];
+                return false;
+            }
+        }
+
         $skill = null;
         if (in_array((string) ($action['action'] ?? ''), ['skill', 'special'], true)) {
             $skill = $this->skillRegistry->get((string) ($action['skillId'] ?? ''));
@@ -247,6 +260,26 @@ final class SquadSimEngine
                 ];
                 return;
             }
+        }
+        if (is_array($action) && (string) ($action['action'] ?? '') === 'heal') {
+            $cost = max(0, (int) ($action['energyCost'] ?? 0));
+            $gain = 1;
+            $gain += (int) ($result['meta']['passive_energy_gain'] ?? 0);
+            if (!empty($result['hit_success'])) {
+                $gain += 1;
+            }
+            $gain += (int) ($result['meta']['energy_gain_bonus'] ?? 0);
+            $gain = min(CombatCaps::ENERGY_GAIN_TURN_MAX, max(0, $gain));
+            $state['units'][$unitId]['energy'] = max(0, min(CombatCaps::ENERGY_MAX, $before + $gain - $cost));
+            $events[] = [
+                'type' => 'energy',
+                'unitId' => $unitId,
+                'before' => $before,
+                'gain' => $gain,
+                'after' => (int) $state['units'][$unitId]['energy'],
+                'spent' => $cost,
+            ];
+            return;
         }
         $state['units'][$unitId]['energy'] = min(CombatCaps::ENERGY_MAX, $before + $gain);
         $events[] = [

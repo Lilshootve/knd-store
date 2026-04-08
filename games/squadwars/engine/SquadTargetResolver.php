@@ -34,13 +34,18 @@ final class SquadTargetResolver
             return [$this->withId($actor)];
         }
 
+        if ($act === 'heal') {
+            return $this->resolveHealTargets($actor, $action, $units, $side);
+        }
+
         return [];
     }
 
     public function canResolve(array $actor, ?array $action, array $units, ?array $skill): bool
     {
         $targets = $this->resolve($actor, $action, $units, $skill);
-        return $targets !== [] || (string) ($action['action'] ?? '') === 'defend';
+        $act = (string) ($action['action'] ?? '');
+        return $targets !== [] || $act === 'defend';
     }
 
     /**
@@ -212,6 +217,14 @@ final class SquadTargetResolver
             return null;
         }
         usort($candidates, static function (array $a, array $b) use ($metric): int {
+            if ($metric === 'lowest_hp_ratio') {
+                $ma = max(1, (int) ($a['hp_max'] ?? $a['hp'] ?? 1));
+                $mb = max(1, (int) ($b['hp_max'] ?? $b['hp'] ?? 1));
+                $ra = ((int) ($a['hp'] ?? 0)) / $ma;
+                $rb = ((int) ($b['hp'] ?? 0)) / $mb;
+
+                return $ra <=> $rb;
+            }
             if ($metric === 'lowest_hp') {
                 return ((int) ($a['hp'] ?? 0)) <=> ((int) ($b['hp'] ?? 0));
             }
@@ -229,5 +242,43 @@ final class SquadTargetResolver
             return 0;
         });
         return $candidates[0];
+    }
+
+    /**
+     * @param array<string, mixed> $actor
+     * @param array<string, mixed> $action
+     * @param array<string, array<string, mixed>> $units
+     * @return list<array<string, mixed>>
+     */
+    private function resolveHealTargets(array $actor, array $action, array $units, string $allySide): array
+    {
+        $kind = strtolower(trim((string) ($action['healTarget'] ?? $action['target'] ?? 'self')));
+        if ($kind === 'lowest_ally') {
+            $pick = $this->pickByMetric($units, $allySide, 'lowest_hp_ratio');
+
+            return $pick !== null ? [$pick] : [$this->withId($actor)];
+        }
+        if ($kind === 'all_allies') {
+            return $this->allAliveInSide($units, $allySide);
+        }
+
+        return [$this->withId($actor)];
+    }
+
+    /**
+     * @param array<string, array<string, mixed>> $units
+     * @return list<array<string, mixed>>
+     */
+    private function allAliveInSide(array $units, string $side): array
+    {
+        $out = [];
+        foreach ($units as $id => $u) {
+            if (!is_array($u) || empty($u['alive']) || ($u['side'] ?? '') !== $side) {
+                continue;
+            }
+            $out[] = $this->withId($u, (string) $id);
+        }
+
+        return $out;
     }
 }

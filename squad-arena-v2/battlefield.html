@@ -1257,10 +1257,14 @@ function mountSkillCard(u,ab,dead){
 function buildHUD(){
   const row=document.getElementById('ah-squad');
   if(!row)return;
+  const boot=window.__MW_BATTLE_INIT__;
   row.innerHTML='';
   G.allies.forEach(u=>{
     const dead=u.hp<=0;
-    const act=u.abilities.filter(a=>!a.passive);
+    let act=u.abilities.filter(a=>!a.passive);
+    if(boot&&boot.hideDefendSlot){
+      act=act.filter(a=>!(a.defend===true||String(a.type||'').toLowerCase()==='defense'||String(a.type||'').toLowerCase()==='defend'));
+    }
     const pack=document.createElement('div');
     pack.className='pu-pack'+(dead?' unit-dead':'');
     pack.appendChild(collectionCardEl(u));
@@ -1508,8 +1512,15 @@ function buildSquadwarsActionsFromG(){
       out.push({unitId:pid,action:'defend'});
       continue;
     }
-    if(ab.healPct){
-      out.push({unitId:pid,action:'defend'});
+    const hasDmg=ab.dmg!=null&&Number(ab.dmg)>0;
+    const hpct=ab.healPct!=null?Number(ab.healPct):0;
+    if(!hasDmg&&hpct>0){
+      const ec=ab.eCost!==undefined&&ab.eCost!==null?Number(ab.eCost):0;
+      const ht=String(ab.healTarget||ab.target||'self').toLowerCase();
+      let healTarget='self';
+      if(ht==='lowest_ally'||ht==='lowest ally')healTarget='lowest_ally';
+      else if(ht==='all_allies'||ht==='all allies')healTarget='all_allies';
+      out.push({unitId:pid,action:'heal',healPct:hpct,healTarget,energyCost:ec});
       continue;
     }
     const en=pickPrimaryEnemyForAbility(u,ab);
@@ -1517,6 +1528,51 @@ function buildSquadwarsActionsFromG(){
     out.push({unitId:pid,action:'attack',targetScope:'slot_enemy',targetSlot:slot});
   }
   return out;
+}
+
+/** IDs de estado servidor (p1–p3 / e1–e3) → unidad en G (mismo orden que bootstrap). */
+function swUnitByServerId(sid){
+  const m={p1:G.allies[0],p2:G.allies[1],p3:G.allies[2],e1:G.enemies[0],e2:G.enemies[1],e3:G.enemies[2]};
+  return m[String(sid||'')]||null;
+}
+
+/** Reproduce VFX a partir de eventos del motor (antes de aplicar snapshot GET). */
+async function playbackSquadwarsEvents(events){
+  const AX=window.MWArenaThree;
+  const list=Array.isArray(events)?events:[];
+  if(!list.length)return;
+  for(let i=0;i<list.length;i++){
+    const ev=list[i];
+    if(!ev||typeof ev!=='object')continue;
+    const typ=String(ev.type||'');
+    if(typ==='damage'){
+      const tgt=swUnitByServerId(ev.target);
+      const src=swUnitByServerId(ev.source);
+      const v=Number(ev.value)||0;
+      if(tgt&&AX){
+        AX.flashUnitById(tgt.id);
+        await sl(70);
+        AX.popOnUnit(tgt.id,'-'+v,'damage');
+        if(src)lg(`<span class="actor">${(src.name||'?')}</span> → ${tgt.name}: <span class="dt">-${v}</span>`,'pa');
+      }
+      await sl(100);
+    }else if(typ==='heal'){
+      const tgt=swUnitByServerId(ev.targetUnitId||ev.target);
+      const src=swUnitByServerId(ev.sourceUnitId||ev.source);
+      const v=Number(ev.value)||0;
+      if(tgt&&AX&&src){
+        await AX.playHealVisual(src,tgt,v,(tgt.isEnemy?'enemy':'player'));
+        lg(`<span class="actor">${(src.name||'?')}</span> heals ${tgt.name}: <span class="ht">+${v}</span>`,'pa');
+      }else if(tgt&&AX){
+        AX.popOnUnit(tgt.id,'+'+v,'heal');
+      }
+      await sl(120);
+    }else if(typ==='death'){
+      const u=swUnitByServerId(ev.unitId);
+      if(u&&AX)await AX.maybeDeathAnim(u,u.isEnemy?'enemy':'player');
+      await sl(80);
+    }
+  }
 }
 
 /** Si hay batalla persistida SquadWars, el único árbitro de daño/turnos es el servidor — no mezclar con calcDmg/aiTurn. */
@@ -1585,6 +1641,7 @@ async function executeTurnSquadwarsServer(){
     const d=j.data;
     vm.version=Number(d.stateVersion)||vm.version;
     vm.round=Number(d.nextSubmitRound)||(vm.round+1);
+    await playbackSquadwarsEvents(d.events);
     const r2=await fetch(api.getBattleStateUrl,{credentials:'same-origin'});
     const j2=await r2.json().catch(()=>null);
     if(j2&&j2.ok&&j2.data&&j2.data.state){
@@ -1592,7 +1649,6 @@ async function executeTurnSquadwarsServer(){
       vm.version=Number(j2.data.stateVersion)||vm.version;
       vm.round=Number(j2.data.round)||vm.round;
     }
-    screenFlash();
     lg('<span class="sys">══ Round resolved (server) ══</span>','sys');
     if(d.battleOver){
       G.phase='done';

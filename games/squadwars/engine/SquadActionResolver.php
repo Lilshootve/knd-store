@@ -42,6 +42,9 @@ final class SquadActionResolver
                 'meta' => ['action' => 'defend'],
             ];
         }
+        if ($kind === 'heal') {
+            return $this->executeHealPct($actor, $targets, $action);
+        }
         if (in_array($kind, ['skill', 'special'], true)) {
             $skillId = (string) ($action['skillId'] ?? '');
             $skill = $this->skillRegistry->get($skillId);
@@ -129,5 +132,49 @@ final class SquadActionResolver
         }
         $excess = $c - $this->critSoftCapStart;
         return $this->critSoftCapStart + $excess * 0.35;
+    }
+
+    /**
+     * Curación por porcentaje de max HP (contrato cliente: healPct 0–1, healTarget self|lowest_ally|all_allies).
+     *
+     * @param array<string, mixed> $actor
+     * @param list<array<string, mixed>> $targets
+     * @param array<string, mixed> $action
+     * @return array{events: list<mixed>, hit_success: bool, targets_hit: list<string>, effects: list<mixed>, self_effects: list<mixed>, meta: array<string, mixed>}
+     */
+    private function executeHealPct(array $actor, array $targets, array $action): array
+    {
+        $pct = (float) ($action['healPct'] ?? 0.0);
+        $pct = max(0.0, min(1.0, $pct));
+        $srcId = (string) ($actor['id'] ?? '');
+        $effects = [];
+        $targetsHit = [];
+        foreach ($targets as $t) {
+            $tid = (string) ($t['id'] ?? '');
+            if ($tid === '') {
+                continue;
+            }
+            $maxHp = max(1, (int) ($t['hp_max'] ?? $t['hp'] ?? 1));
+            $val = (int) round($maxHp * $pct);
+            if ($val < 1 && $pct > 0.0) {
+                $val = 1;
+            }
+            $effects[] = [
+                'type' => 'heal',
+                'sourceUnitId' => $srcId,
+                'targetUnitId' => $tid,
+                'value' => $val,
+            ];
+            $targetsHit[] = $tid;
+        }
+
+        return [
+            'events' => [],
+            'hit_success' => $effects !== [],
+            'targets_hit' => $targetsHit,
+            'effects' => $effects,
+            'self_effects' => [],
+            'meta' => ['action' => 'heal'],
+        ];
     }
 }

@@ -475,7 +475,12 @@ final class SquadEffectResolver
         $before = (int) ($unit['hp'] ?? 0);
         $max = max($before, (int) ($unit['hp_max'] ?? $before));
         $unit['hp'] = min($max, $before + (int) round($finalHeal));
-        $events[] = ['type' => 'heal', 'value' => (int) round($finalHeal)];
+        $events[] = [
+            'type' => 'heal',
+            'targetUnitId' => (string) ($fx['targetUnitId'] ?? ''),
+            'sourceUnitId' => (string) ($fx['sourceUnitId'] ?? ''),
+            'value' => (int) round($finalHeal),
+        ];
     }
 
     /**

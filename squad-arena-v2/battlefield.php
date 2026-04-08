@@ -100,6 +100,8 @@ if ($pdo && $userId > 0) {
                     'csrfToken' => csrf_token(),
                     'submitResultUrl' => '/squad-arena-v2/api/submit_result.php',
                     'squadwars' => $squadwarsApi,
+                    /** HUD: ocultar ranura Defend (4 tiles → 3 skills + placeholder). */
+                    'hideDefendSlot' => false,
                 ];
                 unset($_SESSION['squad_arena_v2_engagement']);
             }
