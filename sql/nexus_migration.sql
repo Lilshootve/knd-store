@@ -91,6 +91,7 @@ INSERT IGNORE INTO `nexus_districts` VALUES
 ('tesla',   'Laboratorio Tesla', 'Era de la Ciencia',     'Conocimiento · XP · Lore',           '#00e8ff', '⚗️', '/knowledge-duel-lobby.php',   26, -14, 2),
 ('casino',  'Casino del Destino','Era del Azar',          'Economía · Fragmentos · Riesgo',     '#9b30ff', '🎰', '/above-under.php',             -26,  18, 3),
 ('agora',   'Ágora Social',      'Era de los Guardianes', 'Social · Housing · Comunidad',       '#00ff88', '🏛', '/agora.php',                    26,  18, 4),
+('sanctum', 'Tu Sanctum',        'Era Personal',          'Housing · Colección · Tu Base',      '#ff8c42', '⬢', '/games/arena-protocol/sanctum.php',  0, -36, 5),
 ('central', 'Nexus Central',     'Era del Nexus',         'Rankings · Meta · Leaderboards',     '#ff6600', '⬡', NULL,                             0,   0, 0);
 
 -- ────────────────────────────────────────────────────────────────

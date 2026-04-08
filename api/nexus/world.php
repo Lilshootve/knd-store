@@ -57,45 +57,49 @@ try {
     }
 
     // 3. Top 6 jugadores (Memory Wall) — basado en knd_mind_wars_rankings
-    $top_players = $pdo->query("
-        SELECT
-            u.username,
-            u.id AS user_id,
-            kux.level,
-            r.rank_score,
-            r.wins,
-            COALESCE(a.image, '') AS avatar_image,
-            COALESCE(a.name, '')  AS avatar_name
-        FROM knd_mind_wars_rankings r
-        JOIN knd_mind_wars_seasons s ON s.id = r.season_id AND s.status = 'active'
-        JOIN users u ON u.id = r.user_id
-        LEFT JOIN knd_user_xp kux ON kux.user_id = r.user_id
-        LEFT JOIN mw_avatars a ON a.id = u.favorite_avatar_id
-        ORDER BY r.rank_score DESC
-        LIMIT 6
-    ")->fetchAll(PDO::FETCH_ASSOC);
+    try {
+        $top_players = $pdo->query("
+            SELECT
+                u.username,
+                u.id AS user_id,
+                kux.level,
+                r.rank_score,
+                r.wins,
+                COALESCE(a.image, '') AS avatar_image,
+                COALESCE(a.name, '')  AS avatar_name
+            FROM knd_mind_wars_rankings r
+            JOIN knd_mind_wars_seasons s ON s.id = r.season_id AND s.status = 'active'
+            JOIN users u ON u.id = r.user_id
+            LEFT JOIN knd_user_xp kux ON kux.user_id = r.user_id
+            LEFT JOIN mw_avatars a ON a.id = u.favorite_avatar_id
+            ORDER BY r.rank_score DESC
+            LIMIT 6
+        ")->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $_) { $top_players = []; }
 
     // 4. Última batalla (para el event feed del nexo)
-    $last_battle = $pdo->query("
-        SELECT
-            b.id, b.result, b.created_at,
-            u1.username AS player1,
-            u2.username AS player2,
-            a1.name AS avatar1,
-            a2.name AS avatar2
-        FROM knd_mind_wars_battles b
-        JOIN users u1 ON u1.id = b.attacker_id
-        LEFT JOIN users u2 ON u2.id = b.defender_id
-        LEFT JOIN knd_user_avatar_inventory i1 ON i1.user_id = b.attacker_id AND i1.item_id = b.attacker_avatar_item_id
-        LEFT JOIN knd_avatar_items ai1 ON ai1.id = i1.item_id
-        LEFT JOIN mw_avatars a1 ON a1.id = ai1.mw_avatar_id
-        LEFT JOIN knd_user_avatar_inventory i2 ON i2.user_id = b.defender_id AND i2.item_id = b.defender_avatar_item_id
-        LEFT JOIN knd_avatar_items ai2 ON ai2.id = i2.item_id
-        LEFT JOIN mw_avatars a2 ON a2.id = ai2.mw_avatar_id
-        WHERE b.status = 'finished'
-        ORDER BY b.created_at DESC
-        LIMIT 1
-    ")->fetch(PDO::FETCH_ASSOC);
+    try {
+        $last_battle = $pdo->query("
+            SELECT
+                b.id, b.result, b.created_at,
+                u1.username AS player1,
+                u2.username AS player2,
+                a1.name AS avatar1,
+                a2.name AS avatar2
+            FROM knd_mind_wars_battles b
+            JOIN users u1 ON u1.id = b.attacker_id
+            LEFT JOIN users u2 ON u2.id = b.defender_id
+            LEFT JOIN knd_user_avatar_inventory i1 ON i1.user_id = b.attacker_id AND i1.item_id = b.attacker_avatar_item_id
+            LEFT JOIN knd_avatar_items ai1 ON ai1.id = i1.item_id
+            LEFT JOIN mw_avatars a1 ON a1.id = ai1.mw_avatar_id
+            LEFT JOIN knd_user_avatar_inventory i2 ON i2.user_id = b.defender_id AND i2.item_id = b.defender_avatar_item_id
+            LEFT JOIN knd_avatar_items ai2 ON ai2.id = i2.item_id
+            LEFT JOIN mw_avatars a2 ON a2.id = ai2.mw_avatar_id
+            WHERE b.status = 'finished'
+            ORDER BY b.created_at DESC
+            LIMIT 1
+        ")->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $_) { $last_battle = null; }
 
     // 5. Jugadores online ahora (last_active en los últimos 3 minutos)
     try {
@@ -134,11 +138,13 @@ try {
             $stmt->execute([$uid]);
             $player_data = $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $_) {
-            // Nexus tables may not exist yet — degrade gracefully
-            $stmt2 = $pdo->prepare("SELECT username, COALESCE(kux.level,1) AS level, kux.xp, fa.id AS mw_avatar_id, fa.name AS avatar_name, fa.rarity AS avatar_rarity FROM users u LEFT JOIN knd_user_xp kux ON kux.user_id=u.id LEFT JOIN mw_avatars fa ON fa.id=u.favorite_avatar_id WHERE u.id=?");
-            $stmt2->execute([$uid]);
-            $row = $stmt2->fetch(PDO::FETCH_ASSOC) ?: [];
-            $player_data = array_merge(['display_name'=>$row['username']??'','color_body'=>'#00e8ff','color_visor'=>'#00e8ff','color_echo'=>'#ffd600','pos_x'=>0,'pos_z'=>0,'level'=>$row['level']??1,'xp'=>$row['xp']??0], $row);
+            // Nexus tables may not exist yet — degrade gracefully with minimal user data
+            try {
+                $stmt2 = $pdo->prepare("SELECT username, COALESCE(kux.level,1) AS level, kux.xp FROM users u LEFT JOIN knd_user_xp kux ON kux.user_id=u.id WHERE u.id=?");
+                $stmt2->execute([$uid]);
+                $row = $stmt2->fetch(PDO::FETCH_ASSOC) ?: [];
+            } catch (PDOException $_2) { $row = []; }
+            $player_data = ['display_name'=>$row['username']??'','color_body'=>'#00e8ff','color_visor'=>'#00e8ff','color_echo'=>'#ffd600','pos_x'=>0,'pos_z'=>0,'level'=>$row['level']??1,'xp'=>$row['xp']??null,'username'=>$row['username']??''];
         }
         if ($player_data) {
             // Resolve avatar GLB URL — wrapped defensively so any failure doesn't break the endpoint

@@ -375,7 +375,7 @@ const oRings=[], oLights=[];
 })();
 
 // ── DISTRICT STRUCTURES ──
-const distMeshes=[], pathDots=[];
+const distMeshes=[], pathDots=[], animObjects=[];
 
 function makePath(tx,tz){
   const pts=[new THREE.Vector3(0,.1,0),new THREE.Vector3(tx,.1,tz)];
@@ -389,7 +389,52 @@ function buildDist(d){
   const plat=new THREE.Mesh(new THREE.CylinderGeometry(5,5.5,.5,8),platMat); plat.position.y=.25; g.add(plat);
   const pr=new THREE.Mesh(new THREE.TorusGeometry(4.8,.06,4,8),new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:1.5})); pr.rotation.x=Math.PI/2; pr.position.y=.53; g.add(pr);
 
-  if(d.id==="olimpo"){
+  if(d.id==="sanctum"){
+    // ── SANCTUM GATE — personal base portal ──
+    // Two flanking towers
+    for(const s of[-1,1]){
+      const tw=new THREE.Mesh(new THREE.CylinderGeometry(.55,.72,8,6),new THREE.MeshStandardMaterial({color:0x0a0510,metalness:.8,roughness:.18,emissive:c.clone().multiplyScalar(.12),emissiveIntensity:1}));
+      tw.position.set(s*3.2,4.5,0); g.add(tw);
+      // Tower cap
+      const cp=new THREE.Mesh(new THREE.ConeGeometry(.72,.9,6),new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:2.2}));
+      cp.position.set(s*3.2,9.15,0); g.add(cp);
+      // Tower rings
+      [1.8,3.6,5.4,7.2].forEach(y=>{
+        const rg=new THREE.Mesh(new THREE.TorusGeometry(.65,.055,4,8),new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:1.4}));
+        rg.rotation.x=Math.PI/2; rg.position.set(s*3.2,y,0); g.add(rg);
+      });
+      // Tower point light
+      const tl=new THREE.PointLight(d.col,.9,10,2); tl.position.set(s*3.2,9.5,0); g.add(tl);
+    }
+    // Arch lintel connecting towers
+    const arch=new THREE.Mesh(new THREE.BoxGeometry(7.1,.55,.55),new THREE.MeshStandardMaterial({color:0x0a0510,metalness:.8,roughness:.18,emissive:c.clone().multiplyScalar(.1),emissiveIntensity:1}));
+    arch.position.set(0,8.75,0); g.add(arch);
+    // Arch glow strip on top
+    const ag=new THREE.Mesh(new THREE.BoxGeometry(7.1,.08,.08),new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:3}));
+    ag.position.set(0,9.05,0); g.add(ag);
+    // Portal plane — holographic door
+    const portalMat=new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:.55,transparent:true,opacity:.18,side:THREE.DoubleSide});
+    const portal=new THREE.Mesh(new THREE.PlaneGeometry(5.8,8.1),portalMat);
+    portal.position.set(0,4.6,0); g.add(portal);
+    // Portal scanlines (horizontal strips)
+    for(let i=0;i<8;i++){
+      const sl=new THREE.Mesh(new THREE.PlaneGeometry(5.6,.06),new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:2,transparent:true,opacity:.45,side:THREE.DoubleSide}));
+      sl.position.set(0,.55+i*1.05,0); g.add(sl);
+      animObjects.push({type:'scan_y',obj:sl,base:.55,top:8.1,speed:.35,phase:i/8*Math.PI*2});
+    }
+    // Central floating diamond crystal
+    const gem=new THREE.Mesh(new THREE.OctahedronGeometry(.75,0),new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:3.5,transparent:true,opacity:.9}));
+    gem.position.set(0,5.2,0); gem.userData.pulse=true; gem.userData.pulseBaseY=5.2; gem.userData.spin=true; g.add(gem);
+    // Gem glow light
+    const gl2=new THREE.PointLight(d.col,2.2,12,2); gl2.position.set(0,5.2,0); g.add(gl2);
+    // Ground hex rune
+    const hex=new THREE.Mesh(new THREE.CylinderGeometry(4.2,.05,.04,6),new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:1.8,transparent:true,opacity:.22}));
+    hex.position.y=.55; g.add(hex);
+    // Hex rune inner glow
+    const hexR=new THREE.Mesh(new THREE.TorusGeometry(4.1,.08,4,6),new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:2}));
+    hexR.rotation.x=Math.PI/2; hexR.position.y=.56; g.add(hexR);
+
+  } else if(d.id==="olimpo"){
     const pk=new THREE.Mesh(new THREE.ConeGeometry(3.8,6.5,8),new THREE.MeshStandardMaterial({color:0x1a1408,metalness:.35,roughness:.55,emissive:c.clone().multiplyScalar(.07),emissiveIntensity:1})); pk.position.y=4; g.add(pk);
     for(let i=0;i<5;i++){const a=(i/5)*Math.PI*2,col=new THREE.Mesh(new THREE.CylinderGeometry(.22,.28,5,8),new THREE.MeshStandardMaterial({color:0xd4c89a,metalness:.3,roughness:.5}));col.position.set(Math.cos(a)*3,2.5,Math.sin(a)*3);g.add(col);}
     const top=new THREE.Mesh(new THREE.OctahedronGeometry(.55,0),new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:3})); top.position.y=8; top.userData.pulse=true; top.userData.pulseBaseY=8; g.add(top);
@@ -1072,6 +1117,13 @@ renderer.setAnimationLoop((nowMs)=>{
 
   // Path dots
   pathDots.forEach(d=>{d.material.opacity=.15+.38*Math.abs(Math.sin(now*1.6+d.userData.pp));});
+
+  // Sanctum gate animated objects
+  animObjects.forEach(ao=>{
+    if(ao.type==='scan_y'){
+      ao.obj.position.y=ao.base+((now*ao.speed+(ao.phase||0))%1.0)*(ao.top-ao.base);
+    }
+  });
 
   // Remote players lerp
   tickRemotePlayers(dt);
