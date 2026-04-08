@@ -43,7 +43,7 @@ if ($seed !== null) {
 }
 
 require_once BASE_PATH . '/includes/config.php';
-require_once BASE_PATH . '/games/mindwars1v1/bootstrap.php';
+require_once BASE_PATH . '/includes/mind_wars_arena_bootstrap.php';
 require_once BASE_PATH . '/includes/mind_wars_team_battle.php';
 
 /** All avatars from mw_avatars (legendary, epic, special, rare, common) */

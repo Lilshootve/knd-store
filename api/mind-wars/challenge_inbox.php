@@ -10,7 +10,7 @@ require_once BASE_PATH . '/includes/config.php';
 require_once BASE_PATH . '/includes/auth.php';
 require_once BASE_PATH . '/includes/json.php';
 require_once BASE_PATH . '/includes/rate_limit.php';
-require_once BASE_PATH . '/games/mindwars1v1/bootstrap.php';
+require_once BASE_PATH . '/includes/mind_wars_arena_bootstrap.php';
 require_once BASE_PATH . '/includes/mind_wars_challenges.php';
 
 try {

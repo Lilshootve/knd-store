@@ -10,7 +10,7 @@ header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 require_once BASE_PATH . '/includes/session.php';
 require_once BASE_PATH . '/includes/config.php';
 require_once BASE_PATH . '/includes/auth.php';
-require_once BASE_PATH . '/games/mindwars1v1/bootstrap.php';
+require_once BASE_PATH . '/includes/mind_wars_arena_bootstrap.php';
 require_once BASE_PATH . '/includes/mw_avatar_models.php';
 
 if (!function_exists('avatar_sync_items_from_assets')) {

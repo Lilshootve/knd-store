@@ -8,7 +8,7 @@ header('Expires: 0');
 require_once BASE_PATH . '/includes/session.php';
 require_once BASE_PATH . '/includes/config.php';
 require_once BASE_PATH . '/includes/json.php';
-require_once BASE_PATH . '/games/mindwars1v1/bootstrap.php';
+require_once BASE_PATH . '/includes/mind_wars_arena_bootstrap.php';
 
 try {
     $pdo = getDBConnection();

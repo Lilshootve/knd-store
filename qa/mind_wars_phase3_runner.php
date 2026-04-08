@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../config/bootstrap.php';
-require_once BASE_PATH . '/games/mindwars1v1/bootstrap.php';
+require_once BASE_PATH . '/includes/mind_wars_arena_bootstrap.php';
 
 function p3_assert(bool $cond, string $message, array &$fails): void {
     if (!$cond) {
