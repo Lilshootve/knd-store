@@ -9,6 +9,7 @@ require_once BASE_PATH . '/includes/session.php';
 require_once BASE_PATH . '/includes/config.php';
 require_once BASE_PATH . '/includes/auth.php';
 require_once BASE_PATH . '/includes/json.php';
+require_once BASE_PATH . '/includes/mw_avatar_models.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     json_error('METHOD_NOT_ALLOWED', 'Only GET allowed', 405);
@@ -112,15 +113,27 @@ try {
                 COALESCE(nps.pos_x, 0)                 AS pos_x,
                 COALESCE(nps.pos_z, 0)                 AS pos_z,
                 COALESCE(kux.level, 1)                 AS level,
-                kux.xp
+                kux.xp,
+                fa.id    AS mw_avatar_id,
+                fa.name  AS avatar_name,
+                fa.rarity AS avatar_rarity
             FROM users u
             LEFT JOIN nexus_player_appearance npa ON npa.user_id = u.id
             LEFT JOIN nexus_player_state nps      ON nps.user_id = u.id
             LEFT JOIN knd_user_xp kux             ON kux.user_id = u.id
+            LEFT JOIN mw_avatars fa               ON fa.id = u.favorite_avatar_id
             WHERE u.id = ?
         ");
         $stmt->execute([$uid]);
         $player_data = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($player_data) {
+            $player_data['hero_model_url'] = mw_resolve_avatar_model_url(
+                $player_data['mw_avatar_id'] ? (int)$player_data['mw_avatar_id'] : null,
+                (string)($player_data['avatar_name'] ?? ''),
+                (string)($player_data['avatar_rarity'] ?? 'common')
+            );
+            unset($player_data['mw_avatar_id'], $player_data['avatar_name'], $player_data['avatar_rarity']);
+        }
 
         // KP balance
         $kp_stmt = $pdo->prepare("

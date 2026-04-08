@@ -272,16 +272,25 @@ CREATE TABLE IF NOT EXISTS `nexus_furniture_catalog` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT IGNORE INTO `nexus_furniture_catalog` (`code`,`name`,`category`,`rarity`,`width`,`depth`,`price_kp`,`asset_data`) VALUES
-('chair_cyber',    'Cyber Chair',      'floor',       'common',   1,1,  80, '{"color":"#00e8ff","shape":"chair"}'),
-('table_hologram', 'Hologram Table',   'floor',       'rare',     2,2, 300, '{"color":"#9b30ff","shape":"table","fx":"hologram"}'),
-('lamp_neon',      'Neon Lamp',        'floor',       'common',   1,1,  60, '{"color":"#ff3d56","shape":"lamp"}'),
-('rug_hex',        'Hex Rug',          'floor',       'common',   2,2, 120, '{"color":"#00e8ff","shape":"rug","pattern":"hex"}'),
-('poster_tesla',   'Tesla Portrait',   'wall',        'rare',     1,1, 200, '{"avatar_id":75,"type":"portrait"}'),
-('poster_alice',   'Alice Portrait',   'wall',        'legendary',1,1, 600, '{"avatar_id":2,"type":"portrait"}'),
-('trophy_gold',    'Gold Trophy',      'decoration',  'epic',     1,1, 500, '{"color":"#ffd600","shape":"trophy"}'),
-('orb_floating',   'Floating Orb',     'interactive', 'rare',     1,1, 400, '{"color":"#00e8ff","fx":"float","interact":"toggle_glow"}'),
-('bed_capsule',    'Capsule Bed',      'floor',       'rare',     2,1, 350, '{"color":"#050c18","shape":"capsule_bed"}'),
-('bookshelf',      'Data Shelf',       'wall',        'common',   2,1, 150, '{"color":"#0a1420","shape":"shelf"}');
+('chair_cyber',    'Cyber Chair',        'floor',       'common',   1,1,   80, '{"color":"#00e8ff","shape":"chair"}'),
+('table_hologram', 'Hologram Table',     'floor',       'rare',     2,2,  300, '{"color":"#9b30ff","shape":"table","fx":"hologram"}'),
+('lamp_neon',      'Neon Lamp',          'floor',       'common',   1,1,   60, '{"color":"#ff3d56","shape":"lamp"}'),
+('rug_hex',        'Hex Rug',            'floor',       'common',   2,2,  120, '{"color":"#00e8ff","shape":"rug","pattern":"hex"}'),
+('poster_tesla',   'Tesla Portrait',     'wall',        'rare',     1,1,  200, '{"avatar_id":75,"type":"portrait"}'),
+('poster_alice',   'Alice Portrait',     'wall',        'legendary',1,1,  600, '{"avatar_id":2,"type":"portrait"}'),
+('trophy_gold',    'Gold Trophy',        'decoration',  'epic',     1,1,  500, '{"color":"#ffd600","shape":"trophy"}'),
+('orb_floating',   'Floating Orb',       'interactive', 'rare',     1,1,  400, '{"color":"#00e8ff","fx":"float","interact":"toggle_glow"}'),
+('bed_capsule',    'Capsule Bed',        'floor',       'rare',     2,1,  350, '{"color":"#050c18","shape":"capsule_bed"}'),
+('bookshelf',      'Data Shelf',         'wall',        'common',   2,1,  150, '{"color":"#0a1420","shape":"shelf"}'),
+('terminal_nexus', 'Nexus Terminal',     'floor',       'epic',     2,1,  750, '{"color":"#00e8ff","shape":"terminal"}'),
+('sofa_luxe',      'Luxe Sofa',          'floor',       'rare',     2,1,  420, '{"color":"#1a0038","shape":"sofa"}'),
+('aquarium_holo',  'Holo Aquarium',      'floor',       'legendary',2,2, 1200, '{"color":"#0044ff","shape":"aquarium"}'),
+('neon_sign_nexus','NEXUS Neon Sign',    'wall',        'rare',     2,1,  280, '{"color":"#ff0080","shape":"neon_sign","text":"⬡ NEXUS ⬡"}'),
+('neon_sign_knd',  'KND Neon Sign',      'wall',        'special',  2,1,  380, '{"color":"#00e8ff","shape":"neon_sign","text":"◈ K N D ◈"}'),
+('arcade_nexus',   'Nexus Arcade Cabinet','floor',      'epic',     1,1,  680, '{"color":"#9b30ff","shape":"arcade"}'),
+('lamp_purple',    'Echo Lamp',          'floor',       'special',  1,1,   90, '{"color":"#c040ff","shape":"lamp"}'),
+('orb_red',        'Crimson Orb',        'interactive', 'special',  1,1,  450, '{"color":"#ff3040","fx":"float"}'),
+('trophy_nexus',   'Nexus Champion Cup', 'decoration',  'legendary',1,1, 1000, '{"color":"#00e8ff","shape":"trophy"}');
 
 -- ────────────────────────────────────────────────────────────────
 -- TABLE 10: nexus_room_furniture — muebles del usuario

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NEXUS — Central City</title>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}</script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -281,6 +281,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
 
 <script type="module">
 import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 // ══════════════════════════════════════════════════════
 // STATE
@@ -451,9 +452,73 @@ function mkSprite(txt, sz, col){
   const sp=new THREE.Sprite(mat); sp.scale.set(3,.7,1); return sp;
 }
 
-// Local player
+// Local player — starts as procedural guardian; replaced by GLB if available
 const player = mkGuardian(gColorHex, gVisorHex, gEchoHex, false);
 scene.add(player);
+
+// ── HERO GLB SYSTEM ──
+let _heroMixer = null;
+let _heroClipWalk = null, _heroClipIdle = null;
+let _heroActionWalk = null, _heroActionIdle = null;
+let _heroIsWalking = false;
+const _gltfLoader = new GLTFLoader();
+
+async function loadHeroModel(url) {
+  if (!url) return;
+  try {
+    const gltf = await new Promise((res, rej) => _gltfLoader.load(url, res, null, rej));
+    const model = gltf.scene;
+
+    // Normalize scale so tallest dimension ≈ 1.85 units
+    const box = new THREE.Box3().setFromObject(model);
+    const size = new THREE.Vector3();
+    box.getSize(size);
+    const maxDim = Math.max(size.x, size.y, size.z);
+    if (maxDim > 0) model.scale.setScalar(1.85 / maxDim);
+
+    // Center base on floor
+    const box2 = new THREE.Box3().setFromObject(model);
+    model.position.y -= box2.min.y;
+
+    // Shadows
+    model.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+
+    // Transfer position/rotation from procedural player
+    model.position.x = player.position.x;
+    model.position.z = player.position.z;
+    model.rotation.y = player.rotation.y;
+
+    // Swap procedural guardian for GLB
+    scene.remove(player);
+    scene.add(model);
+    // Redirect player reference in animation loop via closure obj
+    _heroMesh = model;
+
+    // Animation mixer
+    if (gltf.animations && gltf.animations.length > 0) {
+      _heroMixer = new THREE.AnimationMixer(model);
+      gltf.animations.forEach(clip => {
+        const name = clip.name.toLowerCase();
+        if (!_heroClipIdle && (name.includes('idle') || name.includes('stand') || name.includes('t-pose') || name.includes('tpose')))
+          _heroClipIdle = clip;
+        if (!_heroClipWalk && (name.includes('walk') || name.includes('run') || name.includes('move')))
+          _heroClipWalk = clip;
+      });
+      // Fallback: first clip = idle, second = walk
+      if (!_heroClipIdle && gltf.animations[0]) _heroClipIdle = gltf.animations[0];
+      if (!_heroClipWalk && gltf.animations[1]) _heroClipWalk = gltf.animations[1];
+      if (_heroClipIdle) { _heroActionIdle = _heroMixer.clipAction(_heroClipIdle); _heroActionIdle.play(); }
+      if (_heroClipWalk) { _heroActionWalk = _heroMixer.clipAction(_heroClipWalk); }
+    }
+  } catch (err) {
+    console.warn('[hero] GLB load failed, keeping guardian:', err.message || err);
+  }
+}
+
+// _heroMesh points to whichever mesh IS the player (procedural or GLB)
+let _heroMesh = null; // null = use procedural `player`
+function heroPos() { return _heroMesh ? _heroMesh.position : player.position; }
+function heroRot() { return _heroMesh ? _heroMesh.rotation : player.rotation; }
 
 // ══════════════════════════════════════════════════════
 // PROJECTION  3D→SCREEN
@@ -832,8 +897,9 @@ const vel=new THREE.Vector3();
 function getInput(){let x=0,z=0;if(keys.KeyW||keys.ArrowUp)z-=1;if(keys.KeyS||keys.ArrowDown)z+=1;if(keys.KeyA||keys.ArrowLeft)x-=1;if(keys.KeyD||keys.ArrowRight)x+=1;const v=new THREE.Vector3(x,0,z);if(v.lengthSq()>0)v.normalize();return v;}
 
 function onInteract(){
+  const pp=heroPos();
   let nd=null,nm=Infinity;
-  DISTS.forEach(d=>{const dx=player.position.x-d.pos.x,dz=player.position.z-d.pos.z,dist=Math.sqrt(dx*dx+dz*dz);if(dist<9&&dist<nm){nd=d;nm=dist;}});
+  DISTS.forEach(d=>{const dx=pp.x-d.pos.x,dz=pp.z-d.pos.z,dist=Math.sqrt(dx*dx+dz*dz);if(dist<9&&dist<nm){nd=d;nm=dist;}});
   if(nd) openPanel(nd.id);
 }
 window.setTab=el=>{document.querySelectorAll(".tab").forEach(t=>t.classList.remove("on"));el.classList.add("on");};
@@ -888,6 +954,8 @@ async function loadWorld(){
       if(pdata.level!=null)  { document.getElementById("tb-level").textContent=`◈ LVL ${pdata.level}`; }
       // Recolor player with saved appearance
       recolorPlayer();
+      // Load avatar GLB if available
+      if (pdata.hero_model_url) loadHeroModel(pdata.hero_model_url);
     }
 
     // Load initial chat history
@@ -951,13 +1019,38 @@ renderer.setAnimationLoop((nowMs)=>{
   const inp=getInput().multiplyScalar(16);
   const sm=1-Math.exp(-9*dt);
   vel.x=THREE.MathUtils.lerp(vel.x,inp.x,sm); vel.z=THREE.MathUtils.lerp(vel.z,inp.z,sm);
-  player.position.x=THREE.MathUtils.clamp(player.position.x+vel.x*dt,-lim,lim);
-  player.position.z=THREE.MathUtils.clamp(player.position.z+vel.z*dt,-lim,lim);
-  player.position.y=Math.sin(now*2.5)*.04;
-  if(vel.lengthSq()>.08) player.rotation.y=THREE.MathUtils.lerp(player.rotation.y,Math.atan2(vel.x,vel.z),.12);
+  const moving = vel.lengthSq() > 0.08;
 
-  // Echo orb
-  if(player.userData.echo){
+  if (_heroMesh) {
+    // GLB hero
+    _heroMesh.position.x=THREE.MathUtils.clamp(_heroMesh.position.x+vel.x*dt,-lim,lim);
+    _heroMesh.position.z=THREE.MathUtils.clamp(_heroMesh.position.z+vel.z*dt,-lim,lim);
+    if(moving) _heroMesh.rotation.y=THREE.MathUtils.lerp(_heroMesh.rotation.y,Math.atan2(vel.x,vel.z),.12);
+    // Mirror position to procedural player so WS/camera still work
+    player.position.copy(_heroMesh.position);
+    player.rotation.copy(_heroMesh.rotation);
+    // Animate mixer
+    if (_heroMixer) _heroMixer.update(dt);
+    // Switch walk/idle clips
+    if (moving && !_heroIsWalking && _heroActionWalk) {
+      _heroIsWalking = true;
+      if (_heroActionIdle) _heroActionIdle.fadeOut(0.2);
+      _heroActionWalk.reset().fadeIn(0.2).play();
+    } else if (!moving && _heroIsWalking) {
+      _heroIsWalking = false;
+      if (_heroActionWalk) _heroActionWalk.fadeOut(0.2);
+      if (_heroActionIdle) _heroActionIdle.reset().fadeIn(0.2).play();
+    }
+  } else {
+    // Procedural guardian
+    player.position.x=THREE.MathUtils.clamp(player.position.x+vel.x*dt,-lim,lim);
+    player.position.z=THREE.MathUtils.clamp(player.position.z+vel.z*dt,-lim,lim);
+    player.position.y=Math.sin(now*2.5)*.04;
+    if(moving) player.rotation.y=THREE.MathUtils.lerp(player.rotation.y,Math.atan2(vel.x,vel.z),.12);
+  }
+
+  // Echo orb (procedural guardian only)
+  if(!_heroMesh && player.userData.echo){
     const e=player.userData.echo;
     e.position.x=Math.cos(now*1.4)*.72; e.position.z=Math.sin(now*1.4)*.52;
     e.position.y=2.45+Math.sin(now*3)*.16; e.rotation.y=now*2;

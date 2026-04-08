@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(grep \"INSERT INTO \\\\`mw_avatars\\\\`\" \"c:/KND-Agents/backend/kndstore/sql/u354862096_kndstore.sql\")",
-      "Read(//c/KND-Agents/backend/kndstore/**)"
+      "Read(//c/KND-Agents/backend/kndstore/**)",
+      "Bash(php -l \"c:\\\\KND-Agents\\\\backend\\\\kndstore\\\\games\\\\arena-protocol\\\\sanctum.php\")",
+      "Bash(php -l \"c:/KND-Agents/backend/kndstore/games/arena-protocol/sanctum.php\")",
+      "Bash(php -l \"c:/KND-Agents/backend/kndstore/api/nexus/world.php\")"
     ]
   }
 }
