@@ -157,6 +157,17 @@ try {
                         (string)($player_data['avatar_name'] ?? ''),
                         (string)($player_data['avatar_rarity'] ?? 'common')
                     );
+                    // Fallback: if no favorite_avatar_id, try first inventory avatar
+                    if (!$player_data['hero_model_url'] && function_exists('mw_resolve_avatar_model_url')) {
+                        try {
+                            $sf = $pdo->prepare("SELECT fa.id, fa.name, fa.rarity FROM knd_user_avatar_inventory ui JOIN knd_avatar_items ai ON ai.id = ui.item_id JOIN mw_avatars fa ON fa.id = ai.mw_avatar_id WHERE ui.user_id = ? LIMIT 1");
+                            $sf->execute([$uid]);
+                            $avf = $sf->fetch(PDO::FETCH_ASSOC);
+                            if ($avf && $avf['id']) {
+                                $player_data['hero_model_url'] = mw_resolve_avatar_model_url((int)$avf['id'], (string)($avf['name']??''), (string)($avf['rarity']??'common'));
+                            }
+                        } catch (Throwable $_f) {}
+                    }
                 }
             } catch (Throwable $_) { /* non-fatal — hero will use fallback procedural model */ }
             unset($player_data['mw_avatar_id'], $player_data['avatar_name'], $player_data['avatar_rarity']);

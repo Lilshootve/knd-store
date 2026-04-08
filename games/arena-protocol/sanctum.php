@@ -20,6 +20,17 @@ try {
     if ($av && $av['id']) {
         $_heroModelUrl = mw_resolve_avatar_model_url((int)$av['id'], (string)($av['name']??''), (string)($av['rarity']??'common'));
     }
+    // Fallback: if no favorite_avatar_id set, try first avatar in inventory
+    if (!$_heroModelUrl) {
+        try {
+            $sf = $pdo->prepare("SELECT fa.id, fa.name, fa.rarity FROM knd_user_avatar_inventory ui JOIN knd_avatar_items ai ON ai.id = ui.item_id JOIN mw_avatars fa ON fa.id = ai.mw_avatar_id WHERE ui.user_id = ? LIMIT 1");
+            $sf->execute([$uid]);
+            $avf = $sf->fetch(PDO::FETCH_ASSOC);
+            if ($avf && $avf['id']) {
+                $_heroModelUrl = mw_resolve_avatar_model_url((int)$avf['id'], (string)($avf['name']??''), (string)($avf['rarity']??'common'));
+            }
+        } catch (Throwable $_f) {}
+    }
 } catch (Throwable $_) {}
 ?><!DOCTYPE html>
 <html lang="en">
@@ -43,8 +54,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
 @keyframes crt-out{0%{clip-path:inset(0% 0 0% 0);opacity:1;background:transparent}40%{clip-path:inset(46% 0 46% 0);background:#fff;opacity:1}75%{clip-path:inset(49.5% 0 49.5% 0);background:#fff}100%{clip-path:inset(50% 50% 50% 50%);background:#000}}
 
 /* ── LOADING ─────────────────────────────────────────────────── */
-#load{position:fixed;inset:0;z-index:9000;background:#020508;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .5s}
-#load.hidden{opacity:0;pointer-events:none}
+#load{display:none}
 .load-logo{font-family:"Orbitron",sans-serif;font-size:26px;font-weight:900;letter-spacing:.25em;color:#fff}.load-logo span{color:#00e8ff}
 .load-sub{font-size:9px;letter-spacing:.3em;color:rgba(0,232,255,.4)}
 .load-bar{width:200px;height:2px;background:rgba(255,255,255,.06);border-radius:1px;overflow:hidden}
@@ -429,11 +439,8 @@ window.addEventListener('DOMContentLoaded', async () => {
         setLoadProgress(100);
     }
 
-    setTimeout(() => {
-        document.getElementById('load').classList.add('hidden');
-        animate();
-        toast('SANCTUM PROTOCOL ONLINE', 'info');
-    }, 600);
+    animate();
+    toast('SANCTUM PROTOCOL ONLINE', 'info');
 });
 
 function setLoadProgress(p) {
