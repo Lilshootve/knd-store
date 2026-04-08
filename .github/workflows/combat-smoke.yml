@@ -1,0 +1,29 @@
+# Smoke del motor SquadWars en memoria (sin MySQL). BD: ejecutar localmente
+#   php scripts/run_combat_smoke_suite.php --with-db
+name: Combat smoke
+on:
+  push:
+    paths:
+      - 'games/squadwars/**'
+      - 'shared/combat/**'
+      - 'scripts/squadwars_batch_smoke.php'
+      - 'scripts/squadwars_batch_fixtures.php'
+      - 'scripts/run_combat_smoke_suite.php'
+  pull_request:
+    paths:
+      - 'games/squadwars/**'
+      - 'shared/combat/**'
+      - 'scripts/squadwars_batch_smoke.php'
+      - 'scripts/squadwars_batch_fixtures.php'
+      - 'scripts/run_combat_smoke_suite.php'
+
+jobs:
+  squadwars-memory-batch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - name: SquadWars batch (memory)
+        run: php scripts/squadwars_batch_smoke.php --battles=30
