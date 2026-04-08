@@ -49,6 +49,19 @@ final class SquadTargetResolver
     }
 
     /**
+     * Curación en cadena tras un ataque (mismo actor, mismo coste de energía en validate).
+     *
+     * @param array<string, array<string, mixed>> $units
+     * @return list<array<string, mixed>>
+     */
+    public function resolveHealTargetsForActor(array $actor, string $healTargetKind, array $units): array
+    {
+        $side = (string) ($actor['side'] ?? 'player');
+
+        return $this->resolveHealTargets($actor, ['action' => 'heal', 'healTarget' => $healTargetKind], $units, $side);
+    }
+
+    /**
      * @return list<array<string, mixed>>
      */
     private function resolveAttackDefault(array $units, string $oppSide, array $action): array

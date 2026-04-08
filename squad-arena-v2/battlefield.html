@@ -846,11 +846,11 @@ header.topbar{flex-shrink:0}
 <script src="/squad-arena-v2/js/DRACOLoader.js"></script>
 <!-- MeshoptDecoder (EXT_meshopt_compression) debe existir antes de cargar GLB en el arena. -->
 <script src="/squad-arena-v2/js/mw-hologram-layers.js?v=fix9"></script>
-<script src="/squad-arena-v2/js/arena-sfx.js?v=fix9"></script>
+<script src="/squad-arena-v2/js/arena-sfx.js?v=fix10"></script>
 <script src="/squad-arena-v2/js/arena-vfx.js?v=fix9"></script>
 <script src="/squad-arena-v2/js/arena-status.js?v=fix9"></script>
-<script src="/squad-arena-v2/js/arena-three-canvas.js?v=fix9"></script>
-<script defer src="/squad-arena-v2/js/arena-actions.js?v=fix9"></script>
+<script src="/squad-arena-v2/js/arena-three-canvas.js?v=fix10"></script>
+<script defer src="/squad-arena-v2/js/arena-actions.js?v=fix10"></script>
 <script defer src="/squad-arena-v2/js/arena-playback.js?v=fix9"></script>
 <script>
 /*══════════════════════════════════════════════════════════════════
@@ -858,6 +858,13 @@ header.topbar{flex-shrink:0}
   • Isometric arena + tools/cards avatar-card + 2×2 skill tiles + PHP formulas
 ══════════════════════════════════════════════════════════════════*/
 const RC={legendary:'#ffc030',epic:'#c040ff',rare:'#1a6aee',special:'#1aaa6a',common:'#4a7a8a'};
+/** Timeline ms por fase (SquadWars server playback); ajustar ritmo global aquí. */
+window.MW_SW_TIMELINE={
+  dmg:{pre:130,post:210},
+  dmgCrit:{pre:175,post:275},
+  heal:{pre:90,post:120},
+  death:{pre:80,post:320}
+};
 const AT={
   passive:{c:'#4a9aff',g:'rgba(74,154,255,.15)',i:'⬡',l:'PASSIVE'},
   ability:{c:'#00f0ff',g:'rgba(0,240,255,.15)',i:'◈',l:'ABILITY'},
@@ -1525,7 +1532,17 @@ function buildSquadwarsActionsFromG(){
     }
     const en=pickPrimaryEnemyForAbility(u,ab);
     const slot=enemySlotFromUnit(en);
-    out.push({unitId:pid,action:'attack',targetScope:'slot_enemy',targetSlot:slot});
+    const ec=ab.eCost!==undefined&&ab.eCost!==null?Number(ab.eCost):0;
+    const atk={unitId:pid,action:'attack',targetScope:'slot_enemy',targetSlot:slot,energyCost:ec};
+    if(hasDmg&&hpct>0){
+      const ht=String(ab.healTarget||ab.target||'self').toLowerCase();
+      let chainHealTarget='self';
+      if(ht==='lowest_ally'||ht==='lowest ally')chainHealTarget='lowest_ally';
+      else if(ht==='all_allies'||ht==='all allies')chainHealTarget='all_allies';
+      atk.chainHealPct=hpct;
+      atk.chainHealTarget=chainHealTarget;
+    }
+    out.push(atk);
   }
   return out;
 }
@@ -1536,43 +1553,68 @@ function swUnitByServerId(sid){
   return m[String(sid||'')]||null;
 }
 
-/** Reproduce VFX a partir de eventos del motor (antes de aplicar snapshot GET). */
+/** Reproduce VFX a partir de eventos del motor (timeline fija + SFX por categoría attack/heal/special). */
 async function playbackSquadwarsEvents(events){
   const AX=window.MWArenaThree;
+  const TL=window.MW_SW_TIMELINE||{};
   const list=Array.isArray(events)?events:[];
   if(!list.length)return;
   for(let i=0;i<list.length;i++){
     const ev=list[i];
     if(!ev||typeof ev!=='object')continue;
     const typ=String(ev.type||'');
+    if(typ==='energy'||typ==='synergy_trigger'||typ==='action_lost_control')continue;
     if(typ==='damage'){
       const tgt=swUnitByServerId(ev.target);
       const src=swUnitByServerId(ev.source);
       const v=Number(ev.value)||0;
+      const crit=!!ev.crit;
+      const seg=crit?(TL.dmgCrit||TL.dmg||{}):(TL.dmg||{});
+      const pre=seg.pre!=null?seg.pre:140;
+      const post=seg.post!=null?seg.post:220;
+      await sl(pre);
+      if(window.MWArenaSFX){
+        window.MWArenaSFX.unlock();
+        if(crit)window.MWArenaSFX.playCrit();
+        else if(typeof window.MWArenaSFX.playAttack==='function')window.MWArenaSFX.playAttack();
+        else window.MWArenaSFX.playHit(0.82);
+      }
+      if(AX&&src&&tgt&&typeof AX.focusStrikeCamera==='function'){
+        await AX.focusStrikeCamera(src,tgt,{crit});
+      }
       if(tgt&&AX){
         AX.flashUnitById(tgt.id);
-        await sl(70);
+        await sl(crit?100:78);
         AX.popOnUnit(tgt.id,'-'+v,'damage');
-        if(src)lg(`<span class="actor">${(src.name||'?')}</span> → ${tgt.name}: <span class="dt">-${v}</span>`,'pa');
       }
-      await sl(100);
+      if(src&&tgt)lg(`<span class="actor">${(src.name||'?')}</span> → ${tgt.name}: <span class="dt">-${v}</span>${crit?' <span class="ct">CRIT</span>':''}`,'pa');
+      await sl(post);
     }else if(typ==='heal'){
       const tgt=swUnitByServerId(ev.targetUnitId||ev.target);
       const src=swUnitByServerId(ev.sourceUnitId||ev.source);
       const v=Number(ev.value)||0;
+      const hpre=(TL.heal&&TL.heal.pre!=null)?TL.heal.pre:95;
+      const hpost=(TL.heal&&TL.heal.post!=null)?TL.heal.post:140;
+      await sl(hpre);
+      if(window.MWArenaSFX)window.MWArenaSFX.unlock();
       if(tgt&&AX&&src){
         await AX.playHealVisual(src,tgt,v,(tgt.isEnemy?'enemy':'player'));
         lg(`<span class="actor">${(src.name||'?')}</span> heals ${tgt.name}: <span class="ht">+${v}</span>`,'pa');
       }else if(tgt&&AX){
         AX.popOnUnit(tgt.id,'+'+v,'heal');
       }
-      await sl(120);
+      await sl(hpost);
     }else if(typ==='death'){
+      const preD=(TL.death&&TL.death.pre!=null)?TL.death.pre:90;
+      const postD=(TL.death&&TL.death.post!=null)?TL.death.post:280;
+      await sl(preD);
+      if(window.MWArenaSFX&&window.MWArenaSFX.playDeath)window.MWArenaSFX.playDeath();
       const u=swUnitByServerId(ev.unitId);
       if(u&&AX)await AX.maybeDeathAnim(u,u.isEnemy?'enemy':'player');
-      await sl(80);
+      await sl(postD);
     }
   }
+  if(AX&&typeof AX.resetStrikeCamera==='function')await AX.resetStrikeCamera();
 }
 
 /** Si hay batalla persistida SquadWars, el único árbitro de daño/turnos es el servidor — no mezclar con calcDmg/aiTurn. */

@@ -1214,6 +1214,41 @@
     return sortedByPos(arr).indexOf(u);
   }
 
+  function meshForBattleUnit(u) {
+    if (!u) return null;
+    var all = playerUnits.concat(enemyUnits);
+    for (var i = 0; i < all.length; i++) {
+      if (all[i] && all[i].userData.unitId === u.id) return all[i];
+    }
+    return null;
+  }
+
+  /** SquadWars playback: acercar cámara a la línea atacante–objetivo; crit = más cerca / más alto. */
+  function focusStrikeCamera(attackerU, targetU, opts) {
+    opts = opts || {};
+    var ctx = getActionContext();
+    var a = meshForBattleUnit(attackerU);
+    var t = meshForBattleUnit(targetU);
+    if (!a || !t) return Promise.resolve();
+    var mx = (a.position.x + t.position.x) * 0.5;
+    var mz = (a.position.z + t.position.z) * 0.5;
+    var isPl = !a.userData.isEnemy;
+    var zPull = opts.crit ? 2.95 : 3.85;
+    var zOff = isPl ? mz + zPull : mz - zPull;
+    var yLift = opts.crit ? 3.1 : 2.68;
+    var dur = opts.crit ? 520 : 430;
+    return new Promise(function (resolve) {
+      ctx.lerpCam(mx * 0.5, yLift, zOff, mx, 1.08, mz, dur, function () { resolve(); });
+    });
+  }
+
+  function resetStrikeCamera() {
+    return new Promise(function (resolve) {
+      getActionContext().resetCamera(440);
+      setTimeout(resolve, 200);
+    });
+  }
+
   function playAttackVisual(attacker, target, ab, r, side) {
     var ctx = getActionContext();
     var aslot = unitSlot(attacker);
@@ -1234,12 +1269,13 @@
     if (typ === 'ability') {
       return executeAbility(aslot, tslot, skillCodeFromAbility(ab), dmg, [], side, ctx);
     }
-    return executeAttack(aslot, tslot, dmg, side, ctx);
+    return executeAttack(aslot, tslot, dmg, side, ctx, r);
   }
 
   function playHealVisual(healer, targetUnit, amount, side) {
     var ctx = getActionContext();
-    return executeHeal(unitSlot(healer), amount, side, ctx);
+    var healSide = healer && !healer.isEnemy ? 'player' : 'enemy';
+    return executeHealBetween(unitSlot(healer), unitSlot(targetUnit), amount, healSide, ctx);
   }
 
   function playDefendVisual(unit, side) {
@@ -1399,6 +1435,8 @@
     flashUnitById: flashUnitById,
     popOnUnit: popOnUnit,
     unitSlot: unitSlot,
+    focusStrikeCamera: focusStrikeCamera,
+    resetStrikeCamera: resetStrikeCamera,
     playAttackVisual: playAttackVisual,
     playHealVisual: playHealVisual,
     playDefendVisual: playDefendVisual,

@@ -106,6 +106,7 @@ final class SquadEffectResolver
                 'raw' => (int) round($raw),
                 'variance' => $variance,
                 'multipliers' => $multipliers,
+                'crit' => !empty($fx['crit']),
             ];
 
             if ($this->antiBurstEnabled && $maxHp > 0) {

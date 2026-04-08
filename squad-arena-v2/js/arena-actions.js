@@ -63,7 +63,7 @@ function knockback(target, fx, fz, dist, dur) {
   });
 }
 
-function executeAttack(actorSlot, targetSlot, damage, side, context) {
+function executeAttack(actorSlot, targetSlot, damage, side, context, roll) {
   return new Promise(function (resolve) {
     if (animating) { resolve(); return; }
     beginAnimation();
@@ -85,7 +85,8 @@ function executeAttack(actorSlot, targetSlot, damage, side, context) {
         a.position.x = bx + (tp.x - bx) * e * 0.6;
         a.position.z = bz + (tp.z - bz) * e * 0.6;
         if (p < 1) { requestAnimationFrame(rush); return; }
-        if (sfx()) sfx().playHit(0.8);
+        if (roll && roll.crit && sfx()) sfx().playCrit();
+        else if (sfx()) sfx().playAttack ? sfx().playAttack() : sfx().playHit(0.8);
         if (window.MWArenaVFX) MWArenaVFX.playVFX('attack', 'strike', a.position, t.position);
         context.spawnParticles(tp.x, 1.2, tp.z, 0xff4400, 50);
         context.spawnParticles(tp.x, 1.5, tp.z, 0xffaa00, 25);
@@ -304,24 +305,34 @@ function executeUnitDeath(slot, side, context) {
   });
 }
 
-function executeHeal(actorSlot, healAmount, side, context) {
+function executeHealBetween(healerSlot, targetSlot, healAmount, side, context) {
   return new Promise(function (resolve) {
     if (animating) { resolve(); return; }
     beginAnimation();
     var au = side === 'player' ? context.player : context.enemy;
-    var u = au[actorSlot];
-    if (!u || u.userData.isDead) { endAnimation(); resolve(); return; }
+    var healer = au[healerSlot];
+    var target = au[targetSlot];
+    if (!target || target.userData.isDead) { endAnimation(); resolve(); return; }
     if (sfx()) sfx().playHeal();
-    if (window.MWArenaVFX) MWArenaVFX.playVFX('heal', 'heal', u.position, u.position);
-    context.spawnParticles(u.position.x, 0.5, u.position.z, 0x00ff88, 55);
-    context.spawnParticles(u.position.x, 1.5, u.position.z, 0x88ffaa, 30);
+    var tx = target.position.x, tz = target.position.z;
+    context.lerpCam(tx * 0.45, 2.85, side === 'player' ? tz + 5.2 : tz - 5.2, tx, 1.15, tz, 380, function () {});
+    if (window.MWArenaVFX) MWArenaVFX.playVFX('heal', 'heal', healer ? healer.position : target.position, target.position);
+    context.spawnParticles(tx, 0.5, tz, 0x00ff88, 55);
+    context.spawnParticles(tx, 1.5, tz, 0x88ffaa, 30);
     context.flashScreen('rgba(0,255,136,0.15)', 0.25);
     context.showDmgNumber('+' + healAmount, '#00ff88');
-    if (u.userData.holoUniforms) u.userData.holoUniforms.forEach(function (uni) {
+    if (target.userData.holoUniforms) target.userData.holoUniforms.forEach(function (uni) {
       var o = uni.uOpacity.value;
       uni.uColor.value.set(0, 2, 1); uni.uOpacity.value = Math.min(1.5, o * 1.6);
-      setTimeout(function () { uni.uOpacity.value = o; var isE = u.userData.isEnemy; uni.uColor.value.set(isE ? 0.55 : 0, isE ? 0.27 : 0.61, isE ? 3.35 : 3); }, 500);
+      setTimeout(function () { uni.uOpacity.value = o; var isE = target.userData.isEnemy; uni.uColor.value.set(isE ? 0.55 : 0, isE ? 0.27 : 0.61, isE ? 3.35 : 3); }, 500);
     });
-    setTimeout(function () { endAnimation(); resolve(); }, 800);
+    setTimeout(function () {
+      context.resetCamera(420);
+      setTimeout(function () { endAnimation(); resolve(); }, 220);
+    }, 720);
   });
+}
+
+function executeHeal(actorSlot, healAmount, side, context) {
+  return executeHealBetween(actorSlot, actorSlot, healAmount, side, context);
 }

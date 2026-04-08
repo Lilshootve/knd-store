@@ -73,6 +73,7 @@ final class SquadSimEngine
 
             $targets = $this->targetResolver->resolve($unit, $action, $units, $skill);
             $result = $this->actionResolver->execute($unit, $action, $targets);
+            $this->appendHybridChainHeal($unit, $action, $units, $result);
 
             $this->appendActionLog($state, $unitId, $action, $targets, $result);
 
@@ -137,6 +138,21 @@ final class SquadSimEngine
             $pct = (float) ($action['healPct'] ?? 0.0);
             if ($pct <= 0.0) {
                 $events[] = ['type' => 'invalid_action', 'reason' => 'invalid_heal'];
+                return false;
+            }
+        }
+
+        if ((string) ($action['action'] ?? '') === 'attack') {
+            $chain = (float) ($action['chainHealPct'] ?? 0.0);
+            $cost = max(0, (int) ($action['energyCost'] ?? 0));
+            if ($chain > 0.0 || $cost > 0) {
+                if ((int) ($unit['energy'] ?? 0) < $cost) {
+                    $events[] = ['type' => 'invalid_action', 'reason' => 'insufficient_energy'];
+                    return false;
+                }
+            }
+            if ($chain > 1.0) {
+                $events[] = ['type' => 'invalid_action', 'reason' => 'invalid_chain_heal'];
                 return false;
             }
         }
@@ -281,14 +297,59 @@ final class SquadSimEngine
             ];
             return;
         }
-        $state['units'][$unitId]['energy'] = min(CombatCaps::ENERGY_MAX, $before + $gain);
+        $attackFee = 0;
+        if (is_array($action) && (string) ($action['action'] ?? '') === 'attack') {
+            $attackFee = max(0, (int) ($action['energyCost'] ?? 0));
+        }
+        $state['units'][$unitId]['energy'] = max(0, min(CombatCaps::ENERGY_MAX, $before + $gain - $attackFee));
         $events[] = [
             'type' => 'energy',
             'unitId' => $unitId,
             'before' => $before,
             'gain' => $gain,
             'after' => (int) $state['units'][$unitId]['energy'],
+            'spent' => $attackFee,
         ];
+    }
+
+    /**
+     * Una sola acción `attack`: daño + curación en cadena (mismo coste de energía, un tick de timeline cliente).
+     *
+     * @param array<string, mixed> $actor
+     * @param array<string, mixed> $action
+     * @param array<string, array<string, mixed>> $units
+     * @param array{events?: list<mixed>, hit_success?: bool, targets_hit?: list<string>, effects?: list<mixed>, self_effects?: list<mixed>, meta?: array<string, mixed>} $result
+     */
+    private function appendHybridChainHeal(array $actor, array $action, array $units, array &$result): void
+    {
+        if ((string) ($action['action'] ?? '') !== 'attack') {
+            return;
+        }
+        $chainPct = (float) ($action['chainHealPct'] ?? 0.0);
+        if ($chainPct <= 0.0) {
+            return;
+        }
+        $chainPct = max(0.0, min(1.0, $chainPct));
+        $kind = strtolower(trim((string) ($action['chainHealTarget'] ?? 'self')));
+        $healTargets = $this->targetResolver->resolveHealTargetsForActor($actor, $kind, $units);
+        $srcId = (string) ($actor['id'] ?? '');
+        foreach ($healTargets as $ht) {
+            $tid = (string) ($ht['id'] ?? '');
+            if ($tid === '') {
+                continue;
+            }
+            $maxHp = max(1, (int) ($ht['hp_max'] ?? $ht['hp'] ?? 1));
+            $val = (int) round($maxHp * $chainPct);
+            if ($val < 1) {
+                $val = 1;
+            }
+            $result['effects'][] = [
+                'type' => 'heal',
+                'sourceUnitId' => $srcId,
+                'targetUnitId' => $tid,
+                'value' => $val,
+            ];
+        }
     }
 
     /**

@@ -51,6 +51,11 @@
     return _noiseBuf;
   }
 
+  /* ─── SFX: Basic attack (categoría; luego por skill ID) ─── */
+  function playAttack() {
+    playHit(0.78);
+  }
+
   /* ─── SFX: Hit / Impact ─── */
   function playHit(intensity) {
     if (!ensureCtx()) return;
@@ -466,6 +471,7 @@
   window.MWArenaSFX = {
     unlock: unlock,
     playHit: playHit,
+    playAttack: playAttack,
     playCrit: playCrit,
     playAbility: playAbility,
     playSpecial: playSpecial,
