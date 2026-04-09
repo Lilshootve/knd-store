@@ -174,34 +174,36 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
 @keyframes ld-anim{0%{width:0%;margin-left:0}50%{width:60%}100%{width:0%;margin-left:100%}}
 
 /* ══ WORLD BUILDER ADMIN HUD ══ */
-#wb-hud{position:fixed;left:0;top:48px;bottom:56px;width:220px;z-index:60;background:rgba(2,5,16,.97);border-right:1px solid rgba(155,48,255,.18);backdrop-filter:blur(14px);flex-direction:column;gap:0;overflow-y:auto;overflow-x:hidden}
+#wb-hud{position:fixed;left:0;top:48px;bottom:56px;width:min(320px,44vw);max-width:100%;z-index:60;background:rgba(2,5,16,.97);border-right:1px solid rgba(155,48,255,.18);backdrop-filter:blur(14px);display:flex;flex-direction:column;gap:0;overflow-y:auto;overflow-x:hidden}
 #wb-hud::before{content:"";position:absolute;right:0;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,rgba(155,48,255,.45) 30%,rgba(0,232,255,.3) 70%,transparent);pointer-events:none}
-#wb-hud::-webkit-scrollbar{width:2px}#wb-hud::-webkit-scrollbar-thumb{background:rgba(155,48,255,.2)}
-.wb-hdr{padding:11px 12px 9px;border-bottom:1px solid rgba(155,48,255,.12);display:flex;align-items:center;gap:6px;flex-shrink:0}
-.wb-badge{background:rgba(155,48,255,.15);border:1px solid rgba(155,48,255,.45);border-radius:3px;padding:2px 7px;font-family:"Orbitron",sans-serif;font-size:7px;font-weight:700;letter-spacing:.18em;color:#c158ff}
-.wb-title{font-family:"Orbitron",sans-serif;font-size:8.5px;font-weight:700;letter-spacing:.14em;color:rgba(200,175,255,.9)}
-.wb-close{margin-left:auto;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:8px;color:rgba(255,255,255,.3);transition:all .15s;flex-shrink:0}
+#wb-hud::-webkit-scrollbar{width:6px}#wb-hud::-webkit-scrollbar-thumb{background:rgba(155,48,255,.28);border-radius:3px}
+.wb-hdr{padding:12px 14px 10px;border-bottom:1px solid rgba(155,48,255,.12);display:flex;align-items:center;gap:8px;flex-shrink:0}
+.wb-badge{background:rgba(155,48,255,.15);border:1px solid rgba(155,48,255,.45);border-radius:4px;padding:3px 8px;font-family:"Orbitron",sans-serif;font-size:8px;font-weight:700;letter-spacing:.14em;color:#c158ff}
+.wb-title{font-family:"Orbitron",sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;color:rgba(200,175,255,.95)}
+.wb-close{margin-left:auto;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;color:rgba(255,255,255,.35);transition:all .15s;flex-shrink:0}
 .wb-close:hover{background:rgba(255,61,86,.1);color:#ff3d56;border-color:rgba(255,61,86,.3)}
-.wb-sect{padding:8px 12px;border-bottom:1px solid rgba(155,48,255,.07);flex-shrink:0}
-.wb-sl{font-size:6.5px;letter-spacing:.2em;color:rgba(155,100,255,.4);margin-bottom:6px}
-#wb-catalog-items{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
-.wbi{background:rgba(155,48,255,.05);border:1px solid rgba(155,48,255,.12);border-radius:5px;padding:6px 3px;cursor:pointer;text-align:center;transition:all .18s}
+.wb-sect{padding:10px 14px;border-bottom:1px solid rgba(155,48,255,.07);flex-shrink:0}
+#wb-catalog-sect{max-height:min(46vh,400px);overflow-y:auto;flex-shrink:0}
+#wb-catalog-sect::-webkit-scrollbar{width:5px}#wb-catalog-sect::-webkit-scrollbar-thumb{background:rgba(155,48,255,.25);border-radius:3px}
+.wb-sl{font-size:8px;letter-spacing:.16em;color:rgba(155,100,255,.5);margin-bottom:8px}
+#wb-catalog-items{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.wbi{background:rgba(155,48,255,.06);border:1px solid rgba(155,48,255,.14);border-radius:6px;padding:9px 6px;cursor:pointer;text-align:center;transition:all .18s}
 .wbi:hover{background:rgba(155,48,255,.14);border-color:rgba(155,48,255,.38);transform:translateY(-1px)}
-.wbi.on{background:rgba(155,48,255,.22);border-color:#9b30ff;box-shadow:0 0 8px rgba(155,48,255,.3)}
-.wbi-icon{font-size:15px;line-height:1.2}
-.wbi-name{font-size:5.5px;letter-spacing:.04em;color:rgba(200,175,255,.6);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.wb-btns{display:flex;flex-direction:column;gap:4px}
-.wb-btn{padding:7px 8px;border-radius:4px;cursor:pointer;font-family:"Orbitron",sans-serif;font-size:7px;font-weight:700;letter-spacing:.12em;text-align:center;border:1px solid;transition:all .15s;user-select:none}
+.wbi.on{background:rgba(155,48,255,.22);border-color:#9b30ff;box-shadow:0 0 10px rgba(155,48,255,.35)}
+.wbi-icon{font-size:22px;line-height:1.15}
+.wbi-name{font-size:9px;letter-spacing:.03em;line-height:1.25;color:rgba(210,190,255,.75);margin-top:5px;white-space:normal;word-break:break-word;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.wb-btns{display:flex;flex-direction:column;gap:5px}
+.wb-btn{padding:9px 10px;border-radius:5px;cursor:pointer;font-family:"Orbitron",sans-serif;font-size:8.5px;font-weight:700;letter-spacing:.1em;text-align:center;border:1px solid;transition:all .15s;user-select:none}
 .wb-btn.info{background:rgba(0,232,255,.07);border-color:rgba(0,232,255,.25);color:#00e8ff}
 .wb-btn.info:hover{background:rgba(0,232,255,.15)}
 .wb-btn.info.on{background:rgba(0,232,255,.18);box-shadow:0 0 10px rgba(0,232,255,.2)}
 .wb-btn.warn{background:rgba(255,61,86,.07);border-color:rgba(255,61,86,.28);color:#ff3d56}
 .wb-btn.warn:hover{background:rgba(255,61,86,.15)}
-.wb-keys{display:flex;flex-direction:column;gap:4px}
-.wb-key-row{display:flex;align-items:center;gap:7px;padding:2px 0}
-.wb-k{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:17px;padding:0 5px;border-radius:3px;font-size:7.5px;border:1px solid rgba(155,48,255,.38);background:rgba(40,10,80,.5);color:rgba(200,150,255,.9);font-family:"Share Tech Mono",monospace}
-.wb-kl{font-size:7px;color:rgba(155,120,200,.55);letter-spacing:.06em}
-#wb-status{padding:8px 12px;font-size:7.5px;color:rgba(155,180,255,.6);letter-spacing:.04em;line-height:1.6;border-top:1px solid rgba(155,48,255,.08);min-height:44px;word-break:break-word;flex-shrink:0}
+.wb-keys{display:flex;flex-direction:column;gap:5px}
+.wb-key-row{display:flex;align-items:center;gap:8px;padding:3px 0}
+.wb-k{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:20px;padding:0 6px;border-radius:4px;font-size:8.5px;border:1px solid rgba(155,48,255,.38);background:rgba(40,10,80,.5);color:rgba(200,150,255,.9);font-family:"Share Tech Mono",monospace}
+.wb-kl{font-size:8px;color:rgba(155,120,200,.6);letter-spacing:.05em}
+#wb-status{padding:10px 14px;font-size:9px;color:rgba(155,180,255,.65);letter-spacing:.03em;line-height:1.55;border-top:1px solid rgba(155,48,255,.08);min-height:48px;word-break:break-word;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -306,7 +308,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
     <div class="wb-title">WORLD BUILDER</div>
     <div class="wb-close" onclick="window._wbToggleMode()">✕</div>
   </div>
-  <div class="wb-sect">
+  <div class="wb-sect" id="wb-catalog-sect">
     <div class="wb-sl">CATÁLOGO DE OBJETOS</div>
     <div id="wb-catalog-items"></div>
   </div>
@@ -1946,7 +1948,9 @@ async function _wbFetchFurnitureCatalog() {
       console.warn('[WB] furniture_catalog: response sin data.catalog[]');
       return;
     }
-    _wbCatalog = rows.map(_wbRowToWorldItem);
+    _wbCatalog = rows
+      .map(_wbRowToWorldItem)
+      .sort((a, b) => Number(b.furniture_id) - Number(a.furniture_id));
   } catch (e) {
     console.warn('[WB] furniture_catalog fetch:', e);
   }

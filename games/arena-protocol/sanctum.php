@@ -110,35 +110,35 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
 #cv canvas{width:100%!important;height:100%!important}
 
 /* ── LEFT CATALOG PANEL ──────────────────────────────────────── */
-#lp{position:fixed;left:0;top:48px;bottom:56px;width:236px;z-index:100;background:rgba(2,5,18,.96);border-right:1px solid rgba(0,232,255,.08);backdrop-filter:blur(18px);display:flex;flex-direction:column;transform:translateX(-100%);transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+#lp{position:fixed;left:0;top:48px;bottom:56px;width:min(340px,42vw);max-width:100%;z-index:100;background:rgba(2,5,18,.96);border-right:1px solid rgba(0,232,255,.08);backdrop-filter:blur(18px);display:flex;flex-direction:column;transform:translateX(-100%);transition:transform .32s cubic-bezier(.2,.8,.2,1)}
 #lp.open{transform:translateX(0)}
 #lp::before{content:"";position:absolute;top:0;right:-1px;width:1px;height:100%;background:linear-gradient(180deg,transparent,rgba(0,232,255,.3) 40%,rgba(155,48,255,.3) 60%,transparent)}
-.lp-hdr{padding:12px 13px 9px;border-bottom:1px solid rgba(0,232,255,.06);flex-shrink:0}
-.lp-title{font-family:"Orbitron",sans-serif;font-size:8px;font-weight:700;letter-spacing:.24em;color:rgba(155,215,235,.5);margin-bottom:8px}
-.cat-tabs{display:flex;gap:3px;flex-wrap:wrap}
-.cat-tab{padding:3px 7px;border-radius:3px;font-size:7px;letter-spacing:.12em;cursor:pointer;border:1px solid rgba(255,255,255,.06);color:rgba(155,215,235,.35);transition:all .18s}
+.lp-hdr{padding:12px 14px 10px;border-bottom:1px solid rgba(0,232,255,.06);flex-shrink:0}
+.lp-title{font-family:"Orbitron",sans-serif;font-size:10px;font-weight:700;letter-spacing:.2em;color:rgba(155,215,235,.55);margin-bottom:10px}
+.cat-tabs{display:flex;gap:5px;flex-wrap:wrap}
+.cat-tab{padding:5px 9px;border-radius:4px;font-size:9px;letter-spacing:.1em;cursor:pointer;border:1px solid rgba(255,255,255,.08);color:rgba(155,215,235,.45);transition:all .18s}
 .cat-tab.on{background:rgba(0,232,255,.1);border-color:rgba(0,232,255,.3);color:#00e8ff}
-.cat-tab:hover:not(.on){border-color:rgba(255,255,255,.14);color:rgba(155,215,235,.65)}
-.lp-list{flex:1;overflow-y:auto;padding:7px 8px;display:flex;flex-direction:column;gap:4px}
-.lp-list::-webkit-scrollbar{width:2px}.lp-list::-webkit-scrollbar-thumb{background:rgba(0,232,255,.12)}
-.fi{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:5px;border:1px solid rgba(255,255,255,.05);background:rgba(255,255,255,.018);cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.cat-tab:hover:not(.on){border-color:rgba(255,255,255,.14);color:rgba(155,215,235,.75)}
+.lp-list{flex:1;overflow-y:auto;padding:8px 10px;display:flex;flex-direction:column;gap:6px}
+.lp-list::-webkit-scrollbar{width:5px}.lp-list::-webkit-scrollbar-thumb{background:rgba(0,232,255,.2);border-radius:3px}
+.fi{display:flex;align-items:flex-start;gap:10px;padding:9px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.022);cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
 .fi::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent 60%,rgba(255,255,255,.02));pointer-events:none}
 .fi:hover{border-color:rgba(0,232,255,.22);background:rgba(0,232,255,.05);transform:translateX(2px)}
 .fi.sel{border-color:rgba(0,232,255,.5);background:rgba(0,232,255,.09);box-shadow:0 0 14px rgba(0,232,255,.1) inset}
-.fi-swatch{width:28px;height:28px;border-radius:4px;flex-shrink:0;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:13px}
+.fi-swatch{width:36px;height:36px;border-radius:5px;flex-shrink:0;border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:17px}
 .fi-info{flex:1;min-width:0}
-.fi-name{font-family:"Orbitron",sans-serif;font-size:7.5px;font-weight:700;letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e0f0ff}
-.fi-meta{display:flex;align-items:center;gap:5px;margin-top:2px}
-.fi-price{font-size:7px;color:#ffd040;letter-spacing:.06em}
-.fi-size{font-size:6.5px;color:rgba(155,215,235,.35)}
-.rarity-badge{padding:1px 5px;border-radius:2px;font-size:5.5px;letter-spacing:.1em;font-weight:700;flex-shrink:0}
+.fi-name{font-family:"Orbitron",sans-serif;font-size:10px;font-weight:700;letter-spacing:.04em;line-height:1.25;color:#e0f0ff;white-space:normal;word-break:break-word}
+.fi-meta{display:flex;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap}
+.fi-price{font-size:9px;color:#ffd040;letter-spacing:.05em}
+.fi-size{font-size:8px;color:rgba(155,215,235,.45)}
+.rarity-badge{padding:2px 6px;border-radius:3px;font-size:7px;letter-spacing:.08em;font-weight:700;flex-shrink:0}
 .rb-common{background:rgba(180,200,220,.08);border:1px solid rgba(180,200,220,.18);color:rgba(180,200,220,.6)}
 .rb-rare{background:rgba(0,168,255,.1);border:1px solid rgba(0,168,255,.3);color:#00a8ff}
 .rb-special{background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.25);color:#00ff88}
 .rb-epic{background:rgba(155,48,255,.1);border:1px solid rgba(155,48,255,.35);color:#c06aff}
 .rb-legendary{background:rgba(255,150,0,.12);border:1px solid rgba(255,150,0,.4);color:#ff9800;box-shadow:0 0 8px rgba(255,150,0,.15)}
-.lp-foot{padding:8px;border-top:1px solid rgba(0,232,255,.06);flex-shrink:0}
-.place-btn{width:100%;padding:9px;border-radius:5px;cursor:pointer;font-family:"Orbitron",sans-serif;font-size:8px;font-weight:900;letter-spacing:.18em;text-align:center;background:linear-gradient(135deg,rgba(0,232,255,.18),rgba(155,48,255,.12));border:1px solid rgba(0,232,255,.4);color:#00e8ff;transition:all .22s;box-shadow:0 0 18px rgba(0,232,255,.08) inset}
+.lp-foot{padding:10px;border-top:1px solid rgba(0,232,255,.06);flex-shrink:0}
+.place-btn{width:100%;padding:11px;border-radius:6px;cursor:pointer;font-family:"Orbitron",sans-serif;font-size:10px;font-weight:900;letter-spacing:.14em;text-align:center;background:linear-gradient(135deg,rgba(0,232,255,.18),rgba(155,48,255,.12));border:1px solid rgba(0,232,255,.4);color:#00e8ff;transition:all .22s;box-shadow:0 0 18px rgba(0,232,255,.08) inset}
 .place-btn:hover{box-shadow:0 0 24px rgba(0,232,255,.22) inset,0 0 16px rgba(0,232,255,.14);transform:translateY(-1px)}
 .place-btn:disabled{opacity:.3;cursor:not-allowed;transform:none}
 
@@ -156,15 +156,15 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
 .catalog-toggle.on{background:rgba(0,232,255,.1);color:#00e8ff;border-color:rgba(0,232,255,.45)}
 
 /* ── RIGHT INFO PANEL ────────────────────────────────────────── */
-#rip{position:fixed;right:0;top:48px;bottom:56px;width:200px;z-index:100;background:rgba(2,5,18,.95);border-left:1px solid rgba(0,232,255,.07);transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;padding:12px}
+#rip{position:fixed;right:0;top:48px;bottom:56px;width:min(300px,38vw);max-width:100%;z-index:100;background:rgba(2,5,18,.95);border-left:1px solid rgba(0,232,255,.07);transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;padding:14px 15px}
 #rip.open{transform:translateX(0)}
-.rip-title{font-family:"Orbitron",sans-serif;font-size:7px;letter-spacing:.22em;color:rgba(90,165,190,.45);margin-bottom:6px}
-.rip-name{font-family:"Orbitron",sans-serif;font-size:12px;font-weight:900;letter-spacing:.1em;color:#e0f0ff;line-height:1.1;margin-bottom:4px}
-.rip-rarity{font-size:7px;letter-spacing:.15em;margin-bottom:10px}
-.rip-stat{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(0,232,255,.05);font-size:8px}
-.rip-stat-l{color:rgba(155,215,235,.4);letter-spacing:.1em}.rip-stat-r{color:#e0f0ff}
-.rip-actions{margin-top:auto;display:flex;flex-direction:column;gap:5px}
-.rip-btn{padding:8px;border-radius:4px;cursor:pointer;font-family:"Orbitron",sans-serif;font-size:7px;font-weight:700;letter-spacing:.16em;text-align:center;border:1px solid;transition:all .2s}
+.rip-title{font-family:"Orbitron",sans-serif;font-size:9px;letter-spacing:.18em;color:rgba(90,165,190,.5);margin-bottom:8px}
+.rip-name{font-family:"Orbitron",sans-serif;font-size:14px;font-weight:900;letter-spacing:.08em;color:#e0f0ff;line-height:1.15;margin-bottom:6px;word-break:break-word}
+.rip-rarity{font-size:9px;letter-spacing:.12em;margin-bottom:12px}
+.rip-stat{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(0,232,255,.05);font-size:10px}
+.rip-stat-l{color:rgba(155,215,235,.45);letter-spacing:.08em}.rip-stat-r{color:#e0f0ff}
+.rip-actions{margin-top:auto;display:flex;flex-direction:column;gap:6px}
+.rip-btn{padding:10px;border-radius:5px;cursor:pointer;font-family:"Orbitron",sans-serif;font-size:9px;font-weight:700;letter-spacing:.12em;text-align:center;border:1px solid;transition:all .2s}
 .rip-rotate{background:rgba(0,232,255,.06);border-color:rgba(0,232,255,.25);color:#00e8ff}
 .rip-rotate:hover{background:rgba(0,232,255,.13);box-shadow:0 0 12px rgba(0,232,255,.12)}
 .rip-delete{background:rgba(255,61,86,.05);border-color:rgba(255,61,86,.2);color:#ff3d56}
@@ -222,8 +222,8 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
 .buy-confirm:disabled{opacity:.35;cursor:not-allowed;transform:none}
 .buy-cancel-btn{flex:1;padding:10px;border-radius:5px;cursor:pointer;font-family:"Orbitron",sans-serif;font-size:8px;font-weight:700;letter-spacing:.15em;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);color:rgba(155,215,235,.4);transition:all .2s}
 .buy-cancel-btn:hover{border-color:rgba(255,255,255,.18);color:rgba(155,215,235,.65)}
-.owned-badge{padding:1px 5px;border-radius:2px;font-size:5.5px;letter-spacing:.1em;font-weight:700;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.25);color:#00ff88}
-.notowned-badge{padding:1px 5px;border-radius:2px;font-size:5.5px;letter-spacing:.1em;font-weight:700;background:rgba(255,214,0,.09);border:1px solid rgba(255,214,0,.28);color:#ffd040;cursor:pointer}
+.owned-badge{padding:2px 6px;border-radius:3px;font-size:7px;letter-spacing:.08em;font-weight:700;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.25);color:#00ff88}
+.notowned-badge{padding:2px 6px;border-radius:3px;font-size:7px;letter-spacing:.08em;font-weight:700;background:rgba(255,214,0,.09);border:1px solid rgba(255,214,0,.28);color:#ffd040;cursor:pointer}
 
 /* ── HINT OVERLAY ────────────────────────────────────────────── */
 #hint-overlay{position:fixed;inset:0;z-index:50;pointer-events:none;display:flex;align-items:flex-end;justify-content:center;padding-bottom:72px}
@@ -303,8 +303,8 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
   <div class="lp-hdr">
     <div class="lp-title">⬡ SANCTUM CATALOG</div>
     <div class="cat-tabs" id="cat-tabs">
-      <div class="cat-tab" data-cat="all">STORE</div>
-      <div class="cat-tab on" data-cat="owned">OWNED</div>
+      <div class="cat-tab on" data-cat="all">STORE</div>
+      <div class="cat-tab" data-cat="owned">OWNED</div>
       <div class="cat-tab" data-cat="floor">FLOOR</div>
       <div class="cat-tab" data-cat="wall">WALL</div>
       <div class="cat-tab" data-cat="decoration">DECO</div>
@@ -499,7 +499,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
         buildScene();
         applyTheme(plotData.exterior_theme || 'cyber');
-        renderCatalog('owned');
+        renderCatalog('all');
         updateTabCounts();
         renderPlaced();
         spawnHero();
@@ -509,7 +509,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         console.error('Sanctum load error:', e);
         applyExitNav(false);
         buildScene();
-        renderCatalog('owned');
+        renderCatalog('all');
         updateTabCounts();
         spawnHero();
         setLoadProgress(100);
@@ -1433,7 +1433,8 @@ function isOwnedItem(item) {
 function renderCatalog(catFilter = 'all') {
     const list = document.getElementById('cat-list');
     list.innerHTML = '';
-    catalogue.forEach(item => {
+    const rows = catalogue.slice().sort((a, b) => Number(b.id) - Number(a.id));
+    rows.forEach(item => {
         if (catFilter === 'owned') {
             if (!isOwnedItem(item)) return;
         } else if (catFilter !== 'all' && item.category !== catFilter) return;
@@ -1817,7 +1818,7 @@ async function apiBuy(fid) {
         balance = j.data.balance;
         document.getElementById('kp-val').textContent = balance.toLocaleString();
         ownedItems.add(fid);
-        renderCatalog(document.querySelector('.cat-tab.on')?.dataset.cat || 'owned');
+        renderCatalog(document.querySelector('.cat-tab.on')?.dataset.cat || 'all');
         return true;
     } catch(e) { toast('Network error', 'err'); return false; }
 }
