@@ -937,6 +937,47 @@ function attachCatalogLight(item, g, ad, skip) {
     return cfg;
 }
 
+/** Catálogo sin light_data: lámparas (shape/code) siguen emitiendo luz como el mesh procedural. */
+function sanctumItemIsLamp(item, ad) {
+    const sh = String(ad.shape || '').toLowerCase();
+    if (sh === 'lamp') return true;
+    const code = String(item.code || '').toLowerCase();
+    if (code.includes('lamp')) return true;
+    return false;
+}
+
+function attachDefaultLampLight(item, g, ad) {
+    const fw = (item.width || 1) * CS, fd = (item.depth || 1) * CS;
+    const cx = fw * 0.5, cz = fd * 0.5;
+    const lc = parseLightColor(ad.color != null ? ad.color : '#ff3d56');
+    const li = typeof ad.light_intensity === 'number' ? ad.light_intensity : 4.2;
+    const ld = typeof ad.light_distance === 'number' ? ad.light_distance : 7.5;
+    const lh = typeof ad.light_height === 'number' ? ad.light_height : 1.12;
+
+    g.children.filter(c => (c.isPointLight || c.isSpotLight) && c.userData?.nexusDynamicLight).forEach(c => g.remove(c));
+
+    const pl = new THREE.PointLight(lc, li, ld, 1.35);
+    pl.castShadow = false;
+    pl.position.set(cx, lh, cz);
+    pl.userData.nexusDynamicLight = true;
+    pl.userData.sanctumLampLight = true;
+    g.add(pl);
+    animObjects.push({ obj: pl, type: 'flicker', base: li, range: 0.55, speed: 3 + Math.random() * 1.2 });
+
+    const glowMesh = new THREE.Mesh(
+        new THREE.CircleGeometry(Math.min(fw, fd) * 0.44, 28),
+        new THREE.MeshBasicMaterial({
+            color: lc, transparent: true, opacity: 0.26, depthWrite: false, side: THREE.DoubleSide
+        })
+    );
+    glowMesh.rotation.x = -Math.PI / 2;
+    glowMesh.position.set(cx, 0.016, cz);
+    glowMesh.userData.nexusLampGroundGlow = true;
+    g.add(glowMesh);
+
+    return { _resolvedColor: lc };
+}
+
 function applySanctumGlowToObject3D(object3D, color = 0x00ffff, intensity = 1.35) {
     object3D.traverse((child) => {
         if (!child.isMesh || !child.material) return;
@@ -990,12 +1031,17 @@ function decoratePlacedFurnitureItem(item, g, ghost) {
     const fw = (item.width || 1) * CS, fd = (item.depth || 1) * CS;
     const fcx = fw * 0.5, fcz = fd * 0.5;
 
-    const lightCfg = attachCatalogLight(item, g, ad, ghost);
+    let lightCfg = attachCatalogLight(item, g, ad, ghost);
+    if (!ghost && !lightCfg && sanctumItemIsLamp(item, ad)) {
+        lightCfg = attachDefaultLampLight(item, g, ad);
+    }
     if (!ghost && (ad.hologram === true || ad.fx === 'hologram')) {
         applySanctumHologram(g, fcx, fcz);
     }
     if (!ghost && lightCfg) {
-        applySanctumGlowToObject3D(g, lightCfg._resolvedColor ?? col, 1.35);
+        const glowCol = lightCfg._resolvedColor != null ? lightCfg._resolvedColor : col;
+        const glowAmt = sanctumItemIsLamp(item, ad) ? 1.65 : 1.35;
+        applySanctumGlowToObject3D(g, glowCol, glowAmt);
     } else if (!ghost && item.rarity === 'legendary') {
         applySanctumGlowToObject3D(g, 0xffd600, 1.85);
     }
