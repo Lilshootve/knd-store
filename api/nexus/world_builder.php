@@ -21,7 +21,31 @@ if (!is_logged_in()) {
 $uid = (int)$_SESSION['user_id'];
 
 // ── Verificar rol admin ──
+// Fuente principal: admin_users (username + active)
+// Fallback legado: users.role
 function isAdmin(PDO $pdo, int $uid): bool {
+    try {
+        $u = $pdo->prepare("SELECT username FROM users WHERE id = ? LIMIT 1");
+        $u->execute([$uid]);
+        $username = $u->fetchColumn();
+        if ($username) {
+            $a = $pdo->prepare("
+                SELECT role
+                FROM admin_users
+                WHERE username = ?
+                  AND active = 1
+                LIMIT 1
+            ");
+            $a->execute([$username]);
+            $adminRole = $a->fetchColumn();
+            if (in_array($adminRole, ['owner', 'manager', 'support'], true)) {
+                return true;
+            }
+        }
+    } catch (PDOException $_) {
+        // noop: intenta fallback
+    }
+
     try {
         $s = $pdo->prepare("SELECT role FROM users WHERE id = ? LIMIT 1");
         $s->execute([$uid]);

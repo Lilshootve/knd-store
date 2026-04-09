@@ -345,6 +345,9 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
 <script type="module">
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 
 // ══════════════════════════════════════════════════════
 // STATE
@@ -417,11 +420,22 @@ const CAM_DIR = new THREE.Vector3(1,0.85,1).normalize();
 const CAM_DIST = 52, ORTH_H = 28;
 let camAspect = W()/H();
 const cam = new THREE.OrthographicCamera(-ORTH_H*camAspect,ORTH_H*camAspect,ORTH_H,-ORTH_H,0.1,600);
+let composer = null;
+let bloomPass = null;
+
+function initPostFX(){
+  const size = new THREE.Vector2(W(), H());
+  composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, cam));
+  bloomPass = new UnrealBloomPass(size, 0.8, 0.4, 0.85);
+  composer.addPass(bloomPass);
+}
 
 function resizeCam(){
   const w=W(), h=H(); camAspect=w/h;
   cam.left=-ORTH_H*camAspect; cam.right=ORTH_H*camAspect; cam.top=ORTH_H; cam.bottom=-ORTH_H;
   cam.updateProjectionMatrix(); renderer.setSize(w,h);
+  if (composer) composer.setSize(w, h);
 }
 window.addEventListener("resize", resizeCam);
 
@@ -581,6 +595,83 @@ function mkSprite(txt, sz, col){
   const sp=new THREE.Sprite(mat); sp.scale.set(3,.7,1); return sp;
 }
 
+// ══════════════════════════════════════════════════════
+// SELECTIVE GLOW + HOLOGRAM HELPERS
+// ══════════════════════════════════════════════════════
+function applyEmissiveGlow(material, color = 0x00ffff, intensity = 2) {
+  if (!material) return;
+  material.emissive = new THREE.Color(color);
+  material.emissiveIntensity = intensity;
+}
+
+function _applyGlowToObject3D(object3D, color = 0x00ffff, intensity = 2) {
+  object3D.traverse((child) => {
+    if (!child.isMesh || !child.material) return;
+    const mats = Array.isArray(child.material) ? child.material : [child.material];
+    mats.forEach((m) => applyEmissiveGlow(m, color, intensity));
+  });
+}
+
+function _disposeMaterialSafe(mat) {
+  if (!mat || mat.userData?.__nexusShared) return;
+  mat.map?.dispose?.();
+  mat.normalMap?.dispose?.();
+  mat.roughnessMap?.dispose?.();
+  mat.metalnessMap?.dispose?.();
+  mat.emissiveMap?.dispose?.();
+  mat.alphaMap?.dispose?.();
+  mat.aoMap?.dispose?.();
+  mat.dispose?.();
+}
+
+function applyHologramEffect(object3D) {
+  object3D.traverse((child) => {
+    if (!child.isMesh) return;
+    const oldMats = Array.isArray(child.material) ? child.material : [child.material];
+    oldMats.forEach(_disposeMaterialSafe);
+    child.material = new THREE.MeshStandardMaterial({
+      color: 0x00ffff,
+      transparent: true,
+      opacity: 0.6,
+      emissive: 0x00ffff,
+      emissiveIntensity: 2,
+      metalness: 0.2,
+      roughness: 0.1
+    });
+  });
+
+  const light = new THREE.PointLight(0x00ffff, 2, 6);
+  light.position.set(0, 1, 0);
+  object3D.add(light);
+
+  const scanGeo = new THREE.PlaneGeometry(1, 2);
+  const scanMat = new THREE.MeshBasicMaterial({
+    color: 0x00ffff,
+    transparent: true,
+    opacity: 0.05,
+    side: THREE.DoubleSide,
+    depthWrite: false
+  });
+  const scan = new THREE.Mesh(scanGeo, scanMat);
+  scan.position.y = 1;
+  object3D.add(scan);
+  object3D.userData.scanline = scan;
+}
+
+function addGroundRing(parent) {
+  const geo = new THREE.CircleGeometry(1.2, 32);
+  const mat = new THREE.MeshBasicMaterial({
+    color: 0x00ffff,
+    transparent: true,
+    opacity: 0.3,
+    depthWrite: false
+  });
+  const ring = new THREE.Mesh(geo, mat);
+  ring.rotation.x = -Math.PI / 2;
+  parent.add(ring);
+  parent.userData.ring = ring;
+}
+
 // Local player — starts as procedural guardian; replaced by GLB if available
 const player = mkGuardian(gColorHex, gVisorHex, gEchoHex, false);
 scene.add(player);
@@ -591,6 +682,8 @@ let _heroClipWalk = null, _heroClipIdle = null;
 let _heroActionWalk = null, _heroActionIdle = null;
 let _heroIsWalking = false;
 const _gltfLoader = new GLTFLoader();
+const ENABLE_HOLOGRAM_AVATAR = false;
+let _holoAvatar = null;
 
 async function loadHeroModel(url) {
   if (!url) return;
@@ -638,6 +731,11 @@ async function loadHeroModel(url) {
       if (!_heroClipWalk && gltf.animations[1]) _heroClipWalk = gltf.animations[1];
       if (_heroClipIdle) { _heroActionIdle = _heroMixer.clipAction(_heroClipIdle); _heroActionIdle.play(); }
       if (_heroClipWalk) { _heroActionWalk = _heroMixer.clipAction(_heroClipWalk); }
+    }
+    if (ENABLE_HOLOGRAM_AVATAR) {
+      applyHologramEffect(model);
+      addGroundRing(model);
+      _holoAvatar = model;
     }
   } catch (err) {
     console.warn('[hero] GLB load failed, keeping guardian:', err.message || err);
@@ -1197,6 +1295,17 @@ renderer.setAnimationLoop((nowMs)=>{
     e.children[0].material.emissiveIntensity=1.5+Math.sin(now*4)*.55;
   }
 
+  // Hologram animation (single loop, sin duplicar loops)
+  const holoTime = performance.now() * 0.002;
+  if (ENABLE_HOLOGRAM_AVATAR) {
+    const avatar = _holoAvatar || _heroMesh || player;
+    if (avatar) {
+      avatar.position.y += Math.sin(holoTime) * 0.002;
+      if (avatar.userData.scanline) avatar.userData.scanline.position.y = (Math.sin(holoTime) * 0.5) + 1;
+      if (avatar.userData.ring) avatar.userData.ring.scale.setScalar(1 + Math.sin(holoTime) * 0.05);
+    }
+  }
+
   // Obelisk
   oRings.forEach(r=>r.rotateOnWorldAxis(r.userData.ax,r.userData.sp*dt));
   oLights.forEach((l,i)=>l.intensity=(i===0?3+Math.sin(now*2.2)*.9:1+Math.sin(now*1.7)*.4));
@@ -1250,7 +1359,8 @@ renderer.setAnimationLoop((nowMs)=>{
   // World Builder tick (selection box update + object mixers)
   if(_wbActive) tickWorldBuilder(dt);
 
-  renderer.render(scene,cam);
+  if (composer) composer.render();
+  else renderer.render(scene,cam);
 });
 
 // ══════════════════════════════════════════════════════
@@ -1346,26 +1456,44 @@ async function buildWorldObject(item) {
     _wbFallbackMesh(g, item);
   }
 
-  // ── Luz propia del objeto (convierte lámparas en fuentes reales de luz) ──
-  if (item.light) {
-    const lc = item.light.color     || 0xffffff;
-    const li = item.light.intensity || 1.0;
-    const ld = item.light.distance  || 12;
-    const lh = item.light.height    || 2.5;
+  // ── Luz propia del objeto (soporta item.light y light_data desde DB) ──
+  let parsedLightData = null;
+  if (item.light_data != null) {
+    try {
+      parsedLightData = typeof item.light_data === "string"
+        ? JSON.parse(item.light_data)
+        : item.light_data;
+    } catch (_) {
+      console.warn("Light data inválido:", item.light_data);
+    }
+  }
+  const lightCfg = item.light || parsedLightData;
+  if (lightCfg) {
+    const lc = lightCfg.color     || 0xffffff;
+    const li = lightCfg.intensity || 1.0;
+    const ld = lightCfg.distance  || 12;
+    const lh = lightCfg.height    || 1.5;
     let light;
-    if (item.light.type === 'spot') {
+    if (lightCfg.type === 'spot') {
       light = new THREE.SpotLight(lc, li, ld, Math.PI / 6, 0.3, 2);
       light.target.position.set(0, 0, 0);
       g.add(light.target);
     } else {
       light = new THREE.PointLight(lc, li, ld, 2);
     }
+    light.castShadow = false;
+
     light.position.set(0, lh, 0);
+    // seguridad extra: evitar duplicados si el grupo ya trae luz marcada
+    g.children
+      .filter(c => c.isPointLight && c.userData?.nexusDynamicLight)
+      .forEach(c => g.remove(c));
+    light.userData.nexusDynamicLight = true;
     g.add(light);
 
     // ── Ground glow: halo en el suelo bajo objetos con luz (look futurista) ──
-    const glowRadius = item.light.glowRadius || 1.8;
-    const glowColor  = item.light.glowColor  || lc;
+    const glowRadius = lightCfg.glowRadius || 1.8;
+    const glowColor  = lightCfg.glowColor  || lc;
     const glowMesh   = new THREE.Mesh(
       new THREE.CircleGeometry(glowRadius, 32),
       new THREE.MeshBasicMaterial({
@@ -1384,6 +1512,17 @@ async function buildWorldObject(item) {
     glowMesh.userData.wbPulse     = true;
     glowMesh.userData.wbPulseBase = 0.22;
     g.userData.wbGlowMesh = glowMesh;
+  }
+
+  const isLegendary = item.rarity === 'legendary' || item.legendary === true;
+  if (lightCfg) {
+    _applyGlowToObject3D(g, lightCfg.color || 0x00ffff, 1.6);
+  } else if (isLegendary) {
+    _applyGlowToObject3D(g, 0xffd600, 2.0);
+  }
+  if (item.hologram === true) {
+    applyHologramEffect(g);
+    addGroundRing(g);
   }
 
   // ── Variación orgánica: evita que objetos repetidos se vean clonados ──
@@ -1679,6 +1818,7 @@ async function wbLoadObjects() {
         name:  obj.item_id,
         model: obj.model_url || null,
         scale: parseFloat(obj.scale) || 1.0,
+        light_data: obj.light_data || null,
         light: obj.light_data ? (() => { try { return JSON.parse(obj.light_data); } catch(_){ return null; } })() : null,
       };
       const mesh = await buildWorldObject(item);
@@ -1753,6 +1893,14 @@ function tickWorldBuilder(dt) {
     if (!glow) return;
     const base = glow.userData.wbPulseBase ?? 0.22;
     glow.material.opacity = base + Math.sin(_wbPulseT * 1.8) * 0.07;
+  });
+
+  const t = performance.now() * 0.002;
+  _wbObjects.forEach(o => {
+    const obj = o.mesh;
+    if (!obj) return;
+    if (obj.userData.scanline) obj.userData.scanline.position.y = (Math.sin(t) * 0.5) + 1;
+    if (obj.userData.ring) obj.userData.ring.scale.setScalar(1 + Math.sin(t) * 0.05);
   });
 }
 
@@ -1879,7 +2027,7 @@ function initWorldBuilder() {
     { id:'bench',      name:'BANCA',    icon:'🪑', model:null, color:'#334466', scale:1.0 },
     { id:'terminal',   name:'TERMINAL', icon:'🖥️', model:null, color:'#00e8ff', scale:1.0,
       light:{ type:'point', color:0x00e8ff, intensity:0.8, distance:6, height:1.6 } },
-    { id:'crystal',    name:'CRISTAL',  icon:'💎', model:null, color:'#9b30ff', scale:1.0 },
+    { id:'crystal',    name:'CRISTAL',  icon:'💎', model:null, color:'#9b30ff', scale:1.0, rarity:'legendary', hologram:true },
     { id:'tree_cyber', name:'ÁRBOL',    icon:'🌲', model:null, color:'#00ff88', scale:1.5 },
     { id:'statue',     name:'ESTATUA',  icon:'🗿', model:null, color:'#aabbcc', scale:1.2 },
     { id:'arch',       name:'ARCO',     icon:'🏛️', model:null, color:'#ccaa44', scale:2.0 },
@@ -1904,6 +2052,7 @@ window._wbToggleGrid  = _wbToggleGrid;
 // ══════════════════════════════════════════════════════
 // BOOT
 // ══════════════════════════════════════════════════════
+initPostFX();
 loadWorld().then(()=>{
   // CRT power-on intro
   const crtEl=document.getElementById("crt-overlay");
