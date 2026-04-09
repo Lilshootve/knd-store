@@ -424,6 +424,7 @@ let camAspect = W()/H();
 const cam = new THREE.OrthographicCamera(-ORTH_H*camAspect,ORTH_H*camAspect,ORTH_H,-ORTH_H,0.1,600);
 let composer = null;
 let bloomPass = null;
+let _composerErrLogged = false;
 
 function initPostFX(){
   const size = new THREE.Vector2(W(), H());
@@ -641,17 +642,32 @@ function normalizeGltfMaterial(m){
 // ══════════════════════════════════════════════════════
 // SELECTIVE GLOW + HOLOGRAM HELPERS
 // ══════════════════════════════════════════════════════
+/** Solo materiales cuyo shader define emissive; si no, refreshUniforms peta (.value de undefined). */
 function applyEmissiveGlow(material, color = 0x00ffff, intensity = 2) {
   if (!material) return;
+  const lit =
+    material.isMeshStandardMaterial ||
+    material.isMeshPhysicalMaterial ||
+    material.isMeshLambertMaterial ||
+    material.isMeshPhongMaterial ||
+    material.isMeshToonMaterial;
+  if (!lit) return;
   material.emissive = new THREE.Color(color);
   material.emissiveIntensity = intensity;
 }
 
 function _applyGlowToObject3D(object3D, color = 0x00ffff, intensity = 2) {
+  const c = new THREE.Color(color);
   object3D.traverse((child) => {
     if (!child.isMesh || !child.material) return;
     const mats = Array.isArray(child.material) ? child.material : [child.material];
-    mats.forEach((m) => applyEmissiveGlow(m, color, intensity));
+    mats.forEach((m) => {
+      if (m.isMeshBasicMaterial) {
+        m.color.copy(c);
+        return;
+      }
+      applyEmissiveGlow(m, color, intensity);
+    });
   });
 }
 
@@ -1407,7 +1423,7 @@ renderer.setAnimationLoop((nowMs)=>{
     if (composer) composer.render();
     else renderer.render(scene,cam);
   }catch(e){
-    console.warn('[render] composer fallback:',e);
+    if(!_composerErrLogged){ console.warn('[render] composer fallback:',e); _composerErrLogged=true; }
     try{ renderer.render(scene,cam); }catch(_){}
   }
 });
@@ -1757,11 +1773,15 @@ function _wbSelect(id) {
   _wbSelBox = new THREE.BoxHelper(entry.mesh, 0x00e8ff);
   scene.add(_wbSelBox);
 
-  // Boost emissivo para highlight visual
+  // Boost emissivo (no tocar MeshBasic: no tienen uniform emissive en el shader)
   entry.mesh.traverse(o => {
     if (o.isMesh && o.material) {
       const mats = Array.isArray(o.material) ? o.material : [o.material];
       mats.forEach(m => {
+        if (
+          !m.isMeshStandardMaterial && !m.isMeshPhysicalMaterial &&
+          !m.isMeshLambertMaterial && !m.isMeshPhongMaterial && !m.isMeshToonMaterial
+        ) return;
         m._wbOrigEI = m.emissiveIntensity || 0;
         m.emissiveIntensity = Math.min(3.5, m._wbOrigEI + 0.9);
       });
@@ -1779,7 +1799,10 @@ function _wbDeselect() {
       if (o.isMesh && o.material) {
         const mats = Array.isArray(o.material) ? o.material : [o.material];
         mats.forEach(m => {
-          if (m._wbOrigEI !== undefined) { m.emissiveIntensity = m._wbOrigEI; delete m._wbOrigEI; }
+          if (m._wbOrigEI !== undefined) {
+            m.emissiveIntensity = m._wbOrigEI;
+            delete m._wbOrigEI;
+          }
         });
       }
     });
