@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- WebSocket: en HTTPS el puerto 8765 debe tener TLS o un proxy en 443. Ej.: content="wss://kndstore.com/nexus-ws" -->
+<meta name="nexus-ws-url" content="">
 <title>NEXUS — Central City</title>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -357,9 +359,16 @@ import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js"
 let DISTS      = [];          // loaded from API
 let echoByDist = {};          // {district_id: [{avatar_id,name,rarity,class,resonance,status}]}
 let currentDistId = null;     // district open in right panel
-// Página HTTPS → wss (requiere TLS en el puerto WS del servidor). CSP: connect-src incluye ws/wss para kndstore.
-const WS_PROTO = location.protocol === "https:" ? "wss" : "ws";
-const WS_URL   = `${WS_PROTO}://${location.hostname}:8765`;
+// WebSocket: prioridad window.NEXUS_WS_URL → meta[name=nexus-ws-url] → host:8765 (dev típico; prod suele necesitar proxy TLS).
+function getNexusWsUrl(){
+  const win = window.NEXUS_WS_URL;
+  if (win && String(win).trim()) return String(win).trim();
+  const meta = document.querySelector('meta[name="nexus-ws-url"]');
+  const fromMeta = meta?.getAttribute('content')?.trim();
+  if (fromMeta) return fromMeta;
+  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+  return `${proto}://${location.hostname}:8765`;
+}
 
 // Player config (loaded from API, then editable)
 let gColorHex  = "#00e8ff";
@@ -384,38 +393,45 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
 renderer.setSize(W(), H());
 renderer.outputColorSpace  = THREE.SRGBColorSpace;
 renderer.toneMapping       = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.5;   // boost global de brillo/glow
+renderer.toneMappingExposure = 1.35;   // día exterior; bloom sigue legible
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
 wrap.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x05070f);          // cielo nocturno profundo
-scene.fog = new THREE.FogExp2(0x0a0f1f, 0.014);        // niebla cinematográfica suave
+scene.background = new THREE.Color(0x7eb8e8);           // cielo día (plaza exterior)
+scene.fog = new THREE.Fog(0xa8d0ec, 55, 240);            // horizonte suave, menos “agujero negro”
 
-// ── Luz base (sin sombras duras, da base sin oscuridad total) ──
-scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+// ── Fill general (interior + bordes de meshes) ──
+scene.add(new THREE.AmbientLight(0xffffff, 0.62));
 
-// ── Hemisférica (cielo cian / suelo azul oscuro) ──
-scene.add(new THREE.HemisphereLight(0x88ccff, 0x222233, 0.5));
+// ── Hemisférica: cielo claro / reflejo de suelo ──
+scene.add(new THREE.HemisphereLight(0xc8e8ff, 0x4a5a3c, 0.55));
 
-// ── Luz principal tipo "moonlight" (con sombras reales) ──
-const moonLight = new THREE.DirectionalLight(0x88aaff, 1.2);
-moonLight.position.set(20, 30, 10);
-moonLight.castShadow = true;
-moonLight.shadow.mapSize.width  = 1024;
-moonLight.shadow.mapSize.height = 1024;
-moonLight.shadow.camera.near    = 0.5;
-moonLight.shadow.camera.far     = 200;
-moonLight.shadow.camera.left    = -80;
-moonLight.shadow.camera.right   =  80;
-moonLight.shadow.camera.top     =  80;
-moonLight.shadow.camera.bottom  = -80;
-moonLight.shadow.bias           = -0.001;
-scene.add(moonLight);
+// ── Sol (direccional cálida, sombras) ──
+const sunLight = new THREE.DirectionalLight(0xfff4e0, 2.35);
+sunLight.position.set(28, 52, 18);
+sunLight.castShadow = true;
+sunLight.shadow.mapSize.width  = 2048;
+sunLight.shadow.mapSize.height = 2048;
+sunLight.shadow.camera.near    = 0.5;
+sunLight.shadow.camera.far     = 220;
+sunLight.shadow.camera.left    = -90;
+sunLight.shadow.camera.right   =  90;
+sunLight.shadow.camera.top     =  90;
+sunLight.shadow.camera.bottom  = -90;
+sunLight.shadow.bias           = -0.0004;
+sunLight.shadow.normalBias     = 0.02;
+scene.add(sunLight);
+
+// ── Relleno azul suave desde el contraluz (legibilidad neón) ──
+const fillLight = new THREE.DirectionalLight(0x9ec8ff, 0.42);
+fillLight.position.set(-35, 28, -30);
+fillLight.castShadow = false;
+scene.add(fillLight);
 
 // ── Luces de acento de color para mood (paleta cyan/purple/amber) ──
-[[0x4488ff,1.4,65,-20,18,8],[0xaa44ff,1.2,55,20,16,-8],[0xff8833,0.7,50,0,14,24]].forEach(([c,i,d,x,y,z])=>{
+[[0x4488ff,0.95,65,-20,18,8],[0xaa44ff,0.82,55,20,16,-8],[0xff8833,0.55,50,0,14,24]].forEach(([c,i,d,x,y,z])=>{
   const pl = new THREE.PointLight(c,i,d,2); pl.position.set(x,y,z); scene.add(pl);
 });
 
@@ -447,13 +463,15 @@ window.addEventListener("resize", resizeCam);
 // ── GROUND ──
 const gnd = new THREE.Mesh(
   new THREE.PlaneGeometry(140,140),
-  new THREE.MeshStandardMaterial({color:0x050810,metalness:.2,roughness:.9,emissive:0x080a18,emissiveIntensity:.45})
+  new THREE.MeshStandardMaterial({color:0x3a4f62,metalness:.12,roughness:.88,emissive:0x1e2c38,emissiveIntensity:.14})
 );
-gnd.rotation.x=-Math.PI/2; scene.add(gnd);
-const g1=new THREE.GridHelper(140,90,0x1a2040,0x0c1228); g1.position.y=0.02;
-[g1.material].flat().forEach(m=>{m.transparent=true;m.opacity=0.5;m.fog=false;}); scene.add(g1);
-const g2=new THREE.GridHelper(140,26,0x232c50,0x0c1228); g2.position.y=0.03;
-[g2.material].flat().forEach(m=>{m.transparent=true;m.opacity=0.22;m.fog=false;}); scene.add(g2);
+gnd.rotation.x=-Math.PI/2;
+gnd.receiveShadow = true;
+scene.add(gnd);
+const g1=new THREE.GridHelper(140,90,0x3d4d68,0x2a384c); g1.position.y=0.02;
+[g1.material].flat().forEach(m=>{m.transparent=true;m.opacity=0.42;m.fog=false;}); scene.add(g1);
+const g2=new THREE.GridHelper(140,26,0x4a5c78,0x2f3d52); g2.position.y=0.03;
+[g2.material].flat().forEach(m=>{m.transparent=true;m.opacity=0.2;m.fog=false;}); scene.add(g2);
 
 // ── OBELISK ──
 const oRings=[], oLights=[];
@@ -1038,12 +1056,44 @@ document.getElementById("chat-input").addEventListener("keydown",e=>{
 // WEBSOCKET
 // ══════════════════════════════════════════════════════
 let ws=null, myPid=null;
+let _wsIntervalsStarted=false;
+let _wsReconnectTimer=null;
+let _wsReconnectAttempt=0;
+let _wsFatalNotified=false;
+
+function scheduleWSReconnect(){
+  if (_wsReconnectTimer) return;
+  const base = Math.min(30000, 1200 * Math.pow(1.85, _wsReconnectAttempt));
+  const jitter = base * 0.15 * Math.random();
+  const delay = Math.round(base + jitter);
+  _wsReconnectTimer = setTimeout(()=>{
+    _wsReconnectTimer = null;
+    if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
+    connectWS();
+  }, delay);
+  _wsReconnectAttempt = Math.min(_wsReconnectAttempt + 1, 12);
+}
 
 function connectWS(){
-  try{ ws=new WebSocket(WS_URL); }
-  catch(e){ console.warn("[WS] connection failed:",e.message); return; }
+  const url = getNexusWsUrl();
+  try{ ws=new WebSocket(url); }
+  catch(e){ console.warn("[WS] connection failed:",e.message); scheduleWSReconnect(); return; }
+
+  if (!_wsIntervalsStarted){
+    _wsIntervalsStarted = true;
+    setInterval(()=>{
+      if(ws&&ws.readyState===WebSocket.OPEN){
+        ws.send(JSON.stringify({type:"move",pos_x:player.position.x,pos_z:player.position.z}));
+      }
+    },100);
+    setInterval(()=>{
+      if(ws&&ws.readyState===WebSocket.OPEN) ws.send(JSON.stringify({type:"heartbeat"}));
+    },30000);
+  }
 
   ws.addEventListener("open",()=>{
+    _wsReconnectAttempt = 0;
+    _wsFatalNotified = false;
     ws.send(JSON.stringify({
       type:"join",
       user_id: window._userId||0,
@@ -1105,20 +1155,21 @@ function connectWS(){
     }
   });
 
-  ws.addEventListener("close",()=>{ ws=null; });
-  ws.addEventListener("error",()=>{ ws=null; });
-
-  // Send position every 100ms
-  setInterval(()=>{
-    if(ws&&ws.readyState===WebSocket.OPEN){
-      ws.send(JSON.stringify({type:"move",pos_x:player.position.x,pos_z:player.position.z}));
+  ws.addEventListener("close",()=>{
+    ws=null;
+    scheduleWSReconnect();
+  });
+  ws.addEventListener("error",()=>{
+    if (!_wsFatalNotified){
+      _wsFatalNotified = true;
+      const hint = location.protocol === 'https:'
+        ? 'Configura meta nexus-ws-url o proxy TLS (puerto 8765 sin cert. falla en wss).'
+        : '';
+      console.warn('[WS] error conectando a', url, hint);
+      fireEv('⚠','NEXUS','tiempo real no disponible — chat local activo','rgba(255,160,80,.82)');
     }
-  },100);
-
-  // Heartbeat every 30s
-  setInterval(()=>{
-    if(ws&&ws.readyState===WebSocket.OPEN) ws.send(JSON.stringify({type:"heartbeat"}));
-  },30000);
+    ws=null;
+  });
 }
 
 // ══════════════════════════════════════════════════════
