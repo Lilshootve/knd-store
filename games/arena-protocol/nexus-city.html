@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- WebSocket: en HTTPS el puerto 8765 debe tener TLS o un proxy en 443. Ej.: content="wss://kndstore.com/nexus-ws" -->
-<meta name="nexus-ws-url" content="">
+<!-- WebSocket: wss sin barra final. Producción Railway (ajusta si cambia el deploy): -->
+<meta name="nexus-ws-url" content="wss://knd-store-production.up.railway.app">
 <title>NEXUS — Central City</title>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -361,13 +361,25 @@ import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js"
 let DISTS      = [];          // loaded from API
 let echoByDist = {};          // {district_id: [{avatar_id,name,rarity,class,resonance,status}]}
 let currentDistId = null;     // district open in right panel
-// WebSocket: prioridad window.NEXUS_WS_URL → meta[name=nexus-ws-url] → host:8765 (dev típico; prod suele necesitar proxy TLS).
+// WebSocket: window.NEXUS_WS_URL → meta nexus-ws-url → host:8765 (dev).
+function normalizeNexusWsUrl(raw) {
+  let u = String(raw || '').trim();
+  if (!u) return '';
+  while (u.endsWith('/')) u = u.slice(0, -1);
+  try {
+    const p = new URL(u);
+    if ((p.pathname === '/' || p.pathname === '') && (p.protocol === 'wss:' || p.protocol === 'ws:')) {
+      u = `${p.protocol}//${p.host}`;
+    }
+  } catch (_) { /* usar u ya recortada */ }
+  return u;
+}
 function getNexusWsUrl(){
   const win = window.NEXUS_WS_URL;
-  if (win && String(win).trim()) return String(win).trim();
+  if (win && String(win).trim()) return normalizeNexusWsUrl(String(win).trim());
   const meta = document.querySelector('meta[name="nexus-ws-url"]');
   const fromMeta = meta?.getAttribute('content')?.trim();
-  if (fromMeta) return fromMeta;
+  if (fromMeta) return normalizeNexusWsUrl(fromMeta);
   const proto = location.protocol === 'https:' ? 'wss' : 'ws';
   return `${proto}://${location.hostname}:8765`;
 }
@@ -1114,6 +1126,11 @@ function scheduleWSReconnect(){
 
 function connectWS(){
   const url = getNexusWsUrl();
+  if (!url) {
+    console.warn("[WS] URL vacía (meta nexus-ws-url o window.NEXUS_WS_URL)");
+    scheduleWSReconnect();
+    return;
+  }
   try{ ws=new WebSocket(url); }
   catch(e){ console.warn("[WS] connection failed:",e.message); scheduleWSReconnect(); return; }
 
@@ -1193,7 +1210,10 @@ function connectWS(){
     }
   });
 
-  ws.addEventListener("close",()=>{
+  ws.addEventListener("close",(ev)=>{
+    if (ev.code && ev.code !== 1000) {
+      console.warn("[WS] cerrado código", ev.code, ev.reason || "");
+    }
     ws=null;
     scheduleWSReconnect();
   });
@@ -1201,7 +1221,7 @@ function connectWS(){
     if (!_wsFatalNotified){
       _wsFatalNotified = true;
       const hint = location.protocol === 'https:'
-        ? 'Configura meta nexus-ws-url o proxy TLS (puerto 8765 sin cert. falla en wss).'
+        ? 'Revisa: CSP connect-src en .htaccess incluye este host wss:// · uBlock/desactivar bloqueadores para *.railway.app · https:// mismo host debe responder nexus-ws ok · sesión con user_id válido para join.'
         : '';
       console.warn('[WS] error conectando a', url, hint);
       fireEv('⚠','NEXUS','tiempo real no disponible — chat local activo','rgba(255,160,80,.82)');
@@ -1383,8 +1403,9 @@ async function loadWorld(){
       fireEv("⚠",e.name,"está desvaneciendo — memoria crítica","rgba(255,100,60,.7)");
     }
 
-    // Connect WS
-    connectWS();
+    // WebSocket: el servidor exige user_id en join; sin sesión no intentar (evita ruido en consola).
+    if ((window._userId | 0) > 0) connectWS();
+    else console.info('[WS] sin conectar: inicia sesión para tiempo real');
 
     // Init admin World Builder if flagged by server
     if (data.is_admin) {
