@@ -60,6 +60,25 @@ function kp_balance(PDO $pdo, int $uid): int {
     return max(0, $earned - $spent);
 }
 
+/** IDs de muebles que el usuario puede colocar: ya colocados + comprados (ledger). Sin "gratis para todos" por price_kp=0. */
+function sanctum_owned_furniture_ids(PDO $pdo, int $uid): array {
+    $placed = $pdo->prepare('SELECT DISTINCT furniture_id FROM nexus_room_furniture WHERE user_id = ?');
+    $placed->execute([$uid]);
+    $placedIds = array_map('intval', $placed->fetchAll(PDO::FETCH_COLUMN));
+    $purchasedIds = [];
+    try {
+        $bs = $pdo->prepare("
+            SELECT DISTINCT source_id FROM points_ledger
+            WHERE user_id = ? AND entry_type = 'spend' AND source_type = 'sanctum_buy'
+              AND source_id IS NOT NULL AND source_id > 0
+        ");
+        $bs->execute([$uid]);
+        $purchasedIds = array_map('intval', $bs->fetchAll(PDO::FETCH_COLUMN));
+    } catch (PDOException $_) {
+    }
+    return array_values(array_unique(array_merge($placedIds, $purchasedIds)));
+}
+
 // ──────────────────────────────────────────────────────────────────
 // GET — Cargar sanctum completo
 // ──────────────────────────────────────────────────────────────────
@@ -95,25 +114,7 @@ if ($method === 'GET') {
         }
         unset($c);
 
-        $placedIds = array_map(static fn ($r) => (int) $r['furniture_id'], $placed);
-        $freeIds   = [];
-        foreach ($catalog as $row) {
-            if ((int)($row['price_kp'] ?? 0) === 0) {
-                $freeIds[] = (int) $row['id'];
-            }
-        }
-        $purchasedIds = [];
-        try {
-            $bs = $pdo->prepare("
-                SELECT DISTINCT source_id FROM points_ledger
-                WHERE user_id = ? AND entry_type = 'spend' AND source_type = 'sanctum_buy'
-                  AND source_id IS NOT NULL AND source_id > 0
-            ");
-            $bs->execute([$uid]);
-            $purchasedIds = array_map('intval', $bs->fetchAll(PDO::FETCH_COLUMN));
-        } catch (PDOException $_) {
-        }
-        $ownedFurnitureIds = array_values(array_unique(array_merge($placedIds, $purchasedIds, $freeIds)));
+        $ownedFurnitureIds = sanctum_owned_furniture_ids($pdo, $uid);
 
         // Username
         $un = $pdo->prepare('SELECT username FROM users WHERE id=?');
@@ -164,6 +165,11 @@ elseif ($method === 'POST') {
             $fc->execute([$fid]);
             $item = $fc->fetch(PDO::FETCH_ASSOC);
             if (!$item) json_error('NOT_FOUND', 'Furniture not found', 404);
+
+            $ownedIds = sanctum_owned_furniture_ids($pdo, $uid);
+            if (!in_array($fid, $ownedIds, true)) {
+                json_error('NOT_OWNED', 'Buy this item in the store before placing it', 403);
+            }
 
             $w = (int)$item['width'];
             $d = (int)$item['depth'];

@@ -303,8 +303,8 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
   <div class="lp-hdr">
     <div class="lp-title">⬡ SANCTUM CATALOG</div>
     <div class="cat-tabs" id="cat-tabs">
-      <div class="cat-tab on" data-cat="all">ALL</div>
-      <div class="cat-tab" data-cat="owned">OWNED</div>
+      <div class="cat-tab" data-cat="all">STORE</div>
+      <div class="cat-tab on" data-cat="owned">OWNED</div>
       <div class="cat-tab" data-cat="floor">FLOOR</div>
       <div class="cat-tab" data-cat="wall">WALL</div>
       <div class="cat-tab" data-cat="decoration">DECO</div>
@@ -408,7 +408,7 @@ let selectedCatalogItem = null, selectedPlacedId = null;
 let catalogue = [], placed = [], plotData = null;
 let balance = 0;
 let ghostRot = 0;
-let ownedItems = new Set();    // Set of furniture_id the player has purchased
+let ownedItems = new Set();    // furniture_id reales: colocados + comprados (API owned_furniture_ids)
 let buyCandidate = null;       // Item pending purchase confirmation
 
 // Camera orbit (right-drag)
@@ -459,7 +459,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
         buildScene();
         applyTheme(plotData.exterior_theme || 'cyber');
-        renderCatalog();
+        renderCatalog('owned');
         updateTabCounts();
         renderPlaced();
         spawnHero();
@@ -469,7 +469,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         console.error('Sanctum load error:', e);
         applyExitNav(false);
         buildScene();
-        renderCatalog();
+        renderCatalog('owned');
         updateTabCounts();
         spawnHero();
         setLoadProgress(100);
@@ -1311,19 +1311,22 @@ function buildFurnitureMesh(item, opts = {}) {
 const rarityIcons = {common:'◻',rare:'◈',special:'◆',epic:'⬡',legendary:'✦'};
 const rarityColors = {common:'#b4c8dc',rare:'#00a8ff',special:'#00ff88',epic:'#c06aff',legendary:'#ff9800'};
 
+function isOwnedItem(item) {
+    return ownedItems.has(Number(item.id));
+}
+
 function renderCatalog(catFilter = 'all') {
     const list = document.getElementById('cat-list');
     list.innerHTML = '';
     catalogue.forEach(item => {
         if (catFilter === 'owned') {
-            const owned = ownedItems.has(item.id) || Number(item.price_kp) === 0;
-            if (!owned) return;
+            if (!isOwnedItem(item)) return;
         } else if (catFilter !== 'all' && item.category !== catFilter) return;
         const ad = item.asset_data || {};
         const col = ad.color || '#00e8ff';
         const div = document.createElement('div');
         div.className = 'fi' + (selectedCatalogItem?.id === item.id ? ' sel' : '');
-        const owned = ownedItems.has(item.id) || item.price_kp === 0;
+        const owned = isOwnedItem(item);
         div.innerHTML = `
           <div class="fi-swatch" style="background:${col}22;border-color:${col}44;">
             <span style="font-size:16px">${rarityIcons[item.rarity]||'◻'}</span>
@@ -1364,7 +1367,7 @@ function selectCatalogItem(item, el) {
 
 window.activatePlace = () => {
     if (!selectedCatalogItem) return;
-    const owned = ownedItems.has(selectedCatalogItem.id) || selectedCatalogItem.price_kp === 0;
+    const owned = isOwnedItem(selectedCatalogItem);
     if (owned) {
         setMode('place');
     } else {
@@ -1682,7 +1685,7 @@ async function apiBuy(fid) {
         balance = j.data.balance;
         document.getElementById('kp-val').textContent = balance.toLocaleString();
         ownedItems.add(fid);
-        renderCatalog(document.querySelector('.cat-tab.on')?.dataset.cat || 'all');
+        renderCatalog(document.querySelector('.cat-tab.on')?.dataset.cat || 'owned');
         return true;
     } catch(e) { toast('Network error', 'err'); return false; }
 }
@@ -1780,14 +1783,14 @@ document.getElementById('lp').classList.add('open');
 
 // Category tabs with counts
 function updateTabCounts() {
-    const ownedCount = catalogue.filter(i => ownedItems.has(i.id) || Number(i.price_kp) === 0).length;
+    const ownedCount = catalogue.filter(i => isOwnedItem(i)).length;
     document.querySelectorAll('.cat-tab').forEach(tab => {
         const cat = tab.dataset.cat;
         let count;
         if (cat === 'all') count = catalogue.length;
         else if (cat === 'owned') count = ownedCount;
         else count = catalogue.filter(i => i.category === cat).length;
-        tab.textContent = (cat === 'all' ? 'ALL' :
+        tab.textContent = (cat === 'all' ? 'STORE' :
             cat === 'owned' ? 'OWNED' :
             cat === 'floor' ? 'FLOOR' :
             cat === 'wall' ? 'WALL' :
