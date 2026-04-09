@@ -38,11 +38,12 @@ const WebSocket = require('ws');
 // Railway inyecta PORT (string); sin PORT → 3000 en local.
 const PORT = process.env.PORT || 3000;
 
-// Cualquier ruta HTTP → 200 inmediato (health checks de Railway pueden no usar /).
+// Toda petición HTTP (/, /health, /favicon.ico, probes Railway) → 200, sin rutas ni condiciones.
 const server = http.createServer((req, res) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    res.setHeader('Cache-Control', 'no-store');
+    res.writeHead(200, {
+        'Content-Type': 'text/plain',
+        'Cache-Control': 'no-store',
+    });
     res.end('nexus-ws ok');
 });
 
