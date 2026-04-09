@@ -13,6 +13,16 @@ require_once __DIR__ . '/knd_avatar.php';
 require_once __DIR__ . '/mind_wars_skill_handlers.php';
 require_once __DIR__ . '/mind_wars_skills.php';
 
+/** True if a row exists in users (knd_user_xp.user_id FK). */
+function mw_user_exists_in_db(PDO $pdo, int $userId): bool {
+    if ($userId <= 0) {
+        return false;
+    }
+    $st = $pdo->prepare('SELECT 1 FROM users WHERE id = ? LIMIT 1');
+    $st->execute([$userId]);
+    return (bool) $st->fetchColumn();
+}
+
 const MW_MAX_TURNS = 12;
 const MW_HP_BASE = 1000;
 const MW_HP_PER_LEVEL = 12;
@@ -1922,6 +1932,9 @@ function mw_grant_random_avatar_by_rarity(PDO $pdo, int $userId, string $rarity)
 function mw_grant_user_xp_bonus(PDO $pdo, int $userId, int $xp): int {
     $xp = max(0, $xp);
     if ($userId <= 0 || $xp <= 0) return 0;
+    if (!mw_user_exists_in_db($pdo, $userId)) {
+        return 0;
+    }
     $stmt = $pdo->prepare(
         "INSERT INTO knd_user_xp (user_id, xp, level)
          VALUES (?, ?, 1)

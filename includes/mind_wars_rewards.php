@@ -6,6 +6,10 @@
 
 if (!function_exists('mw_apply_rewards_to_user')) {
 function mw_apply_rewards_to_user(PDO $pdo, int $userId, int $avatarItemId, array $rewards, string $result): void {
+    if (!mw_user_exists_in_db($pdo, $userId)) {
+        error_log(sprintf('mw_apply_rewards_to_user: skip user_id=%d (no users row; orphan PvP participant or stale id)', $userId));
+        return;
+    }
     if ($avatarItemId > 0) {
         $avatarLock = $pdo->prepare("SELECT knowledge_energy, avatar_level FROM knd_user_avatar_inventory WHERE user_id = ? AND item_id = ? LIMIT 1 FOR UPDATE");
         $avatarLock->execute([$userId, $avatarItemId]);

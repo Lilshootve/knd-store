@@ -459,7 +459,7 @@ try {
             if ($mode === 'pvp_ranked') {
                 foreach ($parts as $pr) {
                     $partUserId = (int) ($pr['user_id'] ?? 0);
-                    if ($partUserId > 0) {
+                    if ($partUserId > 0 && mw_user_exists_in_db($pdo, $partUserId)) {
                         foreach ($mwTypes as $t) {
                             badges_check_and_grant($pdo, $partUserId, $t);
                         }

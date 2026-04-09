@@ -948,6 +948,7 @@ window.enterDistrict = function(){
   if(!currentDistId) return;
   const d = DISTS.find(x=>x.id===currentDistId);
   if(d?.game_url) crtTransition(d.game_url);
+  else fireEv("⚠","DISTRITO","Sin acceso configurado para esta zona","rgba(255,160,80,.75)");
 };
 
 // ══════════════════════════════════════════════════════
@@ -1537,11 +1538,12 @@ async function loadWorld(){
 
 function loadFallback(){
   // Hardcoded fallback when API unreachable (dev/offline)
+  const _dr = (id) => "/games/arena-protocol/district-room.php?district=" + encodeURIComponent(id);
   DISTS=[
-    {id:"olimpo",name:"MONTE OLIMPO",  era:"ERA DE LOS DIOSES",   tag:"Combate · PvP",     col:0xffd600,hex:"#ffd600",pos:{x:-26,z:-14},icon:"⚡",mem:88,game_url:null},
-    {id:"tesla", name:"LAB TESLA",     era:"ERA DE LA CIENCIA",   tag:"XP · Conocimiento", col:0x00e8ff,hex:"#00e8ff",pos:{x:26,z:-14},icon:"⚗️",mem:94,game_url:null},
-    {id:"casino",name:"CASINO DESTINO",era:"ERA DEL AZAR",        tag:"Economía · Riesgo",  col:0x9b30ff,hex:"#9b30ff",pos:{x:-26,z:18},icon:"🎰",mem:71,game_url:null},
-    {id:"agora", name:"ÁGORA SOCIAL",  era:"ERA GUARDIANES",      tag:"Social · Comunidad", col:0x00ff88,hex:"#00ff88",pos:{x:26,z:18},icon:"🏛",mem:82,game_url:null},
+    {id:"olimpo",name:"MONTE OLIMPO",  era:"ERA DE LOS DIOSES",   tag:"Combate · PvP",     col:0xffd600,hex:"#ffd600",pos:{x:-26,z:-14},icon:"⚡",mem:88,game_url:_dr("olimpo")},
+    {id:"tesla", name:"LAB TESLA",     era:"ERA DE LA CIENCIA",   tag:"XP · Conocimiento", col:0x00e8ff,hex:"#00e8ff",pos:{x:26,z:-14},icon:"⚗️",mem:94,game_url:_dr("tesla")},
+    {id:"casino",name:"CASINO DESTINO",era:"ERA DEL AZAR",        tag:"Economía · Riesgo",  col:0x9b30ff,hex:"#9b30ff",pos:{x:-26,z:18},icon:"🎰",mem:71,game_url:_dr("casino")},
+    {id:"agora", name:"ÁGORA SOCIAL",  era:"ERA GUARDIANES",      tag:"Social · Comunidad", col:0x00ff88,hex:"#00ff88",pos:{x:26,z:18},icon:"🏛",mem:82,game_url:_dr("agora")},
   ];
   DISTS.forEach(buildDist);
   buildDistrictLabels();

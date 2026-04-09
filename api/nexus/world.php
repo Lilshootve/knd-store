@@ -9,6 +9,7 @@ require_once BASE_PATH . '/includes/session.php';
 require_once BASE_PATH . '/includes/config.php';
 require_once BASE_PATH . '/includes/auth.php';
 require_once BASE_PATH . '/includes/nexus_world_builder_gate.php';
+require_once BASE_PATH . '/includes/nexus_district_room_registry.php';
 require_once BASE_PATH . '/includes/json.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -36,6 +37,8 @@ try {
             ORDER BY d.sort_order
         ")->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $_) { $districts = []; }
+
+    $districts = nexus_district_room_apply_game_urls($districts);
 
     // 2. Ecos por distrito (los 5 con más resonancia por zona)
     try {
