@@ -119,7 +119,7 @@ if (!$boot) {
     exit;
 }
 
-$bootJson = json_encode($boot, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+$bootJson = json_encode($boot, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS);
 if ($bootJson === false) {
     header('Location: /squad-arena-v2/squad-selector.php?err=encode');
 
@@ -161,7 +161,7 @@ if (strpos($html, $placeholder) !== false) {
     $html = str_replace($placeholder, $topbarHtml, $html);
 }
 
-$Ljson = json_encode($L, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+$Ljson = json_encode($L, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS);
 if ($Ljson === false) {
     $Ljson = '{}';
 }

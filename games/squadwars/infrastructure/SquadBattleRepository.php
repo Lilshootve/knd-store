@@ -95,8 +95,15 @@ final class SquadBattleRepository
              WHERE id = ?"
         );
         $stmt->execute([$encoded, $battleId]);
+        // MySQL puede reportar 0 filas afectadas si state_json no cambió; aún es éxito si la fila existe.
         if ($stmt->rowCount() < 1) {
-            throw new RuntimeException('battle_not_found');
+            $chk = $this->pdo->prepare(
+                'SELECT 1 FROM knd_squadwars_battles WHERE id = ? LIMIT 1'
+            );
+            $chk->execute([$battleId]);
+            if (!$chk->fetchColumn()) {
+                throw new RuntimeException('battle_not_found');
+            }
         }
     }
 
