@@ -1062,8 +1062,10 @@ async function replaceRemotePlayerWithGlb(pid, p, url){
     scene.remove(rp.mesh);
     _disposeRemotePlayerMesh(rp.mesh);
     model.position.x=ox; model.position.z=oz; model.rotation.y=oy;
+    // Tras alinear la base al suelo, position.y suele ser >0; tickRemotePlayers no debe forzar y=0 (enterraba el GLB).
+    const feetOffsetY=model.position.y;
     scene.add(model);
-    remotePlayers.set(pid,{ mesh:model, tx:rp.tx, tz:rp.tz, mixer, targetDir:rp.targetDir, heroUrl:url });
+    remotePlayers.set(pid,{ mesh:model, tx:rp.tx, tz:rp.tz, mixer, targetDir:rp.targetDir, heroUrl:url, feetOffsetY });
   }catch(e){
     console.warn("[remote] GLB avatar falló, se mantiene guardian procedural:", abs, e.message||e);
   }
@@ -1103,7 +1105,7 @@ function addRemotePlayer(p){
   label.position.y=2.35; mesh.add(label);
   scene.add(mesh);
   const url0=(p.hero_model_url&&String(p.hero_model_url).trim())||"";
-  remotePlayers.set(p.player_id,{ mesh, tx:p.pos_x||0, tz:p.pos_z||0, mixer:null, heroUrl:url0&&resolveAvatarGlbUrl(url0)?url0:null });
+  remotePlayers.set(p.player_id,{ mesh, tx:p.pos_x||0, tz:p.pos_z||0, mixer:null, heroUrl:url0&&resolveAvatarGlbUrl(url0)?url0:null, feetOffsetY:null });
   if(url0&&resolveAvatarGlbUrl(url0)) replaceRemotePlayerWithGlb(p.player_id,p,url0);
 }
 
@@ -1125,7 +1127,7 @@ function tickRemotePlayers(dt){
   remotePlayers.forEach(rp=>{
     rp.mesh.position.x=THREE.MathUtils.lerp(rp.mesh.position.x,rp.tx,sm);
     rp.mesh.position.z=THREE.MathUtils.lerp(rp.mesh.position.z,rp.tz,sm);
-    rp.mesh.position.y=0;
+    rp.mesh.position.y=rp.feetOffsetY!=null?rp.feetOffsetY:0;
     if(rp.mixer) rp.mixer.update(dt);
   });
 }
