@@ -9,10 +9,14 @@ require_once BASE_PATH . '/includes/session.php';
 require_once BASE_PATH . '/includes/config.php';
 require_once BASE_PATH . '/includes/auth.php';
 require_once BASE_PATH . '/includes/json.php';
+require_once BASE_PATH . '/includes/nexus_world_builder_gate.php';
 
 api_require_login();
 $pdo    = getDBConnection();
-$uid    = (int)$_SESSION['user_id'];
+$uid    = current_user_id();
+if (!$uid) {
+    json_error('AUTH_REQUIRED', 'Invalid session (no user id)', 401);
+}
 $method = $_SERVER['REQUEST_METHOD'];
 
 // ──────────────────────────────────────────────────────────────────
@@ -91,17 +95,39 @@ if ($method === 'GET') {
         }
         unset($c);
 
+        $placedIds = array_map(static fn ($r) => (int) $r['furniture_id'], $placed);
+        $freeIds   = [];
+        foreach ($catalog as $row) {
+            if ((int)($row['price_kp'] ?? 0) === 0) {
+                $freeIds[] = (int) $row['id'];
+            }
+        }
+        $purchasedIds = [];
+        try {
+            $bs = $pdo->prepare("
+                SELECT DISTINCT source_id FROM points_ledger
+                WHERE user_id = ? AND entry_type = 'spend' AND source_type = 'sanctum_buy'
+                  AND source_id IS NOT NULL AND source_id > 0
+            ");
+            $bs->execute([$uid]);
+            $purchasedIds = array_map('intval', $bs->fetchAll(PDO::FETCH_COLUMN));
+        } catch (PDOException $_) {
+        }
+        $ownedFurnitureIds = array_values(array_unique(array_merge($placedIds, $purchasedIds, $freeIds)));
+
         // Username
         $un = $pdo->prepare('SELECT username FROM users WHERE id=?');
         $un->execute([$uid]);
         $username = (string)($un->fetchColumn() ?: 'Player');
 
         json_success([
-            'plot'     => $plot,
-            'placed'   => $placed,
-            'catalog'  => $catalog,
-            'balance'  => kp_balance($pdo, $uid),
-            'username' => $username,
+            'plot'                 => $plot,
+            'placed'               => $placed,
+            'catalog'              => $catalog,
+            'balance'              => kp_balance($pdo, $uid),
+            'username'             => $username,
+            'is_admin'             => nexus_user_can_world_builder($pdo, $uid),
+            'owned_furniture_ids'  => $ownedFurnitureIds,
         ]);
     } catch (PDOException $e) {
         error_log('sanctum GET: ' . $e->getMessage());

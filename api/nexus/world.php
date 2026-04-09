@@ -8,6 +8,7 @@ header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 require_once BASE_PATH . '/includes/session.php';
 require_once BASE_PATH . '/includes/config.php';
 require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/nexus_world_builder_gate.php';
 require_once BASE_PATH . '/includes/json.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -15,50 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 $pdo = getDBConnection();
-$uid = is_logged_in() ? (int)$_SESSION['user_id'] : null;
-
-/**
- * Determina si el usuario actual puede usar World Builder.
- * Compatibilidad:
- * 1) admin_users (fuente principal actual)
- * 2) users.role (fallback legado)
- */
-function nexus_is_world_builder_admin(PDO $pdo, ?int $uid): bool {
-    if (!$uid) return false;
-
-    // Fuente principal: admin_users por username activo
-    try {
-        $u = $pdo->prepare("SELECT username FROM users WHERE id = ? LIMIT 1");
-        $u->execute([$uid]);
-        $username = $u->fetchColumn();
-        if ($username) {
-            $a = $pdo->prepare("
-                SELECT role
-                FROM admin_users
-                WHERE username = ?
-                  AND active = 1
-                LIMIT 1
-            ");
-            $a->execute([$username]);
-            $adminRole = $a->fetchColumn();
-            if (in_array($adminRole, ['owner', 'manager', 'support'], true)) {
-                return true;
-            }
-        }
-    } catch (PDOException $_) {
-        // noop: seguimos con fallback legado
-    }
-
-    // Fallback legado: users.role
-    try {
-        $legacy = $pdo->prepare("SELECT role FROM users WHERE id = ? LIMIT 1");
-        $legacy->execute([$uid]);
-        $role = $legacy->fetchColumn();
-        return in_array($role, ['admin', 'superadmin', 'mod'], true);
-    } catch (PDOException $_) {
-        return false;
-    }
-}
+// Usar current_user_id(): sesión unificada dr_user_id / user_id (ver includes/auth.php)
+$uid = is_logged_in() ? current_user_id() : null;
 
 try {
     // 1. Distritos + echo status por distrito
@@ -249,7 +208,7 @@ try {
     }
 
     // 7. Admin flag (world builder)
-    $is_admin = nexus_is_world_builder_admin($pdo, $uid);
+    $is_admin = nexus_user_can_world_builder($pdo, $uid);
 
     json_success([
         'districts'          => $districts,

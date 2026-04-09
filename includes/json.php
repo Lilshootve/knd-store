@@ -5,7 +5,11 @@ if (!function_exists('json_success')) {
     function json_success(array $data = []): void {
         header('Content-Type: application/json; charset=utf-8');
         $payload = ['ok' => true, 'data' => $data];
-        $encoded = @json_encode($payload, JSON_UNESCAPED_UNICODE);
+        $flags = JSON_UNESCAPED_UNICODE;
+        if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+            $flags |= JSON_INVALID_UTF8_SUBSTITUTE;
+        }
+        $encoded = @json_encode($payload, $flags);
         if ($encoded === false) {
             http_response_code(500);
             $encoded = '{"ok":false,"error":{"code":"ENCODE_ERROR","message":"Failed to encode response"}}';
@@ -20,7 +24,11 @@ if (!function_exists('json_error')) {
         http_response_code($httpStatus);
         header('Content-Type: application/json; charset=utf-8');
         $payload = ['ok' => false, 'error' => ['code' => $code, 'message' => $message]];
-        $encoded = @json_encode($payload, JSON_UNESCAPED_UNICODE);
+        $flags = JSON_UNESCAPED_UNICODE;
+        if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+            $flags |= JSON_INVALID_UTF8_SUBSTITUTE;
+        }
+        $encoded = @json_encode($payload, $flags);
         if ($encoded === false) {
             $encoded = '{"ok":false,"error":{"code":"' . addslashes(substr($code, 0, 50)) . '","message":"An error occurred"}}';
         }

@@ -65,9 +65,10 @@ if ($method === 'GET') {
 
         json_success(['messages' => $messages, 'channel' => $channel]);
 
-    } catch (PDOException $e) {
+    } catch (Throwable $e) {
         error_log('nexus/chat GET error: ' . $e->getMessage());
-        json_error('DB_ERROR', 'Failed to fetch messages', 500);
+        // Respuesta válida para que la UI cargue; revisa migración nexus_chat_log / nexus_player_appearance
+        json_success(['messages' => [], 'channel' => $channel, 'degraded' => true]);
     }
 }
 
@@ -76,7 +77,10 @@ if ($method === 'GET') {
 // ──────────────────────────────────────────────────────────────
 elseif ($method === 'POST') {
     api_require_login();
-    $uid = (int)$_SESSION['user_id'];
+    $uid = (int)(current_user_id() ?? 0);
+    if ($uid <= 0) {
+        json_error('AUTH_REQUIRED', 'Invalid session', 401);
+    }
 
     $input = json_decode(file_get_contents('php://input'), true);
     if (!is_array($input)) {

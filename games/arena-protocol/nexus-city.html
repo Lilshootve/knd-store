@@ -355,7 +355,9 @@ import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js"
 let DISTS      = [];          // loaded from API
 let echoByDist = {};          // {district_id: [{avatar_id,name,rarity,class,resonance,status}]}
 let currentDistId = null;     // district open in right panel
-const WS_URL   = `ws://${location.hostname}:8765`;
+// Página HTTPS → wss (requiere TLS en el puerto WS del servidor). CSP: connect-src incluye ws/wss para kndstore.
+const WS_PROTO = location.protocol === "https:" ? "wss" : "ws";
+const WS_URL   = `${WS_PROTO}://${location.hostname}:8765`;
 
 // Player config (loaded from API, then editable)
 let gColorHex  = "#00e8ff";

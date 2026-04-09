@@ -9,52 +9,12 @@ require_once __DIR__ . '/../../config/bootstrap.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 require_once BASE_PATH . '/includes/session.php';
+require_once BASE_PATH . '/includes/config.php';
 require_once BASE_PATH . '/includes/auth.php';
+require_once BASE_PATH . '/includes/nexus_world_builder_gate.php';
 require_once BASE_PATH . '/includes/json.php';
 
 $pdo = getDBConnection();
-
-// ── Verificar autenticación ──
-if (!is_logged_in()) {
-    json_error('UNAUTHORIZED', 'Debes estar autenticado', 401);
-}
-$uid = (int)$_SESSION['user_id'];
-
-// ── Verificar rol admin ──
-// Fuente principal: admin_users (username + active)
-// Fallback legado: users.role
-function isAdmin(PDO $pdo, int $uid): bool {
-    try {
-        $u = $pdo->prepare("SELECT username FROM users WHERE id = ? LIMIT 1");
-        $u->execute([$uid]);
-        $username = $u->fetchColumn();
-        if ($username) {
-            $a = $pdo->prepare("
-                SELECT role
-                FROM admin_users
-                WHERE username = ?
-                  AND active = 1
-                LIMIT 1
-            ");
-            $a->execute([$username]);
-            $adminRole = $a->fetchColumn();
-            if (in_array($adminRole, ['owner', 'manager', 'support'], true)) {
-                return true;
-            }
-        }
-    } catch (PDOException $_) {
-        // noop: intenta fallback
-    }
-
-    try {
-        $s = $pdo->prepare("SELECT role FROM users WHERE id = ? LIMIT 1");
-        $s->execute([$uid]);
-        $role = $s->fetchColumn();
-        return in_array($role, ['admin', 'superadmin', 'mod'], true);
-    } catch (PDOException $_) {
-        return false;
-    }
-}
 
 // ── Determinar acción ──
 $method = $_SERVER['REQUEST_METHOD'];
@@ -71,8 +31,8 @@ if ($method === 'GET') {
     json_error('METHOD_NOT_ALLOWED', 'Solo GET/POST', 405);
 }
 
-// ── LOAD (público — se cargan al entrar al Nexus) ──
-if ($action === 'load') {
+// ── LOAD: público (sin sesión). Misma visibilidad que el mundo 3D; escritura sigue restringida.
+if ($method === 'GET' && $action === 'load') {
     try {
         $rows = $pdo->query("
             SELECT id, item_id, model_url, pos_x, pos_y, pos_z,
@@ -80,18 +40,24 @@ if ($action === 'load') {
             FROM nexus_world_objects
             ORDER BY id ASC
         ")->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        // La tabla puede no existir aún
+        json_success(['objects' => $rows]);
+    } catch (Throwable $e) {
         error_log('world_builder load: ' . $e->getMessage());
         json_success(['objects' => []]);
-        return;
     }
-    json_success(['objects' => $rows]);
-    return;
+}
+
+// ── Resto: requiere sesión ──
+if (!is_logged_in()) {
+    json_error('UNAUTHORIZED', 'Debes estar autenticado', 401);
+}
+$uid = current_user_id();
+if (!$uid) {
+    json_error('UNAUTHORIZED', 'Sesión sin user id válido', 401);
 }
 
 // ── Acciones de escritura → requieren admin ──
-if (!isAdmin($pdo, $uid)) {
+if (!nexus_user_can_world_builder($pdo, $uid)) {
     json_error('FORBIDDEN', 'Solo administradores pueden modificar el mundo', 403);
 }
 

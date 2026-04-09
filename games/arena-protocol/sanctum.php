@@ -9,42 +9,54 @@ if (!is_logged_in()) {
     exit;
 }
 
-// Resolve hero model URL for the logged-in player
-// Chain: users.favorite_avatar_id → knd_avatar_items.mw_avatar_id → mw_avatars
+// Resolve hero model URL + room title for the logged-in player (users.id via session unificado)
 $_heroModelUrl = null;
+$_sanctumRoomDisplay = 'SANCTUM';
 try {
     $pdo = getDBConnection();
-    $uid = (int)$_SESSION['user_id'];
-
-    // Primary: favorite avatar item → mw_avatar
-    $s = $pdo->prepare("SELECT fa.id, fa.name, fa.rarity FROM users u JOIN knd_avatar_items kai ON kai.id = u.favorite_avatar_id AND kai.mw_avatar_id IS NOT NULL JOIN mw_avatars fa ON fa.id = kai.mw_avatar_id WHERE u.id = ?");
-    $s->execute([$uid]);
-    $av = $s->fetch(PDO::FETCH_ASSOC);
-    if ($av && $av['id']) {
-        $_heroModelUrl = mw_resolve_avatar_model_url((int)$av['id'], (string)($av['name']??''), (string)($av['rarity']??'common'));
-    }
-
-    // Fallback 1: any inventory item that has a linked mw_avatar
-    if (!$_heroModelUrl) {
+    $uid = (int)(current_user_id() ?? 0);
+    if ($uid > 0) {
         try {
-            $sf = $pdo->prepare("SELECT fa.id, fa.name, fa.rarity FROM knd_user_avatar_inventory ui JOIN knd_avatar_items ai ON ai.id = ui.item_id AND ai.mw_avatar_id IS NOT NULL JOIN mw_avatars fa ON fa.id = ai.mw_avatar_id WHERE ui.user_id = ? LIMIT 1");
-            $sf->execute([$uid]);
-            $avf = $sf->fetch(PDO::FETCH_ASSOC);
-            if ($avf && $avf['id']) {
-                $_heroModelUrl = mw_resolve_avatar_model_url((int)$avf['id'], (string)($avf['name']??''), (string)($avf['rarity']??'common'));
+            $sp = $pdo->prepare('SELECT house_name FROM nexus_plots WHERE user_id = ? LIMIT 1');
+            $sp->execute([$uid]);
+            $hn = $sp->fetchColumn();
+            if (is_string($hn) && $hn !== '') {
+                $_sanctumRoomDisplay = mb_strtoupper(mb_substr($hn, 0, 48, 'UTF-8'), 'UTF-8');
+            } else {
+                $un = $pdo->prepare('SELECT username FROM users WHERE id = ? LIMIT 1');
+                $un->execute([$uid]);
+                $_sanctumRoomDisplay = mb_strtoupper(((string)($un->fetchColumn() ?: 'PLAYER')) . "'S SANCTUM", 'UTF-8');
             }
-        } catch (Throwable $_f) {}
-    }
+        } catch (Throwable $_p) {}
 
-    // Fallback 2: first mw_avatar that resolves to a GLB on disk
-    if (!$_heroModelUrl) {
-        try {
-            $sa = $pdo->query("SELECT id, name, rarity FROM mw_avatars ORDER BY id ASC LIMIT 30");
-            foreach ($sa->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $url = mw_resolve_avatar_model_url((int)$row['id'], (string)$row['name'], (string)$row['rarity']);
-                if ($url) { $_heroModelUrl = $url; break; }
-            }
-        } catch (Throwable $_a) {}
+        // Primary: favorite avatar item → mw_avatar
+        $s = $pdo->prepare("SELECT fa.id, fa.name, fa.rarity FROM users u JOIN knd_avatar_items kai ON kai.id = u.favorite_avatar_id AND kai.mw_avatar_id IS NOT NULL JOIN mw_avatars fa ON fa.id = kai.mw_avatar_id WHERE u.id = ?");
+        $s->execute([$uid]);
+        $av = $s->fetch(PDO::FETCH_ASSOC);
+        if ($av && $av['id']) {
+            $_heroModelUrl = mw_resolve_avatar_model_url((int)$av['id'], (string)($av['name']??''), (string)($av['rarity']??'common'));
+        }
+
+        if (!$_heroModelUrl) {
+            try {
+                $sf = $pdo->prepare("SELECT fa.id, fa.name, fa.rarity FROM knd_user_avatar_inventory ui JOIN knd_avatar_items ai ON ai.id = ui.item_id AND ai.mw_avatar_id IS NOT NULL JOIN mw_avatars fa ON fa.id = ai.mw_avatar_id WHERE ui.user_id = ? LIMIT 1");
+                $sf->execute([$uid]);
+                $avf = $sf->fetch(PDO::FETCH_ASSOC);
+                if ($avf && $avf['id']) {
+                    $_heroModelUrl = mw_resolve_avatar_model_url((int)$avf['id'], (string)($avf['name']??''), (string)($avf['rarity']??'common'));
+                }
+            } catch (Throwable $_f) {}
+        }
+
+        if (!$_heroModelUrl) {
+            try {
+                $sa = $pdo->query("SELECT id, name, rarity FROM mw_avatars ORDER BY id ASC LIMIT 30");
+                foreach ($sa->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    $url = mw_resolve_avatar_model_url((int)$row['id'], (string)$row['name'], (string)$row['rarity']);
+                    if ($url) { $_heroModelUrl = $url; break; }
+                }
+            } catch (Throwable $_a) {}
+        }
     }
 } catch (Throwable $_) {}
 ?><!DOCTYPE html>
@@ -265,12 +277,12 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
 
 <!-- Top Bar -->
 <div id="tb">
-  <div class="back-btn" onclick="crtGo('/games/arena-protocol/nexus-city.html')">
+  <div class="back-btn" id="nav-exit" data-href="/" onclick="crtGoExit()" title="Leave Sanctum">
     <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    NEXUS
+    <span id="nav-exit-lbl">HOME</span>
   </div>
   <div class="tb-sep"></div>
-  <div id="room-name" onclick="openSettings()">MY SANCTUM</div>
+  <div id="room-name" onclick="openSettings()"><?php echo htmlspecialchars($_sanctumRoomDisplay, ENT_QUOTES, 'UTF-8'); ?></div>
   <div class="tb-r">
     <div class="kp-chip">
       <span class="kp-icon">◈</span>
@@ -289,9 +301,10 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
 <!-- Left Catalog Panel -->
 <div id="lp">
   <div class="lp-hdr">
-    <div class="lp-title">⬡ NEXUS CATALOG</div>
+    <div class="lp-title">⬡ SANCTUM CATALOG</div>
     <div class="cat-tabs" id="cat-tabs">
       <div class="cat-tab on" data-cat="all">ALL</div>
+      <div class="cat-tab" data-cat="owned">OWNED</div>
       <div class="cat-tab" data-cat="floor">FLOOR</div>
       <div class="cat-tab" data-cat="wall">WALL</div>
       <div class="cat-tab" data-cat="decoration">DECO</div>
@@ -343,7 +356,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
     <div class="modal-title">⬡ SANCTUM SETTINGS</div>
     <div class="field">
       <label>ROOM NAME</label>
-      <input type="text" id="s-name" maxlength="40" placeholder="My Sanctum">
+      <input type="text" id="s-name" maxlength="40" autocomplete="section-sanctum room-name">
     </div>
     <div class="field">
       <label>EXTERIOR THEME</label>
@@ -376,6 +389,9 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
 <script type="module">
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
 const HERO_MODEL_URL = <?php echo json_encode($_heroModelUrl); ?>;
 
@@ -384,6 +400,7 @@ const HERO_MODEL_URL = <?php echo json_encode($_heroModelUrl); ?>;
 // ─────────────────────────────────────────────────────────────────
 const GRID = 10, CS = 1.0; // GRID cells, Cell Size
 let scene, camera, renderer, raycaster, clock;
+let composer = null, bloomPass = null;
 let floorPlane, hoverMesh, ghostGroup;
 let particles, particlePositions;
 let mode = 'view', catalogOpen = true;
@@ -430,12 +447,15 @@ window.addEventListener('DOMContentLoaded', async () => {
         plotData   = json.data.plot;
         balance    = json.data.balance;
 
-        // Mark items player already owns (placed = owned)
-        placed.forEach(p => ownedItems.add(p.furniture_id));
+        ownedItems.clear();
+        const oid = json.data.owned_furniture_ids;
+        if (Array.isArray(oid)) oid.forEach(id => ownedItems.add(Number(id)));
+        else placed.forEach(p => ownedItems.add(p.furniture_id));
 
         document.getElementById('kp-val').textContent = balance.toLocaleString();
         const rname = plotData.house_name || (json.data.username.toUpperCase() + '\'S SANCTUM');
         document.getElementById('room-name').textContent = rname;
+        applyExitNav(!!json.data.is_admin);
 
         buildScene();
         applyTheme(plotData.exterior_theme || 'cyber');
@@ -447,6 +467,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     } catch(e) {
         console.error('Sanctum load error:', e);
+        applyExitNav(false);
         buildScene();
         renderCatalog();
         updateTabCounts();
@@ -472,16 +493,18 @@ function initThree() {
     raycaster = new THREE.Raycaster();
 
     const wrap = document.getElementById('cv');
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
     renderer.toneMapping       = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = 1.45;
     wrap.appendChild(renderer.domElement);
 
     resetCamera();
+    initPostFX();
 
     // Lights
     const ambient = new THREE.AmbientLight(0x0a1525, 1.8);
@@ -511,6 +534,16 @@ function initThree() {
     wrap.addEventListener('mouseleave',() => { isRightDrag = false; });
 }
 
+function initPostFX() {
+    const wrap = document.getElementById('cv');
+    const w = Math.max(1, wrap.clientWidth), h = Math.max(1, wrap.clientHeight);
+    const size = new THREE.Vector2(w, h);
+    composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    bloomPass = new UnrealBloomPass(size, 0.75, 0.42, 0.86);
+    composer.addPass(bloomPass);
+}
+
 function onMouseDown(e) {
     if (e.button === 2) {
         isRightDrag = true;
@@ -528,19 +561,29 @@ function updateOrbitCamera() {
 }
 
 function resetCamera() {
-    const w = document.getElementById('cv').clientWidth;
-    const h = document.getElementById('cv').clientHeight;
+    const w = Math.max(1, document.getElementById('cv').clientWidth);
+    const h = Math.max(1, document.getElementById('cv').clientHeight);
     const aspect = w / h;
     const d = 9;
-    camera = new THREE.OrthographicCamera(-d*aspect, d*aspect, d, -d, 0.1, 200);
+    if (!camera) {
+        camera = new THREE.OrthographicCamera(-d * aspect, d * aspect, d, -d, 0.1, 200);
+    } else {
+        camera.left = -d * aspect;
+        camera.right = d * aspect;
+        camera.top = d;
+        camera.bottom = -d;
+        camera.updateProjectionMatrix();
+    }
     camera.position.set(18, 22, 18);
     camera.lookAt(5, 0, 5);
 }
 
 function onResize() {
     const wrap = document.getElementById('cv');
-    renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+    const w = Math.max(1, wrap.clientWidth), h = Math.max(1, wrap.clientHeight);
+    renderer.setSize(w, h);
     resetCamera();
+    if (composer) composer.setSize(w, h);
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -827,9 +870,157 @@ function buildAccentLights() {
 }
 
 // ─────────────────────────────────────────────────────────────────
+// Catalog lights / glow (parity with nexus-city buildWorldObject)
+// ─────────────────────────────────────────────────────────────────
+function parseLightColor(c) {
+    if (c == null || c === '') return 0xffffff;
+    if (typeof c === 'number' && !Number.isNaN(c)) return c;
+    const s = String(c).trim();
+    if (s.startsWith('#')) {
+        const hex = parseInt(s.slice(1), 16);
+        return Number.isNaN(hex) ? 0xffffff : hex;
+    }
+    if (s.toLowerCase().startsWith('0x')) {
+        const hex = parseInt(s.slice(2), 16);
+        return Number.isNaN(hex) ? 0xffffff : hex;
+    }
+    return 0xffffff;
+}
+
+function attachCatalogLight(item, g, ad, skip) {
+    if (skip) return null;
+    const raw = ad.light_data != null ? ad.light_data : ad.light;
+    if (raw == null) return null;
+    let cfg = null;
+    try {
+        cfg = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    } catch (_) {
+        return null;
+    }
+    if (!cfg || typeof cfg !== 'object') return null;
+
+    const fw = (item.width || 1) * CS, fd = (item.depth || 1) * CS;
+    const cx = fw * 0.5, cz = fd * 0.5;
+    const lc = parseLightColor(cfg.color);
+    const li = cfg.intensity ?? 1.0;
+    const ld = cfg.distance ?? 10;
+    const lh = cfg.height ?? 1.25;
+
+    g.children.filter(c => (c.isPointLight || c.isSpotLight) && c.userData?.nexusDynamicLight).forEach(c => g.remove(c));
+
+    let light;
+    if (cfg.type === 'spot') {
+        light = new THREE.SpotLight(lc, li, ld, Math.PI / 6, 0.3, 2);
+        light.target.position.set(cx, 0, cz);
+        g.add(light.target);
+    } else {
+        light = new THREE.PointLight(lc, li, ld, 2);
+    }
+    light.castShadow = false;
+    light.position.set(cx, lh, cz);
+    light.userData.nexusDynamicLight = true;
+    g.add(light);
+
+    const glowRadius = cfg.glowRadius ?? Math.min(fw, fd) * 0.48;
+    const glowColor = parseLightColor(cfg.glowColor ?? lc);
+    const glowMesh = new THREE.Mesh(
+        new THREE.CircleGeometry(glowRadius, 32),
+        new THREE.MeshBasicMaterial({
+            color: glowColor, transparent: true, opacity: 0.21, depthWrite: false, side: THREE.DoubleSide
+        })
+    );
+    glowMesh.rotation.x = -Math.PI / 2;
+    glowMesh.position.set(cx, 0.02, cz);
+    g.add(glowMesh);
+
+    cfg._resolvedColor = lc;
+    return cfg;
+}
+
+function applySanctumGlowToObject3D(object3D, color = 0x00ffff, intensity = 1.35) {
+    object3D.traverse((child) => {
+        if (!child.isMesh || !child.material) return;
+        const mats = Array.isArray(child.material) ? child.material : [child.material];
+        mats.forEach((m) => {
+            m.emissive = new THREE.Color(color);
+            m.emissiveIntensity = intensity;
+        });
+    });
+}
+
+function addSanctumGroundRing(parent, cx, cz, col = 0x00ffff) {
+    const geo = new THREE.CircleGeometry(1.12, 32);
+    const mat = new THREE.MeshBasicMaterial({
+        color: col, transparent: true, opacity: 0.26, depthWrite: false, side: THREE.DoubleSide
+    });
+    const ring = new THREE.Mesh(geo, mat);
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.set(cx, 0.014, cz);
+    parent.add(ring);
+}
+
+function applySanctumHologram(object3D, cx, cz) {
+    object3D.traverse((child) => {
+        if (!child.isMesh) return;
+        const oldMats = Array.isArray(child.material) ? child.material : [child.material];
+        oldMats.forEach(m => { try { m.dispose?.(); } catch (_) {} });
+        child.material = new THREE.MeshStandardMaterial({
+            color: 0x00ffff, transparent: true, opacity: 0.58,
+            emissive: 0x00ffff, emissiveIntensity: 1.85,
+            metalness: 0.2, roughness: 0.12
+        });
+    });
+    const light = new THREE.PointLight(0x00ffff, 1.75, 5, 1.5);
+    light.position.set(cx, 1.12, cz);
+    object3D.add(light);
+    const scanGeo = new THREE.PlaneGeometry(1.25, 2.2);
+    const scanMat = new THREE.MeshBasicMaterial({
+        color: 0x00ffff, transparent: true, opacity: 0.07, side: THREE.DoubleSide, depthWrite: false
+    });
+    const scan = new THREE.Mesh(scanGeo, scanMat);
+    scan.position.set(cx, 1.0, cz);
+    object3D.add(scan);
+    addSanctumGroundRing(object3D, cx, cz, 0x00ffff);
+}
+
+/** Luces, holograma, rareza y sombras — común a malla procedural o GLB cargado */
+function decoratePlacedFurnitureItem(item, g, ghost) {
+    const ad = item.asset_data || {};
+    const col = parseInt((ad.color || '#00e8ff').replace('#',''), 16);
+    const fw = (item.width || 1) * CS, fd = (item.depth || 1) * CS;
+    const fcx = fw * 0.5, fcz = fd * 0.5;
+
+    const lightCfg = attachCatalogLight(item, g, ad, ghost);
+    if (!ghost && (ad.hologram === true || ad.fx === 'hologram')) {
+        applySanctumHologram(g, fcx, fcz);
+    }
+    if (!ghost && lightCfg) {
+        applySanctumGlowToObject3D(g, lightCfg._resolvedColor ?? col, 1.35);
+    } else if (!ghost && item.rarity === 'legendary') {
+        applySanctumGlowToObject3D(g, 0xffd600, 1.85);
+    }
+
+    const rarityColors = {legendary:0xff9800, epic:0x9b30ff, special:0x00ff88};
+    if (!ghost && rarityColors[item.rarity]) {
+        const gm = new THREE.MeshStandardMaterial({
+            color:rarityColors[item.rarity], transparent:true, opacity:.12,
+            side:THREE.BackSide, depthWrite:false
+        });
+        g.children.filter(c=>c.isMesh&&c.geometry&&!c.geometry.isBufferGeometry).forEach(c=>{
+            const gv = new THREE.Mesh(c.geometry, gm);
+            gv.position.copy(c.position); gv.rotation.copy(c.rotation);
+            gv.scale.setScalar(1.18); g.add(gv);
+        });
+    }
+
+    g.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+}
+
+// ─────────────────────────────────────────────────────────────────
 // Furniture Builder — per-shape 3D models
 // ─────────────────────────────────────────────────────────────────
-function buildFurnitureMesh(item) {
+function buildFurnitureMesh(item, opts = {}) {
+    const ghost = opts.ghost === true;
     const g = new THREE.Group();
     const ad = item.asset_data || {};
     const col = parseInt((ad.color || '#00e8ff').replace('#',''), 16);
@@ -854,12 +1045,6 @@ function buildFurnitureMesh(item) {
             const leg = new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,.7,8), mat());
             leg.position.set(x,.35,z); g.add(leg);
         });
-        if (ad.fx === 'hologram') {
-            const hm = new THREE.MeshStandardMaterial({color:0x00aaff,transparent:true,opacity:.18,wireframe:false,emissive:0x0044ff,emissiveIntensity:.4});
-            const hol = new THREE.Mesh(new THREE.BoxGeometry(1.5,.3,1.5), hm);
-            hol.position.set(.9,.88,.9); g.add(hol);
-            animObjects.push({obj:hol, type:'spin_y', speed:.4});
-        }
     } else if (shape === 'lamp') {
         const base = new THREE.Mesh(new THREE.CylinderGeometry(.22,.26,.1,12), mat());
         base.position.set(.5,.05,.5); g.add(base);
@@ -1046,7 +1231,6 @@ function buildFurnitureMesh(item) {
         const backMat = new THREE.MeshStandardMaterial({color:0x020508,roughness:.5,metalness:.7});
         const back = new THREE.Mesh(new THREE.BoxGeometry(1.7,.6,.06), backMat);
         back.position.set(.85,.7,.03); g.add(back);
-        const txt = (ad.text || '⬡ NEXUS ⬡');
         // Tube glow border
         const neonMat = new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:3.5,transparent:true,opacity:.95});
         const top = new THREE.Mesh(new THREE.BoxGeometry(1.64,.025,.025), neonMat);
@@ -1117,21 +1301,7 @@ function buildFurnitureMesh(item) {
         box.position.set(.35,.35,.35); g.add(box);
     }
 
-    // Rarity emission glow
-    const rarityColors = {legendary:0xff9800, epic:0x9b30ff, special:0x00ff88};
-    if (rarityColors[item.rarity]) {
-        const gm = new THREE.MeshStandardMaterial({
-            color:rarityColors[item.rarity], transparent:true, opacity:.12,
-            side:THREE.BackSide, depthWrite:false
-        });
-        g.children.filter(c=>c.isMesh&&c.geometry&&!c.geometry.isBufferGeometry).forEach(c=>{
-            const gv = new THREE.Mesh(c.geometry, gm);
-            gv.position.copy(c.position); gv.rotation.copy(c.rotation);
-            gv.scale.setScalar(1.18); g.add(gv);
-        });
-    }
-
-    g.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+    decoratePlacedFurnitureItem(item, g, ghost);
     return g;
 }
 
@@ -1145,7 +1315,10 @@ function renderCatalog(catFilter = 'all') {
     const list = document.getElementById('cat-list');
     list.innerHTML = '';
     catalogue.forEach(item => {
-        if (catFilter !== 'all' && item.category !== catFilter) return;
+        if (catFilter === 'owned') {
+            const owned = ownedItems.has(item.id) || Number(item.price_kp) === 0;
+            if (!owned) return;
+        } else if (catFilter !== 'all' && item.category !== catFilter) return;
         const ad = item.asset_data || {};
         const col = ad.color || '#00e8ff';
         const div = document.createElement('div');
@@ -1205,6 +1378,49 @@ function renderPlaced() {
 
 function addPlacedMesh(p) {
     if (placedMeshes.has(p.id)) return;
+    const ad = p.asset_data || {};
+    const modelUrl = ad.model || ad.model_url;
+    if (modelUrl) {
+        const root = new THREE.Group();
+        root.position.set(p.cell_x * CS, 0, p.cell_y * CS);
+        root.rotation.y = -(p.rotation || 0) * Math.PI / 2;
+        root.userData = { placedId: p.id, item: p };
+        scene.add(root);
+        placedMeshes.set(p.id, root);
+        const w = (p.width || 1) * CS, d = (p.depth || 1) * CS;
+        const col = parseInt((ad.color || '#00e8ff').replace('#',''), 16);
+        const placeholder = new THREE.Mesh(
+            new THREE.BoxGeometry(0.55, 0.55, 0.55),
+            new THREE.MeshStandardMaterial({ color: col, transparent: true, opacity: 0.28 })
+        );
+        placeholder.position.set(w * 0.5, 0.28, d * 0.5);
+        root.add(placeholder);
+        _gltfLoader.load(
+            modelUrl,
+            gltf => {
+                root.remove(placeholder);
+                placeholder.geometry.dispose();
+                placeholder.material.dispose();
+                const model = gltf.scene;
+                const box = new THREE.Box3().setFromObject(model);
+                const size = new THREE.Vector3();
+                box.getSize(size);
+                const maxFoot = Math.max(w, d);
+                const maxDim = Math.max(size.x, size.y, size.z);
+                if (maxDim > 0) model.scale.setScalar((maxFoot / maxDim) * 0.92);
+                const box2 = new THREE.Box3().setFromObject(model);
+                model.position.y -= box2.min.y;
+                model.position.x += w * 0.5;
+                model.position.z += d * 0.5;
+                model.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+                root.add(model);
+                decoratePlacedFurnitureItem(p, root, false);
+            },
+            undefined,
+            err => console.warn('[sanctum] furniture GLB failed', modelUrl, err)
+        );
+        return;
+    }
     const g = buildFurnitureMesh(p);
     g.position.set(p.cell_x * CS, 0, p.cell_y * CS);
     g.rotation.y = -(p.rotation || 0) * Math.PI / 2;
@@ -1303,7 +1519,24 @@ function updateGhost() {
     if (!ghostGroup) return;
     ghostGroup.clear();
     if (!selectedCatalogItem) return;
-    const g = buildFurnitureMesh(selectedCatalogItem);
+    const adg = selectedCatalogItem.asset_data || {};
+    const gUrl = adg.model || adg.model_url;
+    if (gUrl) {
+        const w = (selectedCatalogItem.width || 1) * CS, d = (selectedCatalogItem.depth || 1) * CS;
+        const wire = new THREE.Mesh(
+            new THREE.BoxGeometry(w * 0.88, 0.42, d * 0.88),
+            new THREE.MeshStandardMaterial({
+                color: 0x00ff88, transparent: true, opacity: 0.22, emissive: 0x00ff88, emissiveIntensity: 0.35
+            })
+        );
+        wire.position.set(w * 0.5, 0.21, d * 0.5);
+        const g = new THREE.Group();
+        g.add(wire);
+        g.rotation.y = -ghostRot * Math.PI / 2;
+        ghostGroup.add(g);
+        return;
+    }
+    const g = buildFurnitureMesh(selectedCatalogItem, { ghost: true });
     g.traverse(c => {
         if (c.isMesh) {
             c.material = new THREE.MeshStandardMaterial({
@@ -1547,11 +1780,15 @@ document.getElementById('lp').classList.add('open');
 
 // Category tabs with counts
 function updateTabCounts() {
+    const ownedCount = catalogue.filter(i => ownedItems.has(i.id) || Number(i.price_kp) === 0).length;
     document.querySelectorAll('.cat-tab').forEach(tab => {
         const cat = tab.dataset.cat;
-        const count = cat === 'all' ? catalogue.length
-            : catalogue.filter(i => i.category === cat).length;
+        let count;
+        if (cat === 'all') count = catalogue.length;
+        else if (cat === 'owned') count = ownedCount;
+        else count = catalogue.filter(i => i.category === cat).length;
         tab.textContent = (cat === 'all' ? 'ALL' :
+            cat === 'owned' ? 'OWNED' :
             cat === 'floor' ? 'FLOOR' :
             cat === 'wall' ? 'WALL' :
             cat === 'decoration' ? 'DECO' : 'LIVE') + ` (${count})`;
@@ -1778,7 +2015,7 @@ window.saveSettings = async () => {
         });
         const j = await r.json();
         if (j.ok) {
-            const rname = name || 'MY SANCTUM';
+            const rname = (name && name.trim()) ? name.trim() : (plotData?.house_name || document.getElementById('room-name').textContent || 'SANCTUM');
             document.getElementById('room-name').textContent = rname.toUpperCase();
             if (plotData) { plotData.house_name = name; plotData.exterior_theme = theme; plotData.exterior_color = color; plotData.is_public = pub ? 1 : 0; }
             applyTheme(theme);
@@ -1789,6 +2026,21 @@ window.saveSettings = async () => {
         }
     } catch(e) { toast('Network error', 'err'); }
 };
+
+function applyExitNav(isAdmin) {
+    const btn = document.getElementById('nav-exit');
+    const lbl = document.getElementById('nav-exit-lbl');
+    if (!btn) return;
+    if (isAdmin) {
+        btn.dataset.href = '/games/arena-protocol/nexus-city.html';
+        if (lbl) lbl.textContent = 'NEXUS';
+    } else {
+        btn.dataset.href = '/';
+        if (lbl) lbl.textContent = 'HOME';
+    }
+}
+
+window.crtGoExit = () => crtGo(document.getElementById('nav-exit')?.dataset.href || '/');
 
 // CRT transition
 window.crtGo = (url) => {
@@ -1855,7 +2107,8 @@ function animate() {
         particles.geometry.attributes.position.needsUpdate = true;
     }
 
-    renderer.render(scene, camera);
+    if (composer) composer.render();
+    else renderer.render(scene, camera);
 }
 
 </script>
