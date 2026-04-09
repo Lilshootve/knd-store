@@ -377,17 +377,17 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
 renderer.setSize(W(), H());
 renderer.outputColorSpace  = THREE.SRGBColorSpace;
 renderer.toneMapping       = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.2;   // boost global de brillo/glow
+renderer.toneMappingExposure = 1.5;   // boost global de brillo/glow
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
 wrap.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x05070f);          // cielo nocturno profundo
-scene.fog = new THREE.FogExp2(0x0a0f1f, 0.035);        // niebla cinematográfica
+scene.fog = new THREE.FogExp2(0x0a0f1f, 0.014);        // niebla cinematográfica suave
 
 // ── Luz base (sin sombras duras, da base sin oscuridad total) ──
-scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+scene.add(new THREE.AmbientLight(0xffffff, 0.45));
 
 // ── Hemisférica (cielo cian / suelo azul oscuro) ──
 scene.add(new THREE.HemisphereLight(0x88ccff, 0x222233, 0.5));
