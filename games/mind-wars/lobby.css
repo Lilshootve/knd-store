@@ -191,6 +191,22 @@ body{background:var(--void);color:var(--t1);font-family:var(--FR);font-size:18.4
 .tb-logo svg{width:32px;height:32px;animation:hexSpin 10s linear infinite}
 @keyframes hexSpin{0%,100%{filter:drop-shadow(0 0 5px var(--c))}50%{filter:drop-shadow(0 0 12px var(--m));color:var(--m)}}
 
+.tb-back-nexus{
+  flex-shrink:0;
+  font-family:var(--FM);
+  font-size:11px;
+  letter-spacing:0.06em;
+  color:var(--c);
+  text-decoration:none;
+  padding:6px 10px;
+  border:1px solid var(--border);
+  border-radius:6px;
+  transition:var(--tr);
+  white-space:nowrap;
+}
+.tb-back-nexus:hover{color:var(--t1);border-color:var(--c);box-shadow:0 0 10px rgba(0,232,255,.2)}
+.tb-back-nexus:focus-visible{outline:2px solid var(--c);outline-offset:3px}
+
 /* player identity */
 .tb-identity{
   display:flex;align-items:center;gap:12px;

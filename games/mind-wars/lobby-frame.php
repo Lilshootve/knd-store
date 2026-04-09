@@ -17,6 +17,10 @@ $pageTitle = $LOBBY_PAGE_TITLE ?? 'KND Games — Lobby';
 $loadingLogo = $LOBBY_LOADING_LOGO ?? 'MIND WARS';
 $shellGame = $LOBBY_SHELL_GAME ?? 'mind-wars';
 $extraHead = $LOBBY_EXTRA_HEAD_HTML ?? '';
+if (!isset($KND_LOBBY_RETURN_URL)) {
+    require_once BASE_PATH . '/includes/knd_safe_return_url.php';
+    $KND_LOBBY_RETURN_URL = knd_safe_return_url_from_get('return');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

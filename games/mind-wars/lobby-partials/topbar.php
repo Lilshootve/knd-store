@@ -1,6 +1,10 @@
 <?php
 /** @var array $L lobby payload from mw_build_lobby_data_payload */
+/** @var string|null $KND_LOBBY_RETURN_URL optional same-site URL from ?return= */
 $u = $L['user'] ?? [];
+$kndReturn = isset($KND_LOBBY_RETURN_URL) && is_string($KND_LOBBY_RETURN_URL) && $KND_LOBBY_RETURN_URL !== ''
+    ? $KND_LOBBY_RETURN_URL
+    : null;
 $cur = $L['currencies'] ?? [];
 $kp = (int) ($cur['knd_points_available'] ?? 0);
 $fr = (int) ($cur['fragments_total'] ?? 0);
@@ -31,6 +35,9 @@ $rankLabel = $pos !== null ? '#' . (int) $pos : '—';
     </div>
     <span class="tb-brand">KND <em style="font-style:normal;font-weight:400;font-size:9px;letter-spacing:3px;color:var(--t3);margin-left:2px">GAMES</em></span>
   </a>
+  <?php if ($kndReturn !== null): ?>
+  <a class="tb-back-nexus" href="<?php echo htmlspecialchars($kndReturn, ENT_QUOTES, 'UTF-8'); ?>" title="Volver a la sala">← Sala</a>
+  <?php endif; ?>
 
   <div class="tb-identity">
     <div class="tb-avatar" id="tb-avatar-btn" role="button" tabindex="0" title="Avatars">

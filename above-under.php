@@ -184,7 +184,11 @@ holo_orb_emit_stylesheet_link();
   <div class="persp-floor"></div>
 </div>
 <div class="lobby-shell">
-<?php require __DIR__ . '/games/mind-wars/lobby-partials/topbar.php'; ?>
+<?php
+require_once BASE_PATH . '/includes/knd_safe_return_url.php';
+$KND_LOBBY_RETURN_URL = knd_safe_return_url_from_get('return');
+require __DIR__ . '/games/mind-wars/lobby-partials/topbar.php';
+?>
 <div class="lobby-content">
 <?php require __DIR__ . '/games/mind-wars/lobby-partials/panels_left.php'; ?>
 <div class="center-col insight-lobby-center">

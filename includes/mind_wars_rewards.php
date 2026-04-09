@@ -33,7 +33,7 @@ function mw_apply_rewards_to_user(PDO $pdo, int $userId, int $avatarItemId, arra
         $pdo->prepare("UPDATE knd_user_xp SET xp = ?, level = ? WHERE user_id = ?")->execute([(int) $userAfter['total'], (int) $userAfter['level'], $userId]);
     } else {
         $pdo->prepare("INSERT INTO knd_user_xp (user_id, xp, level) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE xp = VALUES(xp), level = VALUES(level)")
-            ->execute([(int) $userAfter['total'], (int) $userAfter['level'], $userId]);
+            ->execute([$userId, (int) $userAfter['total'], (int) $userAfter['level']]);
     }
 
     $season = mw_ensure_season($pdo);

@@ -92,6 +92,8 @@ holo_orb_emit_stylesheet_link();
 }
 
 if (!$embed) {
+    require_once BASE_PATH . '/includes/knd_safe_return_url.php';
+    $KND_LOBBY_RETURN_URL = knd_safe_return_url_from_get('return');
     require_once BASE_PATH . '/includes/favicon_links.php';
     ?>
 <!DOCTYPE html>
