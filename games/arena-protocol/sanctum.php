@@ -401,6 +401,7 @@ const HERO_MODEL_URL = <?php echo json_encode($_heroModelUrl); ?>;
 const GRID = 10, CS = 1.0; // GRID cells, Cell Size
 let scene, camera, renderer, raycaster, clock;
 let composer = null, bloomPass = null;
+let _sanctumComposerErrLogged = false;
 let floorPlane, hoverMesh, ghostGroup;
 let particles, particlePositions;
 let mode = 'view', catalogOpen = true;
@@ -423,6 +424,45 @@ let heroIsWalking = false;
 const heroVel = new THREE.Vector3();
 const heroKeys = {};
 const _gltfLoader = new GLTFLoader();
+
+/** GLB + MeshPhysical / Shader + texturas sin colorSpace rompen uniforms con EffectComposer (r170). */
+function normalizeGltfForRenderer(root) {
+    root.traverse((obj) => {
+        if (!obj.isMesh) return;
+        if (!obj.material) {
+            obj.material = new THREE.MeshStandardMaterial({ color: 0x778899, metalness: 0.4, roughness: 0.6 });
+            return;
+        }
+        const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+        const out = mats.map((m) => normalizeGltfMaterial(m)).filter(Boolean);
+        if (out.length === 0) obj.material = new THREE.MeshStandardMaterial({ color: 0x778899, metalness: 0.4, roughness: 0.6 });
+        else obj.material = out.length === 1 ? out[0] : out;
+    });
+}
+function normalizeGltfMaterial(m) {
+    if (!m || !m.isMaterial) return new THREE.MeshStandardMaterial({ color: 0x8899aa, metalness: 0.45, roughness: 0.55 });
+    if (m.envMap != null && !m.envMap.isTexture) { try { m.envMap = null; } catch (_) {} }
+    const setCS = (tex, srgb) => { if (tex && tex.isTexture) tex.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace; };
+    setCS(m.map, true); setCS(m.emissiveMap, true);
+    setCS(m.normalMap, false); setCS(m.roughnessMap, false); setCS(m.metalnessMap, false); setCS(m.aoMap, false);
+    if (m.isShaderMaterial) {
+        try { m.dispose(); } catch (_) {}
+        return new THREE.MeshStandardMaterial({ color: 0x8899aa, metalness: 0.45, roughness: 0.55 });
+    }
+    if (m.isMeshPhysicalMaterial) {
+        const std = new THREE.MeshStandardMaterial({
+            name: m.name, color: m.color.clone(), map: m.map,
+            emissive: m.emissive ? m.emissive.clone() : new THREE.Color(0), emissiveMap: m.emissiveMap,
+            normalMap: m.normalMap, normalScale: m.normalScale ? m.normalScale.clone() : undefined,
+            roughness: m.roughness, metalness: m.metalness, aoMap: m.aoMap,
+            transparent: m.transparent, opacity: m.opacity, side: m.side, depthWrite: m.depthWrite,
+            vertexColors: !!m.vertexColors
+        });
+        try { m.dispose(); } catch (_) {}
+        return std;
+    }
+    return m;
+}
 
 const placedMeshes = new Map(); // placed_id → THREE.Group
 const floorCells   = [];       // 10x10 flat planes for hover highlight
@@ -978,12 +1018,26 @@ function attachDefaultLampLight(item, g, ad) {
     return { _resolvedColor: lc };
 }
 
+function materialSupportsEmissiveGlow(m) {
+    return !!(m && (
+        m.isMeshStandardMaterial || m.isMeshPhysicalMaterial ||
+        m.isMeshLambertMaterial || m.isMeshPhongMaterial || m.isMeshToonMaterial
+    ));
+}
+
+/** No tocar MeshBasic / Line / Sprite: sin uniforms emissive en el shader → refreshUniforms peta con Composer. */
 function applySanctumGlowToObject3D(object3D, color = 0x00ffff, intensity = 1.35) {
+    const c = new THREE.Color(color);
     object3D.traverse((child) => {
         if (!child.isMesh || !child.material) return;
         const mats = Array.isArray(child.material) ? child.material : [child.material];
         mats.forEach((m) => {
-            m.emissive = new THREE.Color(color);
+            if (m.isMeshBasicMaterial) {
+                m.color.copy(c);
+                return;
+            }
+            if (!materialSupportsEmissiveGlow(m)) return;
+            m.emissive = c;
             m.emissiveIntensity = intensity;
         });
     });
@@ -1451,6 +1505,7 @@ function addPlacedMesh(p) {
                 placeholder.geometry.dispose();
                 placeholder.material.dispose();
                 const model = gltf.scene;
+                normalizeGltfForRenderer(model);
                 const box = new THREE.Box3().setFromObject(model);
                 const size = new THREE.Vector3();
                 box.getSize(size);
@@ -1908,6 +1963,7 @@ function spawnHero() {
             HERO_MODEL_URL,
             gltf => {
                 const model = gltf.scene;
+                normalizeGltfForRenderer(model);
                 // Normalize to ~1.25 units tall for a cozy room
                 const box = new THREE.Box3().setFromObject(model);
                 const size = new THREE.Vector3();
@@ -2167,8 +2223,13 @@ function animate() {
         particles.geometry.attributes.position.needsUpdate = true;
     }
 
-    if (composer) composer.render();
-    else renderer.render(scene, camera);
+    try {
+        if (composer) composer.render();
+        else renderer.render(scene, camera);
+    } catch (e) {
+        if (!_sanctumComposerErrLogged) { console.warn('[sanctum render] composer fallback:', e); _sanctumComposerErrLogged = true; }
+        try { renderer.render(scene, camera); } catch (_) {}
+    }
 }
 
 </script>
