@@ -1658,6 +1658,7 @@ a.bnav-item{text-decoration:none;color:inherit}
     padding-left:max(10px, env(safe-area-inset-left, 0px));
     gap:8px;
   }
+  .tb-back-nexus{padding:5px 8px;font-size:10px}
   .tb-logo{font-size:13.8px;letter-spacing:2px}
   #toast-container{
     top:max(58px, calc(env(safe-area-inset-top, 0px) + 48px));

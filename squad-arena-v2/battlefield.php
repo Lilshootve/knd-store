@@ -142,6 +142,9 @@ if ($html === false) {
     exit;
 }
 
+require_once BASE_PATH . '/includes/knd_safe_return_url.php';
+$KND_LOBBY_RETURN_URL = knd_safe_return_url_from_get('return');
+
 ob_start();
 require __DIR__ . '/../games/mind-wars/lobby-partials/topbar.php';
 $topbarHtml = ob_get_clean();
