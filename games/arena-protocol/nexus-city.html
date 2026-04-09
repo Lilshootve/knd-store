@@ -375,17 +375,40 @@ const H = () => Math.max(1, wrap.clientHeight);
 const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:false, powerPreference:"high-performance" });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
 renderer.setSize(W(), H());
-renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.outputColorSpace  = THREE.SRGBColorSpace;
+renderer.toneMapping       = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;   // boost global de brillo/glow
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
 wrap.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x010508);
-scene.fog = new THREE.FogExp2(0x010508, 0.011);
+scene.background = new THREE.Color(0x05070f);          // cielo nocturno profundo
+scene.fog = new THREE.FogExp2(0x0a0f1f, 0.035);        // niebla cinematográfica
 
-scene.add(new THREE.AmbientLight(0x3a4a70, 0.24));
-const sun = new THREE.DirectionalLight(0x8899cc, 0.65);
-sun.position.set(20,40,10); scene.add(sun);
-[[0x4488ff,1.8,65,-20,18,8],[0xaa44ff,1.5,55,20,16,-8],[0xff8833,0.9,50,0,14,24]].forEach(([c,i,d,x,y,z])=>{
+// ── Luz base (sin sombras duras, da base sin oscuridad total) ──
+scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+
+// ── Hemisférica (cielo cian / suelo azul oscuro) ──
+scene.add(new THREE.HemisphereLight(0x88ccff, 0x222233, 0.5));
+
+// ── Luz principal tipo "moonlight" (con sombras reales) ──
+const moonLight = new THREE.DirectionalLight(0x88aaff, 1.2);
+moonLight.position.set(20, 30, 10);
+moonLight.castShadow = true;
+moonLight.shadow.mapSize.width  = 1024;
+moonLight.shadow.mapSize.height = 1024;
+moonLight.shadow.camera.near    = 0.5;
+moonLight.shadow.camera.far     = 200;
+moonLight.shadow.camera.left    = -80;
+moonLight.shadow.camera.right   =  80;
+moonLight.shadow.camera.top     =  80;
+moonLight.shadow.camera.bottom  = -80;
+moonLight.shadow.bias           = -0.001;
+scene.add(moonLight);
+
+// ── Luces de acento de color para mood (paleta cyan/purple/amber) ──
+[[0x4488ff,1.4,65,-20,18,8],[0xaa44ff,1.2,55,20,16,-8],[0xff8833,0.7,50,0,14,24]].forEach(([c,i,d,x,y,z])=>{
   const pl = new THREE.PointLight(c,i,d,2); pl.position.set(x,y,z); scene.add(pl);
 });
 
@@ -1323,9 +1346,9 @@ async function buildWorldObject(item) {
     _wbFallbackMesh(g, item);
   }
 
-  // Añadir luz si el ítem la define
+  // ── Luz propia del objeto (convierte lámparas en fuentes reales de luz) ──
   if (item.light) {
-    const lc = item.light.color   || 0xffffff;
+    const lc = item.light.color     || 0xffffff;
     const li = item.light.intensity || 1.0;
     const ld = item.light.distance  || 12;
     const lh = item.light.height    || 2.5;
@@ -1339,6 +1362,36 @@ async function buildWorldObject(item) {
     }
     light.position.set(0, lh, 0);
     g.add(light);
+
+    // ── Ground glow: halo en el suelo bajo objetos con luz (look futurista) ──
+    const glowRadius = item.light.glowRadius || 1.8;
+    const glowColor  = item.light.glowColor  || lc;
+    const glowMesh   = new THREE.Mesh(
+      new THREE.CircleGeometry(glowRadius, 32),
+      new THREE.MeshBasicMaterial({
+        color:       glowColor,
+        transparent: true,
+        opacity:     0.22,
+        depthWrite:  false,
+        side:        THREE.DoubleSide,
+      })
+    );
+    glowMesh.rotation.x = -Math.PI / 2;
+    glowMesh.position.y = 0.02; // justo sobre el suelo
+    g.add(glowMesh);
+
+    // Pulso animado del halo — guardado para el loop
+    glowMesh.userData.wbPulse     = true;
+    glowMesh.userData.wbPulseBase = 0.22;
+    g.userData.wbGlowMesh = glowMesh;
+  }
+
+  // ── Variación orgánica: evita que objetos repetidos se vean clonados ──
+  // Se aplica sólo si el ítem no especifica rotación/escala fija
+  if (!item._noVariation) {
+    g.rotation.y    = Math.random() * Math.PI * 2;
+    const sv        = 0.9 + Math.random() * 0.2; // 0.9 – 1.1
+    g.scale.setScalar((item.scale || 1.0) * sv);
   }
 
   return g;
@@ -1685,12 +1738,21 @@ function _wbSetStatus(msg) {
 // ── TICK DEL LOOP PRINCIPAL ──
 // Llamado desde renderer.setAnimationLoop cuando _wbActive=true
 
+let _wbPulseT = 0;
 function tickWorldBuilder(dt) {
   // Actualizar BoxHelper del objeto seleccionado
   if (_wbSelBox && _wbSelObj) _wbSelBox.update();
   // Actualizar animaciones de los objetos del mundo (mixers GLB)
   _wbObjects.forEach(o => {
     if (o.mesh?.userData?.mixer) o.mesh.userData.mixer.update(dt);
+  });
+  // Pulsar ground glow en todos los objetos con luz
+  _wbPulseT += dt;
+  _wbObjects.forEach(o => {
+    const glow = o.mesh?.userData?.wbGlowMesh;
+    if (!glow) return;
+    const base = glow.userData.wbPulseBase ?? 0.22;
+    glow.material.opacity = base + Math.sin(_wbPulseT * 1.8) * 0.07;
   });
 }
 
