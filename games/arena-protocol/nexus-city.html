@@ -342,6 +342,8 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
   <div class="cu-r"><div class="cu-l">NOMBRE</div><input class="cu-i" id="cu-nm" value="GUARDIAN_01" maxlength="20"></div>
   <div class="cu-r"><div class="cu-l">COLOR DEL TRAJE</div><div class="cu-cols" id="cu-cols"></div></div>
   <div class="cu-r"><div class="cu-l">VISOR</div><div class="cu-cols" id="cu-visor-cols"></div></div>
+  <div class="cu-r"><div class="cu-l">CALIDAD 3D</div><div class="cu-cols" id="cu-quality-cols"></div></div>
+  <div class="cu-saving" id="cu-q-hint" style="min-height:0;font-size:6.5px"></div>
   <div class="cu-b" onclick="applyCustomizer()">✓ CONFIRMAR</div>
   <div class="cu-saving" id="cu-saving"></div>
 </div>
@@ -382,19 +384,45 @@ let chatOpen   = false;
 const remotePlayers = new Map();
 
 // ══════════════════════════════════════════════════════
+// CALIDAD WEBGL (compartida con Sanctum: localStorage)
+// ══════════════════════════════════════════════════════
+const WEBGL_QUALITY_KEY = "knd-webgl-quality";
+function getWebGlQuality(){
+  try{
+    const v = localStorage.getItem(WEBGL_QUALITY_KEY);
+    if (v === "low" || v === "medium" || v === "high") return v;
+  }catch(_){}
+  return "medium";
+}
+function setWebGlQuality(q){
+  try{ localStorage.setItem(WEBGL_QUALITY_KEY, q); }catch(_){}
+}
+/** @type {"low"|"medium"|"high"} */
+const WEBGL_Q = getWebGlQuality();
+const WEBGL_LOW = WEBGL_Q === "low";
+const WEBGL_MED = WEBGL_Q === "medium";
+
+// ══════════════════════════════════════════════════════
 // RENDERER
 // ══════════════════════════════════════════════════════
 const wrap = document.getElementById("c");
 const W = () => Math.max(1, wrap.clientWidth);
 const H = () => Math.max(1, wrap.clientHeight);
 
-const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:false, powerPreference:"high-performance" });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+const _dpr = window.devicePixelRatio || 1;
+const _pixelCap = WEBGL_LOW ? 1 : WEBGL_MED ? Math.min(_dpr, 1.5) : Math.min(_dpr, 2);
+
+const renderer = new THREE.WebGLRenderer({
+  antialias: !WEBGL_LOW,
+  alpha: false,
+  powerPreference: WEBGL_LOW ? "default" : "high-performance",
+});
+renderer.setPixelRatio(_pixelCap);
 renderer.setSize(W(), H());
 renderer.outputColorSpace  = THREE.SRGBColorSpace;
 renderer.toneMapping       = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.35;   // día exterior; bloom sigue legible
-renderer.shadowMap.enabled = true;
+renderer.toneMappingExposure = WEBGL_LOW ? 1.15 : 1.35;
+renderer.shadowMap.enabled = !WEBGL_LOW;
 renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
 wrap.appendChild(renderer.domElement);
 
@@ -411,9 +439,10 @@ scene.add(new THREE.HemisphereLight(0xc8e8ff, 0x4a5a3c, 0.55));
 // ── Sol (direccional cálida, sombras) ──
 const sunLight = new THREE.DirectionalLight(0xfff4e0, 2.35);
 sunLight.position.set(28, 52, 18);
-sunLight.castShadow = true;
-sunLight.shadow.mapSize.width  = 2048;
-sunLight.shadow.mapSize.height = 2048;
+sunLight.castShadow = !WEBGL_LOW;
+const _shRes = WEBGL_LOW ? 512 : WEBGL_MED ? 1024 : 2048;
+sunLight.shadow.mapSize.width  = _shRes;
+sunLight.shadow.mapSize.height = _shRes;
 sunLight.shadow.camera.near    = 0.5;
 sunLight.shadow.camera.far     = 220;
 sunLight.shadow.camera.left    = -90;
@@ -445,10 +474,19 @@ let bloomPass = null;
 let _composerErrLogged = false;
 
 function initPostFX(){
+  if (WEBGL_LOW) {
+    composer = null;
+    bloomPass = null;
+    return;
+  }
   const size = new THREE.Vector2(W(), H());
   composer = new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene, cam));
-  bloomPass = new UnrealBloomPass(size, 0.8, 0.4, 0.85);
+  if (WEBGL_MED) {
+    bloomPass = new UnrealBloomPass(size, 0.48, 0.38, 0.78);
+  } else {
+    bloomPass = new UnrealBloomPass(size, 0.8, 0.4, 0.85);
+  }
   composer.addPass(bloomPass);
 }
 
@@ -466,7 +504,7 @@ const gnd = new THREE.Mesh(
   new THREE.MeshStandardMaterial({color:0x3a4f62,metalness:.12,roughness:.88,emissive:0x1e2c38,emissiveIntensity:.14})
 );
 gnd.rotation.x=-Math.PI/2;
-gnd.receiveShadow = true;
+gnd.receiveShadow = !WEBGL_LOW;
 scene.add(gnd);
 const g1=new THREE.GridHelper(140,90,0x3d4d68,0x2a384c); g1.position.y=0.02;
 [g1.material].flat().forEach(m=>{m.transparent=true;m.opacity=0.42;m.fog=false;}); scene.add(g1);
@@ -1188,6 +1226,38 @@ function buildColPicker(containerId, initialHex, onChange){
 }
 buildColPicker("cu-cols",   gColorHex, h=>{ gColorHex=h; recolorPlayer(); });
 buildColPicker("cu-visor-cols", gVisorHex, h=>{ gVisorHex=h; });
+
+(function buildQualityPicker(){
+  const qEl = document.getElementById("cu-quality-cols");
+  if (!qEl) return;
+  const levels = [
+    { id: "low",    label: "L", hint: "Alto FPS · sin bloom/sombras" },
+    { id: "medium", label: "M", hint: "Equilibrado" },
+    { id: "high",   label: "H", hint: "Máximo brillo/post-proceso" },
+  ];
+  const cur = getWebGlQuality();
+  levels.forEach(L => {
+    const b = document.createElement("div");
+    b.className = "cc" + (L.id === cur ? " on" : "");
+    b.textContent = L.label;
+    b.title = L.hint;
+    b.style.minWidth = "28px";
+    b.style.borderRadius = "6px";
+    b.style.fontSize = "10px";
+    b.style.fontFamily = '"Orbitron",sans-serif';
+    b.style.textAlign = "center";
+    b.style.background = "rgba(0,40,60,.6)";
+    b.style.color = "rgba(200,225,255,.85)";
+    if (L.id === cur) b.style.boxShadow = "0 0 10px rgba(0,232,255,.45)";
+    b.onclick = () => {
+      if (L.id === getWebGlQuality()) return;
+      setWebGlQuality(L.id);
+      document.getElementById("cu-q-hint").textContent = "RECARGANDO…";
+      location.reload();
+    };
+    qEl.appendChild(b);
+  });
+})();
 
 function recolorPlayer(){
   const c=new THREE.Color(gColorHex);

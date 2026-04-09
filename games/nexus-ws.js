@@ -18,18 +18,38 @@
  *   echo_decay    { updates: [{avatar_id, resonance, status}] }  (broadcast every 30s)
  *   error         { code, message }
  *
- * Run: node nexus-ws.js
- * Port: 8765 (override with WS_PORT env)
+ * Run (from this folder):
+ *   npm install
+ *   npm start
+ * Port: Railway define PORT. Local: WS_PORT o 3000 (mismo patrón que plantillas Railway).
+ *
+ * Producción HTTPS:
+ *   El HTML en HTTPS no puede abrir ws:// al mismo host: otro puerto sin TLS falla.
+ *   Opciones: (1) Nginx/Caddy proxy_pass a este proceso y exponer wss://tudominio.com/nexus-ws
+ *   con Upgrade/Connection headers; (2) TLS en Node (no incluido aquí).
+ *   Tras el proxy, pon en la página: <meta name="nexus-ws-url" content="wss://tudominio.com/nexus-ws">
  */
 
 'use strict';
 
+const http = require('http');
 const WebSocket = require('ws');
-const http      = require('http');
 
-const PORT    = parseInt(process.env.WS_PORT || '8765', 10);
-const server  = http.createServer();
-const wss     = new WebSocket.Server({ server });
+// Railway inyecta PORT. En local: WS_PORT o 3000 (equivalente al ejemplo mínimo de deploy).
+const PORT = parseInt(process.env.PORT || process.env.WS_PORT || '3000', 10);
+
+const server = http.createServer((req, res) => {
+    const path = (req.url || '/').split('?')[0];
+    if (path === '/' || path === '/health') {
+        res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' });
+        res.end('nexus-ws ok\n');
+        return;
+    }
+    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('not found\n');
+});
+
+const wss = new WebSocket.Server({ server });
 
 // ────────────────────────────────────────────────
 // State
@@ -182,7 +202,7 @@ wss.on('connection', (ws, req) => {
 
         // ── chat ──────────────────────────────────
         if (type === 'chat') {
-            const VALID_CHANNELS = ['global', 'agora', 'olimpo', 'tesla', 'casino', 'central'];
+            const VALID_CHANNELS = ['global', 'agora', 'olimpo', 'tesla', 'casino', 'central', 'sanctum'];
             const channel = VALID_CHANNELS.includes(data.channel) ? data.channel : 'global';
             const message = sanitizeMessage(data.message);
 
@@ -222,7 +242,7 @@ wss.on('connection', (ws, req) => {
 
         // ── district_enter ────────────────────────
         if (type === 'district_enter') {
-            const VALID_DISTRICTS = ['central', 'olimpo', 'tesla', 'casino', 'agora'];
+            const VALID_DISTRICTS = ['central', 'olimpo', 'tesla', 'casino', 'agora', 'sanctum'];
             const district_id = VALID_DISTRICTS.includes(data.district_id)
                 ? data.district_id
                 : 'central';
@@ -325,6 +345,6 @@ setInterval(() => {
 // ────────────────────────────────────────────────
 // Start
 // ────────────────────────────────────────────────
-server.listen(PORT, () => {
-    console.log(`[nexus-ws] WebSocket server listening on ws://localhost:${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`[nexus-ws] listening on port ${PORT} (HTTP + WebSocket)`);
 });

@@ -376,6 +376,14 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
       <label>PUBLIC SPACE</label>
       <div class="toggle on" id="s-public" onclick="this.classList.toggle('on')"></div>
     </div>
+    <div class="field">
+      <label>3D QUALITY</label>
+      <select id="s-quality">
+        <option value="low">LOW — FPS first</option>
+        <option value="medium">MEDIUM</option>
+        <option value="high">HIGH — bloom &amp; shadows</option>
+      </select>
+    </div>
     <div class="modal-row">
       <div class="modal-btn modal-cancel" onclick="closeSettings()">CANCEL</div>
       <div class="modal-btn modal-save" onclick="saveSettings()">SAVE</div>
@@ -411,6 +419,21 @@ let balance = 0;
 let ghostRot = 0;
 let ownedItems = new Set();    // furniture_id reales: colocados + comprados (API owned_furniture_ids)
 let buyCandidate = null;       // Item pending purchase confirmation
+
+const WEBGL_QUALITY_KEY = 'knd-webgl-quality';
+function getWebGlQuality() {
+    try {
+        const v = localStorage.getItem(WEBGL_QUALITY_KEY);
+        if (v === 'low' || v === 'medium' || v === 'high') return v;
+    } catch (_) {}
+    return 'medium';
+}
+function setWebGlQuality(q) {
+    try { localStorage.setItem(WEBGL_QUALITY_KEY, q); } catch (_) {}
+}
+const WEBGL_Q = getWebGlQuality();
+const WEBGL_LOW = WEBGL_Q === 'low';
+const WEBGL_MED = WEBGL_Q === 'medium';
 
 // Camera orbit (right-drag)
 let isRightDrag = false, dragStart = {x:0,y:0};
@@ -534,14 +557,20 @@ function initThree() {
     raycaster = new THREE.Raycaster();
 
     const wrap = document.getElementById('cv');
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const _dpr = window.devicePixelRatio || 1;
+    const _pixelCap = WEBGL_LOW ? 1 : WEBGL_MED ? Math.min(_dpr, 1.5) : Math.min(_dpr, 2);
+    renderer = new THREE.WebGLRenderer({
+        antialias: !WEBGL_LOW,
+        alpha: false,
+        powerPreference: WEBGL_LOW ? 'default' : 'high-performance',
+    });
+    renderer.setPixelRatio(_pixelCap);
     renderer.setSize(wrap.clientWidth, wrap.clientHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.enabled = !WEBGL_LOW;
     renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
     renderer.toneMapping       = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.52;
+    renderer.toneMappingExposure = WEBGL_LOW ? 1.22 : WEBGL_MED ? 1.38 : 1.52;
     wrap.appendChild(renderer.domElement);
 
     resetCamera();
@@ -557,8 +586,9 @@ function initThree() {
 
     const sun = new THREE.DirectionalLight(0xa0d8ff, 1.35);
     sun.position.set(8, 16, 8);
-    sun.castShadow = true;
-    sun.shadow.mapSize.set(1024, 1024);
+    sun.castShadow = !WEBGL_LOW;
+    const _shSan = WEBGL_LOW ? 512 : WEBGL_MED ? 768 : 1024;
+    sun.shadow.mapSize.set(_shSan, _shSan);
     sun.shadow.camera.near = 0.5;
     sun.shadow.camera.far  = 60;
     sun.shadow.camera.left = sun.shadow.camera.bottom = -12;
@@ -585,12 +615,21 @@ function initThree() {
 }
 
 function initPostFX() {
+    if (WEBGL_LOW) {
+        composer = null;
+        bloomPass = null;
+        return;
+    }
     const wrap = document.getElementById('cv');
     const w = Math.max(1, wrap.clientWidth), h = Math.max(1, wrap.clientHeight);
     const size = new THREE.Vector2(w, h);
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    bloomPass = new UnrealBloomPass(size, 0.68, 0.44, 0.88);
+    if (WEBGL_MED) {
+        bloomPass = new UnrealBloomPass(size, 0.42, 0.36, 0.78);
+    } else {
+        bloomPass = new UnrealBloomPass(size, 0.68, 0.44, 0.88);
+    }
     composer.addPass(bloomPass);
 }
 
@@ -862,7 +901,7 @@ function buildCeiling() {
 }
 
 function buildParticles() {
-    const n = 180;
+    const n = WEBGL_LOW ? 48 : WEBGL_MED ? 110 : 180;
     particlePositions = new Float32Array(n * 3);
     const velocities  = new Float32Array(n * 3);
     for (let i = 0; i < n; i++) {
@@ -2136,6 +2175,8 @@ window.openSettings = () => {
         else
             document.getElementById('s-public').classList.remove('on');
     }
+    const sq = document.getElementById('s-quality');
+    if (sq) sq.value = getWebGlQuality();
     document.getElementById('modal').classList.add('open');
 };
 window.closeSettings = () => document.getElementById('modal').classList.remove('open');
@@ -2145,6 +2186,9 @@ window.saveSettings = async () => {
     const theme = document.getElementById('s-theme').value;
     const color = document.getElementById('s-color').value;
     const pub   = document.getElementById('s-public').classList.contains('on');
+    const qSel  = document.getElementById('s-quality');
+    const qNew  = qSel && ['low','medium','high'].includes(qSel.value) ? qSel.value : getWebGlQuality();
+    const qChanged = qNew !== getWebGlQuality();
     try {
         const r = await fetch('/api/nexus/sanctum.php', {
             method:'POST', headers:{'Content-Type':'application/json'},
@@ -2158,6 +2202,11 @@ window.saveSettings = async () => {
             applyTheme(theme);
             toast('SETTINGS SAVED', 'ok');
             window.closeSettings();
+            if (qChanged) {
+                setWebGlQuality(qNew);
+                toast('RELOADING FOR NEW GRAPHICS…', 'info');
+                setTimeout(() => location.reload(), 400);
+            }
         } else {
             toast(j.message || 'Save failed', 'err');
         }
