@@ -205,6 +205,17 @@ try {
         }
     }
 
+    // 7. Admin flag (world builder)
+    $is_admin = false;
+    if ($uid) {
+        try {
+            $adm = $pdo->prepare("SELECT role FROM users WHERE id = ? LIMIT 1");
+            $adm->execute([$uid]);
+            $role = $adm->fetchColumn();
+            $is_admin = in_array($role, ['admin', 'superadmin', 'mod'], true);
+        } catch (PDOException $_) { $is_admin = false; }
+    }
+
     json_success([
         'districts'          => $districts,
         'echoes_by_district' => $echoes_by_district,
@@ -212,6 +223,7 @@ try {
         'last_battle'        => $last_battle ?: null,
         'online_count'       => (int)$online_count,
         'player'             => $player_data,
+        'is_admin'           => $is_admin,
     ]);
 
 } catch (PDOException $e) {

@@ -172,6 +172,36 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
 .ld-b{width:160px;height:2px;background:rgba(255,255,255,.06);border-radius:1px;overflow:hidden}
 .ld-f{height:100%;background:linear-gradient(90deg,#00e8ff,#9b30ff);border-radius:1px;animation:ld-anim 1.4s ease-in-out infinite}
 @keyframes ld-anim{0%{width:0%;margin-left:0}50%{width:60%}100%{width:0%;margin-left:100%}}
+
+/* ══ WORLD BUILDER ADMIN HUD ══ */
+#wb-hud{position:fixed;left:0;top:48px;bottom:56px;width:220px;z-index:60;background:rgba(2,5,16,.97);border-right:1px solid rgba(155,48,255,.18);backdrop-filter:blur(14px);flex-direction:column;gap:0;overflow-y:auto;overflow-x:hidden}
+#wb-hud::before{content:"";position:absolute;right:0;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,rgba(155,48,255,.45) 30%,rgba(0,232,255,.3) 70%,transparent);pointer-events:none}
+#wb-hud::-webkit-scrollbar{width:2px}#wb-hud::-webkit-scrollbar-thumb{background:rgba(155,48,255,.2)}
+.wb-hdr{padding:11px 12px 9px;border-bottom:1px solid rgba(155,48,255,.12);display:flex;align-items:center;gap:6px;flex-shrink:0}
+.wb-badge{background:rgba(155,48,255,.15);border:1px solid rgba(155,48,255,.45);border-radius:3px;padding:2px 7px;font-family:"Orbitron",sans-serif;font-size:7px;font-weight:700;letter-spacing:.18em;color:#c158ff}
+.wb-title{font-family:"Orbitron",sans-serif;font-size:8.5px;font-weight:700;letter-spacing:.14em;color:rgba(200,175,255,.9)}
+.wb-close{margin-left:auto;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:8px;color:rgba(255,255,255,.3);transition:all .15s;flex-shrink:0}
+.wb-close:hover{background:rgba(255,61,86,.1);color:#ff3d56;border-color:rgba(255,61,86,.3)}
+.wb-sect{padding:8px 12px;border-bottom:1px solid rgba(155,48,255,.07);flex-shrink:0}
+.wb-sl{font-size:6.5px;letter-spacing:.2em;color:rgba(155,100,255,.4);margin-bottom:6px}
+#wb-catalog-items{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.wbi{background:rgba(155,48,255,.05);border:1px solid rgba(155,48,255,.12);border-radius:5px;padding:6px 3px;cursor:pointer;text-align:center;transition:all .18s}
+.wbi:hover{background:rgba(155,48,255,.14);border-color:rgba(155,48,255,.38);transform:translateY(-1px)}
+.wbi.on{background:rgba(155,48,255,.22);border-color:#9b30ff;box-shadow:0 0 8px rgba(155,48,255,.3)}
+.wbi-icon{font-size:15px;line-height:1.2}
+.wbi-name{font-size:5.5px;letter-spacing:.04em;color:rgba(200,175,255,.6);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wb-btns{display:flex;flex-direction:column;gap:4px}
+.wb-btn{padding:7px 8px;border-radius:4px;cursor:pointer;font-family:"Orbitron",sans-serif;font-size:7px;font-weight:700;letter-spacing:.12em;text-align:center;border:1px solid;transition:all .15s;user-select:none}
+.wb-btn.info{background:rgba(0,232,255,.07);border-color:rgba(0,232,255,.25);color:#00e8ff}
+.wb-btn.info:hover{background:rgba(0,232,255,.15)}
+.wb-btn.info.on{background:rgba(0,232,255,.18);box-shadow:0 0 10px rgba(0,232,255,.2)}
+.wb-btn.warn{background:rgba(255,61,86,.07);border-color:rgba(255,61,86,.28);color:#ff3d56}
+.wb-btn.warn:hover{background:rgba(255,61,86,.15)}
+.wb-keys{display:flex;flex-direction:column;gap:4px}
+.wb-key-row{display:flex;align-items:center;gap:7px;padding:2px 0}
+.wb-k{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:17px;padding:0 5px;border-radius:3px;font-size:7.5px;border:1px solid rgba(155,48,255,.38);background:rgba(40,10,80,.5);color:rgba(200,150,255,.9);font-family:"Share Tech Mono",monospace}
+.wb-kl{font-size:7px;color:rgba(155,120,200,.55);letter-spacing:.06em}
+#wb-status{padding:8px 12px;font-size:7.5px;color:rgba(155,180,255,.6);letter-spacing:.04em;line-height:1.6;border-top:1px solid rgba(155,48,255,.08);min-height:44px;word-break:break-word;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -267,6 +297,39 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
     <input id="chat-input" type="text" placeholder="Mensaje..." maxlength="200" autocomplete="off">
     <div id="chat-send" onclick="sendChat()">SEND</div>
   </div>
+</div>
+
+<!-- World Builder HUD (admin only, hidden until B is pressed) -->
+<div id="wb-hud" style="display:none">
+  <div class="wb-hdr">
+    <div class="wb-badge">ADMIN</div>
+    <div class="wb-title">WORLD BUILDER</div>
+    <div class="wb-close" onclick="window._wbToggleMode()">✕</div>
+  </div>
+  <div class="wb-sect">
+    <div class="wb-sl">CATÁLOGO DE OBJETOS</div>
+    <div id="wb-catalog-items"></div>
+  </div>
+  <div class="wb-sect">
+    <div class="wb-sl">ACCIONES</div>
+    <div class="wb-btns">
+      <div class="wb-btn info" id="wb-grid-btn" onclick="window._wbToggleGrid()">◫ GRID SNAP: OFF</div>
+      <div class="wb-btn warn" onclick="window.wbDeleteSelected()">✕ BORRAR SELECCIONADO</div>
+    </div>
+  </div>
+  <div class="wb-sect">
+    <div class="wb-sl">CONTROLES</div>
+    <div class="wb-keys">
+      <div class="wb-key-row"><span class="wb-k">B</span><span class="wb-kl">activar / desactivar</span></div>
+      <div class="wb-key-row"><span class="wb-k">Click</span><span class="wb-kl">colocar / seleccionar</span></div>
+      <div class="wb-key-row"><span class="wb-k">R</span><span class="wb-kl">rotar 45°</span></div>
+      <div class="wb-key-row"><span class="wb-k">+ / -</span><span class="wb-kl">escalar</span></div>
+      <div class="wb-key-row"><span class="wb-k">DEL</span><span class="wb-kl">eliminar seleccionado</span></div>
+      <div class="wb-key-row"><span class="wb-k">G</span><span class="wb-kl">grid snap toggle</span></div>
+      <div class="wb-key-row"><span class="wb-k">ESC</span><span class="wb-kl">cancelar colocación</span></div>
+    </div>
+  </div>
+  <div id="wb-status">Modo Builder activo.</div>
 </div>
 
 <!-- Customizer -->
@@ -931,6 +994,10 @@ window.applyCustomizer=async function(){
 const keys={};
 window.addEventListener("keydown",e=>{
   if(document.activeElement===document.getElementById("chat-input")) return;
+  // ── World Builder hotkeys (admin) ──
+  if(e.code==="KeyB" && !e.repeat && window.IS_ADMIN){ _wbToggleMode(); return; }
+  if(_wbActive && !e.repeat){ if(_wbHandleKey(e.code)) return; }
+  // ── Normal game keys ──
   keys[e.code]=true;
   if(e.code==="KeyE"&&!e.repeat) onInteract();
   if(e.code==="Escape"){ document.getElementById("rp").classList.remove("on"); document.getElementById("cu").classList.remove("on"); }
@@ -1014,6 +1081,13 @@ async function loadWorld(){
 
     // Connect WS
     connectWS();
+
+    // Init admin World Builder if flagged by server
+    if (data.is_admin) {
+      window.IS_ADMIN = true;
+      initWorldBuilder();
+    }
+
     return true;
   }catch(err){
     console.warn("[world] API unavailable, using fallback:",err.message);
@@ -1058,8 +1132,8 @@ requestAnimationFrame(()=>{ resizeCam(); snap(); });
 renderer.setAnimationLoop((nowMs)=>{
   const now=nowMs/1000, dt=Math.min(now-last,.05); last=now;
 
-  // Player movement
-  const inp=getInput().multiplyScalar(16);
+  // Player movement — disabled while World Builder is active
+  const inp=(_wbActive ? new THREE.Vector3() : getInput()).multiplyScalar(16);
   const sm=1-Math.exp(-9*dt);
   vel.x=THREE.MathUtils.lerp(vel.x,inp.x,sm); vel.z=THREE.MathUtils.lerp(vel.z,inp.z,sm);
   const moving = vel.lengthSq() > 0.08;
@@ -1150,8 +1224,620 @@ renderer.setAnimationLoop((nowMs)=>{
   // Ágora bubbles
   tickBubbles();
 
+  // World Builder tick (selection box update + object mixers)
+  if(_wbActive) tickWorldBuilder(dt);
+
   renderer.render(scene,cam);
 });
+
+// ══════════════════════════════════════════════════════
+// WORLD BUILDER  (admin only)
+// Módulo completamente aislado — no toca las variables
+// del juego excepto: scene, cam, renderer, fireEv.
+// ══════════════════════════════════════════════════════
+
+// ── RAYCASTER ──
+const _wbRaycaster   = new THREE.Raycaster();
+const _wbMouse       = new THREE.Vector2();
+
+// Plano invisible gigante en Y=0 para detectar posición del cursor en el mundo
+const _wbGroundPlane = (() => {
+  const m = new THREE.Mesh(
+    new THREE.PlaneGeometry(500, 500),
+    new THREE.MeshBasicMaterial({ visible: false, side: THREE.DoubleSide })
+  );
+  m.rotation.x = -Math.PI / 2;
+  m.name = '_wbGroundPlane';
+  scene.add(m);
+  return m;
+})();
+
+// ── ESTADO GLOBAL DEL BUILDER ──
+let _wbActive        = false;   // modo builder on/off
+let _wbPlacing       = false;   // hay ghost activo (item seleccionado para colocar)
+let _wbSelectedItem  = null;    // ítem del catálogo seleccionado
+let _wbGhost         = null;    // THREE.Group de preview semitransparente
+let _wbGhostRotY     = 0;       // rotación acumulada del ghost
+let _wbGhostScale    = 1.0;     // escala acumulada del ghost
+let _wbGridSnap      = false;   // snap a cuadrícula de 1u
+let _wbGridHelper    = null;    // GridHelper opcional (toggle G)
+
+// Lista y mapa de objetos colocados en el mundo
+const _wbObjects     = [];          // [{id, item_id, mesh}]
+const _wbObjectMap   = new Map();   // id → entry
+
+// Objeto seleccionado actualmente (para R, +/-, DEL)
+let _wbSelObj        = null;
+let _wbSelBox        = null;    // BoxHelper de outline
+
+// Catálogo (se rellena en initWorldBuilder)
+let _wbCatalog       = [];
+
+// GLTFLoader compartido para todos los objetos del builder
+const _wbLoader      = new GLTFLoader();
+
+// ── buildWorldObject(item) ──
+// Construye un THREE.Group listo para añadir a la escena.
+// item: { id, name, model (URL|null), scale, color, light:{type,color,intensity,distance,height} }
+// Retorna: Promise<THREE.Group>
+async function buildWorldObject(item) {
+  const g = new THREE.Group();
+  g.userData.worldItem = item;
+
+  if (item.model) {
+    try {
+      const gltf = await new Promise((res, rej) =>
+        _wbLoader.load(item.model, res, null, rej)
+      );
+      const model = gltf.scene;
+
+      // Normalizar tamaño: la dimensión máxima = 2 unidades
+      const box = new THREE.Box3().setFromObject(model);
+      const sz  = new THREE.Vector3(); box.getSize(sz);
+      const maxD = Math.max(sz.x, sz.y, sz.z);
+      if (maxD > 0) model.scale.setScalar((item.scale || 1.0) * 2.0 / maxD);
+
+      // Alinear base al suelo (Y=0)
+      const box2 = new THREE.Box3().setFromObject(model);
+      model.position.y -= box2.min.y;
+
+      // Sombras
+      model.traverse(o => {
+        if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; }
+      });
+
+      // Animación idle si el GLB tiene clips
+      if (gltf.animations?.length) {
+        const mixer = new THREE.AnimationMixer(model);
+        mixer.clipAction(gltf.animations[0]).play();
+        g.userData.mixer = mixer;
+      }
+
+      g.add(model);
+    } catch (err) {
+      console.warn('[WB] GLB load failed for', item.name || item.id, '— using fallback');
+      _wbFallbackMesh(g, item);
+    }
+  } else {
+    // Sin modelo → caja procedural de referencia
+    _wbFallbackMesh(g, item);
+  }
+
+  // Añadir luz si el ítem la define
+  if (item.light) {
+    const lc = item.light.color   || 0xffffff;
+    const li = item.light.intensity || 1.0;
+    const ld = item.light.distance  || 12;
+    const lh = item.light.height    || 2.5;
+    let light;
+    if (item.light.type === 'spot') {
+      light = new THREE.SpotLight(lc, li, ld, Math.PI / 6, 0.3, 2);
+      light.target.position.set(0, 0, 0);
+      g.add(light.target);
+    } else {
+      light = new THREE.PointLight(lc, li, ld, 2);
+    }
+    light.position.set(0, lh, 0);
+    g.add(light);
+  }
+
+  return g;
+}
+
+// Caja de fallback cuando no hay modelo GLB
+function _wbFallbackMesh(group, item) {
+  const col = item.color
+    ? parseInt(item.color.replace('#', ''), 16)
+    : 0x334466;
+  const fb = new THREE.Mesh(
+    new THREE.BoxGeometry(1.2, 2.4, 1.2),
+    new THREE.MeshStandardMaterial({
+      color: col, emissive: col, emissiveIntensity: 0.18,
+      metalness: 0.45, roughness: 0.55
+    })
+  );
+  fb.position.y = 1.2;
+  fb.castShadow = true;
+  group.add(fb);
+  // Label flotante con el nombre del ítem
+  const lbl = mkSprite((item.name || item.id || '?').slice(0, 10), 5, 'rgba(200,175,255,.6)');
+  lbl.position.y = 3.0;
+  group.add(lbl);
+}
+
+// ── SISTEMA DE GHOST (preview transparente) ──
+
+// Aplica/quita transparencia a todos los meshes del grupo
+function _wbSetGhostOpacity(group, transparent) {
+  group.traverse(o => {
+    if (o.isMesh && o.material) {
+      const mats = Array.isArray(o.material) ? o.material : [o.material];
+      mats.forEach(m => {
+        m.transparent = transparent;
+        m.opacity      = transparent ? 0.42 : 1.0;
+        m.depthWrite   = !transparent;
+      });
+    }
+  });
+}
+
+async function _wbSpawnGhost(item) {
+  _wbClearGhost();
+  _wbGhost = await buildWorldObject(item);
+  _wbSetGhostOpacity(_wbGhost, true);
+  _wbGhost.rotation.y = _wbGhostRotY;
+  _wbGhost.scale.setScalar(_wbGhostScale);
+  scene.add(_wbGhost);
+}
+
+function _wbClearGhost() {
+  if (_wbGhost) {
+    scene.remove(_wbGhost);
+    _wbDisposeGroup(_wbGhost);
+    _wbGhost = null;
+  }
+}
+
+// ── RAYCASTING ──
+
+// Devuelve THREE.Vector3 de intersección con el suelo, o null
+function _wbRaycastGround(clientX, clientY) {
+  const rect = renderer.domElement.getBoundingClientRect();
+  _wbMouse.x =  ((clientX - rect.left) / rect.width)  * 2 - 1;
+  _wbMouse.y = -((clientY - rect.top)  / rect.height) * 2 + 1;
+  _wbRaycaster.setFromCamera(_wbMouse, cam);
+  const hits = _wbRaycaster.intersectObject(_wbGroundPlane);
+  return hits.length > 0 ? hits[0].point : null;
+}
+
+// Devuelve el worldObjectId del objeto clickeado, o null
+function _wbRaycastObjects(clientX, clientY) {
+  const rect = renderer.domElement.getBoundingClientRect();
+  _wbMouse.x =  ((clientX - rect.left) / rect.width)  * 2 - 1;
+  _wbMouse.y = -((clientY - rect.top)  / rect.height) * 2 + 1;
+  _wbRaycaster.setFromCamera(_wbMouse, cam);
+  const meshArr = _wbObjects.map(o => o.mesh).filter(Boolean);
+  if (!meshArr.length) return null;
+  const hits = _wbRaycaster.intersectObjects(meshArr, true);
+  if (!hits.length) return null;
+  // Subir hasta el Group raíz que tenga worldObjectId
+  let obj = hits[0].object;
+  while (obj && !obj.userData.worldObjectId && obj.parent) obj = obj.parent;
+  return obj?.userData.worldObjectId || null;
+}
+
+// ── PLACEMENT ──
+
+// Selecciona un ítem del catálogo y activa el ghost de preview
+async function wbSelectCatalogItem(item) {
+  _wbSelectedItem  = item;
+  _wbPlacing       = true;
+  _wbGhostRotY     = 0;
+  _wbGhostScale    = item.scale || 1.0;
+  // Marcar visualmente en el catálogo
+  document.querySelectorAll('.wbi').forEach(el =>
+    el.classList.toggle('on', el.dataset.wbId === item.id)
+  );
+  await _wbSpawnGhost(item);
+  _wbSetStatus(`Colocando: ${item.name}\n[Click] colocar  [R] rotar  [+/-] escalar  [ESC] cancelar`);
+}
+
+// Cancela el modo de colocación
+function wbCancelPlace() {
+  _wbPlacing      = false;
+  _wbSelectedItem = null;
+  _wbClearGhost();
+  document.querySelectorAll('.wbi').forEach(el => el.classList.remove('on'));
+  _wbSetStatus('Builder activo  [Click objeto] seleccionar  [B] desactivar');
+}
+
+// Coloca el objeto en la posición dada y lo persiste en servidor
+async function wbPlaceObject(pos) {
+  if (!_wbSelectedItem) return;
+
+  const mesh = await buildWorldObject(_wbSelectedItem);
+  mesh.position.copy(pos);
+  mesh.rotation.y = _wbGhostRotY;
+  mesh.scale.setScalar(_wbGhostScale);
+  scene.add(mesh);
+
+  try {
+    const res = await fetch('/api/nexus/world_builder.php', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        action:    'place',
+        item_id:   _wbSelectedItem.id,
+        model_url: _wbSelectedItem.model || null,
+        pos_x:     pos.x,
+        pos_y:     pos.y,
+        pos_z:     pos.z,
+        rot_y:     _wbGhostRotY,
+        scale:     _wbGhostScale,
+      })
+    });
+    const j = await res.json();
+    if (j.ok) {
+      const entry = { id: j.data.id, item_id: _wbSelectedItem.id, mesh };
+      mesh.userData.worldObjectId = j.data.id;
+      _wbObjects.push(entry);
+      _wbObjectMap.set(j.data.id, entry);
+      fireEv('🧱', _wbSelectedItem.name, 'objeto guardado en el mundo', 'rgba(155,48,255,.7)');
+    } else {
+      // Server error — mantener localmente como temporal
+      _wbAddLocal(mesh, _wbSelectedItem);
+      _wbSetStatus('Advertencia: servidor no respondió. Objeto colocado localmente.');
+    }
+  } catch (_) {
+    // Modo offline — mantener localmente
+    _wbAddLocal(mesh, _wbSelectedItem);
+  }
+}
+
+function _wbAddLocal(mesh, item) {
+  const tmpId = 'tmp_' + Date.now();
+  mesh.userData.worldObjectId = tmpId;
+  const entry = { id: tmpId, item_id: item.id, mesh };
+  _wbObjects.push(entry);
+  _wbObjectMap.set(tmpId, entry);
+}
+
+// ── SELECCIÓN DE OBJETOS COLOCADOS ──
+
+function _wbSelect(id) {
+  _wbDeselect();
+  const entry = _wbObjectMap.get(id);
+  if (!entry) return;
+  _wbSelObj = entry;
+
+  // BoxHelper como outline
+  _wbSelBox = new THREE.BoxHelper(entry.mesh, 0x00e8ff);
+  scene.add(_wbSelBox);
+
+  // Boost emissivo para highlight visual
+  entry.mesh.traverse(o => {
+    if (o.isMesh && o.material) {
+      const mats = Array.isArray(o.material) ? o.material : [o.material];
+      mats.forEach(m => {
+        m._wbOrigEI = m.emissiveIntensity || 0;
+        m.emissiveIntensity = Math.min(3.5, m._wbOrigEI + 0.9);
+      });
+    }
+  });
+
+  _wbSetStatus(`Seleccionado: ${entry.item_id}\n[R] rotar  [+/-] escalar  [DEL] borrar`);
+}
+
+function _wbDeselect() {
+  if (_wbSelBox) { scene.remove(_wbSelBox); _wbSelBox = null; }
+  if (_wbSelObj) {
+    // Restaurar emissivo original
+    _wbSelObj.mesh.traverse(o => {
+      if (o.isMesh && o.material) {
+        const mats = Array.isArray(o.material) ? o.material : [o.material];
+        mats.forEach(m => {
+          if (m._wbOrigEI !== undefined) { m.emissiveIntensity = m._wbOrigEI; delete m._wbOrigEI; }
+        });
+      }
+    });
+    _wbSelObj = null;
+  }
+}
+
+// Elimina el objeto seleccionado del mundo y del servidor
+async function wbDeleteSelected() {
+  if (!_wbSelObj) {
+    _wbSetStatus('Nada seleccionado. Haz click en un objeto primero.');
+    return;
+  }
+  const entry = _wbSelObj;
+  _wbDeselect();
+
+  // Eliminar de la escena y liberar memoria
+  scene.remove(entry.mesh);
+  _wbDisposeGroup(entry.mesh);
+  const idx = _wbObjects.indexOf(entry);
+  if (idx >= 0) _wbObjects.splice(idx, 1);
+  _wbObjectMap.delete(entry.id);
+
+  // Persistir en servidor (sólo si no es temporal)
+  if (!String(entry.id).startsWith('tmp_')) {
+    try {
+      await fetch('/api/nexus/world_builder.php', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ action: 'delete', id: entry.id })
+      });
+    } catch (_) {}
+  }
+  fireEv('🗑️', 'WORLD BUILDER', 'objeto eliminado', 'rgba(255,61,86,.65)');
+  _wbSetStatus('Objeto eliminado. Builder activo.');
+}
+
+// ── PARCHE (rotar/escalar un objeto ya colocado) ──
+
+async function _wbPatchObject(id, patch) {
+  if (String(id).startsWith('tmp_')) return;
+  try {
+    await fetch('/api/nexus/world_builder.php', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ action: 'patch', id, ...patch })
+    });
+  } catch (_) {}
+}
+
+// ── GRID SNAP TOGGLE ──
+
+function _wbToggleGrid() {
+  _wbGridSnap = !_wbGridSnap;
+  if (_wbGridSnap && !_wbGridHelper) {
+    _wbGridHelper = new THREE.GridHelper(200, 200, 0x9b30ff, 0x6622aa);
+    _wbGridHelper.position.y = 0.05;
+    const mats = [_wbGridHelper.material].flat();
+    mats.forEach(m => { m.transparent = true; m.opacity = 0.25; });
+    scene.add(_wbGridHelper);
+  } else if (!_wbGridSnap && _wbGridHelper) {
+    scene.remove(_wbGridHelper);
+    _wbGridHelper.geometry.dispose();
+    _wbGridHelper = null;
+  }
+  const btn = document.getElementById('wb-grid-btn');
+  if (btn) {
+    btn.textContent = `◫ GRID SNAP: ${_wbGridSnap ? 'ON' : 'OFF'}`;
+    btn.classList.toggle('on', _wbGridSnap);
+  }
+  _wbSetStatus(`Grid snap: ${_wbGridSnap ? 'activado (objetos se pegan a cuadrícula de 1u)' : 'desactivado'}`);
+}
+
+// ── CARGAR OBJETOS EXISTENTES DESDE API ──
+
+async function wbLoadObjects() {
+  try {
+    const res = await fetch('/api/nexus/world_builder.php?action=load', { credentials: 'same-origin' });
+    const j   = await res.json();
+    if (!j.ok) return;
+    for (const obj of (j.data.objects || [])) {
+      const item = {
+        id:    obj.item_id,
+        name:  obj.item_id,
+        model: obj.model_url || null,
+        scale: parseFloat(obj.scale) || 1.0,
+        light: obj.light_data ? (() => { try { return JSON.parse(obj.light_data); } catch(_){ return null; } })() : null,
+      };
+      const mesh = await buildWorldObject(item);
+      mesh.position.set(parseFloat(obj.pos_x)||0, parseFloat(obj.pos_y)||0, parseFloat(obj.pos_z)||0);
+      mesh.rotation.y = parseFloat(obj.rot_y) || 0;
+      mesh.scale.setScalar(parseFloat(obj.scale) || 1.0);
+      mesh.userData.worldObjectId = obj.id;
+      scene.add(mesh);
+      const entry = { id: obj.id, item_id: obj.item_id, mesh };
+      _wbObjects.push(entry);
+      _wbObjectMap.set(obj.id, entry);
+    }
+    if (j.data.objects?.length)
+      console.log(`[WB] ${j.data.objects.length} objetos del mundo cargados`);
+  } catch (err) {
+    console.warn('[WB] loadObjects error:', err);
+  }
+}
+
+// ── UI DEL CATÁLOGO ──
+
+function _wbBuildCatalogUI() {
+  const el = document.getElementById('wb-catalog-items');
+  if (!el) return;
+  el.innerHTML = '';
+  _wbCatalog.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'wbi';
+    div.dataset.wbId = item.id;
+    div.title = item.name;
+    div.innerHTML = `<div class="wbi-icon">${item.icon || '🧱'}</div><div class="wbi-name">${item.name}</div>`;
+    div.onclick = () => wbSelectCatalogItem(item);
+    el.appendChild(div);
+  });
+}
+
+// ── LIBERAR MEMORIA (evitar leaks al borrar objetos) ──
+
+function _wbDisposeGroup(group) {
+  group.traverse(o => {
+    if (o.isMesh) {
+      o.geometry?.dispose();
+      const mats = Array.isArray(o.material) ? o.material : [o.material];
+      mats.forEach(m => { m?.map?.dispose(); m?.dispose?.(); });
+    }
+    if (o.userData?.mixer) { o.userData.mixer.stopAllAction(); }
+  });
+}
+
+// ── STATUS BAR ──
+
+function _wbSetStatus(msg) {
+  const el = document.getElementById('wb-status');
+  if (el) el.textContent = msg;
+}
+
+// ── TICK DEL LOOP PRINCIPAL ──
+// Llamado desde renderer.setAnimationLoop cuando _wbActive=true
+
+function tickWorldBuilder(dt) {
+  // Actualizar BoxHelper del objeto seleccionado
+  if (_wbSelBox && _wbSelObj) _wbSelBox.update();
+  // Actualizar animaciones de los objetos del mundo (mixers GLB)
+  _wbObjects.forEach(o => {
+    if (o.mesh?.userData?.mixer) o.mesh.userData.mixer.update(dt);
+  });
+}
+
+// ── MANEJO DE TECLAS DEL BUILDER ──
+// Retorna true si consumió la tecla (evita propagación al juego)
+
+function _wbHandleKey(code) {
+  switch (code) {
+    case 'KeyR': {
+      // Rotar 45°
+      if (_wbPlacing && _wbGhost) {
+        _wbGhostRotY += Math.PI / 4;
+        _wbGhost.rotation.y = _wbGhostRotY;
+      } else if (_wbSelObj) {
+        _wbSelObj.mesh.rotation.y += Math.PI / 4;
+        _wbPatchObject(_wbSelObj.id, { rot_y: _wbSelObj.mesh.rotation.y });
+      }
+      return true;
+    }
+    case 'Equal': case 'NumpadAdd': {
+      // Escalar +0.1
+      if (_wbPlacing && _wbGhost) {
+        _wbGhostScale = Math.min(12, _wbGhostScale + 0.1);
+        _wbGhost.scale.setScalar(_wbGhostScale);
+      } else if (_wbSelObj) {
+        const s = Math.min(12, _wbSelObj.mesh.scale.x + 0.1);
+        _wbSelObj.mesh.scale.setScalar(s);
+        _wbPatchObject(_wbSelObj.id, { scale: s });
+      }
+      return true;
+    }
+    case 'Minus': case 'NumpadSubtract': {
+      // Escalar -0.1
+      if (_wbPlacing && _wbGhost) {
+        _wbGhostScale = Math.max(0.1, _wbGhostScale - 0.1);
+        _wbGhost.scale.setScalar(_wbGhostScale);
+      } else if (_wbSelObj) {
+        const s = Math.max(0.1, _wbSelObj.mesh.scale.x - 0.1);
+        _wbSelObj.mesh.scale.setScalar(s);
+        _wbPatchObject(_wbSelObj.id, { scale: s });
+      }
+      return true;
+    }
+    case 'Delete': case 'Backspace': {
+      if (_wbSelObj) { wbDeleteSelected(); return true; }
+      return false;
+    }
+    case 'Escape': {
+      if (_wbPlacing) { wbCancelPlace(); return true; }
+      if (_wbSelObj)  { _wbDeselect();   return true; }
+      return false;
+    }
+    case 'KeyG': {
+      _wbToggleGrid();
+      return true;
+    }
+    default:
+      return false;
+  }
+}
+
+// ── EVENTOS DE MOUSE ──
+
+renderer.domElement.addEventListener('mousemove', e => {
+  if (!_wbActive || !_wbPlacing || !_wbGhost) return;
+  const pt = _wbRaycastGround(e.clientX, e.clientY);
+  if (!pt) return;
+  if (_wbGridSnap) {
+    _wbGhost.position.x = Math.round(pt.x);
+    _wbGhost.position.z = Math.round(pt.z);
+  } else {
+    _wbGhost.position.x = pt.x;
+    _wbGhost.position.z = pt.z;
+  }
+  _wbGhost.position.y = 0;
+});
+
+renderer.domElement.addEventListener('click', e => {
+  if (!_wbActive) return;
+
+  // Si hay ghost activo → colocar objeto
+  if (_wbPlacing && _wbGhost) {
+    const pos = _wbGhost.position.clone();
+    wbPlaceObject(pos);
+    return;
+  }
+
+  // Si no → intentar seleccionar un objeto colocado
+  const id = _wbRaycastObjects(e.clientX, e.clientY);
+  if (id) _wbSelect(id);
+  else    _wbDeselect();
+});
+
+// ── TOGGLE DEL MODO BUILDER ──
+
+function _wbToggleMode() {
+  _wbActive = !_wbActive;
+  const hud = document.getElementById('wb-hud');
+  if (hud) hud.style.display = _wbActive ? 'flex' : 'none';
+
+  if (!_wbActive) {
+    // Limpiar estado al salir
+    wbCancelPlace();
+    _wbDeselect();
+  } else {
+    _wbSetStatus('Builder activo.\nClick en un ítem del catálogo para colocar,\no click en un objeto para seleccionar.');
+  }
+
+  fireEv('🔧', 'WORLD BUILDER',
+    _wbActive ? 'modo activado' : 'modo desactivado',
+    'rgba(155,48,255,.75)'
+  );
+}
+
+// ── INICIALIZACIÓN (llamada desde loadWorld cuando is_admin=true) ──
+
+function initWorldBuilder() {
+  if (!window.IS_ADMIN) return;
+
+  // Catálogo por defecto — extensible desde la API o la DB
+  _wbCatalog = [
+    { id:'lamp_post',  name:'FAROLA',   icon:'💡', model:null, color:'#00e8ff', scale:1.0,
+      light:{ type:'point', color:0xffeedd, intensity:1.5, distance:14, height:3.8 } },
+    { id:'bench',      name:'BANCA',    icon:'🪑', model:null, color:'#334466', scale:1.0 },
+    { id:'terminal',   name:'TERMINAL', icon:'🖥️', model:null, color:'#00e8ff', scale:1.0,
+      light:{ type:'point', color:0x00e8ff, intensity:0.8, distance:6, height:1.6 } },
+    { id:'crystal',    name:'CRISTAL',  icon:'💎', model:null, color:'#9b30ff', scale:1.0 },
+    { id:'tree_cyber', name:'ÁRBOL',    icon:'🌲', model:null, color:'#00ff88', scale:1.5 },
+    { id:'statue',     name:'ESTATUA',  icon:'🗿', model:null, color:'#aabbcc', scale:1.2 },
+    { id:'arch',       name:'ARCO',     icon:'🏛️', model:null, color:'#ccaa44', scale:2.0 },
+    { id:'hover_pad',  name:'PLATAFORMA',icon:'🔵',model:null, color:'#0088ff', scale:1.0,
+      light:{ type:'point', color:0x0088ff, intensity:1.0, distance:8, height:0.2 } },
+    { id:'pillar',     name:'PILAR',    icon:'🏺', model:null, color:'#887755', scale:1.2 },
+  ];
+
+  _wbBuildCatalogUI();
+
+  // Cargar objetos ya colocados en el mundo
+  wbLoadObjects();
+
+  fireEv('🔧', 'ADMIN', 'World Builder disponible — pulsa [B]', 'rgba(155,48,255,.8)');
+}
+
+// Exponer funciones al scope global para los onclick del HTML
+window._wbToggleMode  = _wbToggleMode;
+window.wbDeleteSelected = wbDeleteSelected;
+window._wbToggleGrid  = _wbToggleGrid;
 
 // ══════════════════════════════════════════════════════
 // BOOT
