@@ -10,6 +10,7 @@ require_once BASE_PATH . '/includes/config.php';
 require_once BASE_PATH . '/includes/auth.php';
 require_once BASE_PATH . '/includes/json.php';
 require_once BASE_PATH . '/includes/nexus_world_builder_gate.php';
+require_once BASE_PATH . '/includes/nexus_furniture_catalog.php';
 
 api_require_login();
 $pdo    = getDBConnection();
@@ -105,15 +106,7 @@ if ($method === 'GET') {
         }
         unset($p);
 
-        // Catálogo completo
-        $cs = $pdo->query('SELECT id,code,name,category,rarity,width,depth,price_kp,asset_data
-                           FROM nexus_furniture_catalog WHERE is_active=1
-                           ORDER BY category, price_kp');
-        $catalog = $cs->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($catalog as &$c) {
-            $c['asset_data'] = $c['asset_data'] ? json_decode($c['asset_data'], true) : [];
-        }
-        unset($c);
+        $catalog = nexus_furniture_catalog_fetch_active($pdo);
 
         $ownedFurnitureIds = sanctum_owned_furniture_ids($pdo, $uid);
 

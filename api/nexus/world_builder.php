@@ -70,6 +70,19 @@ if ($action === 'place') {
     $pos_z     = (float)($body['pos_z']  ?? 0);
     $rot_y     = (float)($body['rot_y']  ?? 0);
     $scale     = (float)($body['scale']  ?? 1.0);
+    $rawLight  = $body['light_data'] ?? null;
+    $light_data = null;
+    if ($rawLight !== null && $rawLight !== '') {
+        if (is_array($rawLight)) {
+            $enc = json_encode($rawLight, JSON_UNESCAPED_UNICODE);
+            $light_data = $enc !== false ? $enc : null;
+        } else {
+            $light_data = (string) $rawLight;
+        }
+        if ($light_data !== null && strlen($light_data) > 8192) {
+            $light_data = null;
+        }
+    }
 
     if ($item_id === '') {
         json_error('VALIDATION', 'item_id es requerido', 422);
@@ -79,14 +92,15 @@ if ($action === 'place') {
     try {
         $stmt = $pdo->prepare("
             INSERT INTO nexus_world_objects
-                (item_id, model_url, pos_x, pos_y, pos_z, rot_y, scale, created_by)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                (item_id, model_url, pos_x, pos_y, pos_z, rot_y, scale, light_data, created_by)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         $stmt->execute([
             $item_id,
             $model_url ?: null,
             $pos_x, $pos_y, $pos_z,
             $rot_y, $scale,
+            $light_data,
             $uid
         ]);
         $newId = (int)$pdo->lastInsertId();

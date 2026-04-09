@@ -1266,7 +1266,7 @@ async function loadWorld(){
     // Init admin World Builder if flagged by server
     if (data.is_admin) {
       window.IS_ADMIN = true;
-      initWorldBuilder();
+      await initWorldBuilder();
     }
 
     return true;
@@ -1720,20 +1720,22 @@ async function wbPlaceObject(pos) {
   scene.add(mesh);
 
   try {
+    const placeBody = {
+      action:    'place',
+      item_id:   _wbSelectedItem.id,
+      model_url: _wbSelectedItem.model || null,
+      pos_x:     pos.x,
+      pos_y:     pos.y,
+      pos_z:     pos.z,
+      rot_y:     _wbGhostRotY,
+      scale:     _wbGhostScale,
+    };
+    if (_wbSelectedItem.light) placeBody.light_data = JSON.stringify(_wbSelectedItem.light);
     const res = await fetch('/api/nexus/world_builder.php', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin',
-      body: JSON.stringify({
-        action:    'place',
-        item_id:   _wbSelectedItem.id,
-        model_url: _wbSelectedItem.model || null,
-        pos_x:     pos.x,
-        pos_y:     pos.y,
-        pos_z:     pos.z,
-        rot_y:     _wbGhostRotY,
-        scale:     _wbGhostScale,
-      })
+      body: JSON.stringify(placeBody),
     });
     const j = await res.json();
     if (j.ok) {
@@ -1876,6 +1878,77 @@ function _wbToggleGrid() {
     btn.classList.toggle('on', _wbGridSnap);
   }
   _wbSetStatus(`Grid snap: ${_wbGridSnap ? 'activado (objetos se pegan a cuadrícula de 1u)' : 'desactivado'}`);
+}
+
+// ── Catálogo World Builder = mismo origen que Sanctum (GET api/nexus/furniture_catalog.php) ──
+
+function _wbCategoryIcon(cat) {
+  const m = { floor:'🟦', wall:'🧱', decoration:'✦', interactive:'⚡', rare:'💠' };
+  return m[cat] || '📦';
+}
+
+function _wbColorToNumber(c) {
+  if (c == null || c === '') return 0xffffff;
+  if (typeof c === 'number' && !Number.isNaN(c)) return c;
+  const s = String(c).trim();
+  if (s.startsWith('#')) {
+    const n = parseInt(s.slice(1), 16);
+    return Number.isNaN(n) ? 0xffffff : n;
+  }
+  if (s.toLowerCase().startsWith('0x')) {
+    const n = parseInt(s.slice(2), 16);
+    return Number.isNaN(n) ? 0xffffff : n;
+  }
+  return 0xffffff;
+}
+
+/** Adapta light_data del JSON del catálogo al formato de buildWorldObject (color numérico). */
+function _wbMapLightDataForWorld(ld) {
+  if (!ld || typeof ld !== 'object') return null;
+  const out = { ...ld };
+  if (out.color != null) out.color = _wbColorToNumber(out.color);
+  if (!out.type) out.type = 'point';
+  return out;
+}
+
+/** Una fila de nexus_furniture_catalog (API) → ítem del World Builder. id en mundo = code (único en BD). */
+function _wbRowToWorldItem(row) {
+  const ad = row.asset_data && typeof row.asset_data === 'object' ? row.asset_data : {};
+  const item = {
+    id: row.code,
+    name: row.name,
+    icon: _wbCategoryIcon(row.category),
+    model: ad.model || ad.model_url || null,
+    color: ad.color || '#00e8ff',
+    scale: typeof ad.wb_scale === 'number' ? ad.wb_scale : (typeof ad.scale === 'number' ? ad.scale : 1.0),
+    furniture_id: row.id,
+    rarity: row.rarity,
+    category: row.category,
+    hologram: ad.hologram === true || ad.fx === 'hologram',
+  };
+  const light = _wbMapLightDataForWorld(ad.light_data);
+  if (light) item.light = light;
+  return item;
+}
+
+async function _wbFetchFurnitureCatalog() {
+  _wbCatalog = [];
+  try {
+    const res = await fetch('/api/nexus/furniture_catalog.php', { credentials: 'same-origin' });
+    const j = await res.json();
+    if (!j.ok) {
+      console.warn('[WB] furniture_catalog:', j.error?.code, j.error?.message);
+      return;
+    }
+    const rows = j.data?.catalog;
+    if (!Array.isArray(rows)) {
+      console.warn('[WB] furniture_catalog: response sin data.catalog[]');
+      return;
+    }
+    _wbCatalog = rows.map(_wbRowToWorldItem);
+  } catch (e) {
+    console.warn('[WB] furniture_catalog fetch:', e);
+  }
 }
 
 // ── CARGAR OBJETOS EXISTENTES DESDE API ──
@@ -2090,31 +2163,18 @@ function _wbToggleMode() {
 
 // ── INICIALIZACIÓN (llamada desde loadWorld cuando is_admin=true) ──
 
-function initWorldBuilder() {
+async function initWorldBuilder() {
   if (!window.IS_ADMIN) return;
 
-  // Catálogo por defecto — extensible desde la API o la DB
-  _wbCatalog = [
-    { id:'lamp_post',  name:'FAROLA',   icon:'💡', model:null, color:'#00e8ff', scale:1.0,
-      light:{ type:'point', color:0xffeedd, intensity:1.5, distance:14, height:3.8 } },
-    { id:'bench',      name:'BANCA',    icon:'🪑', model:null, color:'#334466', scale:1.0 },
-    { id:'terminal',   name:'TERMINAL', icon:'🖥️', model:null, color:'#00e8ff', scale:1.0,
-      light:{ type:'point', color:0x00e8ff, intensity:0.8, distance:6, height:1.6 } },
-    { id:'crystal',    name:'CRISTAL',  icon:'💎', model:null, color:'#9b30ff', scale:1.0, rarity:'legendary', hologram:true },
-    { id:'tree_cyber', name:'ÁRBOL',    icon:'🌲', model:null, color:'#00ff88', scale:1.5 },
-    { id:'statue',     name:'ESTATUA',  icon:'🗿', model:null, color:'#aabbcc', scale:1.2 },
-    { id:'arch',       name:'ARCO',     icon:'🏛️', model:null, color:'#ccaa44', scale:2.0 },
-    { id:'hover_pad',  name:'PLATAFORMA',icon:'🔵',model:null, color:'#0088ff', scale:1.0,
-      light:{ type:'point', color:0x0088ff, intensity:1.0, distance:8, height:0.2 } },
-    { id:'pillar',     name:'PILAR',    icon:'🏺', model:null, color:'#887755', scale:1.2 },
-  ];
-
+  await _wbFetchFurnitureCatalog();
   _wbBuildCatalogUI();
 
-  // Cargar objetos ya colocados en el mundo
-  wbLoadObjects();
+  await wbLoadObjects();
 
-  fireEv('🔧', 'ADMIN', 'World Builder disponible — pulsa [B]', 'rgba(155,48,255,.8)');
+  if (!_wbCatalog.length) {
+    fireEv('⚠', 'WB', 'Catálogo vacío o no cargado — revisa DB / sesión', 'rgba(255,160,80,.85)');
+  }
+  fireEv('🔧', 'ADMIN', 'World Builder — catálogo = Sanctum (DB)', 'rgba(155,48,255,.8)');
 }
 
 // Exponer funciones al scope global para los onclick del HTML

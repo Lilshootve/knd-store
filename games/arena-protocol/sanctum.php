@@ -528,7 +528,8 @@ function setLoadProgress(p) {
 // ─────────────────────────────────────────────────────────────────
 function initThree() {
     scene    = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x020508, 0.04);
+    // Niebla más suave: legibilidad del suelo/paredes sin perder atmósfera cerrada
+    scene.fog = new THREE.FogExp2(0x030812, 0.028);
     clock    = new THREE.Clock();
     raycaster = new THREE.Raycaster();
 
@@ -540,17 +541,21 @@ function initThree() {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
     renderer.toneMapping       = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.45;
+    renderer.toneMappingExposure = 1.52;
     wrap.appendChild(renderer.domElement);
 
     resetCamera();
     initPostFX();
 
-    // Lights
-    const ambient = new THREE.AmbientLight(0x0a1525, 1.8);
+    // Lights — base legible + acentos: hemisferio simula rebote cielo/suelo sin matar el neón
+    const hemi = new THREE.HemisphereLight(0x4a6a8a, 0x080c14, 0.72);
+    hemi.position.set(5, 8, 5);
+    scene.add(hemi);
+
+    const ambient = new THREE.AmbientLight(0x1a2a3a, 1.05);
     scene.add(ambient);
 
-    const sun = new THREE.DirectionalLight(0x90ccff, 1.2);
+    const sun = new THREE.DirectionalLight(0xa0d8ff, 1.35);
     sun.position.set(8, 16, 8);
     sun.castShadow = true;
     sun.shadow.mapSize.set(1024, 1024);
@@ -560,9 +565,14 @@ function initThree() {
     sun.shadow.camera.right = sun.shadow.camera.top   = 12;
     scene.add(sun);
 
-    const fill = new THREE.DirectionalLight(0x3d0060, 0.6);
+    const fill = new THREE.DirectionalLight(0x5a2088, 0.78);
     fill.position.set(-10, 6, -10);
     scene.add(fill);
+
+    // Relleno suave desde delante-arriba (sombras menos duras en muebles)
+    const rim = new THREE.DirectionalLight(0x88b0c8, 0.42);
+    rim.position.set(14, 10, 2);
+    scene.add(rim);
 
     window.addEventListener('resize', onResize);
     wrap.addEventListener('mousemove', onMouseMove);
@@ -580,7 +590,7 @@ function initPostFX() {
     const size = new THREE.Vector2(w, h);
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    bloomPass = new UnrealBloomPass(size, 0.75, 0.42, 0.86);
+    bloomPass = new UnrealBloomPass(size, 0.68, 0.44, 0.88);
     composer.addPass(bloomPass);
 }
 
@@ -642,7 +652,8 @@ function buildScene() {
 function buildFloor() {
     // Base floor
     const baseMat = new THREE.MeshStandardMaterial({
-        color: 0x040d1a, roughness: 0.8, metalness: 0.3
+        color: 0x081a2c, roughness: 0.78, metalness: 0.28,
+        emissive: 0x020812, emissiveIntensity: 0.08
     });
     const base = new THREE.Mesh(new THREE.PlaneGeometry(GRID, GRID), baseMat);
     base.rotation.x = -Math.PI / 2;
@@ -661,7 +672,8 @@ function buildFloor() {
         floorCells[x] = [];
         for (let z = 0; z < GRID; z++) {
             const mat = new THREE.MeshStandardMaterial({
-                color: 0x051525, roughness: 0.9, metalness: 0.1,
+                color: 0x081f33, roughness: 0.88, metalness: 0.1,
+                emissive: 0x010510, emissiveIntensity: 0.06,
                 transparent: true, opacity: 0.0, depthWrite: false
             });
             const cell = new THREE.Mesh(cellGeo, mat);
@@ -686,8 +698,8 @@ function buildFloor() {
 
 function buildWalls() {
     const wallMat = new THREE.MeshStandardMaterial({
-        color: 0x030c1c, roughness: 0.7, metalness: 0.4,
-        emissive: 0x001020, emissiveIntensity: 0.3
+        color: 0x071422, roughness: 0.68, metalness: 0.38,
+        emissive: 0x031828, emissiveIntensity: 0.42
     });
 
     // Left wall (x=0 face, z-axis)
@@ -825,7 +837,10 @@ function addCircuitLines(wallMesh, side) {
 }
 
 function buildCeiling() {
-    const cMat = new THREE.MeshStandardMaterial({color:0x020810,transparent:true,opacity:0.92,roughness:1,metalness:0});
+    const cMat = new THREE.MeshStandardMaterial({
+        color: 0x050c18, transparent: true, opacity: 0.9, roughness: 0.95, metalness: 0,
+        emissive: 0x051420, emissiveIntensity: 0.14
+    });
     const ceil = new THREE.Mesh(new THREE.PlaneGeometry(GRID+0.1, GRID+0.1), cMat);
     ceil.rotation.x = Math.PI / 2;
     ceil.position.set(5, 3.5, 5);
@@ -874,8 +889,8 @@ function buildGhost() {
 function buildFloorReflection() {
     // Subtle reflective sheen layer on floor
     const refMat = new THREE.MeshStandardMaterial({
-        color:0x001830, roughness:0.05, metalness:0.6,
-        transparent:true, opacity:0.25, depthWrite:false
+        color: 0x021c32, roughness: 0.06, metalness: 0.55,
+        transparent: true, opacity: 0.28, depthWrite: false
     });
     const ref = new THREE.Mesh(new THREE.PlaneGeometry(GRID, GRID), refMat);
     ref.rotation.x = -Math.PI / 2;
@@ -1542,6 +1557,8 @@ function removePlacedMesh(id) {
 // Interaction
 // ─────────────────────────────────────────────────────────────────
 let mouse = new THREE.Vector2(), hoverCell = {x:-1, z:-1};
+/** Evita POST 400: el servidor rechaza lo mismo que el preview en rojo, pero antes se llamaba apiPlace igual. */
+let hoverPlaceValid = false;
 
 function onMouseMove(e) {
     if (isRightDrag) {
@@ -1565,11 +1582,11 @@ function updateHover() {
     resetCellHighlights();
 
     if (!floorPlane || !camera) return;
-    if (mode !== 'place' || !selectedCatalogItem) return;
+    if (mode !== 'place' || !selectedCatalogItem) { hoverPlaceValid = false; return; }
 
     raycaster.setFromCamera(mouse, camera);
     const hits = raycaster.intersectObject(floorPlane);
-    if (!hits.length) return;
+    if (!hits.length) { hoverPlaceValid = false; return; }
 
     const p = hits[0].point;
     const cx = Math.floor(p.x / CS);
@@ -1606,6 +1623,8 @@ function updateHover() {
         }
     }
 
+    hoverPlaceValid = valid;
+
     // Position ghost
     if (ghostGroup) {
         ghostGroup.visible = true;
@@ -1628,6 +1647,7 @@ function resetCellHighlights() {
     }
     if (ghostGroup) ghostGroup.visible = false;
     hoverCell = {x:-1, z:-1};
+    hoverPlaceValid = false;
 }
 
 function updateGhost() {
@@ -1688,7 +1708,7 @@ function onClick(e) {
         return;
     }
 
-    if (mode === 'place' && selectedCatalogItem && hoverCell.x >= 0) {
+    if (mode === 'place' && selectedCatalogItem && hoverCell.x >= 0 && hoverPlaceValid) {
         apiPlace(selectedCatalogItem.id, hoverCell.x, hoverCell.z, ghostRot);
     }
 }
