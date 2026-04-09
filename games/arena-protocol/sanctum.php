@@ -1463,6 +1463,7 @@ function updateHover() {
     // Reset highlights
     resetCellHighlights();
 
+    if (!floorPlane || !camera) return;
     if (mode !== 'place' || !selectedCatalogItem) return;
 
     raycaster.setFromCamera(mouse, camera);
@@ -1490,12 +1491,16 @@ function updateHover() {
                 return false;
             });
             if (occupied) valid = false;
-            if (tx < GRID && tz < GRID) {
-                const mat = floorCells[tx][tz].material;
-                mat.color.set(valid ? 0x003322 : 0x330011);
-                mat.emissive = new THREE.Color(valid ? 0x00ff44 : 0xff1133);
-                mat.emissiveIntensity = 0.3;
-                mat.opacity = 0.55;
+            if (tx >= 0 && tx < GRID && tz >= 0 && tz < GRID) {
+                const row = floorCells[tx];
+                const cell = row && row[tz];
+                if (cell && cell.material) {
+                    const mat = cell.material;
+                    mat.color.set(valid ? 0x003322 : 0x330011);
+                    mat.emissive = new THREE.Color(valid ? 0x00ff44 : 0xff1133);
+                    mat.emissiveIntensity = 0.3;
+                    mat.opacity = 0.55;
+                }
             }
         }
     }
@@ -1508,12 +1513,18 @@ function updateHover() {
 }
 
 function resetCellHighlights() {
-    for (let x = 0; x < GRID; x++)
+    if (!floorCells.length) return;
+    for (let x = 0; x < GRID; x++) {
+        const row = floorCells[x];
+        if (!row) continue;
         for (let z = 0; z < GRID; z++) {
-            const m = floorCells[x][z].material;
+            const cell = row[z];
+            if (!cell || !cell.material) continue;
+            const m = cell.material;
             m.opacity = 0.0;
             m.emissiveIntensity = 0;
         }
+    }
     if (ghostGroup) ghostGroup.visible = false;
     hoverCell = {x:-1, z:-1};
 }

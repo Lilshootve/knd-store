@@ -69,7 +69,8 @@ function sanctum_owned_furniture_ids(PDO $pdo, int $uid): array {
     try {
         $bs = $pdo->prepare("
             SELECT DISTINCT source_id FROM points_ledger
-            WHERE user_id = ? AND entry_type = 'spend' AND source_type = 'sanctum_buy'
+            WHERE user_id = ? AND entry_type = 'spend'
+              AND source_type = 'nexus_furniture'
               AND source_id IS NOT NULL AND source_id > 0
         ");
         $bs->execute([$uid]);
@@ -244,11 +245,12 @@ elseif ($method === 'POST') {
                 json_error('INSUFFICIENT_KP', "Need {$price} KP, you have {$balance}", 402);
             }
 
+            // Sin columna `note`; status de gasto = spent; source_type = nexus_furniture (ENUM migration Nexus)
             $pdo->prepare("
                 INSERT INTO points_ledger
-                    (user_id,points,entry_type,source_type,source_id,note,status,created_at)
-                VALUES (?,?,'spend','sanctum_buy',?,?,'used',NOW())
-            ")->execute([$uid, -$price, $fid, "Buy furniture: {$item['name']}"]);
+                    (user_id, source_type, source_id, entry_type, status, points, created_at)
+                VALUES (?, 'nexus_furniture', ?, 'spend', 'spent', ?, NOW())
+            ")->execute([$uid, $fid, -$price]);
 
             $pdo->commit();
             json_success(['bought' => true, 'kp_spent' => $price, 'balance' => $balance - $price]);
