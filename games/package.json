@@ -1,17 +1,12 @@
 {
   "name": "nexus-ws",
   "version": "1.0.0",
-  "private": true,
-  "description": "KND Nexus WebSocket server (Railway / Node)",
   "main": "nexus-ws.js",
   "scripts": {
     "start": "node nexus-ws.js"
   },
-  "engines": {
-    "node": ">=18"
-  },
   "dependencies": {
     "mysql2": "^3.11.0",
-    "ws": "^8.18.0"
+    "ws": "^8.0.0"
   }
 }

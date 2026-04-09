@@ -21,7 +21,7 @@
  * Run (from this folder):
  *   npm install
  *   npm start
- * Port: Railway define PORT. Local: WS_PORT o 3000 (mismo patrón que plantillas Railway).
+ * Port: Railway inyecta PORT; fallback 3000 (no usar 8765 en Railway). Local opcional: WS_PORT.
  *
  * Producción HTTPS:
  *   El HTML en HTTPS no puede abrir ws:// al mismo host: otro puerto sin TLS falla.
@@ -35,8 +35,8 @@
 const http = require('http');
 const WebSocket = require('ws');
 
-// Railway inyecta PORT. En local: WS_PORT o 3000 (equivalente al ejemplo mínimo de deploy).
-const PORT = parseInt(process.env.PORT || process.env.WS_PORT || '3000', 10);
+// Railway: process.env.PORT. Local sin PORT: 3000, o define WS_PORT en .env.
+const PORT = Number(process.env.PORT) || Number(process.env.WS_PORT) || 3000;
 
 const server = http.createServer((req, res) => {
     const path = (req.url || '/').split('?')[0];
