@@ -10,26 +10,41 @@ if (!is_logged_in()) {
 }
 
 // Resolve hero model URL for the logged-in player
+// Chain: users.favorite_avatar_id → knd_avatar_items.mw_avatar_id → mw_avatars
 $_heroModelUrl = null;
 try {
     $pdo = getDBConnection();
     $uid = (int)$_SESSION['user_id'];
-    $s = $pdo->prepare("SELECT fa.id, fa.name, fa.rarity FROM users u LEFT JOIN mw_avatars fa ON fa.id = u.favorite_avatar_id WHERE u.id = ?");
+
+    // Primary: favorite avatar item → mw_avatar
+    $s = $pdo->prepare("SELECT fa.id, fa.name, fa.rarity FROM users u JOIN knd_avatar_items kai ON kai.id = u.favorite_avatar_id AND kai.mw_avatar_id IS NOT NULL JOIN mw_avatars fa ON fa.id = kai.mw_avatar_id WHERE u.id = ?");
     $s->execute([$uid]);
     $av = $s->fetch(PDO::FETCH_ASSOC);
     if ($av && $av['id']) {
         $_heroModelUrl = mw_resolve_avatar_model_url((int)$av['id'], (string)($av['name']??''), (string)($av['rarity']??'common'));
     }
-    // Fallback: if no favorite_avatar_id set, try first avatar in inventory
+
+    // Fallback 1: any inventory item that has a linked mw_avatar
     if (!$_heroModelUrl) {
         try {
-            $sf = $pdo->prepare("SELECT fa.id, fa.name, fa.rarity FROM knd_user_avatar_inventory ui JOIN knd_avatar_items ai ON ai.id = ui.item_id JOIN mw_avatars fa ON fa.id = ai.mw_avatar_id WHERE ui.user_id = ? LIMIT 1");
+            $sf = $pdo->prepare("SELECT fa.id, fa.name, fa.rarity FROM knd_user_avatar_inventory ui JOIN knd_avatar_items ai ON ai.id = ui.item_id AND ai.mw_avatar_id IS NOT NULL JOIN mw_avatars fa ON fa.id = ai.mw_avatar_id WHERE ui.user_id = ? LIMIT 1");
             $sf->execute([$uid]);
             $avf = $sf->fetch(PDO::FETCH_ASSOC);
             if ($avf && $avf['id']) {
                 $_heroModelUrl = mw_resolve_avatar_model_url((int)$avf['id'], (string)($avf['name']??''), (string)($avf['rarity']??'common'));
             }
         } catch (Throwable $_f) {}
+    }
+
+    // Fallback 2: first mw_avatar that resolves to a GLB on disk
+    if (!$_heroModelUrl) {
+        try {
+            $sa = $pdo->query("SELECT id, name, rarity FROM mw_avatars ORDER BY id ASC LIMIT 30");
+            foreach ($sa->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                $url = mw_resolve_avatar_model_url((int)$row['id'], (string)$row['name'], (string)$row['rarity']);
+                if ($url) { $_heroModelUrl = $url; break; }
+            }
+        } catch (Throwable $_a) {}
     }
 } catch (Throwable $_) {}
 ?><!DOCTYPE html>

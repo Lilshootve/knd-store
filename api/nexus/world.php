@@ -132,7 +132,8 @@ try {
                 LEFT JOIN nexus_player_appearance npa ON npa.user_id = u.id
                 LEFT JOIN nexus_player_state nps      ON nps.user_id = u.id
                 LEFT JOIN knd_user_xp kux             ON kux.user_id = u.id
-                LEFT JOIN mw_avatars fa               ON fa.id = u.favorite_avatar_id
+                LEFT JOIN knd_avatar_items fai        ON fai.id = u.favorite_avatar_id AND fai.mw_avatar_id IS NOT NULL
+                LEFT JOIN mw_avatars fa               ON fa.id = fai.mw_avatar_id
                 WHERE u.id = ?
             ");
             $stmt->execute([$uid]);
@@ -157,16 +158,26 @@ try {
                         (string)($player_data['avatar_name'] ?? ''),
                         (string)($player_data['avatar_rarity'] ?? 'common')
                     );
-                    // Fallback: if no favorite_avatar_id, try first inventory avatar
-                    if (!$player_data['hero_model_url'] && function_exists('mw_resolve_avatar_model_url')) {
+                    // Fallback 1: any inventory item that has a linked mw_avatar
+                    if (!$player_data['hero_model_url']) {
                         try {
-                            $sf = $pdo->prepare("SELECT fa.id, fa.name, fa.rarity FROM knd_user_avatar_inventory ui JOIN knd_avatar_items ai ON ai.id = ui.item_id JOIN mw_avatars fa ON fa.id = ai.mw_avatar_id WHERE ui.user_id = ? LIMIT 1");
+                            $sf = $pdo->prepare("SELECT fa.id, fa.name, fa.rarity FROM knd_user_avatar_inventory ui JOIN knd_avatar_items ai ON ai.id = ui.item_id AND ai.mw_avatar_id IS NOT NULL JOIN mw_avatars fa ON fa.id = ai.mw_avatar_id WHERE ui.user_id = ? LIMIT 1");
                             $sf->execute([$uid]);
                             $avf = $sf->fetch(PDO::FETCH_ASSOC);
                             if ($avf && $avf['id']) {
                                 $player_data['hero_model_url'] = mw_resolve_avatar_model_url((int)$avf['id'], (string)($avf['name']??''), (string)($avf['rarity']??'common'));
                             }
                         } catch (Throwable $_f) {}
+                    }
+                    // Fallback 2: first mw_avatar with a GLB on disk
+                    if (!$player_data['hero_model_url']) {
+                        try {
+                            $sa = $pdo->query("SELECT id, name, rarity FROM mw_avatars ORDER BY id ASC LIMIT 30");
+                            foreach ($sa->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                                $url = mw_resolve_avatar_model_url((int)$row['id'], (string)$row['name'], (string)$row['rarity']);
+                                if ($url) { $player_data['hero_model_url'] = $url; break; }
+                            }
+                        } catch (Throwable $_a) {}
                     }
                 }
             } catch (Throwable $_) { /* non-fatal — hero will use fallback procedural model */ }
