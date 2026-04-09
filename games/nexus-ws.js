@@ -2,7 +2,7 @@
  * nexus-ws.js — KND Nexus WebSocket server
  *
  * Events (client → server):
- *   join          { user_id, display_name, color_body, color_visor, color_echo, pos_x, pos_z }
+ *   join          { user_id, display_name, color_body, color_visor, color_echo, pos_x, pos_z, hero_model_url? }
  *   move          { pos_x, pos_z, dir }
  *   chat          { channel, message }   (global | agora | district id)
  *   district_enter { district_id }
@@ -53,7 +53,7 @@ const wss = new WebSocket.Server({ server });
 // State
 // ────────────────────────────────────────────────
 
-/** @type {Map<string, {ws, user_id, display_name, color_body, color_visor, color_echo, pos_x, pos_z, dir, district_id, last_active}>} */
+/** @type {Map<string, {ws, user_id, display_name, color_body, color_visor, color_echo, hero_model_url, pos_x, pos_z, dir, district_id, last_active, joined}>} */
 const players = new Map(); // key = socket id (internal)
 
 let _next_id = 1;
@@ -85,17 +85,28 @@ function broadcastToDistrict(district_id, type, payload, excludeId = null) {
 
 function publicPlayer(p) {
     return {
-        player_id:    p.id,
-        user_id:      p.user_id,
-        display_name: p.display_name,
-        color_body:   p.color_body,
-        color_visor:  p.color_visor,
-        color_echo:   p.color_echo,
-        pos_x:        p.pos_x,
-        pos_z:        p.pos_z,
-        dir:          p.dir,
-        district_id:  p.district_id,
+        player_id:       p.id,
+        user_id:         p.user_id,
+        display_name:    p.display_name,
+        color_body:      p.color_body,
+        color_visor:     p.color_visor,
+        color_echo:      p.color_echo,
+        hero_model_url:  p.hero_model_url || null,
+        pos_x:           p.pos_x,
+        pos_z:           p.pos_z,
+        dir:             p.dir,
+        district_id:     p.district_id,
     };
+}
+
+/** https/http, o ruta absoluta /assets/... (sin .. ni espacios). */
+function sanitizeHeroModelUrl(url) {
+    if (typeof url !== 'string') return null;
+    const u = url.trim().slice(0, 512);
+    if (/[\s<>"']/.test(u) || u.includes('..')) return null;
+    if (/^https?:\/\//i.test(u)) return u;
+    if (u.startsWith('/') && u.length > 1 && /^\/[a-zA-Z0-9/_\.%-]+$/.test(u)) return u;
+    return null;
 }
 
 // Sanitize chat: strip HTML-like chars, trim, limit length
@@ -114,19 +125,20 @@ wss.on('connection', (ws, req) => {
 
     // Placeholder until 'join' received
     players.set(pid, {
-        id:           pid,
+        id:              pid,
         ws,
-        user_id:      null,
-        display_name: 'Anon',
-        color_body:   '#00e8ff',
-        color_visor:  '#00e8ff',
-        color_echo:   '#ffd600',
-        pos_x:        0,
-        pos_z:        0,
-        dir:          0,
-        district_id:  'central',
-        last_active:  Date.now(),
-        joined:       false,
+        user_id:         null,
+        display_name:    'Anon',
+        color_body:      '#00e8ff',
+        color_visor:     '#00e8ff',
+        color_echo:      '#ffd600',
+        hero_model_url:  null,
+        pos_x:           0,
+        pos_z:           0,
+        dir:             0,
+        district_id:     'central',
+        last_active:     Date.now(),
+        joined:          false,
     });
 
     ws.on('message', (raw) => {
@@ -147,7 +159,6 @@ wss.on('connection', (ws, req) => {
                 return send(ws, 'error', { code: 'INVALID_JOIN', message: 'user_id required' });
             }
 
-            // Update player record
             p.user_id      = user_id;
             p.display_name = sanitizeMessage(data.display_name || 'Player').slice(0, 20) || 'Player';
             p.color_body   = /^#[0-9a-fA-F]{6}$/.test(data.color_body)  ? data.color_body  : '#00e8ff';
@@ -157,16 +168,23 @@ wss.on('connection', (ws, req) => {
             p.pos_z        = typeof data.pos_z === 'number' ? data.pos_z : 0;
             p.dir          = typeof data.dir   === 'number' ? data.dir   : 0;
             p.district_id  = 'central';
-            p.joined       = true;
+            p.hero_model_url = sanitizeHeroModelUrl(data.hero_model_url);
 
-            // Send welcome with current player list
+            // Re-join: actualizar avatar/colores y avisar a los demás (sin segundo welcome)
+            if (p.joined) {
+                broadcast('player_update', { player: publicPlayer(p) }, pid);
+                console.log(`[join] pid=${pid} user=${user_id} re-join / appearance update`);
+                return;
+            }
+
+            p.joined = true;
+
             const current = [];
             for (const [id, op] of players) {
                 if (id !== pid && op.joined) current.push(publicPlayer(op));
             }
             send(ws, 'welcome', { player_id: pid, players: current });
 
-            // Announce to others
             broadcast('player_join', { player: publicPlayer(p) }, pid);
 
             console.log(`[join] pid=${pid} user=${user_id} name="${p.display_name}"`);

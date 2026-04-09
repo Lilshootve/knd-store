@@ -1014,6 +1014,87 @@ function tickLocalMem(dt){
 // ══════════════════════════════════════════════════════
 // REMOTE PLAYERS
 // ══════════════════════════════════════════════════════
+function resolveAvatarGlbUrl(u){
+  if(!u||typeof u!=="string") return "";
+  const s=u.trim();
+  if(/^https?:\/\//i.test(s)) return s;
+  if(s.startsWith("/")) return (window.location.origin||"")+s;
+  return "";
+}
+
+function _disposeRemotePlayerMesh(root){
+  if(!root) return;
+  root.traverse(o=>{
+    if(o.isMesh){
+      o.geometry?.dispose();
+      const mats=Array.isArray(o.material)?o.material:[o.material];
+      mats.forEach(m=>{ m?.map?.dispose(); m?.dispose?.(); });
+    }
+    if(o.userData?.mixer){ try{ o.userData.mixer.stopAllAction(); }catch(_){} }
+  });
+}
+
+async function replaceRemotePlayerWithGlb(pid, p, url){
+  const rp=remotePlayers.get(pid);
+  const abs=resolveAvatarGlbUrl(url);
+  if(!rp||!abs) return;
+  try{
+    const gltf=await new Promise((res,rej)=>_gltfLoader.load(abs,res,null,rej));
+    const model=gltf.scene;
+    normalizeGltfForRenderer(model);
+    const box=new THREE.Box3().setFromObject(model);
+    const size=new THREE.Vector3(); box.getSize(size);
+    const maxDim=Math.max(size.x,size.y,size.z);
+    if(maxDim>0) model.scale.setScalar(1.85/maxDim);
+    const box2=new THREE.Box3().setFromObject(model);
+    model.position.y-=box2.min.y;
+    model.traverse(o=>{ if(o.isMesh){ o.castShadow=true; o.receiveShadow=true; } });
+    let mixer=null;
+    if(gltf.animations?.length){
+      mixer=new THREE.AnimationMixer(model);
+      let idle=gltf.animations.find(c=>/idle|stand|t-pose|tpose/i.test(c.name))||gltf.animations[0];
+      mixer.clipAction(idle).play();
+    }
+    const label=mkSprite((p.display_name||"PLAYER").slice(0,12)+"",6,"rgba(180,210,255,.7)");
+    label.position.y=2.05;
+    model.add(label);
+    const ox=rp.mesh.position.x, oz=rp.mesh.position.z, oy=rp.mesh.rotation.y;
+    scene.remove(rp.mesh);
+    _disposeRemotePlayerMesh(rp.mesh);
+    model.position.x=ox; model.position.z=oz; model.rotation.y=oy;
+    scene.add(model);
+    remotePlayers.set(pid,{ mesh:model, tx:rp.tx, tz:rp.tz, mixer, targetDir:rp.targetDir, heroUrl:url });
+  }catch(e){
+    console.warn("[remote] GLB avatar falló, se mantiene guardian procedural:", abs, e.message||e);
+  }
+}
+
+function refreshRemotePlayerFromServer(p){
+  const pid=p.player_id;
+  if(!remotePlayers.has(pid)) return;
+  const rp=remotePlayers.get(pid);
+  const url=(p.hero_model_url&&String(p.hero_model_url).trim())||"";
+  const urlChanged=url!==(rp.heroUrl||"");
+  if(url&&resolveAvatarGlbUrl(url)&&urlChanged){
+    rp.heroUrl=url;
+    replaceRemotePlayerWithGlb(pid,p,url);
+    return;
+  }
+  rp.heroUrl=url||rp.heroUrl||null;
+  const newName=(p.display_name||"PLAYER").slice(0,12);
+  const yLabel=rp.mixer!=null ? 2.05 : 2.35;
+  const sprites=[];
+  rp.mesh.traverse(o=>{ if(o.isSprite) sprites.push(o); });
+  sprites.forEach(o=>{
+    o.parent?.remove(o);
+    o.material?.map?.dispose();
+    o.material?.dispose();
+  });
+  const sp=mkSprite(newName,6,"rgba(180,210,255,.7)");
+  sp.position.y=yLabel;
+  rp.mesh.add(sp);
+}
+
 function addRemotePlayer(p){
   if(remotePlayers.has(p.player_id)) return;
   const mesh=mkGuardian(p.color_body||"#9b30ff", p.color_visor||"#00e8ff", "#ffd600", true);
@@ -1021,12 +1102,16 @@ function addRemotePlayer(p){
   const label=mkSprite((p.display_name||"PLAYER").slice(0,12)+"",6,"rgba(180,210,255,.7)");
   label.position.y=2.35; mesh.add(label);
   scene.add(mesh);
-  remotePlayers.set(p.player_id, { mesh, tx:p.pos_x||0, tz:p.pos_z||0 });
+  const url0=(p.hero_model_url&&String(p.hero_model_url).trim())||"";
+  remotePlayers.set(p.player_id,{ mesh, tx:p.pos_x||0, tz:p.pos_z||0, mixer:null, heroUrl:url0&&resolveAvatarGlbUrl(url0)?url0:null });
+  if(url0&&resolveAvatarGlbUrl(url0)) replaceRemotePlayerWithGlb(p.player_id,p,url0);
 }
 
 function removeRemotePlayer(pid){
   const rp=remotePlayers.get(pid); if(!rp) return;
-  scene.remove(rp.mesh); remotePlayers.delete(pid);
+  scene.remove(rp.mesh);
+  _disposeRemotePlayerMesh(rp.mesh);
+  remotePlayers.delete(pid);
 }
 
 function moveRemotePlayer(pid, pos_x, pos_z, dir){
@@ -1041,6 +1126,7 @@ function tickRemotePlayers(dt){
     rp.mesh.position.x=THREE.MathUtils.lerp(rp.mesh.position.x,rp.tx,sm);
     rp.mesh.position.z=THREE.MathUtils.lerp(rp.mesh.position.z,rp.tz,sm);
     rp.mesh.position.y=0;
+    if(rp.mixer) rp.mixer.update(dt);
   });
 }
 
@@ -1172,6 +1258,7 @@ function connectWS(){
       color_body: gColorHex,
       color_visor: gVisorHex,
       color_echo: gEchoHex,
+      hero_model_url: window._heroModelUrl||null,
       pos_x: player.position.x,
       pos_z: player.position.z,
     }));
@@ -1191,6 +1278,9 @@ function connectWS(){
         break;
       case "player_leave":
         removeRemotePlayer(msg.player_id);
+        break;
+      case "player_update":
+        if(msg.player&&msg.player.player_id!==myPid) refreshRemotePlayerFromServer(msg.player);
         break;
       case "player_move":
         if(msg.player_id!==myPid) moveRemotePlayer(msg.player_id,msg.pos_x,msg.pos_z,msg.dir);
@@ -1324,7 +1414,7 @@ window.applyCustomizer=async function(){
   document.getElementById("cu").classList.remove("on");
   recolorPlayer();
   if(ws&&ws.readyState===WebSocket.OPEN){
-    ws.send(JSON.stringify({type:"join",user_id:window._userId||0,display_name:gName,color_body:gColorHex,color_visor:gVisorHex,color_echo:gEchoHex,pos_x:player.position.x,pos_z:player.position.z}));
+    ws.send(JSON.stringify({type:"join",user_id:window._userId||0,display_name:gName,color_body:gColorHex,color_visor:gVisorHex,color_echo:gEchoHex,hero_model_url:window._heroModelUrl||null,pos_x:player.position.x,pos_z:player.position.z}));
   }
 };
 
@@ -1394,8 +1484,10 @@ async function loadWorld(){
 
     // Player data
     const pdata=data.player;
+    window._heroModelUrl=null;
     if(pdata){
       window._userId=pdata.user_id||0;
+      window._heroModelUrl=(pdata.hero_model_url&&String(pdata.hero_model_url).trim())||null;
       if(pdata.display_name) { gName=pdata.display_name; document.getElementById("cu-nm").value=gName; }
       if(pdata.color_body)   { gColorHex=pdata.color_body; }
       if(pdata.color_visor)  { gVisorHex=pdata.color_visor; }
@@ -1406,6 +1498,8 @@ async function loadWorld(){
       recolorPlayer();
       // Load avatar GLB if available
       if (pdata.hero_model_url) loadHeroModel(pdata.hero_model_url);
+    } else {
+      window._userId = 0;
     }
 
     // Load initial chat history
@@ -1423,7 +1517,9 @@ async function loadWorld(){
     if ((window._userId | 0) > 0) connectWS();
     else console.info('[WS] sin conectar: inicia sesión para tiempo real');
 
-    // Init admin World Builder if flagged by server
+    // Objetos colocados del World Builder: todos los visitantes (antes sólo se cargaban en modo admin).
+    await ensureNexusWorldObjectsLoaded();
+
     if (data.is_admin) {
       window.IS_ADMIN = true;
       await initWorldBuilder();
@@ -1576,8 +1672,8 @@ renderer.setAnimationLoop((nowMs)=>{
   // Ágora bubbles
   tickBubbles();
 
-  // World Builder tick (selection box update + object mixers)
-  if(_wbActive) tickWorldBuilder(dt);
+  tickWorldPlacedObjectAnim(dt);
+  if (_wbActive) tickWorldBuilder(dt);
 
   try{
     if (composer) composer.render();
@@ -1623,6 +1719,7 @@ let _wbGridHelper    = null;    // GridHelper opcional (toggle G)
 // Lista y mapa de objetos colocados en el mundo
 const _wbObjects     = [];          // [{id, item_id, mesh}]
 const _wbObjectMap   = new Map();   // id → entry
+let _wbWorldObjectsLoaded = false;
 
 // Objeto seleccionado actualmente (para R, +/-, DEL)
 let _wbSelObj        = null;
@@ -2120,6 +2217,18 @@ function _wbCatalogEntryByItemId(itemId) {
   return _wbCatalog.find(c => c.id === itemId) || null;
 }
 
+/** Todos los jugadores ven los objetos colocados; el catálogo (sesión) resuelve modelos si falta model_url en BD. */
+async function ensureNexusWorldObjectsLoaded() {
+  if (_wbWorldObjectsLoaded) return;
+  _wbWorldObjectsLoaded = true;
+  try {
+    if ((window._userId | 0) > 0) await _wbFetchFurnitureCatalog();
+    await wbLoadObjects();
+  } catch (e) {
+    console.warn("[Nexus] ensureNexusWorldObjectsLoaded:", e);
+  }
+}
+
 // ── CARGAR OBJETOS EXISTENTES DESDE API ──
 
 async function wbLoadObjects() {
@@ -2213,14 +2322,10 @@ function _wbSetStatus(msg) {
 // Llamado desde renderer.setAnimationLoop cuando _wbActive=true
 
 let _wbPulseT = 0;
-function tickWorldBuilder(dt) {
-  // Actualizar BoxHelper del objeto seleccionado
-  if (_wbSelBox && _wbSelObj) _wbSelBox.update();
-  // Actualizar animaciones de los objetos del mundo (mixers GLB)
+function tickWorldPlacedObjectAnim(dt) {
   _wbObjects.forEach(o => {
     if (o.mesh?.userData?.mixer) o.mesh.userData.mixer.update(dt);
   });
-  // Pulsar ground glow en todos los objetos con luz
   _wbPulseT += dt;
   _wbObjects.forEach(o => {
     const glow = o.mesh?.userData?.wbGlowMesh;
@@ -2228,7 +2333,6 @@ function tickWorldBuilder(dt) {
     const base = glow.userData.wbPulseBase ?? 0.22;
     glow.material.opacity = base + Math.sin(_wbPulseT * 1.8) * 0.07;
   });
-
   const t = performance.now() * 0.002;
   _wbObjects.forEach(o => {
     const obj = o.mesh;
@@ -2236,6 +2340,10 @@ function tickWorldBuilder(dt) {
     if (obj.userData.scanline) obj.userData.scanline.position.y = (Math.sin(t) * 0.5) + 1;
     if (obj.userData.ring) obj.userData.ring.scale.setScalar(1 + Math.sin(t) * 0.05);
   });
+}
+
+function tickWorldBuilder(dt) {
+  if (_wbSelBox && _wbSelObj) _wbSelBox.update();
 }
 
 // ── MANEJO DE TECLAS DEL BUILDER ──
@@ -2356,8 +2464,6 @@ async function initWorldBuilder() {
 
   await _wbFetchFurnitureCatalog();
   _wbBuildCatalogUI();
-
-  await wbLoadObjects();
 
   if (!_wbCatalog.length) {
     fireEv('⚠', 'WB', 'Catálogo vacío o no cargado — revisa DB / sesión', 'rgba(255,160,80,.85)');
