@@ -54,7 +54,7 @@ function resolveDOM() {
     'result-card','rc-topbar','rc-portrait','rc-glow-ring',
     'rc-image','rc-beam','rc-rarity-badge','rc-name','rc-class',
     'rc-stats','rc-duplicate','dup-ke','ra-equip','ra-again',
-    'history-list','equip-modal','em-av-name','em-av-class',
+    'history-list','equip-modal','em-av-name','em-av-class','em-confirm',
     'capsule-wrap',
   ];
   ids.forEach(id => { DOM[id] = document.getElementById(id); });

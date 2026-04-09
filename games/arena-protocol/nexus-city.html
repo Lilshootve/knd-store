@@ -670,6 +670,16 @@ function mkSprite(txt, sz, col){
   const sp=new THREE.Sprite(mat); sp.scale.set(3,.7,1); return sp;
 }
 
+/** Marca el avatar local frente a los remotos (mismo estilo que nombres remotos). */
+function attachLocalPlayerLabel(root, yOffset){
+  if (!root) return;
+  if (root.userData.localLabel) { root.remove(root.userData.localLabel); root.userData.localLabel = null; }
+  const sp = mkSprite("TÚ", 7, "rgba(0,255,180,.95)");
+  sp.position.y = yOffset;
+  root.add(sp);
+  root.userData.localLabel = sp;
+}
+
 /** GLB: MeshPhysical/Shader + texturas sin colorSpace rompen uniforms con EffectComposer en r170+ */
 function normalizeGltfForRenderer(root){
   root.traverse((obj)=>{
@@ -804,6 +814,7 @@ function addGroundRing(parent) {
 // Local player — starts as procedural guardian; replaced by GLB if available
 const player = mkGuardian(gColorHex, gVisorHex, gEchoHex, false);
 scene.add(player);
+attachLocalPlayerLabel(player, 2.45);
 
 // ── HERO GLB SYSTEM ──
 let _heroMixer = null;
@@ -844,6 +855,7 @@ async function loadHeroModel(url) {
     scene.add(model);
     _heroMesh = model;
     scene.remove(player);
+    attachLocalPlayerLabel(model, 2.05);
 
     // Animation mixer (no debe impedir ver el mesh)
     try {
@@ -1125,6 +1137,10 @@ function scheduleWSReconnect(){
 }
 
 function connectWS(){
+  if ((window._userId | 0) <= 0) {
+    console.info("[WS] sin conectar: inicia sesión para tiempo real");
+    return;
+  }
   const url = getNexusWsUrl();
   if (!url) {
     console.warn("[WS] URL vacía (meta nexus-ws-url o window.NEXUS_WS_URL)");

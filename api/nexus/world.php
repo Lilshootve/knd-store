@@ -118,6 +118,7 @@ try {
         try {
             $stmt = $pdo->prepare("
                 SELECT
+                    u.id                                  AS user_id,
                     u.username,
                     COALESCE(npa.display_name, u.username) AS display_name,
                     COALESCE(npa.color_body,  '#00e8ff')   AS color_body,
@@ -147,9 +148,21 @@ try {
                 $stmt2->execute([$uid]);
                 $row = $stmt2->fetch(PDO::FETCH_ASSOC) ?: [];
             } catch (PDOException $_2) { $row = []; }
-            $player_data = ['display_name'=>$row['username']??'','color_body'=>'#00e8ff','color_visor'=>'#00e8ff','color_echo'=>'#ffd600','pos_x'=>0,'pos_z'=>0,'level'=>$row['level']??1,'xp'=>$row['xp']??null,'username'=>$row['username']??''];
+            $player_data = [
+                'user_id'      => (int) $uid,
+                'display_name' => $row['username'] ?? '',
+                'color_body'   => '#00e8ff',
+                'color_visor'  => '#00e8ff',
+                'color_echo'   => '#ffd600',
+                'pos_x'        => 0,
+                'pos_z'        => 0,
+                'level'        => $row['level'] ?? 1,
+                'xp'           => $row['xp'] ?? null,
+                'username'     => $row['username'] ?? '',
+            ];
         }
         if ($player_data) {
+            $player_data['user_id'] = (int) ($player_data['user_id'] ?? $uid);
             // Resolve avatar GLB URL — wrapped defensively so any failure doesn't break the endpoint
             $player_data['hero_model_url'] = null;
             try {
