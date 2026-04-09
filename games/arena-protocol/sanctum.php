@@ -277,9 +277,9 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
 
 <!-- Top Bar -->
 <div id="tb">
-  <div class="back-btn" id="nav-exit" data-href="/" onclick="crtGoExit()" title="Leave Sanctum">
+  <div class="back-btn" id="nav-exit" data-href="/games/arena-protocol/nexus-city.html" onclick="crtGoExit()" title="Volver a Nexus">
     <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-    <span id="nav-exit-lbl">HOME</span>
+    <span id="nav-exit-lbl">NEXUS</span>
   </div>
   <div class="tb-sep"></div>
   <div id="room-name" onclick="openSettings()"><?php echo htmlspecialchars($_sanctumRoomDisplay, ENT_QUOTES, 'UTF-8'); ?></div>
@@ -495,7 +495,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('kp-val').textContent = balance.toLocaleString();
         const rname = plotData.house_name || (json.data.username.toUpperCase() + '\'S SANCTUM');
         document.getElementById('room-name').textContent = rname;
-        applyExitNav(!!json.data.is_admin);
+        applyExitNav();
 
         buildScene();
         applyTheme(plotData.exterior_theme || 'cyber');
@@ -507,7 +507,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     } catch(e) {
         console.error('Sanctum load error:', e);
-        applyExitNav(false);
+        applyExitNav();
         buildScene();
         renderCatalog('all');
         updateTabCounts();
@@ -2164,20 +2164,15 @@ window.saveSettings = async () => {
     } catch(e) { toast('Network error', 'err'); }
 };
 
-function applyExitNav(isAdmin) {
+function applyExitNav() {
     const btn = document.getElementById('nav-exit');
     const lbl = document.getElementById('nav-exit-lbl');
     if (!btn) return;
-    if (isAdmin) {
-        btn.dataset.href = '/games/arena-protocol/nexus-city.html';
-        if (lbl) lbl.textContent = 'NEXUS';
-    } else {
-        btn.dataset.href = '/';
-        if (lbl) lbl.textContent = 'HOME';
-    }
+    btn.dataset.href = '/games/arena-protocol/nexus-city.html';
+    if (lbl) lbl.textContent = 'NEXUS';
 }
 
-window.crtGoExit = () => crtGo(document.getElementById('nav-exit')?.dataset.href || '/');
+window.crtGoExit = () => crtGo(document.getElementById('nav-exit')?.dataset.href || '/games/arena-protocol/nexus-city.html');
 
 // CRT transition
 window.crtGo = (url) => {
