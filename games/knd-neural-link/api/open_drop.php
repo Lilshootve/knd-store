@@ -19,10 +19,10 @@ require_once BASE_PATH . '/includes/session.php';
 require_once BASE_PATH . '/includes/config.php';
 require_once BASE_PATH . '/includes/auth.php';
 require_once BASE_PATH . '/includes/support_credits.php';
-require_once BASE_PATH . '/includes/knl_packs.php';
-require_once BASE_PATH . '/includes/knl_db.php';
-require_once BASE_PATH . '/includes/knl_assets.php';
-require_once BASE_PATH . '/includes/knl_mw_items.php';
+require_once __DIR__ . '/../includes/knl_packs.php';
+require_once __DIR__ . '/../includes/knl_db.php';
+require_once __DIR__ . '/../includes/knl_assets.php';
+require_once __DIR__ . '/../includes/knl_mw_items.php';
 
 $serverName = $_SERVER['SERVER_NAME'] ?? '';
 $knlIsLocal = in_array($serverName, ['localhost', '127.0.0.1'], true);
