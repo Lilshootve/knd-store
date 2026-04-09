@@ -1482,10 +1482,11 @@ async function buildWorldObject(item) {
   const g = new THREE.Group();
   g.userData.worldItem = item;
 
-  if (item.model) {
+  const modelUrl = item.model || item.model_url || null;
+  if (modelUrl) {
     try {
       const gltf = await new Promise((res, rej) =>
-        _wbLoader.load(item.model, res, null, rej)
+        _wbLoader.load(modelUrl, res, null, rej)
       );
       const model = gltf.scene;
       normalizeGltfForRenderer(model);
@@ -1514,11 +1515,11 @@ async function buildWorldObject(item) {
 
       g.add(model);
     } catch (err) {
-      console.warn('[WB] GLB load failed for', item.name || item.id, '— using fallback');
+      console.warn('[WB] GLB load failed for', item.name || item.id, modelUrl, err);
       _wbFallbackMesh(g, item);
     }
   } else {
-    // Sin modelo → caja procedural de referencia
+    // Sin modelo en item ni en BD: caja procedural (muchos objetos antiguos tenían model null al guardar)
     _wbFallbackMesh(g, item);
   }
 
@@ -1951,6 +1952,12 @@ async function _wbFetchFurnitureCatalog() {
   }
 }
 
+/** Ítem del catálogo WB cuyo id (= code BD) coincide con item_id guardado en nexus_world_objects */
+function _wbCatalogEntryByItemId(itemId) {
+  if (!itemId || !_wbCatalog.length) return null;
+  return _wbCatalog.find(c => c.id === itemId) || null;
+}
+
 // ── CARGAR OBJETOS EXISTENTES DESDE API ──
 
 async function wbLoadObjects() {
@@ -1959,13 +1966,32 @@ async function wbLoadObjects() {
     const j   = await res.json();
     if (!j.ok) return;
     for (const obj of (j.data.objects || [])) {
+      const cat = _wbCatalogEntryByItemId(obj.item_id);
+      const storedUrl = (obj.model_url && String(obj.model_url).trim()) || '';
+      const modelResolved = storedUrl || (cat && cat.model) || null;
+
+      let light = null;
+      if (obj.light_data) {
+        try {
+          light = JSON.parse(obj.light_data);
+        } catch (_) {}
+      }
+      if (light && typeof light.color === 'string') {
+        light = { ...light, color: _wbColorToNumber(light.color) };
+      }
+      if (!light && cat && cat.light) light = { ...cat.light };
+
       const item = {
         id:    obj.item_id,
-        name:  obj.item_id,
-        model: obj.model_url || null,
-        scale: parseFloat(obj.scale) || 1.0,
+        name:  cat ? cat.name : obj.item_id,
+        model: modelResolved,
+        model_url: modelResolved,
+        scale: parseFloat(obj.scale) || (cat && cat.scale) || 1.0,
         light_data: obj.light_data || null,
-        light: obj.light_data ? (() => { try { return JSON.parse(obj.light_data); } catch(_){ return null; } })() : null,
+        light,
+        rarity: cat ? cat.rarity : undefined,
+        hologram: !!(cat && cat.hologram),
+        color: (cat && cat.color) || undefined,
       };
       const mesh = await buildWorldObject(item);
       mesh.position.set(parseFloat(obj.pos_x)||0, parseFloat(obj.pos_y)||0, parseFloat(obj.pos_z)||0);
