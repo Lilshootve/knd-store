@@ -38,15 +38,12 @@ const WebSocket = require('ws');
 // Railway inyecta PORT (string); sin PORT → 3000 en local.
 const PORT = process.env.PORT || 3000;
 
+// Cualquier ruta HTTP → 200 inmediato (health checks de Railway pueden no usar /).
 const server = http.createServer((req, res) => {
-    const path = (req.url || '/').split('?')[0];
-    if (path === '/' || path === '/health') {
-        res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' });
-        res.end('nexus-ws ok\n');
-        return;
-    }
-    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-    res.end('not found\n');
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-store');
+    res.end('nexus-ws ok');
 });
 
 const wss = new WebSocket.Server({ server });
