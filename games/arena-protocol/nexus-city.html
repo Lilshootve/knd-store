@@ -448,9 +448,9 @@ const gnd = new THREE.Mesh(
 );
 gnd.rotation.x=-Math.PI/2; scene.add(gnd);
 const g1=new THREE.GridHelper(140,90,0x1a2040,0x0c1228); g1.position.y=0.02;
-[g1.material].flat().forEach(m=>{m.transparent=true;m.opacity=0.5;}); scene.add(g1);
+[g1.material].flat().forEach(m=>{m.transparent=true;m.opacity=0.5;m.fog=false;}); scene.add(g1);
 const g2=new THREE.GridHelper(140,26,0x232c50,0x0c1228); g2.position.y=0.03;
-[g2.material].flat().forEach(m=>{m.transparent=true;m.opacity=0.22;}); scene.add(g2);
+[g2.material].flat().forEach(m=>{m.transparent=true;m.opacity=0.22;m.fog=false;}); scene.add(g2);
 
 // ── OBELISK ──
 const oRings=[], oLights=[];
@@ -593,8 +593,49 @@ function mkGuardian(colHex, visorHex="#00e8ff", echoHex="#ffd600", isRemote=fals
 function mkSprite(txt, sz, col){
   const cv=document.createElement("canvas"); cv.width=256; cv.height=64;
   const cx=cv.getContext("2d"); cx.fillStyle=col; cx.font=`${sz*2}px "Share Tech Mono",monospace`; cx.textAlign="center"; cx.textBaseline="middle"; cx.fillText(txt,128,32);
-  const mat=new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv),transparent:true,depthTest:false});
+  const tex=new THREE.CanvasTexture(cv);
+  tex.colorSpace=THREE.SRGBColorSpace;
+  const mat=new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false,fog:false});
   const sp=new THREE.Sprite(mat); sp.scale.set(3,.7,1); return sp;
+}
+
+/** GLB: MeshPhysical/Shader + texturas sin colorSpace rompen uniforms con EffectComposer en r170+ */
+function normalizeGltfForRenderer(root){
+  root.traverse((obj)=>{
+    if(!obj.isMesh)return;
+    if(!obj.material){
+      obj.material=new THREE.MeshStandardMaterial({color:0x778899,metalness:0.4,roughness:0.6});
+      return;
+    }
+    const mats=Array.isArray(obj.material)?obj.material:[obj.material];
+    const out=mats.map((m)=>normalizeGltfMaterial(m)).filter(Boolean);
+    if(out.length===0)obj.material=new THREE.MeshStandardMaterial({color:0x778899,metalness:0.4,roughness:0.6});
+    else obj.material=out.length===1?out[0]:out;
+  });
+}
+function normalizeGltfMaterial(m){
+  if(!m||!m.isMaterial)return new THREE.MeshStandardMaterial({color:0x8899aa,metalness:0.45,roughness:0.55});
+  if(m.envMap!=null&&!m.envMap.isTexture){ try{m.envMap=null;}catch(_){} }
+  const setCS=(tex,srgb)=>{if(tex&&tex.isTexture)tex.colorSpace=srgb?THREE.SRGBColorSpace:THREE.NoColorSpace;};
+  setCS(m.map,true); setCS(m.emissiveMap,true);
+  setCS(m.normalMap,false); setCS(m.roughnessMap,false); setCS(m.metalnessMap,false); setCS(m.aoMap,false);
+  if(m.isShaderMaterial){
+    try{m.dispose();}catch(_){}
+    return new THREE.MeshStandardMaterial({color:0x8899aa,metalness:0.45,roughness:0.55});
+  }
+  if(m.isMeshPhysicalMaterial){
+    const std=new THREE.MeshStandardMaterial({
+      name:m.name,color:m.color.clone(),map:m.map,
+      emissive:m.emissive?m.emissive.clone():new THREE.Color(0),emissiveMap:m.emissiveMap,
+      normalMap:m.normalMap,normalScale:m.normalScale?m.normalScale.clone():undefined,
+      roughness:m.roughness,metalness:m.metalness,aoMap:m.aoMap,
+      transparent:m.transparent,opacity:m.opacity,side:m.side,depthWrite:m.depthWrite,
+      vertexColors:!!m.vertexColors
+    });
+    try{m.dispose();}catch(_){}
+    return std;
+  }
+  return m;
 }
 
 // ══════════════════════════════════════════════════════
@@ -692,6 +733,7 @@ async function loadHeroModel(url) {
   try {
     const gltf = await new Promise((res, rej) => _gltfLoader.load(url, res, null, rej));
     const model = gltf.scene;
+    normalizeGltfForRenderer(model);
 
     // Normalize scale so tallest dimension ≈ 1.85 units
     const box = new THREE.Box3().setFromObject(model);
@@ -712,28 +754,28 @@ async function loadHeroModel(url) {
     model.position.z = player.position.z;
     model.rotation.y = player.rotation.y;
 
-    // Swap procedural guardian for GLB
-    scene.remove(player);
+    // Añadir antes de quitar el procedural (evita escena vacía si falla el mixer)
     scene.add(model);
-    // Redirect player reference in animation loop via closure obj
     _heroMesh = model;
+    scene.remove(player);
 
-    // Animation mixer
-    if (gltf.animations && gltf.animations.length > 0) {
-      _heroMixer = new THREE.AnimationMixer(model);
-      gltf.animations.forEach(clip => {
-        const name = clip.name.toLowerCase();
-        if (!_heroClipIdle && (name.includes('idle') || name.includes('stand') || name.includes('t-pose') || name.includes('tpose')))
-          _heroClipIdle = clip;
-        if (!_heroClipWalk && (name.includes('walk') || name.includes('run') || name.includes('move')))
-          _heroClipWalk = clip;
-      });
-      // Fallback: first clip = idle, second = walk
-      if (!_heroClipIdle && gltf.animations[0]) _heroClipIdle = gltf.animations[0];
-      if (!_heroClipWalk && gltf.animations[1]) _heroClipWalk = gltf.animations[1];
-      if (_heroClipIdle) { _heroActionIdle = _heroMixer.clipAction(_heroClipIdle); _heroActionIdle.play(); }
-      if (_heroClipWalk) { _heroActionWalk = _heroMixer.clipAction(_heroClipWalk); }
-    }
+    // Animation mixer (no debe impedir ver el mesh)
+    try {
+      if (gltf.animations && gltf.animations.length > 0) {
+        _heroMixer = new THREE.AnimationMixer(model);
+        gltf.animations.forEach(clip => {
+          const name = clip.name.toLowerCase();
+          if (!_heroClipIdle && (name.includes('idle') || name.includes('stand') || name.includes('t-pose') || name.includes('tpose')))
+            _heroClipIdle = clip;
+          if (!_heroClipWalk && (name.includes('walk') || name.includes('run') || name.includes('move')))
+            _heroClipWalk = clip;
+        });
+        if (!_heroClipIdle && gltf.animations[0]) _heroClipIdle = gltf.animations[0];
+        if (!_heroClipWalk && gltf.animations[1]) _heroClipWalk = gltf.animations[1];
+        if (_heroClipIdle) { _heroActionIdle = _heroMixer.clipAction(_heroClipIdle); _heroActionIdle.play(); }
+        if (_heroClipWalk) { _heroActionWalk = _heroMixer.clipAction(_heroClipWalk); }
+      }
+    } catch (e) { console.warn('[hero] animation setup:', e); }
     if (ENABLE_HOLOGRAM_AVATAR) {
       applyHologramEffect(model);
       addGroundRing(model);
@@ -1361,8 +1403,13 @@ renderer.setAnimationLoop((nowMs)=>{
   // World Builder tick (selection box update + object mixers)
   if(_wbActive) tickWorldBuilder(dt);
 
-  if (composer) composer.render();
-  else renderer.render(scene,cam);
+  try{
+    if (composer) composer.render();
+    else renderer.render(scene,cam);
+  }catch(e){
+    console.warn('[render] composer fallback:',e);
+    try{ renderer.render(scene,cam); }catch(_){}
+  }
 });
 
 // ══════════════════════════════════════════════════════
@@ -1425,6 +1472,7 @@ async function buildWorldObject(item) {
         _wbLoader.load(item.model, res, null, rej)
       );
       const model = gltf.scene;
+      normalizeGltfForRenderer(model);
 
       // Normalizar tamaño: la dimensión máxima = 2 unidades
       const box = new THREE.Box3().setFromObject(model);
@@ -1792,7 +1840,7 @@ function _wbToggleGrid() {
     _wbGridHelper = new THREE.GridHelper(200, 200, 0x9b30ff, 0x6622aa);
     _wbGridHelper.position.y = 0.05;
     const mats = [_wbGridHelper.material].flat();
-    mats.forEach(m => { m.transparent = true; m.opacity = 0.25; });
+    mats.forEach(m => { m.transparent = true; m.opacity = 0.25; m.fog = false; });
     scene.add(_wbGridHelper);
   } else if (!_wbGridSnap && _wbGridHelper) {
     scene.remove(_wbGridHelper);
