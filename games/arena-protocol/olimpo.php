@@ -27,17 +27,24 @@ try {
             JOIN mw_avatars fa ON fa.id = kai.mw_avatar_id WHERE u.id = ?");
         $s->execute([$uid]);
         $av = $s->fetch(\PDO::FETCH_ASSOC);
-        if ($av) {
-            $_heroModelUrl = mw_avatar_glb_url((int)$av['id'], (string)$av['name'], (string)$av['rarity']);
+        if ($av) $_heroModelUrl = mw_resolve_avatar_model_url((int)$av['id'], (string)$av['name'], (string)$av['rarity']);
+        if (!$_heroModelUrl) {
+            $sf = $pdo->prepare("SELECT fa.id, fa.name, fa.rarity FROM knd_user_avatar_inventory ui
+                JOIN knd_avatar_items ai ON ai.id = ui.item_id AND ai.mw_avatar_id IS NOT NULL
+                JOIN mw_avatars fa ON fa.id = ai.mw_avatar_id WHERE ui.user_id = ? LIMIT 1");
+            $sf->execute([$uid]);
+            $avf = $sf->fetch(\PDO::FETCH_ASSOC);
+            if ($avf) $_heroModelUrl = mw_resolve_avatar_model_url((int)$avf['id'], (string)$avf['name'], (string)$avf['rarity']);
+        }
+        if (!$_heroModelUrl) {
+            $sa = $pdo->query("SELECT id, name, rarity FROM mw_avatars ORDER BY id ASC LIMIT 20");
+            foreach ($sa->fetchAll(\PDO::FETCH_ASSOC) as $row) {
+                $url = mw_resolve_avatar_model_url((int)$row['id'], (string)$row['name'], (string)$row['rarity']);
+                if ($url) { $_heroModelUrl = $url; break; }
+            }
         }
     }
 } catch (\Throwable $e) { error_log('olimpo hero: ' . $e->getMessage()); }
-
-$_returnUrl = '';
-if (!empty($_GET['return'])) {
-    $r = filter_var($_GET['return'], FILTER_SANITIZE_URL);
-    if ($r && str_starts_with($r, '/')) $_returnUrl = $r;
-}
 
 $NPCS_PHP = [
     [
@@ -101,12 +108,14 @@ $NPCS_PHP = [
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Rajdhani',sans-serif}
-#c{display:block;width:100%;height:100%}
-#hud{position:fixed;top:0;left:0;right:0;padding:14px 20px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none;z-index:10}
-.hud-badge{background:rgba(0,0,0,.7);border:1px solid rgba(255,214,0,.3);border-radius:8px;padding:6px 14px;font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.12em;color:#ffd600;text-shadow:0 0 8px #ffd600}
-.hud-badge span{opacity:.55;margin-right:6px}
-.hud-btn{pointer-events:all;background:rgba(0,0,0,.7);border:1px solid rgba(255,214,0,.35);border-radius:8px;padding:7px 16px;font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.1em;color:#ffd600;cursor:pointer;transition:all .2s}
-.hud-btn:hover{background:rgba(255,214,0,.1);box-shadow:0 0 12px rgba(255,214,0,.3)}
+#c{position:fixed;top:48px;left:0;right:0;bottom:0;display:block;width:100%}
+/* Topbar */
+#tb{position:fixed;top:0;left:0;right:0;height:48px;background:rgba(0,0,0,.88);border-bottom:1px solid rgba(255,214,0,.18);display:flex;align-items:center;gap:12px;padding:0 16px;z-index:30;backdrop-filter:blur(8px)}
+.back-btn{display:flex;align-items:center;gap:6px;color:#ffd600;text-decoration:none;font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.12em;opacity:.8;transition:opacity .2s}
+.back-btn:hover{opacity:1}
+.back-btn svg{width:16px;height:16px;stroke:#ffd600;stroke-width:2.5;fill:none}
+#tb-title{font-family:'Orbitron',monospace;font-size:.7rem;font-weight:700;letter-spacing:.15em;color:#ffd600;text-shadow:0 0 10px rgba(255,214,0,.5)}
+#tb-sub{font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:.12em;color:rgba(255,214,0,.45);margin-left:4px}
 #loading{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;transition:opacity .6s}
 #loading.hidden{opacity:0;pointer-events:none}
 .ld-logo{font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:#ffd600;text-shadow:0 0 24px #ffd600,0 0 60px rgba(255,214,0,.4);letter-spacing:.2em;margin-bottom:8px}
@@ -139,13 +148,16 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ra
 </style>
 </head>
 <body class="crt-enter">
+<header id="tb">
+  <a class="back-btn" href="/games/arena-protocol/nexus-city.html">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    <span>NEXUS</span>
+  </a>
+  <span style="width:1px;height:18px;background:rgba(255,255,255,.07)"></span>
+  <span id="tb-title">MONTE OLIMPO</span>
+  <span id="tb-sub">DISTRITO · COMBATE &amp; HONOR</span>
+</header>
 <canvas id="c"></canvas>
-<div id="hud">
-    <div class="hud-badge"><span>◈</span>NEXUS CITY · MONTE OLIMPO</div>
-    <?php if ($_returnUrl): ?>
-    <button class="hud-btn" onclick="window.location.href='<?php echo htmlspecialchars($_returnUrl,ENT_QUOTES); ?>'">← BACK TO CITY</button>
-    <?php endif; ?>
-</div>
 <div id="loading">
     <div class="ld-logo">MONTE OLIMPO</div>
     <div class="ld-sub">COMBATE · HONOR · ARENA</div>
@@ -174,7 +186,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ra
 <script>
 const HERO_MODEL_URL = <?php echo json_encode($_heroModelUrl); ?>;
 const PLAYER_NAME    = <?php echo json_encode($_playerName); ?>;
-const RETURN_URL     = <?php echo json_encode($_returnUrl); ?>;
 const NPCS_DATA      = <?php echo json_encode($NPCS_PHP, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE); ?>;
 </script>
 
