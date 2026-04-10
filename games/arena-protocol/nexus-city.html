@@ -395,6 +395,7 @@ function getNexusWsUrl(){
 let gColorHex  = "#00e8ff";
 let gVisorHex  = "#00e8ff";
 let gEchoHex   = "#ffd600";
+let gRarity    = "common";
 let gName      = "GUARDIAN_01";
 let chatChannel = "global";
 let chatOpen   = false;
@@ -469,10 +470,10 @@ new THREE.TextureLoader().load('./assets/nubes-fondo.png', tex => {
 });
 
 // ── Ambient global — espacio oscuro, solo los neones iluminan ──
-scene.add(new THREE.AmbientLight(0x0a1428, 0.9));
+scene.add(new THREE.AmbientLight(0x1a2840, 1.4));
 
 // ── Hemisférica: cielo espacial profundo / suelo oscuro ──
-scene.add(new THREE.HemisphereLight(0x0a2040, 0x000308, 0.6));
+scene.add(new THREE.HemisphereLight(0x1a3a60, 0x040810, 0.9));
 
 // ── Luz difusa cósmica — simula scattering de la nebulosa ──
 const sunLight = new THREE.DirectionalLight(0x4878bb, 0.75);
@@ -688,7 +689,7 @@ function buildDist(d){
 }
 
 // ── GUARDIAN BUILDER ──
-function mkGuardian(colHex, visorHex="#00e8ff", echoHex="#ffd600", isRemote=false){
+function mkGuardian(colHex, visorHex="#00e8ff", echoHex="#ffd600", isRemote=false, auraHex="#44aaaa"){
   const g=new THREE.Group();
   const c=new THREE.Color(colHex), dk=c.clone().multiplyScalar(.3);
   for(const s of[-1,1]){const l=new THREE.Mesh(new THREE.CapsuleGeometry(.14,.58,4,8),new THREE.MeshStandardMaterial({color:dk,metalness:.3,roughness:.6}));l.position.set(s*.18,.43,0);g.add(l);}
@@ -708,6 +709,11 @@ function mkGuardian(colHex, visorHex="#00e8ff", echoHex="#ffd600", isRemote=fals
     const el=new THREE.PointLight(new THREE.Color(echoHex),1.3,5,2); el.position.y=2.45; g.add(el);
   }
   const sh=new THREE.Mesh(new THREE.CircleGeometry(.42,16),new THREE.MeshStandardMaterial({color:colHex,emissive:c,emissiveIntensity:.35,transparent:true,opacity:.14})); sh.rotation.x=-Math.PI/2; sh.position.y=.025; g.add(sh);
+  // Personal aura PointLight — color driven by rarity
+  const aura = new THREE.PointLight(new THREE.Color(auraHex), 2.2, 6, 2);
+  aura.position.set(0, 1.0, 0);
+  g.add(aura);
+  g.userData.auraLight = aura;
   return g;
 }
 
@@ -862,8 +868,11 @@ function addGroundRing(parent) {
   parent.userData.ring = ring;
 }
 
+// Rarity → aura color map (also used for remote players)
+const RARITY_COLORS = {legendary:"#ffd600", epic:"#c158ff", rare:"#4488ff", special:"#00ffcc", common:"#44aaaa"};
+
 // Local player — starts as procedural guardian; replaced by GLB if available
-const player = mkGuardian(gColorHex, gVisorHex, gEchoHex, false);
+const player = mkGuardian(gColorHex, gVisorHex, gEchoHex, false, RARITY_COLORS[gRarity] || "#44aaaa");
 scene.add(player);
 attachLocalPlayerLabel(player, 2.45);
 
@@ -905,6 +914,11 @@ async function loadHeroModel(url) {
     // Añadir antes de quitar el procedural (evita escena vacía si falla el mixer)
     scene.add(model);
     _heroMesh = model;
+    // Personal aura for GLB hero
+    const heroAura = new THREE.PointLight(new THREE.Color(RARITY_COLORS[gRarity] || "#44aaaa"), 2.2, 6, 2);
+    heroAura.position.set(0, 1.0, 0);
+    model.add(heroAura);
+    model.userData.auraLight = heroAura;
     scene.remove(player);
     attachLocalPlayerLabel(model, 2.05);
 
@@ -1151,7 +1165,8 @@ function refreshRemotePlayerFromServer(p){
 
 function addRemotePlayer(p){
   if(remotePlayers.has(p.player_id)) return;
-  const mesh=mkGuardian(p.color_body||"#9b30ff", p.color_visor||"#00e8ff", "#ffd600", true);
+  const remoteAuraHex = (p.rarity && RARITY_COLORS[p.rarity]) || "#44aaaa";
+  const mesh=mkGuardian(p.color_body||"#9b30ff", p.color_visor||"#00e8ff", "#ffd600", true, remoteAuraHex);
   mesh.position.set(p.pos_x||0,0,p.pos_z||0);
   const label=mkSprite((p.display_name||"PLAYER").slice(0,12)+"",6,"rgba(180,210,255,.7)");
   label.position.y=2.35; mesh.add(label);
@@ -1452,12 +1467,16 @@ buildColPicker("cu-visor-cols", gVisorHex, h=>{ gVisorHex=h; });
 
 function recolorPlayer(){
   const c=new THREE.Color(gColorHex);
-  player.traverse(o=>{
+  const root = _heroMesh || player;
+  root.traverse(o=>{
     if(o.isMesh&&o.material&&o.material.emissive&&!o.material.wireframe){
       const ei=o.material.emissiveIntensity;
       if(ei>0.05&&ei<2){ o.material.color.set(c); o.material.emissive.copy(c).multiplyScalar(.15); }
     }
   });
+  // Sync aura light with current rarity
+  const auraHex = RARITY_COLORS[gRarity] || "#44aaaa";
+  if(root.userData.auraLight) root.userData.auraLight.color.set(auraHex);
 }
 
 window.applyCustomizer=async function(){
@@ -1479,7 +1498,7 @@ window.applyCustomizer=async function(){
   document.getElementById("cu").classList.remove("on");
   recolorPlayer();
   if(ws&&ws.readyState===WebSocket.OPEN){
-    ws.send(JSON.stringify({type:"join",user_id:window._userId||0,display_name:gName,color_body:gColorHex,color_visor:gVisorHex,color_echo:gEchoHex,hero_model_url:window._heroModelUrl||null,pos_x:player.position.x,pos_z:player.position.z}));
+    ws.send(JSON.stringify({type:"join",user_id:window._userId||0,display_name:gName,color_body:gColorHex,color_visor:gVisorHex,color_echo:gEchoHex,rarity:gRarity,hero_model_url:window._heroModelUrl||null,pos_x:player.position.x,pos_z:player.position.z}));
   }
 };
 
@@ -1505,6 +1524,12 @@ function onInteract(){
   const pp=heroPos();
   let nd=null,nm=Infinity;
   DISTS.forEach(d=>{const dx=pp.x-d.pos.x,dz=pp.z-d.pos.z,dist=Math.sqrt(dx*dx+dz*dz);if(dist<9&&dist<nm){nd=d;nm=dist;}});
+  const rp=document.getElementById("rp");
+  const panelOn=rp.classList.contains("on");
+  if(panelOn&&nd&&nd.id===currentDistId){
+    enterDistrict();
+    return;
+  }
   if(nd) openPanel(nd.id);
 }
 window.setTab=el=>{document.querySelectorAll(".tab").forEach(t=>t.classList.remove("on"));el.classList.add("on");};
@@ -1557,9 +1582,10 @@ async function loadWorld(){
       if(pdata.color_body)   { gColorHex=pdata.color_body; }
       if(pdata.color_visor)  { gVisorHex=pdata.color_visor; }
       if(pdata.color_echo)   { gEchoHex=pdata.color_echo; }
+      if(pdata.rarity)       { gRarity=pdata.rarity; }
       if(pdata.kp!=null)     { document.getElementById("tb-kp").textContent=`💰 ${Number(pdata.kp).toLocaleString()}`; }
       if(pdata.level!=null)  { document.getElementById("tb-level").textContent=`◈ LVL ${pdata.level}`; }
-      // Recolor player with saved appearance
+      // Recolor player with saved appearance (also syncs aura color)
       recolorPlayer();
       // Load avatar GLB if available
       if (pdata.hero_model_url) loadHeroModel(pdata.hero_model_url);
@@ -1733,7 +1759,15 @@ renderer.setAnimationLoop((nowMs)=>{
   let nd=null,nm=Infinity;
   DISTS.forEach(d=>{const dx=player.position.x-d.pos.x,dz=player.position.z-d.pos.z,dist=Math.sqrt(dx*dx+dz*dz);if(dist<9&&dist<nm){nd=d;nm=dist;}});
   const ph=document.getElementById("ph"),pt=document.getElementById("ph-t");
-  if(nd){ph.classList.add("on");if(pt)pt.textContent="ENTRAR A "+nd.name.split(" ")[0];document.getElementById("zone-nm").textContent=nd.name;document.getElementById("wz").textContent=nd.name;}
+  if(nd){
+    ph.classList.add("on");
+    if(pt){
+      const rp=document.getElementById("rp");
+      const secondE=rp.classList.contains("on")&&nd.id===currentDistId;
+      pt.textContent=secondE?("OTRA VEZ · ENTRAR A "+nd.name.split(" ")[0]):"VER FICHA · "+nd.name.split(" ")[0];
+    }
+    document.getElementById("zone-nm").textContent=nd.name;document.getElementById("wz").textContent=nd.name;
+  }
   else{ph.classList.remove("on");document.getElementById("zone-nm").textContent="NEXUS CENTRAL";document.getElementById("wz").textContent="PLAZA CENTRAL";}
 
   // Ágora bubbles

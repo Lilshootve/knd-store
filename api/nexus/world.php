@@ -199,6 +199,7 @@ try {
                     }
                 }
             } catch (Throwable $_) { /* non-fatal — hero will use fallback procedural model */ }
+            $player_data['rarity'] = $player_data['avatar_rarity'] ?? 'common';
             unset($player_data['mw_avatar_id'], $player_data['avatar_name'], $player_data['avatar_rarity']);
         }
 
