@@ -1538,7 +1538,8 @@ async function loadWorld(){
 
 function loadFallback(){
   // Hardcoded fallback when API unreachable (dev/offline)
-  const _dr = (id) => "/games/arena-protocol/district-room.php?district=" + encodeURIComponent(id);
+  const _distFiles = {olimpo:"olimpo", tesla:"tesla-lab", casino:"casino", agora:"agora"};
+  const _dr = (id) => "/games/arena-protocol/" + encodeURIComponent(_distFiles[id]||id) + ".php";
   DISTS=[
     {id:"olimpo",name:"MONTE OLIMPO",  era:"ERA DE LOS DIOSES",   tag:"Combate · PvP",     col:0xffd600,hex:"#ffd600",pos:{x:-26,z:-14},icon:"⚡",mem:88,game_url:_dr("olimpo")},
     {id:"tesla", name:"LAB TESLA",     era:"ERA DE LA CIENCIA",   tag:"XP · Conocimiento", col:0x00e8ff,hex:"#00e8ff",pos:{x:26,z:-14},icon:"⚗️",mem:94,game_url:_dr("tesla")},

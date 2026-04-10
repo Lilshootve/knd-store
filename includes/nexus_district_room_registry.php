@@ -17,7 +17,15 @@ function nexus_district_room_layer_ids(): array
 
 function nexus_district_room_entry_url(string $districtId): string
 {
-    return '/games/arena-protocol/district-room.php?district=' . rawurlencode($districtId);
+    // Map district DB id → static PHP file name
+    $fileMap = [
+        'tesla'  => 'tesla-lab',
+        'olimpo' => 'olimpo',
+        'casino' => 'casino',
+        'agora'  => 'agora',
+    ];
+    $file = $fileMap[$districtId] ?? $districtId;
+    return '/games/arena-protocol/' . rawurlencode($file) . '.php';
 }
 
 /**
