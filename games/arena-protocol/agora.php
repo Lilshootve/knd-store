@@ -210,6 +210,7 @@ import { EffectComposer }  from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass }      from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { GLTFLoader }      from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls }   from 'three/addons/controls/OrbitControls.js';
 
 const HERO_MODEL  = <?php echo $_heroJson; ?>;
 const PLAYER_NAME = <?php echo $_playerJson; ?>;
@@ -218,13 +219,12 @@ const GRID = 20;
 const D_CAM = 13;
 const MOVE_SPEED = 5.5;
 const INTERACT_DIST = 2.6;
-const CAM_OFFSET = new THREE.Vector3(18, 34, 18);
 const ISO_FWD  = new THREE.Vector3(-0.707, 0, -0.707);
 const ISO_BACK = new THREE.Vector3( 0.707, 0,  0.707);
 const ISO_LEFT = new THREE.Vector3(-0.707, 0,  0.707);
 const ISO_RIGHT= new THREE.Vector3( 0.707, 0, -0.707);
 
-let scene, camera, renderer, composer;
+let scene, camera, renderer, composer, controls;
 let clock, heroMesh, heroMixer;
 let heroPos = new THREE.Vector3(GRID/2, 0, GRID/2);
 let npcObjects = [], animObjects = [];
@@ -278,19 +278,26 @@ function initRenderer() {
 
 function initCamera() {
     const wrap = document.getElementById('cv');
-    const a = wrap.clientWidth / Math.max(1, wrap.clientHeight);
-    camera = new THREE.OrthographicCamera(-D_CAM*a, D_CAM*a, D_CAM, -D_CAM, 0.1, 300);
-    camera.position.set(GRID/2 + 18, 34, GRID/2 + 18);
+    camera = new THREE.PerspectiveCamera(55, wrap.clientWidth / Math.max(1, wrap.clientHeight), 0.1, 200);
+    camera.position.set(GRID/2 + 14, 22, GRID/2 + 14);
     camera.lookAt(GRID/2, 0, GRID/2);
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping   = true;
+    controls.dampingFactor   = 0.07;
+    controls.minDistance     = 6;
+    controls.maxDistance     = 55;
+    controls.maxPolarAngle   = Math.PI / 2.1;
+    controls.target.set(GRID/2, 0, GRID/2);
+    controls.update();
 }
 
 function onResize() {
     const wrap = document.getElementById('cv');
-    const a = wrap.clientWidth / Math.max(1, wrap.clientHeight);
-    camera.left=-D_CAM*a; camera.right=D_CAM*a; camera.top=D_CAM; camera.bottom=-D_CAM;
+    const w = wrap.clientWidth, h = wrap.clientHeight;
+    camera.aspect = w / Math.max(1, h);
     camera.updateProjectionMatrix();
-    renderer.setSize(wrap.clientWidth, wrap.clientHeight);
-    if (composer) composer.setSize(wrap.clientWidth, wrap.clientHeight);
+    renderer.setSize(w, h);
+    if (composer) composer.setSize(w, h);
 }
 
 function initScene() {
@@ -507,31 +514,40 @@ function makeNameLabel(name, color) {
     return sprite;
 }
 
+async function loadGroundedGLB(url, targetHeight) {
+    const gltf = await loader.loadAsync(url);
+    normalizeGltf(gltf);
+    const model = gltf.scene;
+    const rawBox = new THREE.Box3().setFromObject(model);
+    const rawH   = rawBox.max.y - rawBox.min.y;
+    model.scale.setScalar(targetHeight / Math.max(rawH, 0.001));
+    const scaledBox = new THREE.Box3().setFromObject(model);
+    model.position.y = -scaledBox.min.y;
+    const wrapper = new THREE.Group();
+    wrapper.add(model);
+    const mixer = gltf.animations.length > 0 ? new THREE.AnimationMixer(model) : null;
+    if (mixer) mixer.clipAction(gltf.animations[0]).play();
+    return { wrapper, mixer };
+}
+
 async function spawnNPCs() {
     for (const npc of NPCS) {
         const wp0 = npc.waypoints[0];
         let obj, mixer = null;
         try {
-            const gltf = await loader.loadAsync(npc.glb);
-            normalizeGltf(gltf);
-            obj = gltf.scene;
-            const box = new THREE.Box3().setFromObject(obj);
-            const h = box.max.y - box.min.y;
-            obj.scale.setScalar(1.9 / Math.max(h, 0.1));
+            const result = await loadGroundedGLB(npc.glb, 1.9);
+            obj   = result.wrapper;
+            mixer = result.mixer;
             obj.position.set(wp0[0], 0, wp0[2]);
             const dir = new THREE.Vector3(GRID/2 - wp0[0], 0, GRID/2 - wp0[2]).normalize();
             obj.rotation.y = Math.atan2(dir.x, dir.z);
             scene.add(obj);
-            if (gltf.animations.length > 0) {
-                mixer = new THREE.AnimationMixer(obj);
-                mixer.clipAction(gltf.animations[0]).play();
-            }
         } catch(e) {
             console.warn('NPC GLB fail:', npc.glb, e);
             const col = parseInt(npc.color.replace('#',''), 16);
             obj = new THREE.Mesh(new THREE.CapsuleGeometry(0.35, 1.1, 4, 8),
                 new THREE.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: 0.3, roughness: 0.6 }));
-            obj.position.set(wp0[0], 0.9, wp0[2]);
+            obj.position.set(wp0[0], 0, wp0[2]);
             scene.add(obj);
         }
         const label = makeNameLabel(npc.name, npc.color);
@@ -553,17 +569,11 @@ async function spawnNPCs() {
 
 async function spawnHero() {
     try {
-        const gltf = await loader.loadAsync(HERO_MODEL);
-        normalizeGltf(gltf);
-        heroMesh = gltf.scene;
-        const box = new THREE.Box3().setFromObject(heroMesh);
-        heroMesh.scale.setScalar(1.9 / Math.max(box.max.y - box.min.y, 0.1));
+        const result = await loadGroundedGLB(HERO_MODEL, 1.8);
+        heroMesh  = result.wrapper;
+        heroMixer = result.mixer;
         heroMesh.position.copy(heroPos);
         scene.add(heroMesh);
-        if (gltf.animations.length > 0) {
-            heroMixer = new THREE.AnimationMixer(heroMesh);
-            heroMixer.clipAction(gltf.animations[0]).play();
-        }
         const lbl = makeNameLabel(PLAYER_NAME, '#00e8ff');
         lbl.position.set(0, 2.5, 0);
         heroMesh.add(lbl);
@@ -594,8 +604,8 @@ function updateHero(dt) {
         heroPos.z = Math.max(0.8, Math.min(GRID-0.8, heroPos.z + v.z));
         if (heroMesh) { heroMesh.position.copy(heroPos); heroMesh.rotation.y = Math.atan2(v.x, v.z); }
     }
-    camera.position.set(heroPos.x + CAM_OFFSET.x, CAM_OFFSET.y, heroPos.z + CAM_OFFSET.z);
-    camera.lookAt(heroPos.x, 0, heroPos.z);
+    controls.target.lerp(heroPos, 0.08);
+    controls.update();
 }
 
 function updateNPCs(dt) {
