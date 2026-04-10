@@ -114,7 +114,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ra
 .back-btn{display:flex;align-items:center;gap:6px;color:#ffd600;text-decoration:none;font-family:'Orbitron',monospace;font-size:.65rem;letter-spacing:.12em;opacity:.8;transition:opacity .2s}
 .back-btn:hover{opacity:1}
 .back-btn svg{width:16px;height:16px;stroke:#ffd600;stroke-width:2.5;fill:none}
-#tb-title{font-family:'Orbitron',monospace;font-size:.7rem;font-weight:700;letter-spacing:.15em;color:#ffd600;text-shadow:0 0 10px rgba(255,214,0,.5)}
+#tb-title{font-family:'Orbitron',monospace;font-size:.7rem;font-weight:700;letter-spacing:.15em;color:#ffd600;text-shadow:0 0 10px rgba(255,214,0,.5),0 0 30px rgba(255,214,0,.2)}
 #tb-sub{font-family:'Share Tech Mono',monospace;font-size:.6rem;letter-spacing:.12em;color:rgba(255,214,0,.45);margin-left:4px}
 #loading{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;transition:opacity .6s}
 #loading.hidden{opacity:0;pointer-events:none}
@@ -221,11 +221,12 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.1;
+renderer.toneMappingExposure = 1.25; // Más luminoso para ambiente de los dioses bajo sol mediterráneo
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 const scene = new THREE.Scene();
-scene.fog   = new THREE.FogExp2(0x0a0600, 0.032);
+// Fog más suave: templo abierto al cielo — no cortar la perspectiva a media distancia
+scene.fog   = new THREE.FogExp2(0x0d0800, 0.018);
 
 // ── Camera ────────────────────────────────────────────────────────────────────
 const camera = new THREE.PerspectiveCamera(55, canvas.clientWidth / canvas.clientHeight, 0.1, 200);
@@ -246,7 +247,8 @@ controls.update();
 const W = canvas.clientWidth, H = canvas.clientHeight;
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
-composer.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), 0.5, 0.35, 0.75));
+// Bloom calibrado para deidades: threshold bajo capta brillo de fuego/oro, radius amplio para halo divino
+composer.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), 0.75, 0.55, 0.60));
 
 function onResize() {
     const w = canvas.clientWidth, h = canvas.clientHeight;
@@ -354,24 +356,36 @@ function makeNameLabel(name, color) {
 
 // ── Scene ─────────────────────────────────────────────────────────────────────
 function buildScene() {
-    scene.add(new THREE.AmbientLight(0x1a1000, 2.0));
+    // Ambient fill — warm twilight sky, kept low to preserve shadow drama
+    scene.add(new THREE.AmbientLight(0x2a1800, 0.6));
+    // Hemisphere: golden sky / deep shadow ground — defines the divine atmosphere
+    scene.add(new THREE.HemisphereLight(0xffd060, 0x1a0a00, 0.9));
 
-    const sun = new THREE.DirectionalLight(0xffe8a0, 1.6);
-    sun.position.set(15, 25, 12);
+    // Key light — high-angle Greek sun, harsh and directional for hard shadows
+    const sun = new THREE.DirectionalLight(0xffcc66, 2.2);
+    sun.position.set(15, 30, 10);
     sun.castShadow = true;
     sun.shadow.mapSize.setScalar(2048);
+    sun.shadow.bias = -0.0004;
     sun.shadow.camera.near = 0.5; sun.shadow.camera.far = 80;
     sun.shadow.camera.left = -22; sun.shadow.camera.right = 22;
     sun.shadow.camera.top = 22; sun.shadow.camera.bottom = -22;
     scene.add(sun);
 
-    const rim1 = new THREE.DirectionalLight(0xff9900, 0.4);
-    rim1.position.set(-10, 8, -8);
+    // Rim light — backlit orange glow from fire bowls / torches
+    const rim1 = new THREE.DirectionalLight(0xff6600, 0.55);
+    rim1.position.set(-12, 6, -10);
     scene.add(rim1);
 
-    const rim2 = new THREE.DirectionalLight(0xffdd55, 0.3);
-    rim2.position.set(10, 5, -14);
+    // Secondary rim — electric Zeus blue-gold, adds divine highlight on NPCs
+    const rim2 = new THREE.DirectionalLight(0xffe060, 0.35);
+    rim2.position.set(12, 4, -16);
     scene.add(rim2);
+
+    // Underlight — subtle bounced light from marble floor
+    const bounce = new THREE.DirectionalLight(0xeedd99, 0.18);
+    bounce.position.set(GRID/2, -3, GRID/2);
+    scene.add(bounce);
 
     buildTempleFloor();
     buildColumns();
@@ -384,7 +398,8 @@ function buildScene() {
 
 function buildTempleFloor() {
     // Stone floor
-    const mat = new THREE.MeshStandardMaterial({ color: 0xd4c49a, roughness: 0.85, metalness: 0.05 });
+    // Mármol Pentélico: roughness 0.35 = superficie pulida con reflexión difusa visible
+    const mat = new THREE.MeshStandardMaterial({ color: 0xddd0b0, roughness: 0.35, metalness: 0.08 });
     const floor = new THREE.Mesh(new THREE.BoxGeometry(GRID, 0.2, GRID), mat);
     floor.position.set(GRID/2, -0.1, GRID/2);
     floor.receiveShadow = true;
@@ -400,7 +415,8 @@ function buildTempleFloor() {
     }
 
     // Raised platform in center
-    const platMat = new THREE.MeshStandardMaterial({ color: 0xe8d8b0, roughness: 0.7, metalness: 0.1 });
+    // Plataforma elevada con más lustre — punto focal de los jugadores
+    const platMat = new THREE.MeshStandardMaterial({ color: 0xf0e4c4, roughness: 0.28, metalness: 0.12 });
     const platform = new THREE.Mesh(new THREE.BoxGeometry(8, 0.3, 8), platMat);
     platform.position.set(GRID/2, 0.15, GRID/2);
     platform.receiveShadow = true;

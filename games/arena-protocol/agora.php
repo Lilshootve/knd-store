@@ -307,25 +307,35 @@ function initScene() {
     const wrap = document.getElementById('cv');
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(wrap.clientWidth, wrap.clientHeight), 0.72, 0.48, 0.82));
+    // Bloom: threshold 0.55 capta glow de columnas y faroles; radius suave para ambiente de plaza
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(wrap.clientWidth, wrap.clientHeight), 0.82, 0.60, 0.55));
 }
 
 function buildScene() {
-    scene.add(new THREE.HemisphereLight(0x205030, 0x080e08, 0.75));
-    scene.add(new THREE.AmbientLight(0x0a1a0c, 1.1));
-    const sun = new THREE.DirectionalLight(0xd0ffaa, 1.0);
-    sun.position.set(12, 28, 14);
-    sun.castShadow = true;
-    sun.shadow.mapSize.set(2048, 2048);
-    sun.shadow.camera.left = sun.shadow.camera.bottom = -28;
-    sun.shadow.camera.right = sun.shadow.camera.top = 28;
-    sun.shadow.camera.far = 90;
-    scene.add(sun);
-    const fill = new THREE.DirectionalLight(0x00e8ff, 0.4);
-    fill.position.set(-12, 10, -8);
+    // Hemisphere: ágora social — bóveda tecnológica verde oscuro / plaza de piedra cálida
+    scene.add(new THREE.HemisphereLight(0x163020, 0x0a1008, 0.55));
+    // Ambient mínimo — la plaza vive de los faroles y las luces de columna
+    scene.add(new THREE.AmbientLight(0x0c1a0e, 0.45));
+
+    // Key light — luz de luna/overhead con tinte verde tecnológico, ángulo bajo para sombras largas
+    const moon = new THREE.DirectionalLight(0x88ffcc, 1.3);
+    moon.position.set(10, 25, 16);
+    moon.castShadow = true;
+    moon.shadow.mapSize.set(2048, 2048);
+    moon.shadow.bias = -0.0003;
+    moon.shadow.camera.left = moon.shadow.camera.bottom = -28;
+    moon.shadow.camera.right = moon.shadow.camera.top = 28;
+    moon.shadow.camera.far = 90;
+    scene.add(moon);
+
+    // Fill cálido — luz de los faroles de mercado, color ámbar-dorado
+    const fill = new THREE.DirectionalLight(0xffcc44, 0.55);
+    fill.position.set(-14, 8, -10);
     scene.add(fill);
-    const rim = new THREE.DirectionalLight(0xffd080, 0.25);
-    rim.position.set(20, 8, 4);
+
+    // Rim cian — brillo de pantallas/tech en las columnas
+    const rim = new THREE.DirectionalLight(0x00ddcc, 0.3);
+    rim.position.set(22, 6, 2);
     scene.add(rim);
 
     buildAgoraFloor();
@@ -336,7 +346,8 @@ function buildScene() {
 }
 
 function buildAgoraFloor() {
-    const mat = new THREE.MeshStandardMaterial({ color: 0x0d1e0f, roughness: 0.85, metalness: 0.05 });
+    // Suelo de ágora: piedra oscura pulida — permite ver reflejos de las luces de columna
+    const mat = new THREE.MeshStandardMaterial({ color: 0x0c1c0e, roughness: 0.45, metalness: 0.12 });
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(GRID, GRID), mat);
     floor.rotation.x = -Math.PI/2;
     floor.position.set(GRID/2, -0.01, GRID/2);

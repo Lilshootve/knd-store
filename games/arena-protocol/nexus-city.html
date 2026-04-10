@@ -449,7 +449,8 @@ scene.add(new THREE.AmbientLight(0xffffff, 0.62));
 scene.add(new THREE.HemisphereLight(0xc8e8ff, 0x4a5a3c, 0.55));
 
 // ── Sol (direccional cálida, sombras) ──
-const sunLight = new THREE.DirectionalLight(0xfff4e0, 2.35);
+// Sun reducido: el hub es plaza de noche techno — las point lights de distrito son los protagonistas
+const sunLight = new THREE.DirectionalLight(0xd8eeff, 1.55);
 sunLight.position.set(28, 52, 18);
 sunLight.castShadow = !WEBGL_LOW;
 const _shRes = WEBGL_LOW ? 512 : WEBGL_MED ? 1024 : 2048;
@@ -494,10 +495,11 @@ function initPostFX(){
   const size = new THREE.Vector2(W(), H());
   composer = new EffectComposer(renderer);
   composer.addPass(new RenderPass(scene, cam));
+  // Bloom hub: threshold bajo para que los anillos de distrito y el obelisco brillen con intensidad
   if (WEBGL_MED) {
-    bloomPass = new UnrealBloomPass(size, 0.48, 0.38, 0.78);
+    bloomPass = new UnrealBloomPass(size, 0.65, 0.45, 0.60);
   } else {
-    bloomPass = new UnrealBloomPass(size, 0.8, 0.4, 0.85);
+    bloomPass = new UnrealBloomPass(size, 1.0, 0.50, 0.52);
   }
   composer.addPass(bloomPass);
 }
@@ -513,7 +515,8 @@ window.addEventListener("resize", resizeCam);
 // ── GROUND ──
 const gnd = new THREE.Mesh(
   new THREE.PlaneGeometry(140,140),
-  new THREE.MeshStandardMaterial({color:0x3a4f62,metalness:.12,roughness:.88,emissive:0x1e2c38,emissiveIntensity:.14})
+  // Plaza de ciudad tech: asfalto oscuro ligeramente especular — refleja las luces de los distritos
+  new THREE.MeshStandardMaterial({color:0x1a2838,metalness:.35,roughness:.55,emissive:0x0e1820,emissiveIntensity:.18})
 );
 gnd.rotation.x=-Math.PI/2;
 gnd.receiveShadow = !WEBGL_LOW;

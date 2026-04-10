@@ -552,7 +552,8 @@ function setLoadProgress(p) {
 function initThree() {
     scene    = new THREE.Scene();
     // Niebla más suave: legibilidad del suelo/paredes sin perder atmósfera cerrada
-    scene.fog = new THREE.FogExp2(0x030812, 0.028);
+    // Fog sanctum: espacio interior — niebla más suave para no cortar visibilidad de muebles lejanos
+    scene.fog = new THREE.FogExp2(0x040a14, 0.020);
     clock    = new THREE.Clock();
     raycaster = new THREE.Raycaster();
 
@@ -570,37 +571,44 @@ function initThree() {
     renderer.shadowMap.enabled = !WEBGL_LOW;
     renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
     renderer.toneMapping       = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = WEBGL_LOW ? 1.22 : WEBGL_MED ? 1.38 : 1.52;
+    // Exposure calibrado: high quality no debe sobreexponer — los objetos de mobiliario necesitan fidelidad de color
+    renderer.toneMappingExposure = WEBGL_LOW ? 1.18 : WEBGL_MED ? 1.28 : 1.38;
     wrap.appendChild(renderer.domElement);
 
     resetCamera();
     initPostFX();
 
     // Lights — base legible + acentos: hemisferio simula rebote cielo/suelo sin matar el neón
-    const hemi = new THREE.HemisphereLight(0x4a6a8a, 0x080c14, 0.72);
+    // Sanctum: espacio personal del jugador — iluminación neutra para no sesgar el color de sus muebles
+    // Hemisphere suave: el techo tecnológico emite fría; el suelo absorbe
+    const hemi = new THREE.HemisphereLight(0x3a5570, 0x060a10, 0.50);
     hemi.position.set(5, 8, 5);
     scene.add(hemi);
 
-    const ambient = new THREE.AmbientLight(0x1a2a3a, 1.05);
+    // Ambient mínimo — la mayor parte de luz viene de la key
+    const ambient = new THREE.AmbientLight(0x151e2a, 0.55);
     scene.add(ambient);
 
-    const sun = new THREE.DirectionalLight(0xa0d8ff, 1.35);
+    // Key light — luz principal cálida-neutra: no altera la percepción de color de los objetos colocados
+    const sun = new THREE.DirectionalLight(0xddeeff, 1.55);
     sun.position.set(8, 16, 8);
     sun.castShadow = !WEBGL_LOW;
     const _shSan = WEBGL_LOW ? 512 : WEBGL_MED ? 768 : 1024;
     sun.shadow.mapSize.set(_shSan, _shSan);
+    sun.shadow.bias = -0.0003;
     sun.shadow.camera.near = 0.5;
     sun.shadow.camera.far  = 60;
     sun.shadow.camera.left = sun.shadow.camera.bottom = -12;
     sun.shadow.camera.right = sun.shadow.camera.top   = 12;
     scene.add(sun);
 
-    const fill = new THREE.DirectionalLight(0x5a2088, 0.78);
+    // Fill: violeta reducido — más ambiente, menos cast de color directo
+    const fill = new THREE.DirectionalLight(0x4a1870, 0.38);
     fill.position.set(-10, 6, -10);
     scene.add(fill);
 
-    // Relleno suave desde delante-arriba (sombras menos duras en muebles)
-    const rim = new THREE.DirectionalLight(0x88b0c8, 0.42);
+    // Rim frontal: suave y casi neutro para definir profundidad de muebles sin teñirlos
+    const rim = new THREE.DirectionalLight(0x90b8cc, 0.32);
     rim.position.set(14, 10, 2);
     scene.add(rim);
 

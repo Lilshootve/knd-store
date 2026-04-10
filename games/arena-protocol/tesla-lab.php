@@ -239,11 +239,12 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.1;
+renderer.toneMappingExposure = 1.15; // Lab ligeramente sobreexpuesto = luz fría de laboratorio
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 const scene  = new THREE.Scene();
-scene.fog    = new THREE.FogExp2(0x000d18, 0.032);
+// Fog lab: color azul-petróleo, densidad moderada — nebulosa de experimentos
+scene.fog    = new THREE.FogExp2(0x000c1a, 0.022);
 
 const camera = new THREE.PerspectiveCamera(55, canvas.clientWidth / canvas.clientHeight, 0.1, 200);
 camera.position.set(GRID/2 + 14, 22, GRID/2 + 14);
@@ -261,7 +262,8 @@ controls.update();
 const W = canvas.clientWidth, H = canvas.clientHeight;
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
-composer.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), 0.55, 0.38, 0.72));
+// Bloom eléctrico: threshold 0.5 capta arcos de bobina y grid lines, radius estrecho = chispas nítidas
+composer.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), 0.85, 0.35, 0.50));
 
 const loader    = new GLTFLoader();
 const clock     = new THREE.Clock();
@@ -365,27 +367,39 @@ function makeNameLabel(name, color) {
 // ── Scene Building ────────────────────────────────────────────────────────────
 function buildScene() {
     // Ambient + directional lights
-    scene.add(new THREE.AmbientLight(0x0a1520, 1.8));
+    // Ambient frío oscuro — laboratorio con luz artificial, no luz de día
+    scene.add(new THREE.AmbientLight(0x061018, 0.5));
+    // Hemisphere: techo metálico frío azul / suelo de laboratorio oscuro
+    scene.add(new THREE.HemisphereLight(0x0a2040, 0x04080e, 0.65));
 
-    const sun = new THREE.DirectionalLight(0xaaddff, 1.4);
-    sun.position.set(12, 20, 10);
-    sun.castShadow = true;
-    sun.shadow.mapSize.setScalar(2048);
-    sun.shadow.camera.near = 0.5;
-    sun.shadow.camera.far = 80;
-    sun.shadow.camera.left = -20;
-    sun.shadow.camera.right = 20;
-    sun.shadow.camera.top = 20;
-    sun.shadow.camera.bottom = -20;
-    scene.add(sun);
+    // Key light — luz de fluorescente overhead, blanca-azulada y dura
+    const overhead = new THREE.DirectionalLight(0xc8eeff, 1.8);
+    overhead.position.set(GRID/2, 28, GRID/2);
+    overhead.castShadow = true;
+    overhead.shadow.mapSize.setScalar(2048);
+    overhead.shadow.bias = -0.0003;
+    overhead.shadow.camera.near = 0.5;
+    overhead.shadow.camera.far = 80;
+    overhead.shadow.camera.left = -20;
+    overhead.shadow.camera.right = 20;
+    overhead.shadow.camera.top = 20;
+    overhead.shadow.camera.bottom = -20;
+    scene.add(overhead);
 
-    const fill1 = new THREE.DirectionalLight(0x00e8ff, 0.5);
-    fill1.position.set(-10, 8, -8);
+    // Fill eléctrico cian — luz de las bobinas de Tesla
+    const fill1 = new THREE.DirectionalLight(0x00ddff, 0.65);
+    fill1.position.set(-12, 10, -8);
     scene.add(fill1);
 
-    const fill2 = new THREE.DirectionalLight(0x9b30ff, 0.4);
-    fill2.position.set(10, 6, -12);
+    // Rim violeta — descarga de plasma / Einstein energy
+    const fill2 = new THREE.DirectionalLight(0x8820ff, 0.38);
+    fill2.position.set(12, 5, -14);
     scene.add(fill2);
+
+    // Point light central — la bobina principal ilumina hacia abajo
+    const mainCoil = new THREE.PointLight(0x00c8ff, 2.5, 12);
+    mainCoil.position.set(GRID/2, 4, GRID/2);
+    scene.add(mainCoil);
 
     buildLabFloor();
     buildLabWalls();
@@ -400,9 +414,10 @@ function buildLabFloor() {
     // Checker floor with emissive grid lines
     const floorGeo = new THREE.PlaneGeometry(GRID, GRID, GRID, GRID);
     const floorMat = new THREE.MeshStandardMaterial({
-        color: 0x020d18,
-        roughness: 0.8,
-        metalness: 0.2,
+        // Suelo de laboratorio: resina epoxi oscura — rugosidad baja para reflexión de neones
+        color: 0x010b14,
+        roughness: 0.22,
+        metalness: 0.55,
     });
     const floor = new THREE.Mesh(floorGeo, floorMat);
     floor.rotation.x = -Math.PI / 2;

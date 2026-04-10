@@ -272,7 +272,7 @@ function initRenderer() {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.38;
+    renderer.toneMappingExposure = 1.05; // Oscuro intencional — el neón brilla más contra fondo oscuro
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     wrap.appendChild(renderer.domElement);
     renderer.setSize(wrap.clientWidth, wrap.clientHeight);
@@ -309,26 +309,36 @@ function initScene() {
     const wrap = document.getElementById('cv');
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(wrap.clientWidth, wrap.clientHeight), 0.95, 0.52, 0.75));
+    // Bloom de neón: threshold bajo (0.45) capta los strips de suelo y point lights; radius estrecho para glow nítido de neón real
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(wrap.clientWidth, wrap.clientHeight), 1.1, 0.4, 0.45));
 }
 
 function buildScene() {
     // Lighting — NO Object.assign on position
-    scene.add(new THREE.HemisphereLight(0x3a1050, 0x080210, 0.7));
-    scene.add(new THREE.AmbientLight(0x18081a, 1.1));
-    const sun = new THREE.DirectionalLight(0xd090ff, 1.1);
-    sun.position.set(14, 28, 12);
-    sun.castShadow = true;
-    sun.shadow.mapSize.set(2048, 2048);
-    sun.shadow.camera.left = sun.shadow.camera.bottom = -28;
-    sun.shadow.camera.right = sun.shadow.camera.top = 28;
-    sun.shadow.camera.far = 90;
-    scene.add(sun);
-    const fill = new THREE.DirectionalLight(0xff3d56, 0.6);
-    fill.position.set(-14, 8, -10);
+    // Hemisphere: techo del casino oscuro-violeta / suelo casi negro — el neón ES la iluminación
+    scene.add(new THREE.HemisphereLight(0x2a0840, 0x050010, 0.45));
+    // Ambient mínimo — el casino vive de luz artificial, no ambiental
+    scene.add(new THREE.AmbientLight(0x0e0414, 0.5));
+
+    // Key light desde arriba — como una araña de cristal púrpura sobre el casino
+    const chandelier = new THREE.DirectionalLight(0xb060ff, 0.9);
+    chandelier.position.set(GRID/2, 30, GRID/2);
+    chandelier.castShadow = true;
+    chandelier.shadow.mapSize.set(2048, 2048);
+    chandelier.shadow.bias = -0.0003;
+    chandelier.shadow.camera.left = chandelier.shadow.camera.bottom = -28;
+    chandelier.shadow.camera.right = chandelier.shadow.camera.top = 28;
+    chandelier.shadow.camera.far = 90;
+    scene.add(chandelier);
+
+    // Fill dramático rojo sangre — luz del caos / Dracula side
+    const fill = new THREE.DirectionalLight(0xff2244, 0.45);
+    fill.position.set(-16, 6, -12);
     scene.add(fill);
-    const rim = new THREE.DirectionalLight(0xffd700, 0.3);
-    rim.position.set(22, 12, 2);
+
+    // Rim dorado — riqueza, tentación, la promesa del jackpot
+    const rim = new THREE.DirectionalLight(0xffb800, 0.28);
+    rim.position.set(22, 10, 4);
     scene.add(rim);
 
     buildCasinoFloor();
@@ -339,7 +349,8 @@ function buildScene() {
 }
 
 function buildCasinoFloor() {
-    const mat = new THREE.MeshStandardMaterial({ color: 0x0c0414, roughness: 0.6, metalness: 0.3 });
+    // Suelo lacado tipo casino de lujo: metalness alto para reflejar los neones en el suelo
+    const mat = new THREE.MeshStandardMaterial({ color: 0x080212, roughness: 0.15, metalness: 0.75 });
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(GRID, GRID), mat);
     floor.rotation.x = -Math.PI/2;
     floor.position.set(GRID/2, -0.01, GRID/2);
