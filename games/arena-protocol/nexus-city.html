@@ -366,6 +366,8 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 // ══════════════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════════════
+/** Activa con ?nexusDebug=1 — AxesHelper, BoxHelper del GLB y logs de AABB/posiciones */
+const NEXUS_DEBUG_SCENE = new URLSearchParams(location.search).has('nexusDebug');
 let DISTS      = [];          // loaded from API
 let echoByDist = {};          // {district_id: [{avatar_id,name,rarity,class,resonance,status}]}
 let currentDistId = null;     // district open in right panel
@@ -618,35 +620,32 @@ gnd.rotation.x = -Math.PI/2;
 gnd.receiveShadow = false;
 scene.add(gnd);
 
-// Load platform GLB; scale + align playable height near y=0 (same as distritos / guardian)
+// Load platform GLB: escala uniforme por planta (max XZ → 150) y alineación vertical solo por nodo GroundAnchor en el asset
 (function loadPlatform(){
-  /** Si tras cargar la isla sigue baja: sube (8–25). Si los distritos la atraviesan: baja. */
-  const PLATFORM_Y_NUDGE = 0;
   new GLTFLoader().load('./assets/base-plataforma.glb', gltf => {
     const platform = gltf.scene;
     normalizeGltfForRenderer(platform);
 
-    // Scale so the widest dimension equals ~150 units (covers the play area)
     platform.updateMatrixWorld(true);
     const box0 = new THREE.Box3().setFromObject(platform);
     const size0 = new THREE.Vector3();
     box0.getSize(size0);
     const maxXZ = Math.max(size0.x, size0.z);
-    if (maxXZ > 0) platform.scale.setScalar(150 / maxXZ);
+    const targetPlayWidth = 150;
+    if (maxXZ > 0) platform.scale.setScalar(targetPlayWidth / maxXZ);
 
     platform.updateMatrixWorld(true);
-    const box = new THREE.Box3().setFromObject(platform);
-    const size = new THREE.Vector3();
-    box.getSize(size);
-    // Muchos .glb tienen pics/bordes que marcan max.y muy arriba mientras la meseta de juego
-    // está varias unidades por debajo → los distritos (y=0) quedan “flotando” encima.
-    // Estimamos la altura de la superficie como max.y menos un recorte acotado del AABB.
-    const trimY = THREE.MathUtils.clamp(size.y * 0.14, 0.35, 22);
-    const surfaceLocalY = box.max.y - trimY;
-    const PLATFORM_SURFACE_EPS = 0.04;
-    platform.position.y = -surfaceLocalY + PLATFORM_SURFACE_EPS + PLATFORM_Y_NUDGE;
+    const anchor = platform.getObjectByName('GroundAnchor');
+    if (!anchor) {
+      console.error('[nexus] base-plataforma.glb: no se encontró el objeto "GroundAnchor". Añade un Empty con ese nombre en Blender en la superficie de juego y reexporta.');
+    } else {
+      const anchorWorld = new THREE.Vector3();
+      anchor.getWorldPosition(anchorWorld);
+      console.log('[nexus platform] GroundAnchor world position', anchorWorld.x, anchorWorld.y, anchorWorld.z);
+      platform.position.y -= anchorWorld.y;
+      console.log('[nexus platform] platform.position final', platform.position.x, platform.position.y, platform.position.z);
+    }
 
-    // Enable lighting response + shadows + emissive boost
     platform.traverse(o => {
       if (!o.isMesh) return;
       o.castShadow    = !WEBGL_LOW;
@@ -662,6 +661,33 @@ scene.add(gnd);
     });
 
     scene.add(platform);
+    platform.updateMatrixWorld(true);
+
+    if (NEXUS_DEBUG_SCENE) {
+      const worldBox = new THREE.Box3().setFromObject(platform);
+      const worldSize = new THREE.Vector3();
+      worldBox.getSize(worldSize);
+      const ax = new THREE.AxesHelper(48);
+      scene.add(ax);
+      const platBox = new THREE.BoxHelper(platform, 0x00ffaa);
+      platBox.name = 'nexus-debug-platform-box';
+      scene.add(platBox);
+      const anchorPost = new THREE.Vector3();
+      const an = platform.getObjectByName('GroundAnchor');
+      if (an) an.getWorldPosition(anchorPost);
+      console.log('[nexusDebug] plataforma GLB', {
+        position: platform.position.toArray(),
+        rotation: [platform.rotation.x, platform.rotation.y, platform.rotation.z],
+        scale: platform.scale.toArray(),
+        scaleFactor: maxXZ > 0 ? targetPlayWidth / maxXZ : 1,
+        groundAnchorWorldAfterAlign: an ? anchorPost.toArray() : null,
+        aabb: {
+          min: worldBox.min.toArray(),
+          max: worldBox.max.toArray(),
+          size: worldSize.toArray(),
+        },
+      });
+    }
   }, undefined, err => {
     console.warn('[nexus] platform GLB failed to load, falling back to flat ground', err);
     // Fallback: restore visible plane + grids
@@ -702,6 +728,19 @@ const oRings=[], oLights=[];
 
 // ── DISTRICT STRUCTURES ──
 const distMeshes=[], pathDots=[], animObjects=[];
+
+function logNexusDebugDistricts(){
+  if (!NEXUS_DEBUG_SCENE || !distMeshes.length) return;
+  const wp = new THREE.Vector3();
+  distMeshes.forEach(({ g, d }) => {
+    g.getWorldPosition(wp);
+    console.log('[nexusDebug] distrito', d.id, {
+      posFromApi: { x: d.pos.x, y: g.position.y, z: d.pos.z },
+      groupLocal: g.position.toArray(),
+      world: wp.toArray(),
+    });
+  });
+}
 
 function makePath(tx,tz){
   const pts=[new THREE.Vector3(0,.1,0),new THREE.Vector3(tx,.1,tz)];
@@ -1681,6 +1720,7 @@ async function loadWorld(){
 
     // Build 3D district geometry
     DISTS.forEach(buildDist);
+    logNexusDebugDistricts();
     buildDistrictLabels();
 
     // Memory wall
@@ -1752,6 +1792,7 @@ function loadFallback(){
     {id:"agora", name:"ÁGORA SOCIAL",  era:"ERA GUARDIANES",      tag:"Social · Comunidad", col:0x00ff88,hex:"#00ff88",pos:{x:26,z:18},icon:"🏛",mem:82,game_url:_dr("agora")},
   ];
   DISTS.forEach(buildDist);
+  logNexusDebugDistricts();
   buildDistrictLabels();
   buildMemoryWall([]);
   document.getElementById("tb-online").textContent="⬡ offline";
