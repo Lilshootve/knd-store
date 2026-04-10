@@ -602,19 +602,59 @@ function resizeCam(){
 }
 window.addEventListener("resize", resizeCam);
 
-// ── GROUND ──
+// ── GROUND — floating platform GLB ──
+// Invisible collision plane so raycasts / proximity checks still work at y=0
 const gnd = new THREE.Mesh(
   new THREE.PlaneGeometry(140,140),
-  // Plaza de ciudad tech: asfalto oscuro ligeramente especular — refleja las luces de los distritos
-  new THREE.MeshStandardMaterial({color:0x060c16,metalness:.6,roughness:.42,emissive:0x04090f,emissiveIntensity:.28})
+  new THREE.MeshStandardMaterial({visible:false})
 );
-gnd.rotation.x=-Math.PI/2;
-gnd.receiveShadow = !WEBGL_LOW;
+gnd.rotation.x = -Math.PI/2;
+gnd.receiveShadow = false;
 scene.add(gnd);
-const g1=new THREE.GridHelper(140,90,0x3d4d68,0x2a384c); g1.position.y=0.02;
-[g1.material].flat().forEach(m=>{m.transparent=true;m.opacity=0.42;m.fog=false;}); scene.add(g1);
-const g2=new THREE.GridHelper(140,26,0x4a5c78,0x2f3d52); g2.position.y=0.03;
-[g2.material].flat().forEach(m=>{m.transparent=true;m.opacity=0.2;m.fog=false;}); scene.add(g2);
+
+// Load platform GLB; scale so top surface sits exactly at y=0
+(function loadPlatform(){
+  new GLTFLoader().load('./assets/base-plataforma.glb', gltf => {
+    const platform = gltf.scene;
+
+    // Enable lighting response + shadows
+    platform.traverse(o => {
+      if (!o.isMesh) return;
+      o.castShadow    = !WEBGL_LOW;
+      o.receiveShadow = !WEBGL_LOW;
+      // Boost emissive on existing materials so the blue crystal veins glow
+      if (o.material) {
+        [o.material].flat().forEach(m => {
+          if (m.emissive) {
+            if (m.emissiveIntensity > 0) m.emissiveIntensity *= 1.8;
+          }
+        });
+      }
+    });
+
+    // Scale so the widest dimension equals ~150 units (covers the play area)
+    const box  = new THREE.Box3().setFromObject(platform);
+    const size = new THREE.Vector3();
+    box.getSize(size);
+    const maxXZ = Math.max(size.x, size.z);
+    if (maxXZ > 0) platform.scale.setScalar(150 / maxXZ);
+
+    // Shift down so the TOP surface (max Y after scaling) lands at y = 0
+    const box2 = new THREE.Box3().setFromObject(platform);
+    platform.position.y -= box2.max.y;
+
+    scene.add(platform);
+  }, undefined, err => {
+    console.warn('[nexus] platform GLB failed to load, falling back to flat ground', err);
+    // Fallback: restore visible plane + grids
+    gnd.material.visible = true;
+    gnd.material.color.set(0x060c16);
+    gnd.material.metalness = 0.6; gnd.material.roughness = 0.42;
+    gnd.material.emissive.set(0x04090f); gnd.material.emissiveIntensity = 0.28;
+    const g1=new THREE.GridHelper(140,90,0x3d4d68,0x2a384c); g1.position.y=0.02;
+    [g1.material].flat().forEach(m=>{m.transparent=true;m.opacity=0.42;m.fog=false;}); scene.add(g1);
+  });
+})();
 
 // ── OBELISK ──
 const oRings=[], oLights=[];
