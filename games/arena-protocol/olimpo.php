@@ -102,6 +102,7 @@ $NPCS_PHP = [
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="nexus-ws-url" content="wss://knd-store-production.up.railway.app">
 <title>MOUNT OLYMPUS · NEXUS CITY</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -184,9 +185,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ra
 </div>
 
 <script>
-const HERO_MODEL_URL = <?php echo json_encode($_heroModelUrl); ?>;
-const PLAYER_NAME    = <?php echo json_encode($_playerName); ?>;
-const NPCS_DATA      = <?php echo json_encode($NPCS_PHP, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE); ?>;
+window.__KND_DISTRICT_BOOT = {
+    HERO_MODEL_URL: <?php echo json_encode($_heroModelUrl); ?>,
+    PLAYER_NAME: <?php echo json_encode($_playerName); ?>,
+    NPCS_DATA: <?php echo json_encode($NPCS_PHP, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE); ?>,
+    NEXUS_RT_UID: <?php echo (int)(current_user_id() ?? 0); ?>,
+};
 </script>
 
 <script type="importmap">
@@ -204,6 +208,9 @@ import { OrbitControls }    from 'three/addons/controls/OrbitControls.js';
 import { EffectComposer }   from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass }       from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass }  from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { createNexusDistrictRealtime } from './js/nexus-district-realtime.js';
+
+const { HERO_MODEL_URL, PLAYER_NAME, NPCS_DATA, NEXUS_RT_UID } = window.__KND_DISTRICT_BOOT;
 
 // ── Constants ────────────────────────────────────────────────────────────────
 const GRID        = 20;
@@ -272,6 +279,7 @@ const animObjects= [];
 let activeNpcIdx = -1;
 const hintEl     = document.getElementById('interact-hint');
 const hintName   = document.getElementById('hint-name');
+let nexusRt      = null;
 
 window.addEventListener('keydown', e => {
     keys[e.code] = true;
@@ -739,6 +747,7 @@ function animate() {
     updateNPCs(dt);
     updateAnimObjects(t, dt);
     if (heroMixer) heroMixer.update(dt);
+    if (nexusRt) nexusRt.update(dt);
     composer.render();
 }
 
@@ -751,6 +760,19 @@ function animate() {
     await spawnHero();
     await spawnNPCs();
     progStep('STARTING…');
+    nexusRt = createNexusDistrictRealtime({
+        scene,
+        districtId: 'olimpo',
+        userId: NEXUS_RT_UID,
+        displayName: PLAYER_NAME,
+        colorBody: '#ffd600',
+        colorVisor: '#ff6b00',
+        colorEcho: '#66ccff',
+        heroModelUrl: HERO_MODEL_URL || null,
+        getPosition: () => ({ x: heroPos.x, z: heroPos.z }),
+        getRotationY: () => (heroMesh ? heroMesh.rotation.y : 0),
+    });
+    if (NEXUS_RT_UID > 0) nexusRt.start();
     animate();
     hideLoading();
 })();

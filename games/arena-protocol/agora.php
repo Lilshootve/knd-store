@@ -13,6 +13,8 @@ if (!is_logged_in()) {
     exit;
 }
 
+$nexusRtUid = (int)(current_user_id() ?? 0);
+
 $_heroModelUrl = null;
 $_playerName   = 'CITIZEN';
 try {
@@ -105,6 +107,7 @@ $_playerJson = json_encode($_playerName);
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="nexus-ws-url" content="wss://knd-store-production.up.railway.app">
 <title>SOCIAL AGORA — KND NEXUS</title>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -211,9 +214,11 @@ import { RenderPass }      from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { GLTFLoader }      from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls }   from 'three/addons/controls/OrbitControls.js';
+import { createNexusDistrictRealtime } from './js/nexus-district-realtime.js';
 
 const HERO_MODEL  = <?php echo $_heroJson; ?>;
 const PLAYER_NAME = <?php echo $_playerJson; ?>;
+const NEXUS_RT_UID = <?php echo (int)$nexusRtUid; ?>;
 const NPCS        = <?php echo $_npcsJson; ?>;
 const GRID = 20;
 const D_CAM = 13;
@@ -232,6 +237,7 @@ let keys = {}, activeNpcIdx = -1;
 let _typingInterval = null, _t = 0;
 const loader = new GLTFLoader();
 const raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2();
+let nexusRt = null;
 
 window.addEventListener('DOMContentLoaded', boot);
 
@@ -258,6 +264,19 @@ async function boot() {
         if (e.code === 'Escape') closeNpcModal();
     });
     window.addEventListener('keyup', e => { keys[e.code] = false; });
+    nexusRt = createNexusDistrictRealtime({
+        scene,
+        districtId: 'agora',
+        userId: NEXUS_RT_UID,
+        displayName: PLAYER_NAME,
+        colorBody: '#00ff88',
+        colorVisor: '#00e8ff',
+        colorEcho: '#ffd600',
+        heroModelUrl: HERO_MODEL || null,
+        getPosition: () => ({ x: heroPos.x, z: heroPos.z }),
+        getRotationY: () => (heroMesh ? heroMesh.rotation.y : 0),
+    });
+    if (NEXUS_RT_UID > 0) nexusRt.start();
     tick();
 }
 
@@ -599,6 +618,7 @@ function tick() {
     updateNPCs(dt);
     updateAnimObjects(dt);
     if (heroMixer) heroMixer.update(dt);
+    if (nexusRt) nexusRt.update(dt);
     composer.render();
 }
 

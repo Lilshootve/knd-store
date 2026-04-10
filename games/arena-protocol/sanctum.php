@@ -12,10 +12,16 @@ if (!is_logged_in()) {
 // Resolve hero model URL + room title for the logged-in player (users.id via session unificado)
 $_heroModelUrl = null;
 $_sanctumRoomDisplay = 'SANCTUM';
+$_nexusRtDisplay = 'PLAYER';
 try {
     $pdo = getDBConnection();
     $uid = (int)(current_user_id() ?? 0);
     if ($uid > 0) {
+        try {
+            $ur = $pdo->prepare('SELECT username FROM users WHERE id = ? LIMIT 1');
+            $ur->execute([$uid]);
+            $_nexusRtDisplay = mb_strtoupper((string)($ur->fetchColumn() ?: 'PLAYER'), 'UTF-8');
+        } catch (Throwable $_u) {}
         try {
             $sp = $pdo->prepare('SELECT house_name FROM nexus_plots WHERE user_id = ? LIMIT 1');
             $sp->execute([$uid]);
@@ -64,6 +70,7 @@ try {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="nexus-ws-url" content="wss://knd-store-production.up.railway.app">
 <title>SANCTUM — KND NEXUS</title>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -400,8 +407,11 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { createNexusDistrictRealtime } from './js/nexus-district-realtime.js';
 
 const HERO_MODEL_URL = <?php echo json_encode($_heroModelUrl); ?>;
+const NEXUS_RT_UID = <?php echo (int)(current_user_id() ?? 0); ?>;
+const NEXUS_RT_DISPLAY = <?php echo json_encode($_nexusRtDisplay); ?>;
 
 // ─────────────────────────────────────────────────────────────────
 // Globals
@@ -447,6 +457,8 @@ let heroIsWalking = false;
 const heroVel = new THREE.Vector3();
 const heroKeys = {};
 const _gltfLoader = new GLTFLoader();
+
+let nexusRt = null;
 
 /** GLB + MeshPhysical / Shader + texturas sin colorSpace rompen uniforms con EffectComposer (r170). */
 function normalizeGltfForRenderer(root) {
@@ -526,6 +538,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         updateTabCounts();
         renderPlaced();
         spawnHero();
+        initNexusRealtime();
         setLoadProgress(100);
 
     } catch(e) {
@@ -535,6 +548,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         renderCatalog('all');
         updateTabCounts();
         spawnHero();
+        initNexusRealtime();
         setLoadProgress(100);
     }
 
@@ -2024,6 +2038,23 @@ function mkProceduralHero() {
     return g;
 }
 
+function initNexusRealtime() {
+    if (!scene) return;
+    nexusRt = createNexusDistrictRealtime({
+        scene,
+        districtId: 'sanctum',
+        userId: NEXUS_RT_UID,
+        displayName: NEXUS_RT_DISPLAY,
+        colorBody: '#00e8ff',
+        colorVisor: '#9b30ff',
+        colorEcho: '#ffd040',
+        heroModelUrl: HERO_MODEL_URL || null,
+        getPosition: () => (hero ? { x: hero.position.x, z: hero.position.z } : { x: 4.5, z: 4.5 }),
+        getRotationY: () => (hero ? hero.rotation.y : 0),
+    });
+    if (NEXUS_RT_UID > 0) nexusRt.start();
+}
+
 function spawnHero() {
     if (hero) { scene.remove(hero); hero = null; heroMixer = null; }
     if (HERO_MODEL_URL) {
@@ -2263,6 +2294,7 @@ function animate() {
 
     // Hero player
     tickHero(dt, t);
+    if (nexusRt) nexusRt.update(dt);
 
     // Animate registered objects
     animObjects.forEach(ao => {
