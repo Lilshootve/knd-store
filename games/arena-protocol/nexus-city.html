@@ -441,7 +441,7 @@ renderer.setPixelRatio(_pixelCap);
 renderer.setSize(W(), H());
 renderer.outputColorSpace  = THREE.SRGBColorSpace;
 renderer.toneMapping       = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = WEBGL_LOW ? 1.05 : 1.22;
+renderer.toneMappingExposure = WEBGL_LOW ? 1.25 : 1.5;
 renderer.shadowMap.enabled = !WEBGL_LOW;
 renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
 wrap.appendChild(renderer.domElement);
@@ -543,9 +543,9 @@ function initPostFX(){
   composer.addPass(new RenderPass(scene, cam));
   // Bloom hub: threshold bajo para que los anillos de distrito y el obelisco brillen con intensidad
   if (WEBGL_MED) {
-    bloomPass = new UnrealBloomPass(size, 0.65, 0.45, 0.60);
+    bloomPass = new UnrealBloomPass(size, 0.85, 0.45, 0.55);
   } else {
-    bloomPass = new UnrealBloomPass(size, 1.0, 0.50, 0.52);
+    bloomPass = new UnrealBloomPass(size, 1.3, 0.50, 0.48);
   }
   composer.addPass(bloomPass);
 }
@@ -1131,6 +1131,12 @@ async function replaceRemotePlayerWithGlb(pid, p, url){
     // Tras alinear la base al suelo, position.y suele ser >0; tickRemotePlayers no debe forzar y=0 (enterraba el GLB).
     const feetOffsetY=model.position.y;
     scene.add(model);
+    // Aura for GLB remote — preserve rarity stored in old mesh userData
+    const remAuraHex = rp.mesh?.userData?.auraLight?.color?.getStyle?.() || "#44aaaa";
+    const remAura = new THREE.PointLight(new THREE.Color(remAuraHex), 2.2, 6, 2);
+    remAura.position.set(0, 1.0, 0);
+    model.add(remAura);
+    model.userData.auraLight = remAura;
     remotePlayers.set(pid,{ mesh:model, tx:rp.tx, tz:rp.tz, mixer, targetDir:rp.targetDir, heroUrl:url, feetOffsetY });
   }catch(e){
     console.warn("[remote] GLB avatar falló, se mantiene guardian procedural:", abs, e.message||e);
