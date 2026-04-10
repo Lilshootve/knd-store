@@ -433,24 +433,42 @@ renderer.setPixelRatio(_pixelCap);
 renderer.setSize(W(), H());
 renderer.outputColorSpace  = THREE.SRGBColorSpace;
 renderer.toneMapping       = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = WEBGL_LOW ? 1.15 : 1.35;
+renderer.toneMappingExposure = WEBGL_LOW ? 1.05 : 1.22;
 renderer.shadowMap.enabled = !WEBGL_LOW;
 renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
 wrap.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x7eb8e8);           // cielo día (plaza exterior)
-scene.fog = new THREE.Fog(0xa8d0ec, 55, 240);            // horizonte suave, menos “agujero negro”
+scene.background = new THREE.Color(0x010508);           // espacio profundo — se reemplaza con textura al cargar
+scene.fog = new THREE.FogExp2(0x010614, 0.007);         // niebla cósmica muy suave — no aplasta los distritos lejanos
 
-// ── Fill general (interior + bordes de meshes) ──
-scene.add(new THREE.AmbientLight(0xffffff, 0.62));
+// ── BACKGROUND TEXTURE (nebulosa) ──
+let bgTex = null;
+function updateBgCover() {
+  if (!bgTex || !bgTex.image) return;
+  const imgAspect = bgTex.image.width / bgTex.image.height;
+  const canvasAspect = W() / H();
+  bgTex.matrixAutoUpdate = false;
+  if (canvasAspect > imgAspect) {
+    bgTex.matrix.setUvTransform(0, 0, 1, imgAspect / canvasAspect, 0, 0.5, 0.5);
+  } else {
+    bgTex.matrix.setUvTransform(0, 0, canvasAspect / imgAspect, 1, 0, 0.5, 0.5);
+  }
+}
+new THREE.TextureLoader().load('./assets/nubes-fondo.png', tex => {
+  bgTex = tex;
+  scene.background = tex;
+  updateBgCover();
+});
 
-// ── Hemisférica: cielo claro / reflejo de suelo ──
-scene.add(new THREE.HemisphereLight(0xc8e8ff, 0x4a5a3c, 0.55));
+// ── Ambient global — espacio oscuro, solo los neones iluminan ──
+scene.add(new THREE.AmbientLight(0x0a1428, 0.9));
 
-// ── Sol (direccional cálida, sombras) ──
-// Sun reducido: el hub es plaza de noche techno — las point lights de distrito son los protagonistas
-const sunLight = new THREE.DirectionalLight(0xd8eeff, 1.55);
+// ── Hemisférica: cielo espacial profundo / suelo oscuro ──
+scene.add(new THREE.HemisphereLight(0x0a2040, 0x000308, 0.6));
+
+// ── Luz difusa cósmica — simula scattering de la nebulosa ──
+const sunLight = new THREE.DirectionalLight(0x4878bb, 0.75);
 sunLight.position.set(28, 52, 18);
 sunLight.castShadow = !WEBGL_LOW;
 const _shRes = WEBGL_LOW ? 512 : WEBGL_MED ? 1024 : 2048;
@@ -466,16 +484,36 @@ sunLight.shadow.bias           = -0.0004;
 sunLight.shadow.normalBias     = 0.02;
 scene.add(sunLight);
 
-// ── Relleno azul suave desde el contraluz (legibilidad neón) ──
-const fillLight = new THREE.DirectionalLight(0x9ec8ff, 0.42);
+// ── Relleno desde el contraluz — muy tenue, solo define siluetas ──
+const fillLight = new THREE.DirectionalLight(0x304c80, 0.22);
 fillLight.position.set(-35, 28, -30);
 fillLight.castShadow = false;
 scene.add(fillLight);
 
 // ── Luces de acento de color para mood (paleta cyan/purple/amber) ──
-[[0x4488ff,0.95,65,-20,18,8],[0xaa44ff,0.82,55,20,16,-8],[0xff8833,0.55,50,0,14,24]].forEach(([c,i,d,x,y,z])=>{
+[[0x4488ff,1.2,65,-20,18,8],[0xaa44ff,1.0,55,20,16,-8],[0xff8833,0.7,50,0,14,24]].forEach(([c,i,d,x,y,z])=>{
   const pl = new THREE.PointLight(c,i,d,2); pl.position.set(x,y,z); scene.add(pl);
 });
+
+// ── STARFIELD — partículas en semiesfera alta para profundidad cósmica ──
+(function buildStars(){
+  const N = WEBGL_LOW ? 600 : 1800;
+  const pos = new Float32Array(N * 3);
+  for(let i=0; i<N; i++){
+    const r     = 160 + Math.random() * 180;
+    const theta = Math.random() * Math.PI * 2;
+    const phi   = Math.acos(1 - Math.random()); // semiesfera superior
+    pos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
+    pos[i*3+1] = r * Math.cos(phi) * 0.6 + 18;  // comprime hacia arriba
+    pos[i*3+2] = r * Math.sin(phi) * Math.sin(theta);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  scene.add(new THREE.Points(geo, new THREE.PointsMaterial({
+    color: 0xaaccff, size: WEBGL_LOW ? 0.55 : 0.32,
+    sizeAttenuation: true, transparent: true, opacity: 0.65,
+  })));
+})();
 
 // ── CAMERA ──
 const CAM_DIR = new THREE.Vector3(1,0.85,1).normalize();
@@ -509,6 +547,7 @@ function resizeCam(){
   cam.left=-ORTH_H*camAspect; cam.right=ORTH_H*camAspect; cam.top=ORTH_H; cam.bottom=-ORTH_H;
   cam.updateProjectionMatrix(); renderer.setSize(w,h);
   if (composer) composer.setSize(w, h);
+  updateBgCover();
 }
 window.addEventListener("resize", resizeCam);
 
@@ -516,7 +555,7 @@ window.addEventListener("resize", resizeCam);
 const gnd = new THREE.Mesh(
   new THREE.PlaneGeometry(140,140),
   // Plaza de ciudad tech: asfalto oscuro ligeramente especular — refleja las luces de los distritos
-  new THREE.MeshStandardMaterial({color:0x1a2838,metalness:.35,roughness:.55,emissive:0x0e1820,emissiveIntensity:.18})
+  new THREE.MeshStandardMaterial({color:0x060c16,metalness:.6,roughness:.42,emissive:0x04090f,emissiveIntensity:.28})
 );
 gnd.rotation.x=-Math.PI/2;
 gnd.receiveShadow = !WEBGL_LOW;
@@ -543,9 +582,11 @@ const oRings=[], oLights=[];
     const tr=new THREE.Mesh(new THREE.TorusGeometry(r,.04,4,48),new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:1.4,transparent:true,opacity:.65}));
     tr.position.y=11; tr.userData={sp,ax}; oRings.push(tr); g.add(tr);
   });
-  const beam=new THREE.Mesh(new THREE.CylinderGeometry(.04,2.2,14,8,1,true),new THREE.MeshStandardMaterial({color:0x00e8ff,emissive:0x00e8ff,emissiveIntensity:.5,transparent:true,opacity:.055,side:THREE.DoubleSide}));
+  const beam=new THREE.Mesh(new THREE.CylinderGeometry(.04,2.2,14,8,1,true),new THREE.MeshStandardMaterial({color:0x00e8ff,emissive:0x00e8ff,emissiveIntensity:1.8,transparent:true,opacity:.12,side:THREE.DoubleSide}));
   beam.position.y=18; g.add(beam);
-  const al=new THREE.PointLight(0x00e8ff,3.5,35,2); al.position.y=11; g.add(al); oLights.push(al);
+  const outerBeam=new THREE.Mesh(new THREE.CylinderGeometry(.08,4.5,14,8,1,true),new THREE.MeshStandardMaterial({color:0x00e8ff,emissive:0x00e8ff,emissiveIntensity:.7,transparent:true,opacity:.028,side:THREE.DoubleSide,depthWrite:false}));
+  outerBeam.position.y=18; g.add(outerBeam);
+  const al=new THREE.PointLight(0x00e8ff,5.5,48,2); al.position.y=11; g.add(al); oLights.push(al);
   const al2=new THREE.PointLight(0x9b30ff,1.2,20,2); al2.position.y=5; g.add(al2); oLights.push(al2);
   scene.add(g);
 })();
@@ -555,8 +596,8 @@ const distMeshes=[], pathDots=[], animObjects=[];
 
 function makePath(tx,tz){
   const pts=[new THREE.Vector3(0,.1,0),new THREE.Vector3(tx,.1,tz)];
-  scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0x182040,transparent:true,opacity:.55})));
-  for(let i=1;i<9;i++){const t=i/9,dot=new THREE.Mesh(new THREE.SphereGeometry(.07,4,4),new THREE.MeshStandardMaterial({color:0x253460,emissive:0x253460,emissiveIntensity:.9,transparent:true,opacity:.45}));dot.position.set(tx*t,.12,tz*t);dot.userData.pp=i*.65;scene.add(dot);pathDots.push(dot);}
+  scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0x00e8ff,transparent:true,opacity:.45})));
+  for(let i=1;i<9;i++){const t=i/9,dot=new THREE.Mesh(new THREE.SphereGeometry(.09,4,4),new THREE.MeshStandardMaterial({color:0x00e8ff,emissive:0x00e8ff,emissiveIntensity:2.5,transparent:true,opacity:.7}));dot.position.set(tx*t,.12,tz*t);dot.userData.pp=i*.65;scene.add(dot);pathDots.push(dot);}
 }
 
 function buildDist(d){
@@ -632,7 +673,7 @@ function buildDist(d){
     [0,1,2,3,4,5].forEach(i=>{const a=(i/6)*Math.PI*2,col=new THREE.Mesh(new THREE.CylinderGeometry(.15,.18,3.5,6),new THREE.MeshStandardMaterial({color:0x1a1e2c,metalness:.3,roughness:.6}));col.position.set(Math.cos(a)*2.6,1.75,Math.sin(a)*2.6);g.add(col);});
   }
 
-  const gl=new THREE.Mesh(new THREE.CircleGeometry(5.5,32),new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:.4,transparent:true,opacity:.07,side:THREE.DoubleSide})); gl.rotation.x=-Math.PI/2; gl.position.y=.06; g.add(gl); g.userData.glowM=gl.material;
+  const gl=new THREE.Mesh(new THREE.CircleGeometry(5.5,32),new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:1.2,transparent:true,opacity:.18,side:THREE.DoubleSide})); gl.rotation.x=-Math.PI/2; gl.position.y=.06; g.add(gl); g.userData.glowM=gl.material;
   const dl=new THREE.PointLight(d.col,1.5,28,2); dl.position.y=7; g.add(dl); g.userData.dl=dl;
   g.position.set(d.pos.x,0,d.pos.z); g.userData.id=d.id;
   scene.add(g); makePath(d.pos.x,d.pos.z);
