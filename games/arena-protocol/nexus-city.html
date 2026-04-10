@@ -368,6 +368,25 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 // ══════════════════════════════════════════════════════
 /** Activa con ?nexusDebug=1 — AxesHelper, BoxHelper del GLB y logs de AABB/posiciones */
 const NEXUS_DEBUG_SCENE = new URLSearchParams(location.search).has('nexusDebug');
+/** Metros hacia dentro del borde del AABB de la plataforma (evita que el avatar “cuegue”). */
+const NEXUS_PLAY_EDGE_INSET = 3;
+/** Límites XZ en espacio mundo; se actualizan al cargar el GLB (antes: ±65 sobre plano 140). */
+let nexusPlayBounds = { minX: -65, maxX: 65, minZ: -65, maxZ: 65 };
+function setNexusPlayBoundsFromPlatform(platformRoot) {
+  platformRoot.updateMatrixWorld(true);
+  const b = new THREE.Box3().setFromObject(platformRoot);
+  const p = NEXUS_PLAY_EDGE_INSET;
+  let minX = b.min.x + p, maxX = b.max.x - p, minZ = b.min.z + p, maxZ = b.max.z - p;
+  if (maxX <= minX) {
+    const c = (b.min.x + b.max.x) * 0.5;
+    minX = c - 10; maxX = c + 10;
+  }
+  if (maxZ <= minZ) {
+    const c = (b.min.z + b.max.z) * 0.5;
+    minZ = c - 10; maxZ = c + 10;
+  }
+  nexusPlayBounds = { minX, maxX, minZ, maxZ };
+}
 let DISTS      = [];          // loaded from API
 let echoByDist = {};          // {district_id: [{avatar_id,name,rarity,class,resonance,status}]}
 let currentDistId = null;     // district open in right panel
@@ -654,6 +673,7 @@ scene.add(gnd);
 
     scene.add(platform);
     platform.updateMatrixWorld(true);
+    setNexusPlayBoundsFromPlatform(platform);
 
     if (NEXUS_DEBUG_SCENE) {
       const worldBox = new THREE.Box3().setFromObject(platform);
@@ -673,6 +693,7 @@ scene.add(gnd);
         scale: platform.scale.toArray(),
         scaleFactor: maxXZ > 0 ? targetPlayWidth / maxXZ : 1,
         groundAnchorWorldAfterAlign: an ? anchorPost.toArray() : null,
+        playBoundsXZ: { ...nexusPlayBounds },
         aabb: {
           min: worldBox.min.toArray(),
           max: worldBox.max.toArray(),
@@ -682,6 +703,8 @@ scene.add(gnd);
     }
   }, undefined, err => {
     console.warn('[nexus] platform GLB failed to load, falling back to flat ground', err);
+    const half = 70 - NEXUS_PLAY_EDGE_INSET;
+    nexusPlayBounds = { minX: -half, maxX: half, minZ: -half, maxZ: half };
     // Fallback: restore visible plane + grids
     gnd.material.visible = true;
     gnd.material.color.set(0x060c16);
@@ -1803,7 +1826,6 @@ async function fetchChatHistory(){
 // MAIN LOOP
 // ══════════════════════════════════════════════════════
 let last=performance.now()/1000;
-const lim=65;
 
 function snap(){ const off=CAM_DIR.clone().multiplyScalar(CAM_DIST);cam.position.copy(player.position).add(off);cam.lookAt(player.position.x,player.position.y+.6,player.position.z); }
 resizeCam(); snap();
@@ -1820,8 +1842,8 @@ renderer.setAnimationLoop((nowMs)=>{
 
   if (_heroMesh) {
     // GLB hero
-    _heroMesh.position.x=THREE.MathUtils.clamp(_heroMesh.position.x+vel.x*dt,-lim,lim);
-    _heroMesh.position.z=THREE.MathUtils.clamp(_heroMesh.position.z+vel.z*dt,-lim,lim);
+    _heroMesh.position.x=THREE.MathUtils.clamp(_heroMesh.position.x+vel.x*dt,nexusPlayBounds.minX,nexusPlayBounds.maxX);
+    _heroMesh.position.z=THREE.MathUtils.clamp(_heroMesh.position.z+vel.z*dt,nexusPlayBounds.minZ,nexusPlayBounds.maxZ);
     if(moving) _heroMesh.rotation.y=THREE.MathUtils.lerp(_heroMesh.rotation.y,Math.atan2(vel.x,vel.z),.12);
     // Mirror position to procedural player so WS/camera still work
     player.position.copy(_heroMesh.position);
@@ -1840,8 +1862,8 @@ renderer.setAnimationLoop((nowMs)=>{
     }
   } else {
     // Procedural guardian
-    player.position.x=THREE.MathUtils.clamp(player.position.x+vel.x*dt,-lim,lim);
-    player.position.z=THREE.MathUtils.clamp(player.position.z+vel.z*dt,-lim,lim);
+    player.position.x=THREE.MathUtils.clamp(player.position.x+vel.x*dt,nexusPlayBounds.minX,nexusPlayBounds.maxX);
+    player.position.z=THREE.MathUtils.clamp(player.position.z+vel.z*dt,nexusPlayBounds.minZ,nexusPlayBounds.maxZ);
     player.position.y=Math.sin(now*2.5)*.04;
     if(moving) player.rotation.y=THREE.MathUtils.lerp(player.rotation.y,Math.atan2(vel.x,vel.z),.12);
   }
