@@ -270,7 +270,7 @@ function initRenderer() {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.45;
+    renderer.toneMappingExposure = 1.5;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     wrap.appendChild(renderer.domElement);
     renderer.setSize(wrap.clientWidth, wrap.clientHeight);
@@ -313,12 +313,12 @@ function initScene() {
 
 function buildScene() {
     // Hemisphere: ágora social — bóveda tecnológica verde oscuro / plaza de piedra cálida
-    scene.add(new THREE.HemisphereLight(0x163020, 0x0a1008, 0.55));
-    // Ambient mínimo — la plaza vive de los faroles y las luces de columna
-    scene.add(new THREE.AmbientLight(0x0c1a0e, 0.45));
+    scene.add(new THREE.HemisphereLight(0x264830, 0x141e12, 1.4));
+    // Ambient global — iluminación base tipo sol urbano, plaza bien iluminada
+    scene.add(new THREE.AmbientLight(0x182a1a, 1.8));
 
     // Key light — luz de luna/overhead con tinte verde tecnológico, ángulo bajo para sombras largas
-    const moon = new THREE.DirectionalLight(0x88ffcc, 1.3);
+    const moon = new THREE.DirectionalLight(0x88ffcc, 1.9);
     moon.position.set(10, 25, 16);
     moon.castShadow = true;
     moon.shadow.mapSize.set(2048, 2048);
@@ -329,12 +329,12 @@ function buildScene() {
     scene.add(moon);
 
     // Fill cálido — luz de los faroles de mercado, color ámbar-dorado
-    const fill = new THREE.DirectionalLight(0xffcc44, 0.55);
+    const fill = new THREE.DirectionalLight(0xffcc44, 0.9);
     fill.position.set(-14, 8, -10);
     scene.add(fill);
 
     // Rim cian — brillo de pantallas/tech en las columnas
-    const rim = new THREE.DirectionalLight(0x00ddcc, 0.3);
+    const rim = new THREE.DirectionalLight(0x00ddcc, 0.55);
     rim.position.set(22, 6, 2);
     scene.add(rim);
 

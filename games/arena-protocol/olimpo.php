@@ -221,7 +221,7 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.25; // Más luminoso para ambiente de los dioses bajo sol mediterráneo
+renderer.toneMappingExposure = 1.35; // Sol mediterráneo pleno sobre el Monte Olimpo
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 const scene = new THREE.Scene();
@@ -356,10 +356,10 @@ function makeNameLabel(name, color) {
 
 // ── Scene ─────────────────────────────────────────────────────────────────────
 function buildScene() {
-    // Ambient fill — warm twilight sky, kept low to preserve shadow drama
-    scene.add(new THREE.AmbientLight(0x2a1800, 0.6));
+    // Ambient global — sol mediterráneo fuerte, iluminación base tipo día pleno
+    scene.add(new THREE.AmbientLight(0x3a2800, 1.8));
     // Hemisphere: golden sky / deep shadow ground — defines the divine atmosphere
-    scene.add(new THREE.HemisphereLight(0xffd060, 0x1a0a00, 0.9));
+    scene.add(new THREE.HemisphereLight(0xffd060, 0x2a1400, 1.5));
 
     // Key light — high-angle Greek sun, harsh and directional for hard shadows
     const sun = new THREE.DirectionalLight(0xffcc66, 2.2);
@@ -373,12 +373,12 @@ function buildScene() {
     scene.add(sun);
 
     // Rim light — backlit orange glow from fire bowls / torches
-    const rim1 = new THREE.DirectionalLight(0xff6600, 0.55);
+    const rim1 = new THREE.DirectionalLight(0xff6600, 0.85);
     rim1.position.set(-12, 6, -10);
     scene.add(rim1);
 
     // Secondary rim — electric Zeus blue-gold, adds divine highlight on NPCs
-    const rim2 = new THREE.DirectionalLight(0xffe060, 0.35);
+    const rim2 = new THREE.DirectionalLight(0xffe060, 0.6);
     rim2.position.set(12, 4, -16);
     scene.add(rim2);
 

@@ -239,7 +239,7 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.15; // Lab ligeramente sobreexpuesto = luz fría de laboratorio
+renderer.toneMappingExposure = 1.2; // Lab con luz fluorescente fuerte y neón
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 const scene  = new THREE.Scene();
@@ -367,10 +367,10 @@ function makeNameLabel(name, color) {
 // ── Scene Building ────────────────────────────────────────────────────────────
 function buildScene() {
     // Ambient + directional lights
-    // Ambient frío oscuro — laboratorio con luz artificial, no luz de día
-    scene.add(new THREE.AmbientLight(0x061018, 0.5));
+    // Ambient global — base iluminación para laboratorio, luz artificial de neón
+    scene.add(new THREE.AmbientLight(0x102030, 1.8));
     // Hemisphere: techo metálico frío azul / suelo de laboratorio oscuro
-    scene.add(new THREE.HemisphereLight(0x0a2040, 0x04080e, 0.65));
+    scene.add(new THREE.HemisphereLight(0x1a4060, 0x0a1828, 1.4));
 
     // Key light — luz de fluorescente overhead, blanca-azulada y dura
     const overhead = new THREE.DirectionalLight(0xc8eeff, 1.8);
@@ -387,12 +387,12 @@ function buildScene() {
     scene.add(overhead);
 
     // Fill eléctrico cian — luz de las bobinas de Tesla
-    const fill1 = new THREE.DirectionalLight(0x00ddff, 0.65);
+    const fill1 = new THREE.DirectionalLight(0x00ddff, 1.0);
     fill1.position.set(-12, 10, -8);
     scene.add(fill1);
 
     // Rim violeta — descarga de plasma / Einstein energy
-    const fill2 = new THREE.DirectionalLight(0x8820ff, 0.38);
+    const fill2 = new THREE.DirectionalLight(0x8820ff, 0.6);
     fill2.position.set(12, 5, -14);
     scene.add(fill2);
 

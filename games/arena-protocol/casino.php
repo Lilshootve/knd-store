@@ -315,13 +315,13 @@ function initScene() {
 
 function buildScene() {
     // Lighting — NO Object.assign on position
-    // Hemisphere: techo del casino oscuro-violeta / suelo casi negro — el neón ES la iluminación
-    scene.add(new THREE.HemisphereLight(0x2a0840, 0x050010, 0.45));
-    // Ambient mínimo — el casino vive de luz artificial, no ambiental
-    scene.add(new THREE.AmbientLight(0x0e0414, 0.5));
+    // Hemisphere: iluminación global de base para legibilidad de modelos low-poly
+    scene.add(new THREE.HemisphereLight(0x4a1a70, 0x180828, 1.4));
+    // Ambient global — garantiza que los NPCs sean visibles en toda la sala
+    scene.add(new THREE.AmbientLight(0x2a1040, 1.8));
 
-    // Key light desde arriba — como una araña de cristal púrpura sobre el casino
-    const chandelier = new THREE.DirectionalLight(0xb060ff, 0.9);
+    // Key light — araña de cristal central, define dirección y sombras suaves
+    const chandelier = new THREE.DirectionalLight(0xd090ff, 1.6);
     chandelier.position.set(GRID/2, 30, GRID/2);
     chandelier.castShadow = true;
     chandelier.shadow.mapSize.set(2048, 2048);
@@ -332,12 +332,12 @@ function buildScene() {
     scene.add(chandelier);
 
     // Fill dramático rojo sangre — luz del caos / Dracula side
-    const fill = new THREE.DirectionalLight(0xff2244, 0.45);
+    const fill = new THREE.DirectionalLight(0xff4466, 0.85);
     fill.position.set(-16, 6, -12);
     scene.add(fill);
 
     // Rim dorado — riqueza, tentación, la promesa del jackpot
-    const rim = new THREE.DirectionalLight(0xffb800, 0.28);
+    const rim = new THREE.DirectionalLight(0xffcc00, 0.65);
     rim.position.set(22, 10, 4);
     scene.add(rim);
 

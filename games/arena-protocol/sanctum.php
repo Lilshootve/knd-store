@@ -572,7 +572,7 @@ function initThree() {
     renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
     renderer.toneMapping       = THREE.ACESFilmicToneMapping;
     // Exposure calibrado: high quality no debe sobreexponer — los objetos de mobiliario necesitan fidelidad de color
-    renderer.toneMappingExposure = WEBGL_LOW ? 1.18 : WEBGL_MED ? 1.28 : 1.38;
+    renderer.toneMappingExposure = WEBGL_LOW ? 1.35 : WEBGL_MED ? 1.5 : 1.65;
     wrap.appendChild(renderer.domElement);
 
     resetCamera();
@@ -581,16 +581,16 @@ function initThree() {
     // Lights — base legible + acentos: hemisferio simula rebote cielo/suelo sin matar el neón
     // Sanctum: espacio personal del jugador — iluminación neutra para no sesgar el color de sus muebles
     // Hemisphere suave: el techo tecnológico emite fría; el suelo absorbe
-    const hemi = new THREE.HemisphereLight(0x3a5570, 0x060a10, 0.50);
+    const hemi = new THREE.HemisphereLight(0x5a7898, 0x0c1828, 1.3);
     hemi.position.set(5, 8, 5);
     scene.add(hemi);
 
-    // Ambient mínimo — la mayor parte de luz viene de la key
-    const ambient = new THREE.AmbientLight(0x151e2a, 0.55);
+    // Ambient global — base para visibilidad de muebles y modelos low-poly
+    const ambient = new THREE.AmbientLight(0x1e2e42, 1.5);
     scene.add(ambient);
 
     // Key light — luz principal cálida-neutra: no altera la percepción de color de los objetos colocados
-    const sun = new THREE.DirectionalLight(0xddeeff, 1.55);
+    const sun = new THREE.DirectionalLight(0xddeeff, 2.0);
     sun.position.set(8, 16, 8);
     sun.castShadow = !WEBGL_LOW;
     const _shSan = WEBGL_LOW ? 512 : WEBGL_MED ? 768 : 1024;
@@ -603,12 +603,12 @@ function initThree() {
     scene.add(sun);
 
     // Fill: violeta reducido — más ambiente, menos cast de color directo
-    const fill = new THREE.DirectionalLight(0x4a1870, 0.38);
+    const fill = new THREE.DirectionalLight(0x5a2890, 0.65);
     fill.position.set(-10, 6, -10);
     scene.add(fill);
 
     // Rim frontal: suave y casi neutro para definir profundidad de muebles sin teñirlos
-    const rim = new THREE.DirectionalLight(0x90b8cc, 0.32);
+    const rim = new THREE.DirectionalLight(0x90b8cc, 0.55);
     rim.position.set(14, 10, 2);
     scene.add(rim);
 
