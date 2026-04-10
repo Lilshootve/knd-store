@@ -471,13 +471,13 @@ new THREE.TextureLoader().load('./assets/nubes-fondo.png', tex => {
 });
 
 // ── Ambient global — espacio oscuro, solo los neones iluminan ──
-scene.add(new THREE.AmbientLight(0x1a2840, 1.4));
+scene.add(new THREE.AmbientLight(0x253850, 1.8));
 
 // ── Hemisférica: cielo espacial profundo / suelo oscuro ──
-scene.add(new THREE.HemisphereLight(0x1a3a60, 0x040810, 0.9));
+scene.add(new THREE.HemisphereLight(0x2a4870, 0x0a1428, 1.2));
 
-// ── Luz difusa cósmica — simula scattering de la nebulosa ──
-const sunLight = new THREE.DirectionalLight(0x4878bb, 0.75);
+// ── Sol principal — ilumina plataforma y distritos desde el noreste ──
+const sunLight = new THREE.DirectionalLight(0x80aadd, 2.8);
 sunLight.position.set(28, 52, 18);
 sunLight.castShadow = !WEBGL_LOW;
 const _shRes = WEBGL_LOW ? 512 : WEBGL_MED ? 1024 : 2048;
@@ -493,11 +493,17 @@ sunLight.shadow.bias           = -0.0004;
 sunLight.shadow.normalBias     = 0.02;
 scene.add(sunLight);
 
-// ── Relleno desde el contraluz — muy tenue, solo define siluetas ──
-const fillLight = new THREE.DirectionalLight(0x304c80, 0.22);
+// ── Relleno desde el contraluz — suaviza sombras duras ──
+const fillLight = new THREE.DirectionalLight(0x304c80, 0.9);
 fillLight.position.set(-35, 28, -30);
 fillLight.castShadow = false;
 scene.add(fillLight);
+
+// ── Cenit — luz directa desde arriba que garantiza visibilidad de la superficie plana ──
+const zenithLight = new THREE.DirectionalLight(0x9ab8e0, 1.8);
+zenithLight.position.set(0, 100, 0);
+zenithLight.castShadow = false;
+scene.add(zenithLight);
 
 // ── Luces de acento de color para mood (paleta cyan/purple/amber) ──
 [[0x4488ff,1.2,65,-20,18,8],[0xaa44ff,1.0,55,20,16,-8],[0xff8833,0.7,50,0,14,24]].forEach(([c,i,d,x,y,z])=>{
@@ -639,9 +645,12 @@ scene.add(gnd);
     const maxXZ = Math.max(size.x, size.z);
     if (maxXZ > 0) platform.scale.setScalar(150 / maxXZ);
 
-    // Shift down so the TOP surface (max Y after scaling) lands at y = 0
+    // Shift down so bounding-box top is at y=0, then nudge UP so the flat
+    // playing surface (slightly below the rim) aligns with the game's y=0 plane.
+    // PLATFORM_SURFACE_FUDGE compensates for the rim/edge that protrudes above the flat face.
+    const PLATFORM_SURFACE_FUDGE = 3.5; // tune up/down if objects float or sink
     const box2 = new THREE.Box3().setFromObject(platform);
-    platform.position.y -= box2.max.y;
+    platform.position.y -= box2.max.y - PLATFORM_SURFACE_FUDGE;
 
     scene.add(platform);
   }, undefined, err => {
