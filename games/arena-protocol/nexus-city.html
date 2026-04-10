@@ -470,14 +470,14 @@ new THREE.TextureLoader().load('./assets/nubes-fondo.png', tex => {
   updateBgCover();
 });
 
-// ── Ambient global — espacio oscuro, solo los neones iluminan ──
-scene.add(new THREE.AmbientLight(0x253850, 1.8));
+// ── Ambient global — un poco más de relleno para GLB PBR sin envMap ──
+scene.add(new THREE.AmbientLight(0x2a4060, 2.05));
 
 // ── Hemisférica: cielo espacial profundo / suelo oscuro ──
-scene.add(new THREE.HemisphereLight(0x2a4870, 0x0a1428, 1.2));
+scene.add(new THREE.HemisphereLight(0x396080, 0x101a30, 1.35));
 
 // ── Sol principal — ilumina plataforma y distritos desde el noreste ──
-const sunLight = new THREE.DirectionalLight(0x80aadd, 2.8);
+const sunLight = new THREE.DirectionalLight(0x90b8ec, 3.1);
 sunLight.position.set(28, 52, 18);
 sunLight.castShadow = !WEBGL_LOW;
 const _shRes = WEBGL_LOW ? 512 : WEBGL_MED ? 1024 : 2048;
@@ -499,8 +499,8 @@ fillLight.position.set(-35, 28, -30);
 fillLight.castShadow = false;
 scene.add(fillLight);
 
-// ── Cenit — luz directa desde arriba que garantiza visibilidad de la superficie plana ──
-const zenithLight = new THREE.DirectionalLight(0x9ab8e0, 1.8);
+// ── Cenit — refuerzo para la meseta del GLB (metales oscuros sin IBL) ──
+const zenithLight = new THREE.DirectionalLight(0xa8c4f0, 2.35);
 zenithLight.position.set(0, 100, 0);
 zenithLight.castShadow = false;
 scene.add(zenithLight);
@@ -618,39 +618,48 @@ gnd.rotation.x = -Math.PI/2;
 gnd.receiveShadow = false;
 scene.add(gnd);
 
-// Load platform GLB; scale so top surface sits exactly at y=0
+// Load platform GLB; scale + align playable height near y=0 (same as distritos / guardian)
 (function loadPlatform(){
+  /** Si tras cargar la isla sigue baja: sube (8–25). Si los distritos la atraviesan: baja. */
+  const PLATFORM_Y_NUDGE = 0;
   new GLTFLoader().load('./assets/base-plataforma.glb', gltf => {
     const platform = gltf.scene;
+    normalizeGltfForRenderer(platform);
 
-    // Enable lighting response + shadows
+    // Scale so the widest dimension equals ~150 units (covers the play area)
+    platform.updateMatrixWorld(true);
+    const box0 = new THREE.Box3().setFromObject(platform);
+    const size0 = new THREE.Vector3();
+    box0.getSize(size0);
+    const maxXZ = Math.max(size0.x, size0.z);
+    if (maxXZ > 0) platform.scale.setScalar(150 / maxXZ);
+
+    platform.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(platform);
+    const size = new THREE.Vector3();
+    box.getSize(size);
+    // Muchos .glb tienen pics/bordes que marcan max.y muy arriba mientras la meseta de juego
+    // está varias unidades por debajo → los distritos (y=0) quedan “flotando” encima.
+    // Estimamos la altura de la superficie como max.y menos un recorte acotado del AABB.
+    const trimY = THREE.MathUtils.clamp(size.y * 0.14, 0.35, 22);
+    const surfaceLocalY = box.max.y - trimY;
+    const PLATFORM_SURFACE_EPS = 0.04;
+    platform.position.y = -surfaceLocalY + PLATFORM_SURFACE_EPS + PLATFORM_Y_NUDGE;
+
+    // Enable lighting response + shadows + emissive boost
     platform.traverse(o => {
       if (!o.isMesh) return;
       o.castShadow    = !WEBGL_LOW;
       o.receiveShadow = !WEBGL_LOW;
-      // Boost emissive on existing materials so the blue crystal veins glow
       if (o.material) {
         [o.material].flat().forEach(m => {
-          if (m.emissive) {
-            if (m.emissiveIntensity > 0) m.emissiveIntensity *= 1.8;
-          }
+          if (!m) return;
+          if (m.metalness != null) m.metalness = THREE.MathUtils.clamp(m.metalness * 0.85, 0, 0.92);
+          if (m.roughness != null) m.roughness = THREE.MathUtils.clamp(m.roughness + 0.08, 0.08, 1);
+          if (m.emissive && m.emissiveIntensity > 0) m.emissiveIntensity *= 1.65;
         });
       }
     });
-
-    // Scale so the widest dimension equals ~150 units (covers the play area)
-    const box  = new THREE.Box3().setFromObject(platform);
-    const size = new THREE.Vector3();
-    box.getSize(size);
-    const maxXZ = Math.max(size.x, size.z);
-    if (maxXZ > 0) platform.scale.setScalar(150 / maxXZ);
-
-    // Shift down so bounding-box top is at y=0, then nudge UP so the flat
-    // playing surface (slightly below the rim) aligns with the game's y=0 plane.
-    // PLATFORM_SURFACE_FUDGE compensates for the rim/edge that protrudes above the flat face.
-    const PLATFORM_SURFACE_FUDGE = 3.5; // tune up/down if objects float or sink
-    const box2 = new THREE.Box3().setFromObject(platform);
-    platform.position.y -= box2.max.y - PLATFORM_SURFACE_FUDGE;
 
     scene.add(platform);
   }, undefined, err => {
@@ -859,6 +868,16 @@ function normalizeGltfMaterial(m){
       emissive:m.emissive?m.emissive.clone():new THREE.Color(0),emissiveMap:m.emissiveMap,
       normalMap:m.normalMap,normalScale:m.normalScale?m.normalScale.clone():undefined,
       roughness:m.roughness,metalness:m.metalness,aoMap:m.aoMap,
+      transparent:m.transparent,opacity:m.opacity,side:m.side,depthWrite:m.depthWrite,
+      vertexColors:!!m.vertexColors
+    });
+    try{m.dispose();}catch(_){}
+    return std;
+  }
+  if(m.isMeshBasicMaterial){
+    const std=new THREE.MeshStandardMaterial({
+      name:m.name,color:m.color.clone(),map:m.map,
+      emissive:new THREE.Color(0),roughness:0.65,metalness:0.25,
       transparent:m.transparent,opacity:m.opacity,side:m.side,depthWrite:m.depthWrite,
       vertexColors:!!m.vertexColors
     });
