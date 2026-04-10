@@ -621,6 +621,7 @@ scene.add(gnd);
       console.log('[nexus platform] platform.position final', platform.position.x, platform.position.y, platform.position.z);
     }
 
+    // PBR del GLB: suele venir muy metal / liso → speculares duros y bloom agresivo al mover la cámara
     platform.traverse(o => {
       if (!o.isMesh) return;
       o.castShadow    = !WEBGL_LOW;
@@ -628,9 +629,20 @@ scene.add(gnd);
       if (o.material) {
         [o.material].flat().forEach(m => {
           if (!m) return;
-          if (m.metalness != null) m.metalness = THREE.MathUtils.clamp(m.metalness * 0.85, 0, 0.92);
-          if (m.roughness != null) m.roughness = THREE.MathUtils.clamp(m.roughness + 0.08, 0.08, 1);
-          if (m.emissive && m.emissiveIntensity > 0) m.emissiveIntensity *= 1.65;
+          if (m.metalness != null) {
+            const t = Number(m.metalness);
+            m.metalness = THREE.MathUtils.clamp(t * 0.38, 0, 0.34);
+          }
+          if (m.roughness != null) {
+            const r = Number(m.roughness);
+            m.roughness = THREE.MathUtils.clamp(r + 0.22 + (1 - r) * 0.35, 0.52, 1);
+          }
+          if (m.envMapIntensity != null) {
+            m.envMapIntensity = Math.min(Number(m.envMapIntensity) * 0.45, 0.55);
+          }
+          if (m.emissive && m.emissiveIntensity > 0) {
+            m.emissiveIntensity = THREE.MathUtils.clamp(Number(m.emissiveIntensity) * 0.92, 0, 4);
+          }
         });
       }
     });
