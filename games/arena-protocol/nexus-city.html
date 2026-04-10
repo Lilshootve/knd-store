@@ -563,42 +563,17 @@ function initPostFX(){
   composer.addPass(bloomPass);
 }
 
-// ── ORBIT CONTROLS ──
+// ── ORBIT CONTROLS — sólo amortiguación; sin zoom, rotación ni paneo (cámara fija al personaje)
 const controls = new OrbitControls(cam, renderer.domElement);
-controls.enableDamping    = true;
-controls.dampingFactor    = 0.08;
-controls.screenSpacePanning = true;          // pan stays on world plane
-controls.mouseButtons = {
-  LEFT:   THREE.MOUSE.PAN,                   // arrastrar = paneo (como en strategy games)
-  MIDDLE: THREE.MOUSE.DOLLY,
-  RIGHT:  THREE.MOUSE.ROTATE,               // clic derecho = rotar cámara
-};
-controls.touches = {
-  ONE:  THREE.TOUCH.PAN,
-  TWO:  THREE.TOUCH.DOLLY_ROTATE,
-};
-// Zoom limits — OrthographicCamera zoom property
-controls.minZoom = 0.25;
-controls.maxZoom = 4.0;
-// Polar angle: don't let camera go below ground
-controls.minPolarAngle = Math.PI * 0.05;   // casi top-down máximo
-controls.maxPolarAngle = Math.PI * 0.58;   // ~horizontal, no más bajo
-// Azimuth: libre (360°)
-controls.enablePan  = true;
-controls.enableZoom = true;
-controls.enableRotate = true;
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.enablePan = false;
+controls.enableZoom = false;
+controls.enableRotate = false;
+controls.minZoom = 1;
+controls.maxZoom = 1;
 controls.target.set(0, 0.6, 0);
 controls.update();
-
-// Follow-cam target smoothly tracks the player (can be overridden by user pan)
-let _followCam = true;
-controls.addEventListener("start", () => { _followCam = false; });
-// Re-engage follow after 4 s of inactivity
-let _followTimer = null;
-controls.addEventListener("end", () => {
-  clearTimeout(_followTimer);
-  _followTimer = setTimeout(() => { _followCam = true; }, 4000);
-});
 
 function resizeCam(){
   const w=W(), h=H(); camAspect=w/h;
@@ -1899,11 +1874,9 @@ renderer.setAnimationLoop((nowMs)=>{
   // Remote players lerp
   tickRemotePlayers(dt);
 
-  // Camera — follow player when idle, yield to user when interacting
-  if (_followCam) {
-    const px = player.position.x, pz = player.position.z;
-    controls.target.lerp(new THREE.Vector3(px, 0.6, pz), 1 - Math.exp(-4 * dt));
-  }
+  // Cámara: el target sigue al personaje (misma referencia vertical que snap / lookAt)
+  const px = player.position.x, py = player.position.y, pz = player.position.z;
+  controls.target.lerp(new THREE.Vector3(px, py + 0.6, pz), 1 - Math.exp(-4 * dt));
   controls.update();
 
   // Memory decay (local interpolation between WS ticks)
