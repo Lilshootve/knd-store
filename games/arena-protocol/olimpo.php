@@ -204,6 +204,7 @@ window.__KND_DISTRICT_BOOT = {
 <script type="module">
 import * as THREE from 'three';
 import { GLTFLoader }       from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader }      from 'three/addons/loaders/DRACOLoader.js';
 import { OrbitControls }    from 'three/addons/controls/OrbitControls.js';
 import { EffectComposer }   from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass }       from 'three/addons/postprocessing/RenderPass.js';
@@ -268,12 +269,17 @@ window.addEventListener('resize', onResize);
 onResize();
 
 // ── State ─────────────────────────────────────────────────────────────────────
+const _dracoLoader = new DRACOLoader();
+_dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
 const loader     = new GLTFLoader();
+loader.setDRACOLoader(_dracoLoader);
 const clock      = new THREE.Clock();
 const keys       = {};
 const heroPos    = new THREE.Vector3(GRID/2, 0, GRID/2);
 let heroMesh     = null;
 let heroMixer    = null;
+/** Diccionario de acciones de animación del héroe { [clipName]: AnimationAction } */
+let heroActions  = {};
 const npcObjects = [];
 const animObjects= [];
 let activeNpcIdx = -1;
@@ -338,11 +344,32 @@ async function loadGroundedGLB(url, targetHeight) {
     model.position.y = -scaledBox.min.y;
     const wrapper = new THREE.Group();
     wrapper.add(model);
-    const mixer = gltf.animations.length > 0
-        ? new THREE.AnimationMixer(model)
-        : null;
-    if (mixer) mixer.clipAction(gltf.animations[0]).play();
-    return { wrapper, mixer };
+    let mixer = null;
+    const actions = {};
+    if (gltf.animations.length > 0) {
+        mixer = new THREE.AnimationMixer(model);
+        gltf.animations.forEach(clip => { actions[clip.name] = mixer.clipAction(clip); });
+        // Detección inteligente: prefiere 'idle', luego primer clip
+        const idleClip = gltf.animations.find(c => {
+            const n = c.name.toLowerCase();
+            return n.includes('idle') || n.includes('stand') || n.includes('t-pose') || n.includes('tpose');
+        }) || gltf.animations[0];
+        actions[idleClip.name].setLoop(THREE.LoopRepeat, Infinity).play();
+    }
+    return { wrapper, mixer, actions };
+}
+
+/**
+ * Cambia la animación del héroe con cross-fade suave.
+ * @param {string} name  Nombre exacto del clip (como aparece en consola)
+ */
+function playAnimation(name) {
+    if (!heroActions[name]) {
+        console.warn('[hero] animation not found:', name, '| available:', Object.keys(heroActions));
+        return;
+    }
+    Object.values(heroActions).forEach(a => a.fadeOut(0.2));
+    heroActions[name].reset().fadeIn(0.2).play();
 }
 
 function makeNameLabel(name, color) {
@@ -549,9 +576,11 @@ async function spawnHero() {
     progStep('LOADING CHAMPION…');
     if (HERO_MODEL_URL) {
         try {
-            const { wrapper, mixer } = await loadGroundedGLB(HERO_MODEL_URL, 1.8);
-            heroMesh  = wrapper;
-            heroMixer = mixer;
+            const { wrapper, mixer, actions } = await loadGroundedGLB(HERO_MODEL_URL, 1.8);
+            heroMesh    = wrapper;
+            heroMixer   = mixer;
+            heroActions = actions;
+            console.log('[hero] animations disponibles:', Object.keys(heroActions));
             heroMesh.position.copy(heroPos);
             scene.add(heroMesh);
         } catch(e) { console.warn('Hero fail:', e); spawnHeroFallback(); }

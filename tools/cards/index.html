@@ -990,7 +990,7 @@ const STAT_COLORS = {
 const STAT_LABELS = { mnd: 'MIND', fcs: 'FOCUS', spd: 'SPEED', lck: 'LUCK' };
 
 // ── VIEWER URL (configure to match your setup) ────────────────────────────────
-const VIEWER_BASE = '/tools/hologram-viewer-epic/';
+const VIEWER_BASE = '/module-viewer/';
 
 // ── BUILD CARDS ───────────────────────────────────────────────────────────────
 function buildCard(av) {
@@ -1148,7 +1148,7 @@ function openModal(av) {
   placeholder.style.display = 'flex';
 
   const iframe = document.createElement('iframe');
-  iframe.src = `${VIEWER_BASE}?model=${encodeURIComponent(av.modelPath)}&autoload=1`;
+  iframe.src = `${VIEWER_BASE}?model=${encodeURIComponent(av.modelPath)}&embed=1`;
   iframe.allow = 'accelerometer; autoplay';
   iframe.onload = () => { placeholder.style.display = 'none'; };
   modalViewer.appendChild(iframe);

@@ -469,6 +469,19 @@ dracoLoader.setDecoderPath(
   `https://unpkg.com/three@${THREE_VER}/examples/jsm/libs/draco/gltf/`
 );
 
+// === URL PARAMS — permite usar el viewer embebido en iframes ===
+const _params     = new URLSearchParams(location.search);
+const _modelUrl   = _params.get('model') || './model.glb';
+const _paramPreset = _params.get('preset') || null;
+const _embedMode  = _params.has('embed');
+const _paramAnim  = _params.get('anim') || null;
+
+// Embed mode: ocultar panel de controles inmediatamente
+if (_embedMode) {
+  const _cp = document.getElementById('ctrl-panel');
+  if (_cp) _cp.style.display = 'none';
+}
+
 const DEFAULTS = {
   colorR: 0.1,
   colorG: 1.2,
@@ -865,7 +878,7 @@ function loadModel() {
   loader.setDRACOLoader(dracoLoader);
 
   loader.load(
-    './model.glb',
+    _modelUrl,
     (gltf) => {
       for (const m of holoMaterials) m.dispose();
       holoMaterials = [];
@@ -937,10 +950,33 @@ function loadModel() {
         mixer = new THREE.AnimationMixer(gltf.scene);
       }
       applyAnimationFromP();
+
+      // Debug: mostrar todos los clips disponibles
+      console.log('[module-viewer] modelo cargado:', _modelUrl);
+      console.log('[module-viewer] animations:', animationClips.map(c => c.name));
+
+      // URL ?anim= override: prioridad sobre P.activeAnimationIndex
+      // Si no hay ?anim=, busca 'idle'; si no, usa el primero
+      if (mixer && animationClips.length > 0) {
+        const targetAnim = (_paramAnim || '').toLowerCase();
+        const byName  = targetAnim
+          ? animationClips.find(c => c.name.toLowerCase().includes(targetAnim))
+          : null;
+        const byIdle  = animationClips.find(c => c.name.toLowerCase().includes('idle'));
+        const initialClip = byName || byIdle || animationClips[0];
+        if (initialClip) {
+          mixer.stopAllAction();
+          mixer.clipAction(initialClip).reset().setEffectiveTimeScale(1).play();
+          const idx = animationClips.indexOf(initialClip);
+          P.activeAnimationIndex = idx;
+          const sel = document.getElementById('sel-animation');
+          if (sel) sel.value = String(idx);
+        }
+      }
     },
     undefined,
     (err) => {
-      console.error('Error modelo:', err);
+      console.error('[module-viewer] Error cargando modelo:', _modelUrl, err);
     }
   );
 }
@@ -976,6 +1012,13 @@ async function bootstrapPresetAndModel() {
   const fromStorage = loadPresetFromLocalStorage();
   P = fromStorage ? { ...DEFAULTS, ...fromStorage } : fromFile;
   baselinePreset = { ...P };
+
+  // URL ?preset= tiene prioridad sobre localStorage/archivo (útil en embed)
+  if (_paramPreset && PRESETS[_paramPreset]) {
+    Object.assign(P, PRESETS[_paramPreset]);
+    baselinePreset = { ...P };
+  }
+
   syncUI();
   loadModel();
 }

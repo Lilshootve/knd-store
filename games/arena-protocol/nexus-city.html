@@ -358,6 +358,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
 <script type="module">
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
@@ -1046,7 +1047,26 @@ let _heroMixer = null;
 let _heroClipWalk = null, _heroClipIdle = null;
 let _heroActionWalk = null, _heroActionIdle = null;
 let _heroIsWalking = false;
+/** Diccionario de todas las acciones disponibles { [clipName]: AnimationAction } */
+let _heroActions = {};
+
 const _gltfLoader = new GLTFLoader();
+const _heroDracoLoader = new DRACOLoader();
+_heroDracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+_gltfLoader.setDRACOLoader(_heroDracoLoader);
+
+/**
+ * Cambia la animación del héroe con cross-fade suave.
+ * @param {string} name  Nombre exacto del clip (como aparece en consola)
+ */
+function playAnimation(name) {
+  if (!_heroActions[name]) {
+    console.warn('[hero] animation not found:', name, '| available:', Object.keys(_heroActions));
+    return;
+  }
+  Object.values(_heroActions).forEach(a => a.fadeOut(0.2));
+  _heroActions[name].reset().fadeIn(0.2).play();
+}
 const ENABLE_HOLOGRAM_AVATAR = false;
 let _holoAvatar = null;
 
@@ -1091,13 +1111,16 @@ async function loadHeroModel(url) {
     try {
       if (gltf.animations && gltf.animations.length > 0) {
         _heroMixer = new THREE.AnimationMixer(model);
+        _heroActions = {};
         gltf.animations.forEach(clip => {
+          _heroActions[clip.name] = _heroMixer.clipAction(clip);
           const name = clip.name.toLowerCase();
           if (!_heroClipIdle && (name.includes('idle') || name.includes('stand') || name.includes('t-pose') || name.includes('tpose')))
             _heroClipIdle = clip;
           if (!_heroClipWalk && (name.includes('walk') || name.includes('run') || name.includes('move')))
             _heroClipWalk = clip;
         });
+        console.log('[hero] animations disponibles:', Object.keys(_heroActions));
         if (!_heroClipIdle && gltf.animations[0]) _heroClipIdle = gltf.animations[0];
         if (!_heroClipWalk && gltf.animations[1]) _heroClipWalk = gltf.animations[1];
         if (_heroClipIdle) { _heroActionIdle = _heroMixer.clipAction(_heroClipIdle); _heroActionIdle.play(); }

@@ -444,10 +444,12 @@ body{background:var(--void);color:var(--t1);font-family:var(--FB);font-size:18.4
 /* avatar figure */
 .hero-avatar-wrap{
   position:relative;
-  width:200px;height:280px;
+  width:200px;height:300px;
   display:flex;align-items:flex-end;justify-content:center;
   animation:heroFloat 5s ease-in-out infinite;
   z-index:3;
+  border-radius:8px;
+  overflow:hidden;
 }
 @keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 .hero-avatar-wrap img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 30px rgba(0,232,255,.5))}
@@ -1267,15 +1269,12 @@ a.mode-card.mode-card--link:focus-visible{
         <div class="hero-holo">
           <div class="hero-rarity-tag" id="hero-rarity-tag">⭐ LEGENDARY</div>
           <div class="hero-avatar-wrap" id="hero-avatar-wrap">
-            <div class="hero-sil">
-              <div class="hs-head"></div>
-              <div class="hs-neck"></div>
-              <div class="hs-torso"></div>
-              <div class="hs-legs">
-                <div class="hs-leg"></div>
-                <div class="hs-leg"></div>
-              </div>
-            </div>
+            <iframe id="hero-viewer-iframe"
+              src=""
+              frameborder="0"
+              allow="accelerometer; autoplay"
+              style="width:100%;height:100%;border:none;background:transparent;">
+            </iframe>
           </div>
           <div class="hero-platform">
             <div class="hp-glow"></div>
@@ -1507,6 +1506,20 @@ const BATTLE_SUBTEXTS = [
 /* ═══════════════════════════════════════════════
    STAR CANVAS
 ═══════════════════════════════════════════════ */
+function getAvatarModelPath(avatar) {
+  const slug = (avatar.model_path) ? null : avatar.name.toLowerCase().replace(/\s+/g,'_');
+  return avatar.model_path || `/assets/avatars/models/${avatar.rarity}/${slug}.glb`;
+}
+
+function initHeroViewer() {
+  const av  = PLAYER.avatar;
+  const modelPath = getAvatarModelPath(av);
+  const preset    = av.rarity || 'knd';
+  const src = `/module-viewer/?model=${encodeURIComponent(modelPath)}&preset=${encodeURIComponent(preset)}&embed=1`;
+  const iframe = document.getElementById('hero-viewer-iframe');
+  if (iframe) iframe.src = src;
+}
+
 function initStars() {
   const c = document.getElementById('star-canvas');
   const ctx = c.getContext('2d');
@@ -1953,6 +1966,7 @@ const loadInterval = setInterval(()=>{
       // Init everything after load
       initStars();
       initLivePreview();
+      initHeroViewer();
       renderMissions();
       renderLbMini();
       showToast('⚡ Welcome back, NEUROMANCER_X!','success');

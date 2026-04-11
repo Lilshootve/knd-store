@@ -214,6 +214,7 @@ import { EffectComposer }  from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass }      from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { GLTFLoader }      from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader }     from 'three/addons/loaders/DRACOLoader.js';
 import { OrbitControls }   from 'three/addons/controls/OrbitControls.js';
 import { createNexusDistrictRealtime } from './js/nexus-district-realtime.js';
 
@@ -237,7 +238,11 @@ let heroPos = new THREE.Vector3(GRID/2, 0, GRID/2);
 let npcObjects = [], animObjects = [];
 let keys = {}, activeNpcIdx = -1;
 let _typingInterval = null, _t = 0;
+let heroActions = {};
 const loader = new GLTFLoader();
+const _dracoLoader = new DRACOLoader();
+_dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+loader.setDRACOLoader(_dracoLoader);
 let nexusRt = null;
 
 window.addEventListener('DOMContentLoaded', boot);
@@ -529,9 +534,27 @@ async function loadGroundedGLB(url, targetHeight) {
     model.position.y = -scaledBox.min.y;
     const wrapper = new THREE.Group();
     wrapper.add(model);
-    const mixer = gltf.animations.length > 0 ? new THREE.AnimationMixer(model) : null;
-    if (mixer) mixer.clipAction(gltf.animations[0]).play();
-    return { wrapper, mixer };
+    let mixer = null;
+    const actions = {};
+    if (gltf.animations.length > 0) {
+        mixer = new THREE.AnimationMixer(model);
+        gltf.animations.forEach(clip => { actions[clip.name] = mixer.clipAction(clip); });
+        const idleClip = gltf.animations.find(c => {
+            const n = c.name.toLowerCase();
+            return n.includes('idle') || n.includes('stand') || n.includes('t-pose') || n.includes('tpose');
+        }) || gltf.animations[0];
+        actions[idleClip.name].setLoop(THREE.LoopRepeat, Infinity).play();
+    }
+    return { wrapper, mixer, actions };
+}
+
+function playAnimation(name) {
+    if (!heroActions[name]) {
+        console.warn('[hero] animation not found:', name, '| available:', Object.keys(heroActions));
+        return;
+    }
+    Object.values(heroActions).forEach(a => a.fadeOut(0.2));
+    heroActions[name].reset().fadeIn(0.2).play();
 }
 
 function makeNameLabel(name, color) {
@@ -606,8 +629,10 @@ async function spawnNPCs() {
 async function spawnHero() {
     try {
         const result = await loadGroundedGLB(HERO_MODEL, 1.8);
-        heroMesh  = result.wrapper;
-        heroMixer = result.mixer;
+        heroMesh    = result.wrapper;
+        heroMixer   = result.mixer;
+        heroActions = result.actions;
+        console.log('[hero] animations disponibles:', Object.keys(heroActions));
         heroMesh.position.copy(heroPos);
         scene.add(heroMesh);
         const lbl = makeNameLabel(PLAYER_NAME, '#00e8ff');
@@ -615,6 +640,12 @@ async function spawnHero() {
         heroMesh.add(lbl);
     } catch(e) {
         console.warn('Hero GLB fail:', e);
+        heroMesh = new THREE.Mesh(
+            new THREE.CapsuleGeometry(0.35, 1.1, 4, 8),
+            new THREE.MeshStandardMaterial({ color: 0x00e8ff, emissive: 0x00e8ff, emissiveIntensity: 0.35, roughness: 0.6 })
+        );
+        heroMesh.position.copy(heroPos);
+        scene.add(heroMesh);
     }
 }
 

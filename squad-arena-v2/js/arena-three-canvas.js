@@ -352,25 +352,40 @@
     group.userData.armR = armR;
   }
 
-  /** GLTF skeletal clips: prefer name matching "idle", else first clip. */
-  function startGltfIdleMixer(root, animations) {
+  /** GLTF skeletal clips: prefer name matching "idle/stand/t-pose", else first clip.
+   *  Optional `group` param: if provided, attaches `group.userData.playAnimation(name)` with cross-fade. */
+  function startGltfIdleMixer(root, animations, group) {
     if (!root || !animations || !animations.length || typeof THREE.AnimationMixer !== 'function') {
       return null;
     }
+    console.log('[arena] animations:', animations.map(function(c){ return c.name; }));
     var clip = null;
     var ci;
     for (ci = 0; ci < animations.length; ci++) {
-      if (/idle/i.test(animations[ci].name || '')) {
-        clip = animations[ci];
-        break;
-      }
+      var n = (animations[ci].name || '').toLowerCase();
+      if (/idle|stand|t-pose|tpose/.test(n)) { clip = animations[ci]; break; }
     }
     if (!clip) clip = animations[0];
     var mixer = new THREE.AnimationMixer(root);
-    var act = mixer.clipAction(clip);
+    var allActions = {};
+    for (ci = 0; ci < animations.length; ci++) {
+      allActions[animations[ci].name] = mixer.clipAction(animations[ci]);
+    }
+    mixer._kndActions = allActions;
+    var act = allActions[clip.name];
     act.reset();
     act.setLoop(THREE.LoopRepeat, Infinity);
     act.play();
+    if (group) {
+      group.userData.playAnimation = function(name) {
+        if (!allActions[name]) {
+          console.warn('[arena] anim not found:', name, '| available:', Object.keys(allActions));
+          return;
+        }
+        Object.keys(allActions).forEach(function(k){ allActions[k].fadeOut(0.2); });
+        allActions[name].reset().fadeIn(0.2).play();
+      };
+    }
     return mixer;
   }
 
@@ -466,7 +481,7 @@
               });
               applyGltfScaleAndGround(root, 1.2);
               modelRoot.add(root);
-              group.userData.animMixer = startGltfIdleMixer(root, gltf.animations);
+              group.userData.animMixer = startGltfIdleMixer(root, gltf.animations, group);
             }
           },
           undefined,
