@@ -432,14 +432,32 @@ function playHologramAnimAtIndex(idx) {
     .play();
 }
 
-/** Bbox real desde vértices (bind pose); evita bbox ridículo del nodo Armature solo. */
+/**
+ * Bbox en world: primero por vértices (Draco/binding a veces dejan geometry.boundingBox mal);
+ * si falla, geometry.boundingBox.
+ */
 function computeMeshWorldBounds(root) {
   const box = new THREE.Box3();
+  const v = new THREE.Vector3();
   let ok = false;
   root.updateMatrixWorld(true);
   root.traverse((o) => {
     if (!o.isMesh || !o.geometry) return;
     if (o.userData && o.userData._mwHoloLayer) return;
+    const pos = o.geometry.attributes && o.geometry.attributes.position;
+    if (pos && pos.count) {
+      const mw = o.matrixWorld;
+      for (let i = 0; i < pos.count; i++) {
+        v.fromBufferAttribute(pos, i).applyMatrix4(mw);
+        if (!ok) {
+          box.setFromPoints([v.clone()]);
+          ok = true;
+        } else {
+          box.expandByPoint(v);
+        }
+      }
+      return;
+    }
     const g = o.geometry;
     if (!g.boundingBox) g.computeBoundingBox();
     const bb = g.boundingBox;
@@ -498,6 +516,9 @@ function applyHologramFraming(root, paddingMult) {
   if (IS_EMBED) {
     const skinBoost = hasSkinned ? 1.88 : 1.2;
     dist = Math.max(dist * skinBoost, maxDim * 2.65 * paddingMult, 1.75);
+    if (hasSkinned) {
+      dist = Math.max(dist, maxDim * 2.2);
+    }
     if (holoEmbedDistFloor > 0) {
       dist = Math.max(dist, holoEmbedDistFloor);
     }
@@ -505,7 +526,7 @@ function applyHologramFraming(root, paddingMult) {
 
   const target = center.clone();
   if (IS_EMBED) {
-    target.y -= size.y * 0.18;
+    target.y -= size.y * 0.22;
   }
   controls.target.copy(target);
   camera.position.set(
@@ -524,7 +545,9 @@ function applyHologramFraming(root, paddingMult) {
     holoEmbedDistFloor = startRadius;
   }
 
-  controls.minDistance = Math.max(maxDim * 0.06, 0.04);
+  controls.minDistance = IS_EMBED
+    ? Math.max(maxDim * 0.45, 0.45)
+    : Math.max(maxDim * 0.06, 0.04);
   controls.maxDistance = Math.max(startRadius * 50, maxDim * 45, 20);
   camera.near = IS_EMBED
     ? Math.max(0.001, Math.min(0.03, maxDim * 0.002))
@@ -559,6 +582,9 @@ function augmentSkinnedMeshWithHoloLayers(sm, holoSkinnedVert) {
   const parent = sm.parent;
   if (!parent || !sm.skeleton || !sm.geometry) return;
 
+  const skinSide = IS_EMBED ? THREE.DoubleSide : THREE.FrontSide;
+  const baseOpacityMul = IS_EMBED ? 0.72 : 0.5;
+
   const origMat = Array.isArray(sm.material) ? sm.material[0] : sm.material;
   const texMap = origMat?.map ?? null;
 
@@ -566,9 +592,10 @@ function augmentSkinnedMeshWithHoloLayers(sm, holoSkinnedVert) {
     map: texMap,
     color: texMap ? 0x224444 : 0x0a2020,
     transparent: true,
-    opacity: P.baseOpacity * 0.5,
+    opacity: P.baseOpacity * baseOpacityMul,
     depthWrite: true,
-    depthTest: true
+    depthTest: true,
+    side: skinSide
   });
   baseMat.skinning = true;
   sm.material = baseMat;
@@ -584,7 +611,8 @@ function augmentSkinnedMeshWithHoloLayers(sm, holoSkinnedVert) {
       transparent: true,
       opacity: P.texOpacity,
       depthWrite: false,
-      depthTest: true
+      depthTest: true,
+      side: skinSide
     });
     texOnly.skinning = true;
     const smTex = new THREE.SkinnedMesh(sm.geometry.clone(), texOnly);
@@ -627,7 +655,8 @@ function augmentSkinnedMeshWithHoloLayers(sm, holoSkinnedVert) {
       opacity: P.opacity * P.holoOpacityMul * 0.55,
       depthWrite: false,
       depthTest: true,
-      blending: THREE.AdditiveBlending
+      blending: THREE.AdditiveBlending,
+      side: skinSide
     });
     holoMat.skinning = true;
   }
