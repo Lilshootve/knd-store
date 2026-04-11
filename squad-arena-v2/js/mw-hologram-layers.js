@@ -162,6 +162,157 @@ if (typeof window !== 'undefined') { window.MeshoptDecoder = MeshoptDecoder; }
     '}'
   ].join('\n');
 
+  /** Same holo look but with skinning chunks (Three r128 ShaderChunk). */
+  function getHoloSkinnedVertexShader() {
+    var C = THREE.ShaderChunk;
+    if (!C || !C.skinning_pars_vertex) return null;
+    return [
+      '#include <common>',
+      '#include <uv_pars_vertex>',
+      '#include <skinning_pars_vertex>',
+      'varying vec3 vNormal;',
+      'varying vec3 vViewDir;',
+      'varying vec3 vWorldPos;',
+      'varying vec2 vUv;',
+      'void main() {',
+      '  vUv = uv;',
+      '  #include <beginnormal_vertex>',
+      '  #include <skinbase_vertex>',
+      '  #include <skinnormal_vertex>',
+      '  #include <defaultnormal_vertex>',
+      '  vNormal = normalize( transformedNormal );',
+      '  #include <begin_vertex>',
+      '  #include <skinning_vertex>',
+      '  vec4 worldPos = modelMatrix * vec4( transformed, 1.0 );',
+      '  vWorldPos = worldPos.xyz;',
+      '  vec4 mvPos = modelViewMatrix * vec4( transformed, 1.0 );',
+      '  vViewDir = normalize( -mvPos.xyz );',
+      '  #include <project_vertex>',
+      '}'
+    ].join('\n');
+  }
+
+  function pickIdleClip(animations) {
+    if (!animations || !animations.length) return null;
+    var i;
+    for (i = 0; i < animations.length; i++) {
+      if (/idle/i.test(animations[i].name || '')) return animations[i];
+    }
+    return animations[0];
+  }
+
+  function createGltfMixer(root, animations) {
+    if (!animations || !animations.length || typeof THREE.AnimationMixer !== 'function') return null;
+    var clip = pickIdleClip(animations);
+    if (!clip) return null;
+    var mixer = new THREE.AnimationMixer(root);
+    var act = mixer.clipAction(clip);
+    act.reset();
+    act.setLoop(THREE.LoopRepeat, Infinity);
+    act.play();
+    return mixer;
+  }
+
+  function addSharedSkinnedMesh(parent, source, material, renderOrder) {
+    var sm = new THREE.SkinnedMesh(source.geometry, material);
+    sm.skeleton = source.skeleton;
+    sm.bindMode = source.bindMode;
+    sm.bindMatrix.copy(source.bindMatrix);
+    sm.bindMatrixInverse.copy(source.bindMatrixInverse);
+    sm.castShadow = true;
+    sm.receiveShadow = true;
+    sm.frustumCulled = source.frustumCulled;
+    sm.renderOrder = renderOrder;
+    sm.matrixAutoUpdate = true;
+    parent.add(sm);
+    return sm;
+  }
+
+  /**
+   * Replace one SkinnedMesh with a group of SkinnedMeshes (same skeleton/geometry) so materials can stack.
+   */
+  function replaceSkinnedWithHoloLayers(sm, Pm, outUni, holoSkinnedVert) {
+    var parent = sm.parent;
+    if (!parent) return;
+    var holder = new THREE.Group();
+    holder.name = (sm.name || 'skin') + '_holo';
+    holder.position.copy(sm.position);
+    holder.quaternion.copy(sm.quaternion);
+    holder.scale.copy(sm.scale);
+    holder.matrixAutoUpdate = sm.matrixAutoUpdate;
+    parent.remove(sm);
+
+    var origMat = Array.isArray(sm.material) ? sm.material[0] : sm.material;
+    var texMap = origMat && origMat.map ? origMat.map : null;
+
+    var baseMat = new THREE.MeshBasicMaterial({
+      map: texMap,
+      color: texMap ? 0x224444 : 0x0a2020,
+      transparent: true,
+      opacity: Pm.baseOpacity * 0.5,
+      depthWrite: true,
+      depthTest: true
+    });
+    baseMat.skinning = true;
+    addSharedSkinnedMesh(holder, sm, baseMat, 0);
+
+    if (texMap) {
+      var texOnly = new THREE.MeshBasicMaterial({
+        map: texMap,
+        color: 0xffffff,
+        transparent: true,
+        opacity: Pm.texOpacity,
+        depthWrite: false,
+        depthTest: true
+      });
+      texOnly.skinning = true;
+      addSharedSkinnedMesh(holder, sm, texOnly, 1);
+    }
+
+    var uniforms = {
+      uTime: { value: 0 },
+      uColor: { value: new THREE.Vector3(Pm.colorR, Pm.colorG, Pm.colorB) },
+      uOpacity: { value: Pm.opacity * Pm.holoOpacityMul },
+      uFresnelStrength: { value: Pm.fresnelStrength },
+      uInnerGlow: { value: Pm.innerGlow },
+      uRimStrength: { value: Pm.rimStrength },
+      uPulseSpeed: { value: Pm.pulseSpeed },
+      uPulseStrength: { value: Pm.pulseStrength },
+      uScanSpeed: { value: Pm.scanSpeed },
+      uScanDensity: { value: Pm.scanDensity },
+      uFlickerIntensity: { value: Pm.flickerIntensity }
+    };
+    var holoMat;
+    if (holoSkinnedVert) {
+      applyToUniforms(uniforms, Pm);
+      if (outUni) outUni.push(uniforms);
+      holoMat = new THREE.ShaderMaterial({
+        uniforms: uniforms,
+        vertexShader: holoSkinnedVert,
+        fragmentShader: holoFragmentShader,
+        transparent: true,
+        depthWrite: false,
+        depthTest: true,
+        blending: THREE.AdditiveBlending,
+        side: THREE.FrontSide,
+        skinning: true
+      });
+    } else {
+      holoMat = new THREE.MeshBasicMaterial({
+        color: 0x55ccff,
+        transparent: true,
+        opacity: Pm.opacity * Pm.holoOpacityMul * 0.55,
+        depthWrite: false,
+        depthTest: true,
+        blending: THREE.AdditiveBlending
+      });
+      holoMat.skinning = true;
+    }
+    addSharedSkinnedMesh(holder, sm, holoMat, 2);
+
+    parent.add(holder);
+  }
+
   var holoFragmentShader = [
     'uniform float uTime;',
     'uniform vec3  uColor;',
@@ -246,6 +397,8 @@ if (typeof window !== 'undefined') { window.MeshoptDecoder = MeshoptDecoder; }
       targetGroup.remove(targetGroup.children[0]);
     }
 
+    targetGroup.userData.mwAnimationMixer = null;
+
     var root = gltf.scene.clone(true);
     var box = new THREE.Box3().setFromObject(root);
     var center = new THREE.Vector3();
@@ -260,14 +413,32 @@ if (typeof window !== 'undefined') { window.MeshoptDecoder = MeshoptDecoder; }
     root.position.y -= box2.min.y;
     root.updateMatrixWorld(true);
 
-    var modelGroup = new THREE.Group();
+    var mixer = createGltfMixer(root, gltf.animations);
+    targetGroup.userData.mwAnimationMixer = mixer;
+
+    var holoSkinnedVert = getHoloSkinnedVertexShader();
+
+    var skinnedList = [];
     root.traverse(function (child) {
-      var drawable = child.isMesh === true || child.isSkinnedMesh === true;
-      if (!drawable || !child.geometry) return;
+      if (child.isSkinnedMesh && child.geometry && child.skeleton) skinnedList.push(child);
+    });
+    var si;
+    for (si = 0; si < skinnedList.length; si++) {
+      replaceSkinnedWithHoloLayers(skinnedList[si], Pm, outUni, holoSkinnedVert);
+    }
+
+    var modelGroup = new THREE.Group();
+    root.updateMatrixWorld(true);
+    var staticList = [];
+    root.traverse(function (child) {
+      if (child.isMesh && !child.isSkinnedMesh && child.geometry) staticList.push(child);
+    });
+    var st;
+    for (st = 0; st < staticList.length; st++) {
+      var child = staticList[st];
       var origMat = Array.isArray(child.material) ? child.material[0] : child.material;
       var geo = child.geometry;
 
-      /* Layer 1: solid dark base — WRITES depth to prevent z-fighting */
       var texMap = origMat && origMat.map ? origMat.map : null;
       var baseMat = new THREE.MeshBasicMaterial({
         map: texMap,
@@ -282,7 +453,6 @@ if (typeof window !== 'undefined') { window.MeshoptDecoder = MeshoptDecoder; }
       baseMesh.applyMatrix4(child.matrixWorld);
       modelGroup.add(baseMesh);
 
-      /* Layer 2: hologram shader — reads depth, additive on top */
       var uniforms = {
         uTime: { value: 0 },
         uColor: { value: new THREE.Vector3(Pm.colorR, Pm.colorG, Pm.colorB) },
@@ -313,8 +483,11 @@ if (typeof window !== 'undefined') { window.MeshoptDecoder = MeshoptDecoder; }
       holoMesh.renderOrder = 1;
       holoMesh.applyMatrix4(child.matrixWorld);
       modelGroup.add(holoMesh);
-    });
 
+      if (child.parent) child.parent.remove(child);
+    }
+
+    modelGroup.add(root);
     targetGroup.add(modelGroup);
   }
 

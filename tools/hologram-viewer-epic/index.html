@@ -273,6 +273,134 @@ const holoFragmentShader = `
   }
 `;
 
+const holoSkinnedVertexShader = (() => {
+  const C = THREE.ShaderChunk;
+  if (!C || !C.skinning_pars_vertex) return null;
+  return [
+    '#include <common>',
+    '#include <uv_pars_vertex>',
+    '#include <skinning_pars_vertex>',
+    'varying vec3 vNormal;',
+    'varying vec3 vViewDir;',
+    'varying vec3 vWorldPos;',
+    'varying vec2 vUv;',
+    'void main() {',
+    '  vUv = uv;',
+    '  #include <beginnormal_vertex>',
+    '  #include <skinbase_vertex>',
+    '  #include <skinnormal_vertex>',
+    '  #include <defaultnormal_vertex>',
+    '  vNormal = normalize( transformedNormal );',
+    '  #include <begin_vertex>',
+    '  #include <skinning_vertex>',
+    '  vec4 worldPos = modelMatrix * vec4( transformed, 1.0 );',
+    '  vWorldPos = worldPos.xyz;',
+    '  vec4 mvPos = modelViewMatrix * vec4( transformed, 1.0 );',
+    '  vViewDir = normalize( -mvPos.xyz );',
+    '  #include <project_vertex>',
+    '}'
+  ].join('\n');
+})();
+
+let animMixer = null;
+
+function pickIdleClip(animations) {
+  if (!animations?.length) return null;
+  const idle = animations.find((a) => /idle/i.test(a.name || ''));
+  return idle || animations[0];
+}
+
+function addSharedSkinnedMesh(parent, source, material, renderOrder) {
+  const sm = new THREE.SkinnedMesh(source.geometry, material);
+  sm.skeleton = source.skeleton;
+  sm.bindMode = source.bindMode;
+  sm.bindMatrix.copy(source.bindMatrix);
+  sm.bindMatrixInverse.copy(source.bindMatrixInverse);
+  sm.castShadow = true;
+  sm.receiveShadow = true;
+  sm.frustumCulled = source.frustumCulled;
+  sm.renderOrder = renderOrder;
+  parent.add(sm);
+  return sm;
+}
+
+function replaceSkinnedWithHoloLayers(sm, holoSkinnedVert) {
+  const parent = sm.parent;
+  if (!parent) return;
+  const holder = new THREE.Group();
+  holder.name = `${sm.name || 'skin'}_holo`;
+  holder.position.copy(sm.position);
+  holder.quaternion.copy(sm.quaternion);
+  holder.scale.copy(sm.scale);
+  parent.remove(sm);
+
+  const origMat = Array.isArray(sm.material) ? sm.material[0] : sm.material;
+  const texMap = origMat?.map ?? null;
+
+  const baseMat = new THREE.MeshBasicMaterial({
+    map: texMap,
+    color: texMap ? 0x224444 : 0x0a2020,
+    transparent: true,
+    opacity: P.baseOpacity * 0.5,
+    depthWrite: true,
+    depthTest: true
+  });
+  baseMat.skinning = true;
+  addSharedSkinnedMesh(holder, sm, baseMat, 0);
+
+  if (texMap) {
+    const texOnly = new THREE.MeshBasicMaterial({
+      map: texMap,
+      color: 0xffffff,
+      transparent: true,
+      opacity: P.texOpacity,
+      depthWrite: false,
+      depthTest: true
+    });
+    texOnly.skinning = true;
+    addSharedSkinnedMesh(holder, sm, texOnly, 1);
+  }
+
+  let holoMat;
+  if (holoSkinnedVert) {
+    const uniforms = {
+      uTime:             { value: 0 },
+      uColor:            { value: new THREE.Vector3(P.colorR, P.colorG, P.colorB) },
+      uOpacity:          { value: P.opacity * P.holoOpacityMul },
+      uFresnelStrength:  { value: P.fresnelStrength },
+      uInnerGlow:        { value: P.innerGlow },
+      uRimStrength:      { value: P.rimStrength },
+      uPulseSpeed:       { value: P.pulseSpeed },
+      uPulseStrength:    { value: P.pulseStrength },
+      uScanSpeed:        { value: P.scanSpeed },
+      uScanDensity:      { value: P.scanDensity },
+      uFlickerIntensity: { value: P.flickerIntensity },
+    };
+    shaderUniforms.push(uniforms);
+    holoMat = new THREE.ShaderMaterial({
+      uniforms,
+      vertexShader: holoSkinnedVert,
+      fragmentShader: holoFragmentShader,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      side: THREE.FrontSide,
+      skinning: true
+    });
+  } else {
+    holoMat = new THREE.MeshBasicMaterial({
+      color: 0x55ccff,
+      transparent: true,
+      opacity: P.opacity * P.holoOpacityMul * 0.55,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending
+    });
+    holoMat.skinning = true;
+  }
+  addSharedSkinnedMesh(holder, sm, holoMat, 2);
+  parent.add(holder);
+}
+
 // ─── PROJECTOR BASE RING ──────────────────────────────────────────────────────
 const ringGeo   = new THREE.RingGeometry(0.55, 0.85, 64);
 const ringMat   = new THREE.MeshBasicMaterial({
@@ -396,6 +524,11 @@ function applyP() {
 }
 
 function buildHologramLayers(gltf) {
+  if (animMixer) {
+    animMixer.stopAllAction();
+    animMixer = null;
+  }
+
   if (modelGroup) {
     scene.remove(modelGroup);
     modelGroup.traverse(o => {
@@ -414,45 +547,60 @@ function buildHologramLayers(gltf) {
 
   modelGroup = new THREE.Group();
 
+  const root = gltf.scene.clone(true);
+
   // Auto-center & scale
-  const box = new THREE.Box3().setFromObject(gltf.scene);
+  const box = new THREE.Box3().setFromObject(root);
   const center = new THREE.Vector3();
   box.getCenter(center);
   const size = new THREE.Vector3();
   box.getSize(size);
   const maxDim = Math.max(size.x, size.y, size.z);
   const scale  = 1.6 / maxDim;
-  gltf.scene.position.sub(center);
-  gltf.scene.scale.setScalar(scale);
+  root.position.sub(center);
+  root.scale.setScalar(scale);
 
-  // Position base so ring sits at feet
-  const box2 = new THREE.Box3().setFromObject(gltf.scene);
-  const center2 = new THREE.Vector3();
-  box2.getCenter(center2);
-  gltf.scene.position.y -= box2.min.y + 1.05 / scale;
+  const box2 = new THREE.Box3().setFromObject(root);
+  root.position.y -= box2.min.y + 1.05 / scale;
 
-  gltf.scene.updateMatrixWorld(true);
+  root.updateMatrixWorld(true);
 
-  gltf.scene.traverse(child => {
-    if (!child.isMesh) return;
+  const clip = pickIdleClip(gltf.animations);
+  if (clip) {
+    animMixer = new THREE.AnimationMixer(root);
+    const act = animMixer.clipAction(clip);
+    act.reset();
+    act.setLoop(THREE.LoopRepeat, Infinity);
+    act.play();
+  }
 
+  const skinnedList = [];
+  root.traverse((child) => {
+    if (child.isSkinnedMesh && child.geometry && child.skeleton) skinnedList.push(child);
+  });
+  skinnedList.forEach((sm) => replaceSkinnedWithHoloLayers(sm, holoSkinnedVertexShader));
+
+  const staticList = [];
+  root.traverse((child) => {
+    if (child.isMesh && !child.isSkinnedMesh && child.geometry) staticList.push(child);
+  });
+
+  staticList.forEach((child) => {
     const origMat = Array.isArray(child.material) ? child.material[0] : child.material;
     const geo     = child.geometry;
 
-    // ── LAYER 1: base volume ──────────────────────────────────────────────────
     const baseMat = new THREE.MeshBasicMaterial({
       color: 0x003333,
       transparent: true,
       opacity: P.baseOpacity,
       depthWrite: false,
     });
-    const baseMesh = new THREE.Mesh(geo, baseMat);
+    const baseMesh = new THREE.Mesh(geo.clone(), baseMat);
     baseMesh.renderOrder = 0;
     baseMesh.applyMatrix4(child.matrixWorld);
     modelGroup.add(baseMesh);
     baseMeshes.push(baseMesh);
 
-    // ── LAYER 2: texture / detail ─────────────────────────────────────────────
     const texMap = origMat?.map ?? null;
     const texMat = new THREE.MeshBasicMaterial({
       map: texMap,
@@ -461,13 +609,12 @@ function buildHologramLayers(gltf) {
       opacity: texMap ? P.texOpacity : 0.18,
       depthWrite: false,
     });
-    const texMesh = new THREE.Mesh(geo, texMat);
+    const texMesh = new THREE.Mesh(geo.clone(), texMat);
     texMesh.renderOrder = 1;
     texMesh.applyMatrix4(child.matrixWorld);
     modelGroup.add(texMesh);
     texMeshes.push(texMesh);
 
-    // ── LAYER 3: hologram shader ──────────────────────────────────────────────
     const uniforms = {
       uTime:             { value: 0 },
       uColor:            { value: new THREE.Vector3(P.colorR, P.colorG, P.colorB) },
@@ -492,13 +639,17 @@ function buildHologramLayers(gltf) {
       blending:    THREE.AdditiveBlending,
       side:        THREE.FrontSide,
     });
-    const holoMesh = new THREE.Mesh(geo, holoMat);
+    const holoMesh = new THREE.Mesh(geo.clone(), holoMat);
     holoMesh.scale.setScalar(1.002);
     holoMesh.renderOrder = 2;
     holoMesh.applyMatrix4(child.matrixWorld);
     modelGroup.add(holoMesh);
     holoMeshes.push(holoMesh);
+
+    if (child.parent) child.parent.remove(child);
   });
+
+  modelGroup.add(root);
 
   scene.add(modelGroup);
   scene.updateMatrixWorld(true);
@@ -581,7 +732,10 @@ const clock = new THREE.Clock();
 
 function animate() {
   requestAnimationFrame(animate);
+  const dt = clock.getDelta();
   const elapsed = clock.getElapsedTime();
+
+  if (animMixer) animMixer.update(dt);
 
   for (const u of shaderUniforms) {
     u.uTime.value = elapsed;

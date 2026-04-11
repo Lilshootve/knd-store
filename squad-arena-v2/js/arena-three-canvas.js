@@ -352,6 +352,28 @@
     group.userData.armR = armR;
   }
 
+  /** GLTF skeletal clips: prefer name matching "idle", else first clip. */
+  function startGltfIdleMixer(root, animations) {
+    if (!root || !animations || !animations.length || typeof THREE.AnimationMixer !== 'function') {
+      return null;
+    }
+    var clip = null;
+    var ci;
+    for (ci = 0; ci < animations.length; ci++) {
+      if (/idle/i.test(animations[ci].name || '')) {
+        clip = animations[ci];
+        break;
+      }
+    }
+    if (!clip) clip = animations[0];
+    var mixer = new THREE.AnimationMixer(root);
+    var act = mixer.clipAction(clip);
+    act.reset();
+    act.setLoop(THREE.LoopRepeat, Infinity);
+    act.play();
+    return mixer;
+  }
+
   /**
    * @param {object|null} state — G ally/enemy (name, rarity, id, hp, modelGlb, …)
    */
@@ -429,6 +451,7 @@
               });
               group.userData.holoUniforms = holoUnis;
               group.userData._usingHolo = true;
+              group.userData.animMixer = modelRoot.userData.mwAnimationMixer || null;
               if (mwGlbDebugEnabled()) {
                 // console.log('[MWArena GLB] hologram applied:', modelUrl, holoUnis.length, 'layers');
               }
@@ -443,6 +466,7 @@
               });
               applyGltfScaleAndGround(root, 1.2);
               modelRoot.add(root);
+              group.userData.animMixer = startGltfIdleMixer(root, gltf.animations);
             }
           },
           undefined,
@@ -478,7 +502,8 @@
       unitId: unitId == null ? null : unitId,
       modelRoot: modelRoot,
       holoUniforms: [],
-      _usingHolo: false
+      _usingHolo: false,
+      animMixer: null
     };
 
     bindFallbackRefs(group);
@@ -754,9 +779,14 @@
     var elapsed = clock.getElapsedTime();
     idleT += dt;
 
-    /* Update hologram shader uniforms */
+    /* Update hologram shader uniforms + skeletal animation mixers */
     playerUnits.concat(enemyUnits).forEach(function (u) {
-      if (u && u.userData.holoUniforms && u.userData.holoUniforms.length) {
+      if (!u) return;
+      var mx = u.userData.animMixer;
+      if (mx && typeof mx.update === 'function') {
+        mx.update(dt);
+      }
+      if (u.userData.holoUniforms && u.userData.holoUniforms.length) {
         u.userData.holoUniforms.forEach(function (uni) {
           uni.uTime.value = elapsed;
         });
