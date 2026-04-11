@@ -6,8 +6,15 @@
 <title>Holographic Viewer</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { overflow: hidden; background: transparent; font-family: 'Courier New', monospace; }
-  #canvas-container { width: 100vw; height: 100vh; position: relative; }
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: transparent;
+    font-family: 'Courier New', monospace;
+  }
+  /* 100vw/100vh en iframe ≠ tamaño del iframe; % sigue al padre (.hero-holo-projector-inner). */
+  #canvas-container { width: 100%; height: 100%; min-height: 100%; position: relative; }
   canvas { display: block; }
 
   #ui-overlay {
@@ -132,9 +139,30 @@ const ENABLE_RING_AND_BEAM = false;
 
 // ─── SCENE ───────────────────────────────────────────────────────────────────
 const canvas = document.getElementById('three-canvas');
+
+/** En iframe, innerWidth/innerHeight a veces son 0 al arranque → aspect roto y solo “cabeza”. */
+function readViewerSize() {
+  const cc = document.getElementById('canvas-container');
+  let w = window.innerWidth;
+  let h = window.innerHeight;
+  if (cc) {
+    const r = cc.getBoundingClientRect();
+    if (r.width >= 2 && r.height >= 2) {
+      w = r.width;
+      h = r.height;
+    }
+  }
+  if (!Number.isFinite(w) || w < 2) w = 300;
+  if (!Number.isFinite(h) || h < 2) h = 260;
+  return { w: Math.max(2, Math.floor(w)), h: Math.max(2, Math.floor(h)) };
+}
+
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(window.innerWidth, window.innerHeight);
+{
+  const { w, h } = readViewerSize();
+  renderer.setSize(w, h);
+}
 renderer.setClearColor(0x000000, 0);
 renderer.sortObjects = true;
 renderer.toneMapping = THREE.NoToneMapping;
@@ -183,7 +211,13 @@ if (new URLSearchParams(window.location.search).get('embed') === '1') {
   if (scanEarly) scanEarly.style.display = 'none';
 }
 
-const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 100);
+const _initialV = readViewerSize();
+const camera = new THREE.PerspectiveCamera(
+  45,
+  _initialV.w / _initialV.h,
+  0.01,
+  100
+);
 camera.position.set(0, 0, 2);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -462,8 +496,8 @@ function applyHologramFraming(root, paddingMult) {
     ) * paddingMult;
 
   if (IS_EMBED) {
-    const skinBoost = hasSkinned ? 1.72 : 1.15;
-    dist = Math.max(dist * skinBoost, maxDim * 2.45 * paddingMult, 1.55);
+    const skinBoost = hasSkinned ? 1.88 : 1.2;
+    dist = Math.max(dist * skinBoost, maxDim * 2.65 * paddingMult, 1.75);
     if (holoEmbedDistFloor > 0) {
       dist = Math.max(dist, holoEmbedDistFloor);
     }
@@ -471,7 +505,7 @@ function applyHologramFraming(root, paddingMult) {
 
   const target = center.clone();
   if (IS_EMBED) {
-    target.y -= size.y * 0.12;
+    target.y -= size.y * 0.18;
   }
   controls.target.copy(target);
   camera.position.set(
@@ -493,7 +527,7 @@ function applyHologramFraming(root, paddingMult) {
   controls.minDistance = Math.max(maxDim * 0.06, 0.04);
   controls.maxDistance = Math.max(startRadius * 50, maxDim * 45, 20);
   camera.near = IS_EMBED
-    ? Math.max(0.008, Math.min(0.04, maxDim * 0.004))
+    ? Math.max(0.001, Math.min(0.03, maxDim * 0.002))
     : 0.05;
   camera.far = Math.min(Math.max(startRadius * 120, maxDim * 60, 200), 50000);
   camera.updateProjectionMatrix();
@@ -890,6 +924,20 @@ function buildHologramLayers(gltf) {
   scene.add(modelGroup);
   scene.updateMatrixWorld(true);
   applyHologramFraming(modelGroup, IS_EMBED ? 1.72 : 1.52);
+
+  if (IS_EMBED) {
+    const refit = (mult) => {
+      resizeHologramToWindow();
+      if (modelGroup) applyHologramFraming(modelGroup, mult);
+    };
+    requestAnimationFrame(() => {
+      refit(1.75);
+      requestAnimationFrame(() => {
+        refit(1.68);
+        setTimeout(() => refit(1.62), 80);
+      });
+    });
+  }
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
@@ -994,10 +1042,10 @@ animate();
 
 // ─── RESIZE ──────────────────────────────────────────────────────────────────
 function resizeHologramToWindow() {
-  const w = window.innerWidth;
-  const h = window.innerHeight;
+  const { w, h } = readViewerSize();
   if (w < 2 || h < 2) return;
   camera.aspect = w / h;
+  if (!Number.isFinite(camera.aspect) || camera.aspect <= 0) camera.aspect = 1;
   camera.updateProjectionMatrix();
   renderer.setSize(w, h);
 }
@@ -1012,13 +1060,15 @@ window.addEventListener('resize', () => {
 (function setupEmbedResizeObserver() {
   if (new URLSearchParams(window.location.search).get('embed') !== '1') return;
   if (typeof ResizeObserver === 'undefined') return;
+  const el = document.getElementById('canvas-container');
+  if (!el) return;
   const ro = new ResizeObserver(() => {
     resizeHologramToWindow();
     if (modelGroup) {
       applyHologramFraming(modelGroup, 1.65);
     }
   });
-  ro.observe(document.documentElement);
+  ro.observe(el);
 })();
 
 init();
