@@ -243,20 +243,29 @@ export class MaterialSystem {
     const existing = this._patchTimers.get(id);
     if (existing) clearTimeout(existing);
 
-    // Skip tmp objects (not yet saved to server)
     if (String(id).startsWith('tmp_')) return;
+
+    if (clear) {
+      const timer = setTimeout(() => {
+        this._patchTimers.delete(id);
+        this.builder.catalogSystem.patchObject(id, { material_data: null });
+      }, 600);
+      this._patchTimers.set(id, timer);
+      return;
+    }
+
+    // CRITICAL: Capture values NOW (synchronously), not inside the 600ms callback.
+    // If the user clicks elsewhere before the timer fires, the material state
+    // used to be corrupted by the selection highlight restoration.
+    // Capturing here ensures we always save the user's intended values.
+    const vals = this.getValues(entry);
+    if (!vals) return;
 
     const timer = setTimeout(() => {
       this._patchTimers.delete(id);
-      if (clear) {
-        this.builder.catalogSystem.patchObject(id, { material_data: null });
-      } else {
-        const vals = this.getValues(entry);
-        if (!vals) return;
-        this.builder.catalogSystem.patchObject(id, {
-          material_data: JSON.stringify(vals),
-        });
-      }
+      this.builder.catalogSystem.patchObject(id, {
+        material_data: JSON.stringify(vals),
+      });
     }, 600);
 
     this._patchTimers.set(id, timer);

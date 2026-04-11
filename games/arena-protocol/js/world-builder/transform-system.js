@@ -132,21 +132,9 @@ export class TransformSystem {
   }
 
   _applySelectionHighlight(mesh, active) {
-    mesh.traverse(o => {
-      if (!o.isMesh || !o.material) return;
-      const mats = Array.isArray(o.material) ? o.material : [o.material];
-      mats.forEach(m => {
-        const ok = m.isMeshStandardMaterial || m.isMeshPhysicalMaterial ||
-                   m.isMeshLambertMaterial  || m.isMeshPhongMaterial || m.isMeshToonMaterial;
-        if (!ok) return;
-        if (active) {
-          m._wbOrigEI = m.emissiveIntensity ?? 0;
-          m.emissiveIntensity = Math.min(3.5, (m._wbOrigEI ?? 0) + 0.9);
-        } else {
-          if (m._wbOrigEI !== undefined) { m.emissiveIntensity = m._wbOrigEI; delete m._wbOrigEI; }
-        }
-      });
-    });
+    // Selection is indicated by the cyan BoxHelper only.
+    // Modifying emissiveIntensity here caused saved values to be overwritten
+    // when deselecting (the restore reverted any user edits made while selected).
   }
 
   // ─────────────────────────────────────────────────────────

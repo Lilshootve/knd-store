@@ -174,7 +174,9 @@ export class CatalogSystem {
         if (obj.material_data) {
           try {
             this.builder.materialSystem.applyStoredData(mesh, obj.material_data);
-          } catch (_) {}
+          } catch (e) {
+            console.warn('[WB] applyStoredData failed for', obj.item_id, ':', e);
+          }
         }
       }
       if (j.data.objects?.length) console.log(`[WB] ${j.data.objects.length} world objects loaded`);
