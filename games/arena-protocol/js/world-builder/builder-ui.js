@@ -1,10 +1,14 @@
 /**
  * BuilderUI — injects and manages the full left-panel editor UI.
- * Tabs: Objects | Materials | Lighting | Scene | Camera
+ * Tabs: Objects | Materials | Lighting | Environment | Scene | Camera
+ * AAA additions: Undo/Redo bar, Multi-select indicator, Snap mode,
+ *                Marketplace, Hierarchy, Terrain, Collab peers.
  * All UI is generated via JS — zero HTML changes required in nexus-city.html.
  */
 
-const TABS = ['objects', 'materials', 'lighting', 'scene', 'camera'];
+import { ENVIRONMENT_PRESETS } from './environment-system.js';
+
+const TABS = ['objects', 'materials', 'lighting', 'environment', 'scene', 'camera'];
 
 export class BuilderUI {
   /** @param {import('./index.js').WorldBuilderPro} builder */
@@ -267,13 +271,40 @@ input[type=color].wb-color{
 <div class="wb-pro-hdr">
   <div class="wb-pro-badge">ADMIN</div>
   <div class="wb-pro-title">WORLD BUILDER</div>
+  <div id="wb-collab-count" style="font-size:7px;color:transparent;margin-left:4px;letter-spacing:.08em;"></div>
   <div class="wb-pro-close" id="wb-pro-close">✕</div>
+</div>
+<div style="display:flex;align-items:center;gap:6px;padding:5px 12px;border-bottom:1px solid rgba(155,48,255,.08);flex-shrink:0;">
+  <div id="wb-undo-btn" title="Undo (Ctrl+Z)" style="cursor:pointer;font-size:13px;opacity:.3;transition:opacity .15s;" onclick="window._wbUndoProxy()">↩</div>
+  <div id="wb-redo-btn" title="Redo (Ctrl+Y)" style="cursor:pointer;font-size:13px;opacity:.3;transition:opacity .15s;" onclick="window._wbRedoProxy()">↪</div>
+  <div id="wb-multisel-badge" style="display:none;font-size:7px;color:#00ff88;letter-spacing:.08em;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.2);padding:2px 7px;border-radius:10px;"></div>
+  <div style="margin-left:auto;display:flex;gap:6px;">
+    <div id="wb-snap-indicator" title="Press P to cycle snap mode" onclick="window._wbCycleSnap()" style="cursor:pointer;font-size:6.5px;color:rgba(0,232,255,.4);letter-spacing:.08em;padding:2px 6px;border:1px solid rgba(0,232,255,.12);border-radius:3px;">SNAP: SURFACE</div>
+    <div title="Marketplace (M)" onclick="window._wbMarketProxy()" style="cursor:pointer;font-size:11px;opacity:.6;transition:opacity .15s;" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=.6">🛒</div>
+    <div title="Scene Hierarchy (H)" onclick="window._wbHierProxy()" style="cursor:pointer;font-size:11px;opacity:.6;transition:opacity .15s;" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=.6">🌳</div>
+    <div title="Terrain Tools (N)" onclick="window._wbTerrainProxy()" style="cursor:pointer;font-size:11px;opacity:.6;transition:opacity .15s;" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=.6">🏔</div>
+  </div>
 </div>
 <div class="wb-pro-tabs" id="wb-pro-tabs"></div>
 <div class="wb-pro-content" id="wb-pro-body"></div>
 <div class="wb-pro-status" id="wb-pro-status">Builder active.</div>
 <div class="wb-pro-stats" id="wb-pro-stats"></div>
 `;
+
+    // Proxy globals for onclick (ES module scope limitation)
+    window._wbUndoProxy    = () => this.builder.undoRedo?.undo();
+    window._wbRedoProxy    = () => this.builder.undoRedo?.redo();
+    window._wbMarketProxy  = () => this.builder.marketplace?.open();
+    window._wbHierProxy    = () => this.builder.hierarchyPanel?.toggle();
+    window._wbTerrainProxy = () => this.builder.terrainTools?.isActive()
+      ? this.builder.terrainTools.deactivate()
+      : this.builder.terrainTools.activate();
+    window._wbCycleSnap    = () => {
+      const modes = ['ground', 'surface', 'grid'];
+      const next  = modes[(modes.indexOf(this.builder.surfaceSnap.getMode()) + 1) % modes.length];
+      this.builder.surfaceSnap.setMode(next);
+      this.refreshSnapMode();
+    };
     document.body.appendChild(panel);
     this._panel    = panel;
     this._statusEl = panel.querySelector('#wb-pro-status');
@@ -287,11 +318,12 @@ input[type=color].wb-color{
 
   _buildTabs() {
     const tabConfig = [
-      { id: 'objects',   icon: '🧱', label: 'OBJECTS'   },
-      { id: 'materials', icon: '🎨', label: 'MATERIALS'  },
-      { id: 'lighting',  icon: '💡', label: 'LIGHTING'   },
-      { id: 'scene',     icon: '🌐', label: 'SCENE'      },
-      { id: 'camera',    icon: '📷', label: 'CAMERA'     },
+      { id: 'objects',     icon: '🧱', label: 'OBJECTS'  },
+      { id: 'materials',   icon: '🎨', label: 'MATERIAL' },
+      { id: 'lighting',    icon: '💡', label: 'LIGHTS'   },
+      { id: 'environment', icon: '🌌', label: 'ENV'      },
+      { id: 'scene',       icon: '🌐', label: 'SCENE'    },
+      { id: 'camera',      icon: '📷', label: 'CAMERA'   },
     ];
     const tabsEl = document.getElementById('wb-pro-tabs');
     tabsEl.innerHTML = '';
@@ -314,11 +346,12 @@ input[type=color].wb-color{
     body.innerHTML = '';
 
     switch (tabId) {
-      case 'objects':   this._renderObjectsTab(body);   break;
-      case 'materials': this._renderMaterialsTab(body); break;
-      case 'lighting':  this._renderLightingTab(body);  break;
-      case 'scene':     this._renderSceneTab(body);     break;
-      case 'camera':    this._renderCameraTab(body);    break;
+      case 'objects':      this._renderObjectsTab(body);      break;
+      case 'materials':    this._renderMaterialsTab(body);    break;
+      case 'lighting':     this._renderLightingTab(body);     break;
+      case 'environment':  this._renderEnvironmentTab(body);  break;
+      case 'scene':        this._renderSceneTab(body);        break;
+      case 'camera':       this._renderCameraTab(body);       break;
     }
   }
 
@@ -402,6 +435,23 @@ input[type=color].wb-color{
       const hint = this._el('div', 'wb-empty');
       hint.textContent = 'No object selected.\nClick an object in the scene to select it, or choose from catalog below.';
       body.appendChild(hint);
+    }
+
+    // — Multi-select actions (when 2+ selected) —
+    const multiSel = this.builder.multiSelect;
+    if (multiSel && multiSel.hasMultiple()) {
+      body.appendChild(this._div());
+      body.appendChild(this._el('div', 'wb-sec-lbl', `MULTI-SELECT (${multiSel.selection.size} objects)`));
+      const msRow = this._el('div', 'wb-btn-row');
+      const dupAllBtn = this._pbtn('📋 DUPLICATE ALL', 'cyan');
+      dupAllBtn.onclick = () => multiSel.duplicateAll();
+      const delAllBtn = this._pbtn('✕ DELETE ALL', 'red');
+      delAllBtn.onclick = () => multiSel.deleteAll();
+      const grpBtn = this._pbtn('⊞ GROUP', 'purple');
+      grpBtn.onclick = () => { this.builder.hierarchyPanel._groupSelected(); this.builder.hierarchyPanel.open(); };
+      msRow.append(dupAllBtn, delAllBtn, grpBtn);
+      body.appendChild(msRow);
+      body.appendChild(this._div());
     }
 
     // — Catalog —
@@ -645,9 +695,11 @@ input[type=color].wb-color{
   // ─────────────────────────────────────────────────────────
 
   _renderSceneTab(body) {
-    const cat = this.builder.catalogSystem;
+    const cat  = this.builder.catalogSystem;
     const state = this.builder.stateManager;
     const perf = this.builder.perfManager;
+    const lod  = this.builder.lodSystem;
+    const inst = this.builder.instanceManager;
 
     body.appendChild(this._el('div', 'wb-sec-lbl', `SCENE OBJECTS: ${cat.getObjects().length}`));
 
@@ -690,41 +742,55 @@ input[type=color].wb-color{
     body.appendChild(gridRow);
 
     body.appendChild(this._div());
+    body.appendChild(this._el('div', 'wb-sec-lbl', 'SNAP MODE'));
+    const snapRow = this._el('div', 'wb-btn-row');
+    ['ground', 'surface', 'grid'].forEach(mode => {
+      const cur = this.builder.surfaceSnap?.getMode() === mode;
+      const btn = this._pbtn(mode.toUpperCase(), cur ? 'cyan on' : 'purple');
+      btn.onclick = () => { this.builder.surfaceSnap.setMode(mode); this._renderTab('scene'); };
+      snapRow.appendChild(btn);
+    });
+    body.appendChild(snapRow);
+
+    body.appendChild(this._div());
+    body.appendChild(this._el('div', 'wb-sec-lbl', 'TOOLS'));
+    const toolRow = this._el('div', 'wb-btn-row');
+    const hierBtn = this._pbtn('🌳 HIERARCHY', this.builder.hierarchyPanel?.isOpen() ? 'cyan on' : 'purple');
+    hierBtn.onclick = () => this.builder.hierarchyPanel.toggle();
+    const terrBtn = this._pbtn('🏔 TERRAIN', this.builder.terrainTools?.isActive() ? 'cyan on' : 'purple');
+    terrBtn.onclick = () => this.builder.terrainTools.isActive() ? this.builder.terrainTools.deactivate() : this.builder.terrainTools.activate();
+    const mktBtn = this._pbtn('🛒 MARKET', 'purple');
+    mktBtn.onclick = () => this.builder.marketplace.open();
+    toolRow.append(hierBtn, terrBtn, mktBtn);
+    body.appendChild(toolRow);
+
+    body.appendChild(this._div());
     body.appendChild(this._el('div', 'wb-sec-lbl', 'PERFORMANCE'));
 
     const statsEl = this._el('div', '');
     statsEl.style.cssText = 'font-size:8px;color:rgba(90,165,190,.5);line-height:1.9;';
     const s = perf.getStats();
+    const instStats = inst?.getStats() || { groups: 0, totalInstanced: 0 };
+    const lodStats  = lod?.getStats()  || { total: 0 };
     statsEl.innerHTML = [
       `FPS: ${s.fps}`,
       `Triangles: ${(s.triangles/1000).toFixed(1)}k`,
       `Draw calls: ${s.calls}`,
-      `Geometries: ${s.geometries}`,
-      `Textures: ${s.textures}`,
       `World objects: ${s.objects}`,
-    ].map(l => `<div>${l}</div>`).join('');
+      instStats.groups > 0 ? `Instanced: ${instStats.totalInstanced}× (${instStats.groups} groups)` : '',
+      lodStats.total > 0 ? `LOD objects: ${lodStats.total}` : '',
+    ].filter(Boolean).map(l => `<div>${l}</div>`).join('');
     body.appendChild(statsEl);
 
-    // Fog toggle
+    // LOD toggle
     body.appendChild(this._div());
-    body.appendChild(this._el('div', 'wb-sec-lbl', 'ATMOSPHERE'));
-    const fogRow = this._el('div', 'wb-btn-row');
-    const hasFog = !!this.ctx.scene.fog;
-    const fogBtn = this._pbtn(`🌫 FOG: ${hasFog ? 'ON' : 'OFF'}`, hasFog ? 'cyan on' : 'purple');
-    fogBtn.onclick = () => {
-      if (this.ctx.scene.fog) {
-        this.ctx.scene.userData._savedFog = this.ctx.scene.fog;
-        this.ctx.scene.fog = null;
-        fogBtn.textContent = '🌫 FOG: OFF';
-        fogBtn.className = 'wb-pbtn purple';
-      } else {
-        this.ctx.scene.fog = this.ctx.scene.userData._savedFog || null;
-        fogBtn.textContent = '🌫 FOG: ON';
-        fogBtn.className = 'wb-pbtn cyan on';
-      }
-    };
-    fogRow.appendChild(fogBtn);
-    body.appendChild(fogRow);
+    body.appendChild(this._el('div', 'wb-sec-lbl', 'OPTIMIZATIONS'));
+    const optRow = this._el('div', 'wb-btn-row');
+    const lodEnabled = lod?._enabled ?? true;
+    const lodBtn = this._pbtn(`LOD: ${lodEnabled ? 'ON' : 'OFF'}`, lodEnabled ? 'cyan on' : 'purple');
+    lodBtn.onclick = () => { lod?.setEnabled(!lodEnabled); this._renderTab('scene'); };
+    optRow.appendChild(lodBtn);
+    body.appendChild(optRow);
   }
 
   // ─────────────────────────────────────────────────────────
@@ -803,6 +869,82 @@ input[type=color].wb-color{
     `;
     body.appendChild(infoEl);
   }
+
+  // ─────────────────────────────────────────────────────────
+  // TAB: ENVIRONMENT (HDRI, fog, background)
+  // ─────────────────────────────────────────────────────────
+
+  _renderEnvironmentTab(body) {
+    const env = this.builder.envSystem;
+    const v   = env.getValues();
+
+    body.appendChild(this._el('div', 'wb-sec-lbl', 'HDRI PRESETS'));
+
+    // Preset buttons grid
+    const presetGrid = this._el('div', '');
+    presetGrid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px;';
+    ENVIRONMENT_PRESETS.forEach(preset => {
+      const btn = this._pbtn(preset.label, v.preset === preset.id ? 'cyan on' : 'purple');
+      btn.onclick = async () => {
+        await env.loadPreset(preset.id);
+        this._renderTab('environment');
+      };
+      presetGrid.appendChild(btn);
+    });
+    body.appendChild(presetGrid);
+
+    // Custom URL
+    body.appendChild(this._el('div', 'wb-sec-lbl', 'CUSTOM HDR URL'));
+    const urlRow = this._el('div', 'wb-ctrl-row');
+    const urlInp = document.createElement('input');
+    urlInp.type = 'text'; urlInp.className = 'wb-ctrl-inp';
+    urlInp.placeholder = 'https://…/scene.hdr';
+    const loadBtn = this._pbtn('LOAD', 'cyan');
+    loadBtn.style.flexShrink = '0';
+    loadBtn.onclick = () => { if (urlInp.value.trim()) env.loadCustomHDR(urlInp.value.trim()); };
+    urlRow.append(urlInp, loadBtn);
+    body.appendChild(urlRow);
+
+    body.appendChild(this._div());
+    body.appendChild(this._el('div', 'wb-sec-lbl', 'ENVIRONMENT INTENSITY'));
+    body.appendChild(this._rangeCtrl('Intensity', 0, 5, 0.05, v.envIntensity, val => env.setEnvIntensity(val)));
+
+    body.appendChild(this._div());
+    body.appendChild(this._el('div', 'wb-sec-lbl', 'BACKGROUND'));
+    const bgRow = this._el('div', 'wb-btn-row');
+    ['original','hdri','color'].forEach(mode => {
+      const btn = this._pbtn(mode.toUpperCase(), v.bgMode === mode ? 'cyan on' : 'purple');
+      btn.onclick = () => { env.setBackgroundMode(mode); this._renderTab('environment'); };
+      bgRow.appendChild(btn);
+    });
+    body.appendChild(bgRow);
+
+    if (v.bgMode === 'color') {
+      body.appendChild(this._colorCtrl('BG Color', v.bgColor, c => env.setBackgroundColor(c)));
+    }
+
+    body.appendChild(this._div());
+    body.appendChild(this._el('div', 'wb-sec-lbl', 'FOG'));
+    const fogRow = this._el('div', 'wb-btn-row');
+    const fogBtn = this._pbtn(`🌫 FOG: ${v.fogEnabled ? 'ON' : 'OFF'}`, v.fogEnabled ? 'cyan on' : 'purple');
+    fogBtn.onclick = () => { env.setFogEnabled(!v.fogEnabled); this._renderTab('environment'); };
+    fogRow.appendChild(fogBtn);
+    body.appendChild(fogRow);
+
+    if (v.fogEnabled) {
+      body.appendChild(this._colorCtrl('Fog Color', v.fogColor, c => env.setFogColor(c)));
+      body.appendChild(this._rangeCtrl('Density', 0, 0.05, 0.001, v.fogDensity, val => env.setFogDensity(val)));
+    }
+
+    if (v.loading) {
+      const loadEl = this._el('div', 'wb-empty', '⏳ Loading HDR…');
+      body.appendChild(loadEl);
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────
+  // TAB: SCENE (extended with new AAA features)
+  // ─────────────────────────────────────────────────────────
 
   _getSavedCam() {
     try { return JSON.parse(localStorage.getItem('nexus-wb-cam') || 'null'); } catch (_) { return null; }
@@ -939,5 +1081,55 @@ input[type=color].wb-color{
     document.querySelectorAll('.wb-gizmo-btn').forEach(btn => {
       btn.classList.toggle('on', btn.dataset.mode === mode);
     });
+  }
+
+  // ─────────────────────────────────────────────────────────
+  // UNDO/REDO UI
+  // ─────────────────────────────────────────────────────────
+
+  refreshUndoRedoState(canUndo, canRedo) {
+    const undoBtn = document.getElementById('wb-undo-btn');
+    const redoBtn = document.getElementById('wb-redo-btn');
+    if (undoBtn) undoBtn.style.opacity = canUndo ? '1' : '0.3';
+    if (redoBtn) redoBtn.style.opacity = canRedo ? '1' : '0.3';
+  }
+
+  // ─────────────────────────────────────────────────────────
+  // MULTI-SELECT UI
+  // ─────────────────────────────────────────────────────────
+
+  onMultiSelectChanged(count) {
+    const el = document.getElementById('wb-multisel-badge');
+    if (!el) return;
+    if (count > 1) {
+      el.textContent = `${count} SELECTED`;
+      el.style.display = 'block';
+    } else {
+      el.style.display = 'none';
+    }
+    if (this._activeTab === 'objects') this._renderTab('objects');
+  }
+
+  // ─────────────────────────────────────────────────────────
+  // COLLAB PEERS
+  // ─────────────────────────────────────────────────────────
+
+  refreshCollabPeers(peers) {
+    const el = document.getElementById('wb-collab-count');
+    if (!el) return;
+    const count = peers.size;
+    el.textContent = count > 0 ? `🤝 ${count} ONLINE` : '';
+    el.style.color = count > 0 ? '#00ff88' : 'transparent';
+  }
+
+  // ─────────────────────────────────────────────────────────
+  // SNAP MODE INDICATOR
+  // ─────────────────────────────────────────────────────────
+
+  refreshSnapMode() {
+    const el = document.getElementById('wb-snap-indicator');
+    if (!el) return;
+    const mode = this.builder.surfaceSnap.getMode();
+    el.textContent = `SNAP: ${mode.toUpperCase()}`;
   }
 }
