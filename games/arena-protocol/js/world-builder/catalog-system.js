@@ -61,7 +61,7 @@ export class CatalogSystem {
       if (res.status === 403) return;
       if (!j.ok) { console.warn('[WB] world_builder_catalog:', j.error?.code, j.error?.message); return; }
       const rows = j.data?.catalog;
-      if (!Array.isArray(rows)) { console.warn('[WB] furniture_catalog: no data.catalog[]'); return; }
+      if (!Array.isArray(rows)) { console.warn('[WB] world_builder_catalog: no data.catalog[]'); return; }
       this.catalog = rows
         .map(r => this._rowToItem(r))
         .sort((a, b) => Number(b.furniture_id) - Number(a.furniture_id));

@@ -135,6 +135,8 @@ $navCards = [
     ['title' => 'KND Points', 'desc' => 'Review pending point purchases + redemptions', 'href' => '/admin/support-credits.php', 'icon' => 'fa-coins', 'perm' => 'payments.view', 'badge' => $scPendingPayments],
     ['title' => 'Wallet Inspector', 'desc' => 'Audit and manage user KND Points balances', 'href' => '/admin/knd-points.php', 'icon' => 'fa-wallet', 'perm' => 'payments.view', 'badge' => null],
     ['title' => 'Rewards Catalog', 'desc' => 'Manage rewards catalog and stock', 'href' => '/admin/rewards.php', 'icon' => 'fa-gift', 'perm' => 'rewards.edit', 'badge' => $scRequestedRedemptions],
+    ['title' => 'Furniture Catalog', 'desc' => 'Manage Sanctum / room furniture items (nexus_furniture_catalog)', 'href' => '/admin/furniture_catalog.php', 'icon' => 'fa-couch', 'perm' => 'nexus.catalog.edit', 'badge' => null],
+    ['title' => 'World Builder Catalog', 'desc' => 'Manage City 3D world builder items (nexus_world_builder_catalog)', 'href' => '/admin/world_builder_catalog.php', 'icon' => 'fa-city', 'perm' => 'nexus.catalog.edit', 'badge' => null],
     ['title' => 'Leaderboard', 'desc' => 'Reset season, stats or all XP', 'href' => '/admin/leaderboard.php', 'icon' => 'fa-trophy', 'perm' => 'leaderboard.view', 'badge' => null],
     ['title' => 'Avatar Stats', 'desc' => 'Edit mind, focus, speed, luck per avatar', 'href' => '/admin/avatar-balance.php', 'icon' => 'fa-chart-bar', 'perm' => 'system.storage_diag', 'badge' => null],
     ['title' => 'Audit Logs', 'desc' => 'View admin audit logs with filters', 'href' => '/admin/logs.php', 'icon' => 'fa-list-alt', 'perm' => 'logs.view', 'badge' => null],
