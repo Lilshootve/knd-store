@@ -130,20 +130,17 @@ export class MultiSelectSystem {
     this._pivot.scale.set(1, 1, 1);
     this._pivot.visible = true;
 
-    // Attach gizmo to pivot (override single-object mode)
-    const gizmo = this.builder.transformSystem._gizmo;
-    gizmo.attach(this._pivot);
-    gizmo.visible = true;
-
-    // Disable single-object transform (deselect without clearing multi)
-    this.builder.transformSystem._gizmo.detach();
-    this.builder.transformSystem._gizmo.attach(this._pivot);
+    // Attach gizmo to pivot (r163+ API: visibility via getHelper())
+    const ts = this.builder.transformSystem;
+    ts._gizmo.attach(this._pivot);
+    if (ts._gizmoHelper) ts._gizmoHelper.visible = true;
   }
 
   _hidePivot() {
     this._pivot.visible = false;
-    const gizmo = this.builder.transformSystem._gizmo;
-    gizmo.detach();
+    const ts = this.builder.transformSystem;
+    ts._gizmo.detach();
+    if (ts._gizmoHelper) ts._gizmoHelper.visible = false;
   }
 
   // ─────────────────────────────────────────────────────────
