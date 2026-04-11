@@ -304,8 +304,7 @@ if (typeof window !== 'undefined') { window.MeshoptDecoder = MeshoptDecoder; }
         depthWrite: false,
         depthTest: true,
         blending: THREE.AdditiveBlending,
-        side: THREE.DoubleSide,
-        skinning: true
+        side: THREE.DoubleSide
       });
     } else {
       holoMat = new THREE.MeshBasicMaterial({
