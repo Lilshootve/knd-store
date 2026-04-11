@@ -453,6 +453,7 @@ body{background:var(--void);color:var(--t1);font-family:var(--FB);font-size:18.4
 }
 @keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 .hero-avatar-wrap img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 30px rgba(0,232,255,.5))}
+.hero-avatar-wrap iframe{display:block;min-width:100%;min-height:100%}
 
 /* hero silhouette (fallback) */
 .hero-sil{
@@ -1271,7 +1272,9 @@ a.mode-card.mode-card--link:focus-visible{
           <div class="hero-avatar-wrap" id="hero-avatar-wrap">
             <iframe id="hero-viewer-iframe"
               src=""
+              title="3D avatar preview"
               frameborder="0"
+              referrerpolicy="same-origin"
               allow="accelerometer; autoplay"
               style="width:100%;height:100%;border:none;background:transparent;">
             </iframe>
@@ -1452,7 +1455,10 @@ const PLAYER = {
   level: 42, xp: 68,
   rank: 'GOLD IV',
   coins: 12480, gems: 340, energy: 8, maxEnergy: 10,
-  avatar: { name:'ZEUS', class:'DEITY', rarity:'legendary', icon:'⚡' },
+  avatar: {
+    name:'ZEUS', class:'DEITY', rarity:'legendary', icon:'⚡',
+    model_path:'/assets/avatars/models/legendary/wukong.glb'
+  },
 };
 
 const MISSIONS = [
@@ -1480,14 +1486,22 @@ const EVENTS = [
 ];
 
 const AVATARS_COLLECTION = [
-  { name:'ZEUS', class:'DEITY', rarity:'legendary', icon:'⚡', rarCol:'#ffcc00', equipped:true },
-  { name:'ARIA', class:'ARCHITECT', rarity:'epic', icon:'🤖', rarCol:'#9b30ff', equipped:false },
-  { name:'KAEL', class:'RUNNER', rarity:'rare', icon:'🌊', rarCol:'#1a6aee', equipped:false },
-  { name:'NOVA', class:'VANGUARD', rarity:'epic', icon:'🔥', rarCol:'#9b30ff', equipped:false },
-  { name:'WRAITH', class:'PHANTOM', rarity:'rare', icon:'🔮', rarCol:'#1a6aee', equipped:false },
-  { name:'VEGA', class:'ORACLE', rarity:'special', icon:'🧠', rarCol:'#18aa6a', equipped:false },
-  { name:'BOLT', class:'STRIKER', rarity:'common', icon:'💥', rarCol:'#4a8a9a', equipped:false },
-  { name:'SABLE', class:'WEAVER', rarity:'special', icon:'🌌', rarCol:'#18aa6a', equipped:false },
+  { name:'ZEUS', class:'DEITY', rarity:'legendary', icon:'⚡', rarCol:'#ffcc00', equipped:true,
+    model_path:'/assets/avatars/models/legendary/wukong.glb' },
+  { name:'ARIA', class:'ARCHITECT', rarity:'epic', icon:'🤖', rarCol:'#9b30ff', equipped:false,
+    model_path:'/assets/avatars/models/epic/puss_in_boots.glb' },
+  { name:'KAEL', class:'RUNNER', rarity:'rare', icon:'🌊', rarCol:'#1a6aee', equipped:false,
+    model_path:'/assets/avatars/models/legendary/wukong.glb' },
+  { name:'NOVA', class:'VANGUARD', rarity:'epic', icon:'🔥', rarCol:'#9b30ff', equipped:false,
+    model_path:'/assets/avatars/models/epic/puss_in_boots.glb' },
+  { name:'WRAITH', class:'PHANTOM', rarity:'rare', icon:'🔮', rarCol:'#1a6aee', equipped:false,
+    model_path:'/assets/avatars/models/legendary/wukong.glb' },
+  { name:'VEGA', class:'ORACLE', rarity:'special', icon:'🧠', rarCol:'#18aa6a', equipped:false,
+    model_path:'/assets/avatars/models/legendary/wukong.glb' },
+  { name:'BOLT', class:'STRIKER', rarity:'common', icon:'💥', rarCol:'#4a8a9a', equipped:false,
+    model_path:'/assets/avatars/models/legendary/wukong.glb' },
+  { name:'SABLE', class:'WEAVER', rarity:'special', icon:'🌌', rarCol:'#18aa6a', equipped:false,
+    model_path:'/assets/avatars/models/legendary/wukong.glb' },
 ];
 
 const NOTIFICATIONS = [
@@ -1507,8 +1521,9 @@ const BATTLE_SUBTEXTS = [
    STAR CANVAS
 ═══════════════════════════════════════════════ */
 function getAvatarModelPath(avatar) {
-  const slug = (avatar.model_path) ? null : avatar.name.toLowerCase().replace(/\s+/g,'_');
-  return avatar.model_path || `/assets/avatars/models/${avatar.rarity}/${slug}.glb`;
+  if (avatar.model_path) return avatar.model_path;
+  const slug = avatar.name.toLowerCase().replace(/\s+/g, '_');
+  return `/assets/avatars/models/${avatar.rarity}/${slug}.glb`;
 }
 
 function initHeroViewer() {
@@ -1521,7 +1536,9 @@ function initHeroViewer() {
     encodeURIComponent(modelPath) +
     '&preset=holo&rarity=' +
     encodeURIComponent(rarity) +
-    '&embed=1&v=' +
+    '&embed=1&anim=' +
+    encodeURIComponent('idle stand') +
+    '&v=' +
     v;
   const iframe = document.getElementById('hero-viewer-iframe');
   if (iframe) iframe.src = src;
@@ -1730,7 +1747,8 @@ function equipAvatar(i) {
     name: av.name,
     class: av.class,
     rarity: av.rarity,
-    icon: av.icon
+    icon: av.icon,
+    model_path: av.model_path || null
   };
   document.getElementById('hero-name').textContent = av.name;
   document.getElementById('hero-class').textContent = av.class+' · '+av.rarity.toUpperCase();
