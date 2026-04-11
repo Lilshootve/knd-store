@@ -1045,8 +1045,8 @@ attachLocalPlayerLabel(player, 2.45);
 
 // ── HERO GLB SYSTEM ──
 const _charCtrl = new CharacterController({
-  walkSpeed:      16,
-  runSpeed:       32,
+  walkSpeed:      8,
+  runSpeed:       16,
   crouchSpeed:    6,
   jumpForce:      8,
   gravity:        20,
@@ -1833,12 +1833,6 @@ requestAnimationFrame(()=>{ resizeCam(); snap(); });
 renderer.setAnimationLoop((nowMs)=>{
   const now=nowMs/1000, dt=Math.min(now-last,.05); last=now;
 
-  // Player movement — disabled while World Builder is active
-  const inp=(_wbActive ? new THREE.Vector3() : getInput()).multiplyScalar(16);
-  const sm=1-Math.exp(-9*dt);
-  vel.x=THREE.MathUtils.lerp(vel.x,inp.x,sm); vel.z=THREE.MathUtils.lerp(vel.z,inp.z,sm);
-  const moving = vel.lengthSq() > 0.08;
-
   if (_heroMesh) {
     // GLB hero — controller handles mixer, Y physics, and rotation.
     // We only apply XZ bounds here.
@@ -1858,7 +1852,7 @@ renderer.setAnimationLoop((nowMs)=>{
     player.position.x=THREE.MathUtils.clamp(player.position.x+vel.x*dt,nexusPlayBounds.minX,nexusPlayBounds.maxX);
     player.position.z=THREE.MathUtils.clamp(player.position.z+vel.z*dt,nexusPlayBounds.minZ,nexusPlayBounds.maxZ);
     player.position.y=Math.sin(now*2.5)*.04;
-    if(moving) player.rotation.y=THREE.MathUtils.lerp(player.rotation.y,Math.atan2(vel.x,vel.z),.12);
+    if(vel.lengthSq()>0.08) player.rotation.y=THREE.MathUtils.lerp(player.rotation.y,Math.atan2(vel.x,vel.z),.12);
   }
 
   // Echo orb (procedural guardian only)

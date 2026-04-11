@@ -327,9 +327,22 @@ export class CharacterController {
     // Remaining logic requires non-blocked input
     if (this._opts.isInputBlocked()) return;
 
+    // Block browser shortcuts that conflict with game controls.
+    // Ctrl+W closes the tab, Ctrl+R refreshes, Ctrl+S saves, etc.
+    // We prevent these only when the game has focus (input not blocked).
+    const GAME_KEYS = new Set([
+      'KeyW','KeyA','KeyS','KeyD',
+      'ArrowUp','ArrowDown','ArrowLeft','ArrowRight',
+      'Space','ShiftLeft','ShiftRight',
+      'ControlLeft','ControlRight',
+      'KeyC',
+    ]);
+    if (GAME_KEYS.has(e.code)) {
+      e.preventDefault();
+    }
+
     // Space — edge-triggered jump (consumed once by state machine)
     if (e.code === 'Space') {
-      e.preventDefault(); // prevent browser scroll
       if (
         this._grounded &&
         (this._state === STATES.IDLE ||
