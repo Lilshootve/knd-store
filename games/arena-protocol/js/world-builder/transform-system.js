@@ -1,12 +1,9 @@
 /**
- * TransformSystem — wraps Three.js TransformControls, manages selection,
- * BoxHelper outline, and numeric transform inputs.
+ * TransformSystem — wraps Three.js TransformControls r163+ API.
  *
- * Three.js r163+ API change:
- *   TransformControls is no longer an Object3D itself.
- *   Add gizmo.getHelper() to the scene, NOT gizmo directly.
- *   gizmo.attach() / gizmo.detach() / gizmo.setMode() still work on gizmo.
- *   Visibility is controlled via gizmo.getHelper().visible.
+ * Three.js r163+: TransformControls is no longer an Object3D.
+ * Use gizmo.getHelper() to get the Object3D that goes into the scene.
+ * Falls back gracefully if getHelper() is unavailable (older builds).
  */
 import * as THREE from 'three';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
@@ -21,25 +18,36 @@ export class TransformSystem {
     this.selectedEntry = null;
 
     this._boxHelper   = null;
-    this._gizmo       = null;   // TransformControls (for attach/detach/setMode)
-    this._gizmoHelper = null;   // Object3D added to scene (r163+ API)
-    this._gizmoMode   = 'translate'; // translate | rotate | scale
+    this._gizmo       = null;
+    this._gizmoHelper = null;  // Object3D added to scene
+    this._gizmoMode   = 'translate';
 
     this._initGizmo();
   }
 
+  // ─────────────────────────────────────────────────────────
+  // INIT
+  // ─────────────────────────────────────────────────────────
+
   _initGizmo() {
-    const gizmo = new TransformControls(this.ctx.cam, this.ctx.renderer.domElement);
-    gizmo.setSize(0.9);
-    gizmo.setSpace('local');
-    gizmo.setMode(this._gizmoMode);
+    let gizmo;
+    try {
+      gizmo = new TransformControls(this.ctx.cam, this.ctx.renderer.domElement);
+    } catch (e) {
+      console.warn('[WB] TransformControls init failed:', e);
+      return;
+    }
+
+    try { gizmo.setSize(0.9); }   catch (_) {}
+    try { gizmo.setSpace('local'); } catch (_) {}
+    try { gizmo.setMode(this._gizmoMode); } catch (_) {}
 
     // Disable OrbitControls while dragging
     gizmo.addEventListener('dragging-changed', e => {
       this.ctx.orbitControls.enabled = !e.value;
     });
 
-    // Persist transform to DB after each gizmo drag ends
+    // Persist to DB after each drag ends
     gizmo.addEventListener('mouseUp', () => {
       if (!this.selectedEntry) return;
       const { mesh, id } = this.selectedEntry;
@@ -53,13 +61,32 @@ export class TransformSystem {
       this.builder.ui.refreshTransformInputs();
     });
 
-    // r163+ API: getHelper() returns the Object3D that goes into the scene
-    const helper = gizmo.getHelper();
-    helper.visible = false;
-    this.ctx.scene.add(helper);
+    this._gizmo = gizmo;
 
-    this._gizmo       = gizmo;
-    this._gizmoHelper = helper;
+    // r163+ API: getHelper() returns the Object3D for the scene
+    // Fallback: if getHelper() doesn't exist this is an older build
+    try {
+      if (typeof gizmo.getHelper === 'function') {
+        const helper = gizmo.getHelper();
+        if (helper && helper.isObject3D) {
+          helper.visible = false;
+          this.ctx.scene.add(helper);
+          this._gizmoHelper = helper;
+        } else {
+          // getHelper() returned something unexpected — skip adding to scene
+          console.warn('[WB] TransformControls.getHelper() did not return an Object3D');
+        }
+      } else {
+        // Pre-r163: gizmo itself is an Object3D
+        if (gizmo.isObject3D) {
+          gizmo.visible = false;
+          this.ctx.scene.add(gizmo);
+          this._gizmoHelper = gizmo;
+        }
+      }
+    } catch (e) {
+      console.warn('[WB] TransformControls helper setup failed (non-fatal):', e.message);
+    }
   }
 
   // ─────────────────────────────────────────────────────────
@@ -71,16 +98,16 @@ export class TransformSystem {
     this.deselect();
     this.selectedEntry = entry;
 
-    // BoxHelper outline (cyan)
+    // BoxHelper outline
     this._boxHelper = new THREE.BoxHelper(entry.mesh, 0x00e8ff);
     this.ctx.scene.add(this._boxHelper);
 
-    // Emissive boost for selection feedback
     this._applySelectionHighlight(entry.mesh, true);
 
-    // Attach gizmo + show helper
-    this._gizmo.attach(entry.mesh);
-    this._gizmoHelper.visible = true;
+    if (this._gizmo) {
+      try { this._gizmo.attach(entry.mesh); } catch (_) {}
+    }
+    if (this._gizmoHelper) this._gizmoHelper.visible = true;
 
     this.builder.ui.onObjectSelected(entry);
   }
@@ -95,8 +122,10 @@ export class TransformSystem {
 
     this._applySelectionHighlight(this.selectedEntry.mesh, false);
 
-    this._gizmo.detach();
-    this._gizmoHelper.visible = false;
+    if (this._gizmo) {
+      try { this._gizmo.detach(); } catch (_) {}
+    }
+    if (this._gizmoHelper) this._gizmoHelper.visible = false;
 
     this.selectedEntry = null;
     this.builder.ui.onObjectDeselected();
@@ -107,10 +136,9 @@ export class TransformSystem {
       if (!o.isMesh || !o.material) return;
       const mats = Array.isArray(o.material) ? o.material : [o.material];
       mats.forEach(m => {
-        const canHighlight =
-          m.isMeshStandardMaterial || m.isMeshPhysicalMaterial ||
-          m.isMeshLambertMaterial  || m.isMeshPhongMaterial   || m.isMeshToonMaterial;
-        if (!canHighlight) return;
+        const ok = m.isMeshStandardMaterial || m.isMeshPhysicalMaterial ||
+                   m.isMeshLambertMaterial  || m.isMeshPhongMaterial || m.isMeshToonMaterial;
+        if (!ok) return;
         if (active) {
           m._wbOrigEI = m.emissiveIntensity ?? 0;
           m.emissiveIntensity = Math.min(3.5, (m._wbOrigEI ?? 0) + 0.9);
@@ -122,12 +150,12 @@ export class TransformSystem {
   }
 
   // ─────────────────────────────────────────────────────────
-  // GIZMO MODE
+  // MODE
   // ─────────────────────────────────────────────────────────
 
   setMode(mode) {
     this._gizmoMode = mode;
-    this._gizmo.setMode(mode);
+    if (this._gizmo) try { this._gizmo.setMode(mode); } catch (_) {}
     this.builder.ui.refreshGizmoModeButtons(mode);
   }
 
@@ -135,7 +163,7 @@ export class TransformSystem {
     const modes = ['translate', 'rotate', 'scale'];
     const next  = modes[(modes.indexOf(this._gizmoMode) + 1) % modes.length];
     this.setMode(next);
-    this.builder.ui.setStatus(`Transform mode: ${next.toUpperCase()}  [T/Y/S] to switch`);
+    this.builder.ui.setStatus(`Modo: ${next.toUpperCase()}  [T/Y/S]`);
   }
 
   // ─────────────────────────────────────────────────────────
@@ -154,7 +182,6 @@ export class TransformSystem {
     });
   }
 
-  // Focus camera on selected object
   focusSelected() {
     if (!this.selectedEntry) return;
     const box    = new THREE.Box3().setFromObject(this.selectedEntry.mesh);
@@ -165,14 +192,13 @@ export class TransformSystem {
   }
 
   // ─────────────────────────────────────────────────────────
-  // TICK
+  // TICK + KEYS
   // ─────────────────────────────────────────────────────────
 
   tick() {
     if (this._boxHelper && this.selectedEntry) this._boxHelper.update();
   }
 
-  // Key handler
   handleKey(code) {
     switch (code) {
       case 'KeyT': if (this.selectedEntry) { this.setMode('translate'); return true; } break;
