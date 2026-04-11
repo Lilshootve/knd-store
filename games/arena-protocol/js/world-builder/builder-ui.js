@@ -256,6 +256,67 @@ input[type=color].wb-color{
   text-align:center;padding:20px 10px;
   font-size:8.5px;color:rgba(90,165,190,.3);line-height:1.7;
 }
+
+/* ── SAVE BUTTON ── */
+.wb-save-btn{
+  width:100%;padding:9px 10px;border-radius:5px;cursor:pointer;
+  font-family:"Orbitron",sans-serif;font-size:8.5px;font-weight:700;
+  letter-spacing:.15em;text-align:center;border:1px solid;
+  transition:all .15s;user-select:none;
+  background:linear-gradient(135deg,rgba(0,255,136,.12),rgba(0,200,100,.08));
+  border-color:rgba(0,255,136,.4);color:#00ff88;
+  box-shadow:0 0 12px rgba(0,255,136,.08);
+}
+.wb-save-btn:hover{
+  background:linear-gradient(135deg,rgba(0,255,136,.22),rgba(0,200,100,.16));
+  box-shadow:0 0 20px rgba(0,255,136,.2);transform:translateY(-1px);
+}
+.wb-save-btn.saved{
+  background:linear-gradient(135deg,rgba(0,255,136,.28),rgba(0,200,100,.2));
+  border-color:#00ff88;color:#00ff88;
+  box-shadow:0 0 24px rgba(0,255,136,.35);
+  pointer-events:none;
+}
+
+/* Save section wrapper */
+.wb-save-section{
+  padding:8px 0 2px;
+  border-top:1px solid rgba(0,255,136,.1);
+  margin-top:6px;
+}
+
+/* Sticky save bar at bottom of panel */
+#wb-save-bar{
+  padding:8px 12px;
+  border-top:1px solid rgba(0,255,136,.15);
+  background:rgba(0,8,4,.7);
+  backdrop-filter:blur(8px);
+  flex-shrink:0;
+  display:none;
+}
+#wb-save-bar.visible{ display:block; }
+#wb-save-bar-btn{
+  width:100%;padding:10px;border-radius:5px;cursor:pointer;
+  font-family:"Orbitron",sans-serif;font-size:9px;font-weight:900;
+  letter-spacing:.2em;text-align:center;
+  background:linear-gradient(135deg,rgba(0,255,136,.18),rgba(0,200,100,.12));
+  border:1px solid rgba(0,255,136,.5);color:#00ff88;
+  box-shadow:0 0 16px rgba(0,255,136,.12);
+  transition:all .15s;user-select:none;
+}
+#wb-save-bar-btn:hover{
+  background:linear-gradient(135deg,rgba(0,255,136,.28),rgba(0,200,100,.2));
+  box-shadow:0 0 28px rgba(0,255,136,.28);
+}
+#wb-save-bar-btn.saved{
+  background:linear-gradient(135deg,rgba(0,255,136,.35),rgba(0,200,100,.25));
+  color:#fff;pointer-events:none;
+}
+#wb-save-bar-name{
+  font-size:7px;color:rgba(0,255,136,.45);text-align:center;
+  margin-top:4px;letter-spacing:.1em;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;
+}
 `;
     document.head.appendChild(style);
   }
@@ -287,6 +348,10 @@ input[type=color].wb-color{
 </div>
 <div class="wb-pro-tabs" id="wb-pro-tabs"></div>
 <div class="wb-pro-content" id="wb-pro-body"></div>
+<div id="wb-save-bar">
+  <div id="wb-save-bar-btn">💾 GUARDAR CAMBIOS AL OBJETO</div>
+  <div id="wb-save-bar-name"></div>
+</div>
 <div class="wb-pro-status" id="wb-pro-status">Builder active.</div>
 <div class="wb-pro-stats" id="wb-pro-stats"></div>
 `;
@@ -305,6 +370,12 @@ input[type=color].wb-color{
       this.builder.surfaceSnap.setMode(next);
       this.refreshSnapMode();
     };
+
+    // Wire global save bar button
+    const saveBarBtn = panel.querySelector('#wb-save-bar-btn');
+    if (saveBarBtn) {
+      saveBarBtn.onclick = () => this._saveAllForSelected(saveBarBtn);
+    }
     document.body.appendChild(panel);
     this._panel    = panel;
     this._statusEl = panel.querySelector('#wb-pro-status');
@@ -416,6 +487,13 @@ input[type=color].wb-color{
       scaleInp.max = '12';
       scaleInp.onchange = () => this._applyTransform();
       selBox.appendChild(scaleRow);
+
+      // Save transform button
+      const saveSec = this._el('div', 'wb-save-section');
+      saveSec.appendChild(this._saveBtn('💾 GUARDAR POSICIÓN / ESCALA', () => {
+        this._applyTransform();
+      }));
+      selBox.appendChild(saveSec);
 
       body.appendChild(selBox);
 
@@ -534,20 +612,24 @@ input[type=color].wb-color{
     matSys.snapshotMaterials(sel);
 
     body.appendChild(this._el('div', 'wb-sec-lbl', 'SURFACE'));
-
-    // Base color
     body.appendChild(this._colorCtrl('Base Color', vals.color, v => matSys.setBaseColor(sel, v)));
-
-    // Emissive color + intensity
     body.appendChild(this._colorCtrl('Emissive', vals.emissive, v => matSys.setEmissiveColor(sel, v)));
-    body.appendChild(this._rangeCtrl('Emit Intens', 0, 5, 0.01, vals.emissiveIntensity, v => {
-      matSys.setEmissiveIntensity(sel, v);
-    }));
+    body.appendChild(this._rangeCtrl('Emit Intens', 0, 5, 0.01, vals.emissiveIntensity, v => matSys.setEmissiveIntensity(sel, v)));
+
+    // Save surface
+    const saveSurface = this._el('div', 'wb-save-section');
+    saveSurface.appendChild(this._saveBtn('💾 GUARDAR COLOR / EMISSIVE', () => matSys.flushEntry(sel)));
+    body.appendChild(saveSurface);
 
     body.appendChild(this._div());
     body.appendChild(this._el('div', 'wb-sec-lbl', 'PBR'));
     body.appendChild(this._rangeCtrl('Metalness', 0, 1, 0.01, vals.metalness, v => matSys.setMetalness(sel, v)));
     body.appendChild(this._rangeCtrl('Roughness', 0, 1, 0.01, vals.roughness, v => matSys.setRoughness(sel, v)));
+
+    // Save PBR
+    const savePbr = this._el('div', 'wb-save-section');
+    savePbr.appendChild(this._saveBtn('💾 GUARDAR PBR', () => matSys.flushEntry(sel)));
+    body.appendChild(savePbr);
 
     body.appendChild(this._div());
     body.appendChild(this._el('div', 'wb-sec-lbl', 'TRANSPARENCY'));
@@ -555,8 +637,6 @@ input[type=color].wb-color{
 
     body.appendChild(this._div());
     body.appendChild(this._el('div', 'wb-sec-lbl', 'DISPLAY'));
-
-    // Wireframe toggle
     const wireRow = this._el('div', 'wb-btn-row');
     const wireBtn = this._pbtn(`◫ WIREFRAME: ${vals.wireframe ? 'ON' : 'OFF'}`, vals.wireframe ? 'cyan' : 'purple');
     wireBtn.onclick = () => {
@@ -568,23 +648,25 @@ input[type=color].wb-color{
     wireRow.appendChild(wireBtn);
     body.appendChild(wireRow);
 
-    body.appendChild(this._div());
+    // Save opacity + display
+    const saveDisp = this._el('div', 'wb-save-section');
+    saveDisp.appendChild(this._saveBtn('💾 GUARDAR OPACIDAD / DISPLAY', () => matSys.flushEntry(sel)));
+    body.appendChild(saveDisp);
 
-    // Override to MeshStandard
-    body.appendChild(this._el('div', 'wb-sec-lbl', 'OVERRIDE (DESTRUCTIVE)'));
+    body.appendChild(this._div());
+    body.appendChild(this._el('div', 'wb-sec-lbl', 'OVERRIDE (DESTRUCTIVO)'));
     const overrideRow = this._el('div', 'wb-btn-row');
-    const overrideBtn = this._pbtn('⚠ REPLACE WITH STANDARD MAT', 'red');
+    const overrideBtn = this._pbtn('⚠ REEMPLAZAR CON STANDARD MAT', 'red');
     overrideBtn.onclick = () => {
-      if (!confirm('Replace all materials with a new MeshStandardMaterial? This will remove all textures.')) return;
+      if (!confirm('¿Reemplazar todos los materiales? Esto elimina las texturas.')) return;
       matSys.overrideWithStandard(sel);
       this._renderTab('materials');
     };
     overrideRow.appendChild(overrideBtn);
     body.appendChild(overrideRow);
 
-    // Restore
     const restoreRow = this._el('div', 'wb-btn-row');
-    const restoreBtn = this._pbtn('↺ RESTORE SNAPSHOT', 'purple');
+    const restoreBtn = this._pbtn('↺ RESTAURAR ORIGINAL', 'purple');
     restoreBtn.onclick = () => { matSys.restoreSnapshot(sel); this._renderTab('materials'); };
     restoreRow.appendChild(restoreBtn);
     body.appendChild(restoreRow);
@@ -592,7 +674,7 @@ input[type=color].wb-color{
     if (vals.hasTexture) {
       const note = this._el('div', 'wb-empty');
       note.style.marginTop = '4px';
-      note.textContent = '⚠ Object has textures. Color edits blend with texture.';
+      note.textContent = '⚠ El objeto tiene texturas. Los cambios de color se mezclan con la textura.';
       body.appendChild(note);
     }
   }
@@ -681,8 +763,16 @@ input[type=color].wb-color{
         body.appendChild(this._rangeCtrl('Distance', 1, 40, 0.5, objLightVals.distance, val => L.setObjectLightDistance(sel, val)));
         body.appendChild(this._rangeCtrl('Height', 0, 10, 0.1, objLightVals.height, val => L.setObjectLightHeight(sel, val)));
 
+        // Save object light
+        const saveLightSec = this._el('div', 'wb-save-section');
+        saveLightSec.appendChild(this._saveBtn('💾 GUARDAR LUZ DEL OBJETO', () => {
+          const lv = L.getObjectLightValues(sel);
+          if (lv) this.builder.catalogSystem.patchObject(sel.id, { light_data: JSON.stringify(lv) });
+        }));
+        body.appendChild(saveLightSec);
+
         const removeRow = this._el('div', 'wb-btn-row');
-        const removeBtn = this._pbtn('✕ REMOVE LIGHT', 'red');
+        const removeBtn = this._pbtn('✕ ELIMINAR LUZ', 'red');
         removeBtn.onclick = () => { L.removeObjectLight(sel); this._renderTab('lighting'); };
         removeRow.appendChild(removeBtn);
         body.appendChild(removeRow);
@@ -1023,6 +1113,71 @@ input[type=color].wb-color{
   }
 
   // ─────────────────────────────────────────────────────────
+  // SAVE HELPERS
+  // ─────────────────────────────────────────────────────────
+
+  /**
+   * Creates a styled green save button with visual confirmation feedback.
+   * @param {string} label    — button label
+   * @param {Function} onSave — called on click; receives the button element
+   */
+  _saveBtn(label, onSave) {
+    const btn = document.createElement('div');
+    btn.className = 'wb-save-btn';
+    btn.textContent = label;
+    btn.onclick = () => {
+      onSave(btn);
+      this._saveFeedback(btn, label);
+    };
+    return btn;
+  }
+
+  /** Flash the button green with "✓ GUARDADO" for 2 seconds. */
+  _saveFeedback(btn, originalLabel) {
+    btn.textContent = '✓ GUARDADO';
+    btn.classList.add('saved');
+    clearTimeout(btn._saveTimer);
+    btn._saveTimer = setTimeout(() => {
+      btn.textContent = originalLabel;
+      btn.classList.remove('saved');
+    }, 2000);
+  }
+
+  /** Save ALL pending changes (transform + material + light) for selected object. */
+  _saveAllForSelected(btn) {
+    const sel = this.builder.transformSystem.selectedEntry;
+    if (!sel) return;
+
+    // 1. Flush transform (numeric inputs if they exist)
+    this._applyTransform();
+
+    // 2. Flush material immediately (bypass debounce)
+    this.builder.materialSystem.flushEntry(sel);
+
+    // 3. Light is already persisted on change (no extra step needed)
+
+    this._saveFeedback(btn, '💾 GUARDAR CAMBIOS AL OBJETO');
+    this.setStatus(`✓ Cambios guardados: ${sel.item_id}`);
+    this.ctx.fireEv('💾', sel.item_id, 'cambios guardados', 'rgba(0,255,136,.65)');
+  }
+
+  /** Show / hide the sticky save bar based on whether an object is selected. */
+  _refreshSaveBar(entry) {
+    const bar  = document.getElementById('wb-save-bar');
+    const name = document.getElementById('wb-save-bar-name');
+    const btn  = document.getElementById('wb-save-bar-btn');
+    if (!bar) return;
+    if (entry) {
+      const catEntry = this.builder.catalogSystem.findCatalogEntry(entry.item_id);
+      bar.classList.add('visible');
+      if (name) name.textContent = (catEntry?.name || entry.item_id).toUpperCase();
+      if (btn)  btn.classList.remove('saved');
+    } else {
+      bar.classList.remove('visible');
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────
   // PUBLIC API CALLED BY OTHER SYSTEMS
   // ─────────────────────────────────────────────────────────
 
@@ -1038,6 +1193,7 @@ input[type=color].wb-color{
   }
 
   onObjectSelected(entry) {
+    this._refreshSaveBar(entry);
     if (this._activeTab === 'objects' || this._activeTab === 'materials') {
       this._renderTab(this._activeTab);
     } else {
@@ -1046,6 +1202,7 @@ input[type=color].wb-color{
   }
 
   onObjectDeselected() {
+    this._refreshSaveBar(null);
     this._renderTab(this._activeTab);
   }
 

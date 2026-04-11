@@ -262,6 +262,26 @@ export class MaterialSystem {
     this._patchTimers.set(id, timer);
   }
 
+  /**
+   * Immediately flush the pending patch for a specific entry (no debounce wait).
+   * Called by save buttons in builder-ui.js.
+   */
+  flushEntry(entry) {
+    const id = entry.id;
+    if (String(id).startsWith('tmp_')) return;
+
+    // Cancel pending debounce timer
+    const existing = this._patchTimers.get(id);
+    if (existing) { clearTimeout(existing); this._patchTimers.delete(id); }
+
+    const vals = this.getValues(entry);
+    if (!vals) return;
+
+    this.builder.catalogSystem.patchObject(id, {
+      material_data: JSON.stringify(vals),
+    });
+  }
+
   /** Flush all pending patches immediately (call before page unload). */
   flushAll() {
     this._patchTimers.forEach((timer, id) => {
