@@ -35,6 +35,5 @@
   "baseB": 1,
   "blendMode": 0,
   "materialSide": 0,
-  "depthTest": 0,
-  "activeAnimationIndex": 8
+  "depthTest": 0
 }

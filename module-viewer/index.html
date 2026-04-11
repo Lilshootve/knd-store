@@ -707,30 +707,10 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.target.set(0, 1, 0);
-// Built-in wheel zoom uses exponential steps; large deltaY (trackpad / some mice) snaps to min/max.
-controls.enableZoom = false;
-
-const _wheelZoomDir = new THREE.Vector3();
-renderer.domElement.addEventListener(
-  'wheel',
-  (event) => {
-    event.preventDefault();
-    if (!controls.enabled) return;
-    _wheelZoomDir.subVectors(camera.position, controls.target);
-    const dist = _wheelZoomDir.length();
-    if (dist < 1e-8) return;
-    _wheelZoomDir.multiplyScalar(1 / dist);
-    const capped = Math.sign(event.deltaY) * Math.min(Math.abs(event.deltaY), 90);
-    const scale = 1 + capped * 0.0011;
-    const newDist = THREE.MathUtils.clamp(
-      dist * scale,
-      controls.minDistance,
-      controls.maxDistance
-    );
-    camera.position.copy(controls.target).addScaledVector(_wheelZoomDir, newDist);
-  },
-  { passive: false }
-);
+controls.enableZoom = true;
+controls.zoomSpeed = 0.85;
+controls.minDistance = 0.05;
+controls.maxDistance = 500;
 
 /** Run in DevTools when the view breaks: __kndViewerDebug() */
 window.__kndViewerDebug = function () {
@@ -759,6 +739,97 @@ let animationClips = [];
 let mixer = null;
 /** @type {import('three').ShaderMaterial[]} */
 let holoMaterials = [];
+
+/** GLB root: re-frame after mixer updates skinned bounds */
+let framingRoot = null;
+let pendingFramingFrames = 0;
+/** Índices de clips idle para alternar (idle 02 → idle → idle 03) */
+let idleCycleIndices = [];
+let idleCycleCursor = 0;
+let nextIdleSwitchAt = 0;
+
+function clipNameNorm(c) {
+  return (c && c.name ? String(c.name) : '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function findIdleVariantIndex(clips, variant) {
+  for (let i = 0; i < clips.length; i++) {
+    const n = clipNameNorm(clips[i]);
+    if (!n.includes('idle')) continue;
+    if (variant === '02') {
+      if (/\(02\)|\b02\b|idle\s*02|idle_02/.test(n)) return i;
+    } else if (variant === '03') {
+      if (/\(03\)|\b03\b|idle\s*03|idle_03/.test(n)) return i;
+    } else if (variant === 'plain') {
+      if (/\(02\)|\(03\)|\b02\b|\b03\b/.test(n)) continue;
+      if (/\bidle\b/.test(n)) return i;
+    }
+  }
+  return -1;
+}
+
+/**
+ * Orden de ciclo: idle (02) → idle genérico → idle (03). Sin animaciones: ciclo vacío.
+ * @returns {{ primary: number }}
+ */
+function resolveIdleCycle(clips) {
+  if (!clips.length) {
+    idleCycleIndices = [];
+    return { primary: -1 };
+  }
+  const i02 = findIdleVariantIndex(clips, '02');
+  const iPlain = findIdleVariantIndex(clips, 'plain');
+  const i03 = findIdleVariantIndex(clips, '03');
+  const firstIdle = clips.findIndex((c) => clipNameNorm(c).includes('idle'));
+
+  const cycle = [];
+  if (i02 >= 0) cycle.push(i02);
+  if (iPlain >= 0 && !cycle.includes(iPlain)) cycle.push(iPlain);
+  if (i03 >= 0 && !cycle.includes(i03)) cycle.push(i03);
+  if (!cycle.length && firstIdle >= 0) cycle.push(firstIdle);
+  if (!cycle.length) cycle.push(0);
+
+  idleCycleIndices = cycle;
+  idleCycleCursor = 0;
+  nextIdleSwitchAt = performance.now() + 8000 + Math.random() * 7000;
+  return { primary: cycle[0] };
+}
+
+function applyCameraFraming(root, paddingMult) {
+  if (!root) return;
+  root.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(root);
+  if (box.isEmpty()) return;
+
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
+  const maxDim = Math.max(size.x, size.y, size.z, 1e-6);
+  const dist =
+    (maxDim / (2 * Math.tan((camera.fov * Math.PI) / 360))) * paddingMult;
+
+  controls.target.copy(center);
+  camera.position.set(
+    center.x + dist * 0.35,
+    center.y + dist * 0.22,
+    center.z + dist
+  );
+
+  const startOffset = new THREE.Vector3(
+    center.x + dist * 0.35 - center.x,
+    center.y + dist * 0.22 - center.y,
+    center.z + dist - center.z
+  );
+  const startRadius = startOffset.length();
+  controls.minDistance = Math.max(maxDim * 0.06, 0.04);
+  controls.maxDistance = Math.max(startRadius * 50, maxDim * 45, 20);
+  camera.near = 0.05;
+  camera.far = Math.min(Math.max(startRadius * 120, maxDim * 60, 200), 50000);
+  camera.updateProjectionMatrix();
+  controls.update();
+}
 
 function clampAnimationIndex(idx) {
   if (!animationClips.length) return -1;
@@ -918,43 +989,14 @@ function loadModel() {
       scene.add(gltf.scene);
       gltf.scene.updateMatrixWorld(true);
 
-      const box = new THREE.Box3().setFromObject(gltf.scene);
-      if (!box.isEmpty()) {
-        const center = box.getCenter(new THREE.Vector3());
-        const size = box.getSize(new THREE.Vector3());
-        const maxDim = Math.max(size.x, size.y, size.z, 1e-6);
-        const dist =
-          maxDim /
-          (2 * Math.tan((camera.fov * Math.PI) / 360)) *
-          1.35;
-        controls.target.copy(center);
-        camera.position.set(
-          center.x + dist * 0.35,
-          center.y + dist * 0.22,
-          center.z + dist
-        );
-        // minDistance > 0 avoids lookAt singularity; keep min/max tied to framing dist so
-        // wheel zoom steps feel continuous (very wide max/min felt like only two scales).
-        const startOffset = new THREE.Vector3(
-          center.x + dist * 0.35 - center.x,
-          center.y + dist * 0.22 - center.y,
-          center.z + dist - center.z
-        );
-        const startRadius = startOffset.length();
-        controls.minDistance = Math.max(startRadius * 0.14, maxDim * 0.14, 0.05);
-        controls.maxDistance = Math.max(startRadius * 18, maxDim * 14, 3);
-        camera.near = 0.05;
-        camera.far = Math.min(Math.max(startRadius * 120, maxDim * 60, 200), 50000);
-        camera.updateProjectionMatrix();
-        controls.update();
-
-        if (scene.userData.upAxisLine) {
-          scene.remove(scene.userData.upAxisLine);
-          scene.userData.upAxisLine.geometry.dispose();
-          scene.userData.upAxisLine.material.dispose();
-          delete scene.userData.upAxisLine;
-        }
+      if (scene.userData.upAxisLine) {
+        scene.remove(scene.userData.upAxisLine);
+        scene.userData.upAxisLine.geometry.dispose();
+        scene.userData.upAxisLine.material.dispose();
+        delete scene.userData.upAxisLine;
       }
+
+      framingRoot = gltf.scene;
 
       if (mixer) mixer.stopAllAction();
       mixer = null;
@@ -962,30 +1004,37 @@ function loadModel() {
       if (animationClips.length > 0) {
         mixer = new THREE.AnimationMixer(gltf.scene);
       }
-      applyAnimationFromP();
 
-      // Debug: mostrar todos los clips disponibles
-      console.log('[module-viewer] modelo cargado:', _modelUrl);
-      console.log('[module-viewer] animations:', animationClips.map(c => c.name));
+      // Encuadre amplio (pose bind); con animación refinamos tras varios frames
+      applyCameraFraming(framingRoot, 1.52);
 
-      // URL ?anim= override: prioridad sobre P.activeAnimationIndex
-      // Si no hay ?anim=, busca 'idle'; si no, usa el primero
       if (mixer && animationClips.length > 0) {
-        const targetAnim = (_paramAnim || '').toLowerCase();
-        const byName  = targetAnim
-          ? animationClips.find(c => c.name.toLowerCase().includes(targetAnim))
-          : null;
-        const byIdle  = animationClips.find(c => c.name.toLowerCase().includes('idle'));
-        const initialClip = byName || byIdle || animationClips[0];
-        if (initialClip) {
-          mixer.stopAllAction();
-          mixer.clipAction(initialClip).reset().setEffectiveTimeScale(1).play();
-          const idx = animationClips.indexOf(initialClip);
-          P.activeAnimationIndex = idx;
-          const sel = document.getElementById('sel-animation');
-          if (sel) sel.value = String(idx);
+        const targetAnim = (_paramAnim || '').trim().toLowerCase();
+        let primary;
+        if (targetAnim) {
+          idleCycleIndices = [];
+          const found = animationClips.findIndex((c) =>
+            clipNameNorm(c).includes(targetAnim)
+          );
+          primary = found >= 0 ? found : resolveIdleCycle(animationClips).primary;
+        } else {
+          primary = resolveIdleCycle(animationClips).primary;
         }
+        P.activeAnimationIndex = primary >= 0 ? primary : 0;
+        populateAnimationSelect();
+        playAnimationAtIndex(P.activeAnimationIndex);
+        const sel = document.getElementById('sel-animation');
+        if (sel) sel.value = String(P.activeAnimationIndex);
+        pendingFramingFrames = 14;
+      } else {
+        idleCycleIndices = [];
+        pendingFramingFrames = 0;
+        populateAnimationSelect();
+        applyAnimationFromP();
       }
+
+      console.log('[module-viewer] modelo cargado:', _modelUrl);
+      console.log('[module-viewer] animations:', animationClips.map((c) => c.name));
     },
     undefined,
     (err) => {
@@ -1002,6 +1051,31 @@ function animate() {
   controls.update();
 
   if (mixer) mixer.update(delta);
+
+  if (pendingFramingFrames > 0 && framingRoot) {
+    pendingFramingFrames--;
+    if (pendingFramingFrames === 0) {
+      applyCameraFraming(framingRoot, _embedMode ? 1.52 : 1.36);
+    }
+  }
+
+  if (
+    idleCycleIndices.length >= 2 &&
+    mixer &&
+    animationClips.length > 0 &&
+    !_paramAnim
+  ) {
+    const t = performance.now();
+    if (t >= nextIdleSwitchAt) {
+      idleCycleCursor = (idleCycleCursor + 1) % idleCycleIndices.length;
+      const idx = idleCycleIndices[idleCycleCursor];
+      P.activeAnimationIndex = idx;
+      playAnimationAtIndex(idx);
+      const sel = document.getElementById('sel-animation');
+      if (sel) sel.value = String(idx);
+      nextIdleSwitchAt = t + 8000 + Math.random() * 10000;
+    }
+  }
 
   for (const m of holoMaterials) {
     if (m.uniforms?.time) m.uniforms.time.value += delta;
@@ -1027,6 +1101,7 @@ async function bootstrapPresetAndModel() {
       /* fall back to DEFAULTS */
     }
     Object.assign(merged, rarityRgb);
+    delete merged.activeAnimationIndex;
     P = merged;
     baselinePreset = { ...P };
     syncUI();
