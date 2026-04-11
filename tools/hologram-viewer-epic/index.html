@@ -363,7 +363,7 @@ function augmentSkinnedMeshWithHoloLayers(sm, holoSkinnedVert) {
       depthTest: true
     });
     texOnly.skinning = true;
-    const smTex = new THREE.SkinnedMesh(sm.geometry, texOnly);
+    const smTex = new THREE.SkinnedMesh(sm.geometry.clone(), texOnly);
     bindSkinnedClone(smTex, sm);
     smTex.renderOrder = 1;
     smTex.userData._mwHoloLayer = true;
@@ -408,7 +408,7 @@ function augmentSkinnedMeshWithHoloLayers(sm, holoSkinnedVert) {
     });
     holoMat.skinning = true;
   }
-  const smHolo = new THREE.SkinnedMesh(sm.geometry, holoMat);
+  const smHolo = new THREE.SkinnedMesh(sm.geometry.clone(), holoMat);
   bindSkinnedClone(smHolo, sm);
   smHolo.renderOrder = 2;
   smHolo.userData._mwHoloLayer = true;

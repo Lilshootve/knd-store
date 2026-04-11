@@ -270,7 +270,9 @@ if (typeof window !== 'undefined') { window.MeshoptDecoder = MeshoptDecoder; }
         depthTest: true
       });
       texOnly.skinning = true;
-      var smTex = new THREE.SkinnedMesh(sm.geometry, texOnly);
+      // Separate BufferGeometry per SkinnedMesh — sharing one geometry across several
+      // skinned draws has caused partial draws (e.g. only head) on some GPUs / Three r128.
+      var smTex = new THREE.SkinnedMesh(sm.geometry.clone(), texOnly);
       bindSkinnedClone(smTex, sm);
       smTex.renderOrder = 1;
       smTex.userData._mwHoloLayer = true;
@@ -316,7 +318,7 @@ if (typeof window !== 'undefined') { window.MeshoptDecoder = MeshoptDecoder; }
       });
       holoMat.skinning = true;
     }
-    var smHolo = new THREE.SkinnedMesh(sm.geometry, holoMat);
+    var smHolo = new THREE.SkinnedMesh(sm.geometry.clone(), holoMat);
     bindSkinnedClone(smHolo, sm);
     smHolo.renderOrder = 2;
     smHolo.userData._mwHoloLayer = true;
