@@ -359,6 +359,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
+import { CharacterController } from "./js/character-controller.js";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
@@ -1043,31 +1044,21 @@ scene.add(player);
 attachLocalPlayerLabel(player, 2.45);
 
 // ── HERO GLB SYSTEM ──
-let _heroMixer = null;
-let _heroClipWalk = null, _heroClipIdle = null;
-let _heroActionWalk = null, _heroActionIdle = null;
-let _heroIsWalking = false;
-/** Diccionario de todas las acciones disponibles { [clipName]: AnimationAction } */
-let _heroActions = {};
+const _charCtrl = new CharacterController({
+  walkSpeed:      16,
+  runSpeed:       32,
+  crouchSpeed:    6,
+  jumpForce:      8,
+  gravity:        20,
+  // Block movement while the chat input is focused
+  isInputBlocked: () => document.activeElement === document.getElementById('chat-input'),
+});
 
 const _gltfLoader = new GLTFLoader();
 const _heroDracoLoader = new DRACOLoader();
 _heroDracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
 _heroDracoLoader.setDecoderConfig({ type: 'js' });
 _gltfLoader.setDRACOLoader(_heroDracoLoader);
-
-/**
- * Cambia la animación del héroe con cross-fade suave.
- * @param {string} name  Nombre exacto del clip (como aparece en consola)
- */
-function playAnimation(name) {
-  if (!_heroActions[name]) {
-    console.warn('[hero] animation not found:', name, '| available:', Object.keys(_heroActions));
-    return;
-  }
-  Object.values(_heroActions).forEach(a => a.fadeOut(0.2));
-  _heroActions[name].reset().fadeIn(0.2).play();
-}
 const ENABLE_HOLOGRAM_AVATAR = false;
 let _holoAvatar = null;
 
@@ -1108,25 +1099,9 @@ async function loadHeroModel(url) {
     scene.remove(player);
     attachLocalPlayerLabel(model, 2.05);
 
-    // Animation mixer (no debe impedir ver el mesh)
+    // Animation controller — sets up mixer, maps all clips, starts idle
     try {
-      if (gltf.animations && gltf.animations.length > 0) {
-        _heroMixer = new THREE.AnimationMixer(model);
-        _heroActions = {};
-        gltf.animations.forEach(clip => {
-          _heroActions[clip.name] = _heroMixer.clipAction(clip);
-          const name = clip.name.toLowerCase();
-          if (!_heroClipIdle && (name.includes('idle') || name.includes('stand') || name.includes('t-pose') || name.includes('tpose')))
-            _heroClipIdle = clip;
-          if (!_heroClipWalk && (name.includes('walk') || name.includes('run') || name.includes('move')))
-            _heroClipWalk = clip;
-        });
-        console.log('[hero] animations disponibles:', Object.keys(_heroActions));
-        if (!_heroClipIdle && gltf.animations[0]) _heroClipIdle = gltf.animations[0];
-        if (!_heroClipWalk && gltf.animations[1]) _heroClipWalk = gltf.animations[1];
-        if (_heroClipIdle) { _heroActionIdle = _heroMixer.clipAction(_heroClipIdle); _heroActionIdle.play(); }
-        if (_heroClipWalk) { _heroActionWalk = _heroMixer.clipAction(_heroClipWalk); }
-      }
+      _charCtrl.setupAnimations(gltf, model);
     } catch (e) { console.warn('[hero] animation setup:', e); }
     if (ENABLE_HOLOGRAM_AVATAR) {
       applyHologramEffect(model);
@@ -1712,8 +1687,8 @@ window.addEventListener("keydown",e=>{
   if(e.code==="Escape"){ document.getElementById("rp").classList.remove("on"); document.getElementById("cu").classList.remove("on"); }
 });
 window.addEventListener("keyup",e=>{ keys[e.code]=false; });
-const vel=new THREE.Vector3();
-function getInput(){let x=0,z=0;if(keys.KeyW||keys.ArrowUp)z-=1;if(keys.KeyS||keys.ArrowDown)z+=1;if(keys.KeyA||keys.ArrowLeft)x-=1;if(keys.KeyD||keys.ArrowRight)x+=1;const v=new THREE.Vector3(x,0,z);if(v.lengthSq()>0)v.normalize();return v;}
+// Velocity is now owned by _charCtrl; kept as a passthrough for WS/camera code.
+const vel = new THREE.Vector3();
 
 function onInteract(){
   const pp=heroPos();
@@ -1865,25 +1840,19 @@ renderer.setAnimationLoop((nowMs)=>{
   const moving = vel.lengthSq() > 0.08;
 
   if (_heroMesh) {
-    // GLB hero
-    _heroMesh.position.x=THREE.MathUtils.clamp(_heroMesh.position.x+vel.x*dt,nexusPlayBounds.minX,nexusPlayBounds.maxX);
-    _heroMesh.position.z=THREE.MathUtils.clamp(_heroMesh.position.z+vel.z*dt,nexusPlayBounds.minZ,nexusPlayBounds.maxZ);
-    if(moving) _heroMesh.rotation.y=THREE.MathUtils.lerp(_heroMesh.rotation.y,Math.atan2(vel.x,vel.z),.12);
-    // Mirror position to procedural player so WS/camera still work
+    // GLB hero — controller handles mixer, Y physics, and rotation.
+    // We only apply XZ bounds here.
+    const { vx, vz } = _charCtrl.update(dt, _heroMesh);
+    _heroMesh.position.x = THREE.MathUtils.clamp(_heroMesh.position.x + vx * dt, nexusPlayBounds.minX, nexusPlayBounds.maxX);
+    _heroMesh.position.z = THREE.MathUtils.clamp(_heroMesh.position.z + vz * dt, nexusPlayBounds.minZ, nexusPlayBounds.maxZ);
+
+    // Expose velocity to vel so WS/camera code continues to work unchanged.
+    vel.set(vx, 0, vz);
+    const moving = (vx * vx + vz * vz) > 0.08;
+
+    // Mirror to procedural player for WS sync and camera target
     player.position.copy(_heroMesh.position);
     player.rotation.copy(_heroMesh.rotation);
-    // Animate mixer
-    if (_heroMixer) _heroMixer.update(dt);
-    // Switch walk/idle clips
-    if (moving && !_heroIsWalking && _heroActionWalk) {
-      _heroIsWalking = true;
-      if (_heroActionIdle) _heroActionIdle.fadeOut(0.2);
-      _heroActionWalk.reset().fadeIn(0.2).play();
-    } else if (!moving && _heroIsWalking) {
-      _heroIsWalking = false;
-      if (_heroActionWalk) _heroActionWalk.fadeOut(0.2);
-      if (_heroActionIdle) _heroActionIdle.reset().fadeIn(0.2).play();
-    }
   } else {
     // Procedural guardian
     player.position.x=THREE.MathUtils.clamp(player.position.x+vel.x*dt,nexusPlayBounds.minX,nexusPlayBounds.maxX);

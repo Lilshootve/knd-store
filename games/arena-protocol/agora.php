@@ -220,6 +220,7 @@ import { GLTFLoader }      from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader }     from 'three/addons/loaders/DRACOLoader.js';
 import { OrbitControls }   from 'three/addons/controls/OrbitControls.js';
 import { createNexusDistrictRealtime } from './js/nexus-district-realtime.js';
+import { CharacterController } from './js/character-controller.js';
 
 const HERO_MODEL  = <?php echo $_heroJson; ?>;
 const PLAYER_NAME = <?php echo $_playerJson; ?>;
@@ -235,10 +236,17 @@ const ISO_LEFT = new THREE.Vector3(-0.707, 0,  0.707);
 const ISO_RIGHT= new THREE.Vector3( 0.707, 0, -0.707);
 
 let scene, camera, renderer, composer, controls;
-let clock, heroMesh, heroMixer;
-/** Diccionario de acciones de animación del héroe { [clipName]: AnimationAction } */
-let heroActions = {};
+let clock, heroMesh;
 let heroPos = new THREE.Vector3(GRID/2, 0, GRID/2);
+const _charCtrl = new CharacterController({
+    walkSpeed:      16,
+    runSpeed:       32,
+    crouchSpeed:    6,
+    jumpForce:      8,
+    gravity:        20,
+    isInputBlocked: () => document.getElementById('npc-modal').classList.contains('open') ||
+                          ['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName),
+});
 let npcObjects = [], animObjects = [];
 let keys = {}, activeNpcIdx = -1;
 let _typingInterval = null, _t = 0;
@@ -268,6 +276,7 @@ async function boot() {
     }, 350);
     window.addEventListener('click', onCanvasClick);
     window.addEventListener('resize', onResize);
+    // Controller owns WASD/Shift/Ctrl/Space/C — track only E/Escape here
     window.addEventListener('keydown', e => {
         keys[e.code] = true;
         if (e.code === 'KeyE' && activeNpcIdx >= 0 && !document.getElementById('npc-modal').classList.contains('open'))
@@ -580,18 +589,6 @@ async function loadGroundedGLB(url, targetHeight) {
     return { wrapper, mixer, actions };
 }
 
-/**
- * Cambia la animación del héroe con cross-fade suave.
- * @param {string} name  Nombre exacto del clip (como aparece en consola)
- */
-function playAnimation(name) {
-    if (!heroActions[name]) {
-        console.warn('[hero] animation not found:', name, '| available:', Object.keys(heroActions));
-        return;
-    }
-    Object.values(heroActions).forEach(a => a.fadeOut(0.2));
-    heroActions[name].reset().fadeIn(0.2).play();
-}
 
 async function spawnNPCs() {
     for (const npc of NPCS) {
@@ -632,19 +629,26 @@ async function spawnNPCs() {
 
 async function spawnHero() {
     try {
-        const result = await loadGroundedGLB(HERO_MODEL, 1.8);
-        heroMesh    = result.wrapper;
-        heroMixer   = result.mixer;
-        heroActions = result.actions;
-        console.log('[hero] animations disponibles:', Object.keys(heroActions));
+        const gltf  = await loader.loadAsync(HERO_MODEL);
+        normalizeGltf(gltf);
+        const model = gltf.scene;
+        const rawBox = new THREE.Box3().setFromObject(model);
+        const rawH   = rawBox.max.y - rawBox.min.y;
+        model.scale.setScalar(1.8 / Math.max(rawH, 0.001));
+        const scaledBox = new THREE.Box3().setFromObject(model);
+        model.position.y = -scaledBox.min.y;
+        heroMesh = new THREE.Group();
+        heroMesh.add(model);
         heroMesh.position.copy(heroPos);
         scene.add(heroMesh);
         const lbl = makeNameLabel(PLAYER_NAME, '#00e8ff');
         lbl.position.set(0, 2.5, 0);
         heroMesh.add(lbl);
+        try {
+            _charCtrl.setupAnimations(gltf, model);
+        } catch (e) { console.warn('[hero] animation setup:', e); }
     } catch(e) {
         console.warn('Hero GLB fail:', e);
-        // Fallback procedural
         heroMesh = new THREE.Mesh(
             new THREE.CapsuleGeometry(0.3, 1.0, 4, 8),
             new THREE.MeshStandardMaterial({ color: 0x00e8ff, emissive: 0x00e8ff, emissiveIntensity: 0.3, roughness: 0.5 })
@@ -661,24 +665,16 @@ function tick() {
     updateHero(dt);
     updateNPCs(dt);
     updateAnimObjects(dt);
-    if (heroMixer) heroMixer.update(dt);
     if (nexusRt) nexusRt.update(dt);
     composer.render();
 }
 
 function updateHero(dt) {
-    if (document.getElementById('npc-modal').classList.contains('open')) return;
-    const v = new THREE.Vector3();
-    if (keys['KeyW']||keys['ArrowUp'])    v.add(ISO_FWD);
-    if (keys['KeyS']||keys['ArrowDown'])  v.add(ISO_BACK);
-    if (keys['KeyA']||keys['ArrowLeft'])  v.add(ISO_LEFT);
-    if (keys['KeyD']||keys['ArrowRight']) v.add(ISO_RIGHT);
-    if (v.lengthSq() > 0) {
-        v.normalize().multiplyScalar(MOVE_SPEED * dt);
-        heroPos.x = Math.max(0.8, Math.min(GRID-0.8, heroPos.x + v.x));
-        heroPos.z = Math.max(0.8, Math.min(GRID-0.8, heroPos.z + v.z));
-        if (heroMesh) { heroMesh.position.copy(heroPos); heroMesh.rotation.y = Math.atan2(v.x, v.z); }
-    }
+    if (!heroMesh) return;
+    const { vx, vz } = _charCtrl.update(dt, heroMesh);
+    heroMesh.position.x = Math.max(0.8, Math.min(GRID-0.8, heroMesh.position.x + vx * dt));
+    heroMesh.position.z = Math.max(0.8, Math.min(GRID-0.8, heroMesh.position.z + vz * dt));
+    heroPos.copy(heroMesh.position);
     controls.target.lerp(heroPos, 0.08);
     controls.update();
 }

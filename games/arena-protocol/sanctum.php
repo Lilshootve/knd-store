@@ -413,6 +413,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { createNexusDistrictRealtime } from './js/nexus-district-realtime.js';
+import { CharacterController } from './js/character-controller.js';
 
 const HERO_MODEL_URL = <?php echo json_encode($_heroModelUrl); ?>;
 const NEXUS_RT_UID = <?php echo (int)(current_user_id() ?? 0); ?>;
@@ -456,13 +457,16 @@ let camAngleH = Math.PI/4, camAngleV = Math.PI/5, camDist = 22;
 
 // ── HERO PLAYER ──
 let hero = null;          // THREE.Group — the visible character
-let heroMixer = null;     // AnimationMixer
-let heroActionIdle = null, heroActionWalk = null;
-let heroIsWalking = false;
 const heroVel = new THREE.Vector3();
 const heroKeys = {};
-/** Diccionario de todas las acciones disponibles { [clipName]: AnimationAction } */
-let heroActions = {};
+const _charCtrl = new CharacterController({
+    walkSpeed:      16,
+    runSpeed:       32,
+    crouchSpeed:    6,
+    jumpForce:      8,
+    gravity:        20,
+    isInputBlocked: () => ['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName),
+});
 
 const _heroDracoLoader = new DRACOLoader();
 _heroDracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
@@ -470,18 +474,6 @@ _heroDracoLoader.setDecoderConfig({ type: 'js' });
 const _gltfLoader = new GLTFLoader();
 _gltfLoader.setDRACOLoader(_heroDracoLoader);
 
-/**
- * Cambia la animación del héroe con cross-fade suave.
- * @param {string} name  Nombre exacto del clip (como aparece en consola)
- */
-function playAnimation(name) {
-    if (!heroActions[name]) {
-        console.warn('[hero] animation not found:', name, '| available:', Object.keys(heroActions));
-        return;
-    }
-    Object.values(heroActions).forEach(a => a.fadeOut(0.2));
-    heroActions[name].reset().fadeIn(0.2).play();
-}
 
 let nexusRt = null;
 
@@ -2081,7 +2073,7 @@ function initNexusRealtime() {
 }
 
 function spawnHero() {
-    if (hero) { scene.remove(hero); hero = null; heroMixer = null; }
+    if (hero) { scene.remove(hero); hero = null; }
     if (HERO_MODEL_URL) {
         _gltfLoader.load(
             HERO_MODEL_URL,
@@ -2103,22 +2095,9 @@ function spawnHero() {
                 hero.position.set(4.5, 0, 4.5); // center of room
                 scene.add(hero);
 
-                if (gltf.animations?.length) {
-                    heroMixer = new THREE.AnimationMixer(model);
-                    heroActions = {};
-                    let clipIdle = null, clipWalk = null;
-                    gltf.animations.forEach(clip => {
-                        heroActions[clip.name] = heroMixer.clipAction(clip);
-                        const n = clip.name.toLowerCase();
-                        if (!clipIdle && (n.includes('idle')||n.includes('stand')||n.includes('tpose')||n.includes('t-pose'))) clipIdle = clip;
-                        if (!clipWalk && (n.includes('walk')||n.includes('run')||n.includes('move'))) clipWalk = clip;
-                    });
-                    console.log('[hero] animations disponibles:', Object.keys(heroActions));
-                    if (!clipIdle && gltf.animations[0]) clipIdle = gltf.animations[0];
-                    if (!clipWalk && gltf.animations[1]) clipWalk = gltf.animations[1];
-                    if (clipIdle) { heroActionIdle = heroMixer.clipAction(clipIdle); heroActionIdle.play(); }
-                    if (clipWalk) { heroActionWalk = heroMixer.clipAction(clipWalk); }
-                }
+                try {
+                    _charCtrl.setupAnimations(gltf, model);
+                } catch (e) { console.warn('[hero] animation setup:', e); }
             },
             null,
             err => {
@@ -2135,44 +2114,13 @@ function spawnHero() {
     }
 }
 
-function tickHero(dt, t) {
+function tickHero(dt) {
     if (!hero) return;
-    // Gather input (WASD)
-    let ix = 0, iz = 0;
-    if (heroKeys['KeyW'] || heroKeys['ArrowUp'])    iz -= 1;
-    if (heroKeys['KeyS'] || heroKeys['ArrowDown'])  iz += 1;
-    if (heroKeys['KeyA'] || heroKeys['ArrowLeft'])  ix -= 1;
-    if (heroKeys['KeyD'] || heroKeys['ArrowRight']) ix += 1;
-    const inp = new THREE.Vector3(ix, 0, iz);
-    if (inp.lengthSq() > 0) inp.normalize();
-    inp.multiplyScalar(4); // walk speed
-    const sm = 1 - Math.exp(-10 * dt);
-    heroVel.x = THREE.MathUtils.lerp(heroVel.x, inp.x, sm);
-    heroVel.z = THREE.MathUtils.lerp(heroVel.z, inp.z, sm);
-
     const margin = 0.3;
-    hero.position.x = THREE.MathUtils.clamp(hero.position.x + heroVel.x * dt, margin, GRID * CS - margin);
-    hero.position.z = THREE.MathUtils.clamp(hero.position.z + heroVel.z * dt, margin, GRID * CS - margin);
-
-    const moving = heroVel.lengthSq() > 0.01;
-    if (moving) hero.rotation.y = THREE.MathUtils.lerp(hero.rotation.y, Math.atan2(heroVel.x, heroVel.z), .15);
-
-    // Switch animations
-    if (heroMixer) {
-        heroMixer.update(dt);
-        if (moving && !heroIsWalking && heroActionWalk) {
-            heroIsWalking = true;
-            if (heroActionIdle) heroActionIdle.fadeOut(0.25);
-            heroActionWalk.reset().fadeIn(0.25).play();
-        } else if (!moving && heroIsWalking) {
-            heroIsWalking = false;
-            if (heroActionWalk) heroActionWalk.fadeOut(0.25);
-            if (heroActionIdle) heroActionIdle.reset().fadeIn(0.25).play();
-        }
-    }
-
-    // Floating nameplate or shadow bob
-    if (!heroMixer) hero.position.y = Math.sin(t * 2.5) * 0.025;
+    const { vx, vz } = _charCtrl.update(dt, hero);
+    hero.position.x = THREE.MathUtils.clamp(hero.position.x + vx * dt, margin, GRID * CS - margin);
+    hero.position.z = THREE.MathUtils.clamp(hero.position.z + vz * dt, margin, GRID * CS - margin);
+    heroVel.set(vx, 0, vz);
 }
 
 // E key: interact with nearest furniture
@@ -2194,13 +2142,11 @@ function heroInteract() {
     }
 }
 
-// Track WASD globally (but skip if typing in inputs)
+// E key interact (controller owns WASD/Shift/Ctrl/Space/C)
 window.addEventListener('keydown', e => {
     if (['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)) return;
-    heroKeys[e.code] = true;
     if (e.code === 'KeyE') heroInteract();
 });
-window.addEventListener('keyup', e => { heroKeys[e.code] = false; });
 
 // ─────────────────────────────────────────────────────────────────
 // Keyboard Shortcuts
@@ -2321,7 +2267,7 @@ function animate() {
     const t  = clock.getElapsedTime();
 
     // Hero player
-    tickHero(dt, t);
+    tickHero(dt);
     if (nexusRt) nexusRt.update(dt);
 
     // Animate registered objects

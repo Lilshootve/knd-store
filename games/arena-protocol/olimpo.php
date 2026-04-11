@@ -214,6 +214,7 @@ import { EffectComposer }   from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass }       from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass }  from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { createNexusDistrictRealtime } from './js/nexus-district-realtime.js';
+import { CharacterController } from './js/character-controller.js';
 
 const { HERO_MODEL_URL, PLAYER_NAME, NPCS_DATA, NEXUS_RT_UID } = window.__KND_DISTRICT_BOOT;
 
@@ -282,9 +283,15 @@ const clock      = new THREE.Clock();
 const keys       = {};
 const heroPos    = new THREE.Vector3(GRID/2, 0, GRID/2);
 let heroMesh     = null;
-let heroMixer    = null;
-/** Diccionario de acciones de animación del héroe { [clipName]: AnimationAction } */
-let heroActions  = {};
+const _charCtrl  = new CharacterController({
+    walkSpeed:      16,
+    runSpeed:       32,
+    crouchSpeed:    6,
+    jumpForce:      8,
+    gravity:        20,
+    isInputBlocked: () => document.getElementById('npc-modal').classList.contains('open') ||
+                          ['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName),
+});
 const npcObjects = [];
 const animObjects= [];
 let activeNpcIdx = -1;
@@ -364,18 +371,6 @@ async function loadGroundedGLB(url, targetHeight) {
     return { wrapper, mixer, actions };
 }
 
-/**
- * Cambia la animación del héroe con cross-fade suave.
- * @param {string} name  Nombre exacto del clip (como aparece en consola)
- */
-function playAnimation(name) {
-    if (!heroActions[name]) {
-        console.warn('[hero] animation not found:', name, '| available:', Object.keys(heroActions));
-        return;
-    }
-    Object.values(heroActions).forEach(a => a.fadeOut(0.2));
-    heroActions[name].reset().fadeIn(0.2).play();
-}
 
 function makeNameLabel(name, color) {
     const c2 = document.createElement('canvas');
@@ -581,13 +576,20 @@ async function spawnHero() {
     progStep('LOADING CHAMPION…');
     if (HERO_MODEL_URL) {
         try {
-            const { wrapper, mixer, actions } = await loadGroundedGLB(HERO_MODEL_URL, 1.8);
-            heroMesh    = wrapper;
-            heroMixer   = mixer;
-            heroActions = actions;
-            console.log('[hero] animations disponibles:', Object.keys(heroActions));
+            const gltf  = await loader.loadAsync(HERO_MODEL_URL);
+            normalizeGltf(gltf);
+            const model = gltf.scene;
+            const rawBox = new THREE.Box3().setFromObject(model);
+            const rawH   = rawBox.max.y - rawBox.min.y;
+            model.scale.setScalar(1.8 / Math.max(rawH, 0.001));
+            const scaledBox = new THREE.Box3().setFromObject(model);
+            model.position.y = -scaledBox.min.y;
+            heroMesh = new THREE.Group();
+            heroMesh.add(model);
             heroMesh.position.copy(heroPos);
             scene.add(heroMesh);
+            try { _charCtrl.setupAnimations(gltf, model); }
+            catch (e) { console.warn('[hero] animation setup:', e); }
         } catch(e) { console.warn('Hero fail:', e); spawnHeroFallback(); }
     } else { spawnHeroFallback(); }
     progStep('CHAMPION READY');
@@ -651,22 +653,11 @@ async function spawnNPCs() {
 
 // ── Update ────────────────────────────────────────────────────────────────────
 function updateHero(dt) {
-    if (document.getElementById('npc-modal').classList.contains('open')) return;
-    const v = new THREE.Vector3();
-    if (keys['KeyW'] || keys['ArrowUp'])    v.add(ISO_FWD);
-    if (keys['KeyS'] || keys['ArrowDown'])  v.add(ISO_BACK);
-    if (keys['KeyA'] || keys['ArrowLeft'])  v.add(ISO_LEFT);
-    if (keys['KeyD'] || keys['ArrowRight']) v.add(ISO_RIGHT);
-    if (v.lengthSq() > 0) {
-        v.normalize().multiplyScalar(MOVE_SPEED * dt);
-        heroPos.x = Math.max(0.8, Math.min(GRID - 0.8, heroPos.x + v.x));
-        heroPos.z = Math.max(0.8, Math.min(GRID - 0.8, heroPos.z + v.z));
-        if (heroMesh) {
-            heroMesh.position.copy(heroPos);
-            heroMesh.rotation.y = Math.atan2(v.x, v.z);
-        }
-    }
-    // Smoothly follow hero with orbit target
+    if (!heroMesh) return;
+    const { vx, vz } = _charCtrl.update(dt, heroMesh);
+    heroMesh.position.x = Math.max(0.8, Math.min(GRID-0.8, heroMesh.position.x + vx * dt));
+    heroMesh.position.z = Math.max(0.8, Math.min(GRID-0.8, heroMesh.position.z + vz * dt));
+    heroPos.copy(heroMesh.position);
     controls.target.lerp(heroPos, 0.08);
     controls.update();
 }
@@ -780,7 +771,6 @@ function animate() {
     updateHero(dt);
     updateNPCs(dt);
     updateAnimObjects(t, dt);
-    if (heroMixer) heroMixer.update(dt);
     if (nexusRt) nexusRt.update(dt);
     composer.render();
 }
