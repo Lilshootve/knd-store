@@ -271,6 +271,7 @@ onResize();
 // ── State ─────────────────────────────────────────────────────────────────────
 const _dracoLoader = new DRACOLoader();
 _dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+_dracoLoader.setDecoderConfig({ type: 'js' });
 const loader     = new GLTFLoader();
 loader.setDRACOLoader(_dracoLoader);
 const clock      = new THREE.Clock();

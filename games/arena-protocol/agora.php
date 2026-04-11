@@ -240,6 +240,7 @@ let keys = {}, activeNpcIdx = -1;
 let _typingInterval = null, _t = 0;
 const _dracoLoader = new DRACOLoader();
 _dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+_dracoLoader.setDecoderConfig({ type: 'js' });
 const loader = new GLTFLoader();
 loader.setDRACOLoader(_dracoLoader);
 const raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2();

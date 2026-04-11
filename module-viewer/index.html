@@ -468,6 +468,7 @@ const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath(
   `https://unpkg.com/three@${THREE_VER}/examples/jsm/libs/draco/gltf/`
 );
+dracoLoader.setDecoderConfig({ type: 'js' });
 
 // === URL PARAMS — permite usar el viewer embebido en iframes ===
 const _params     = new URLSearchParams(location.search);

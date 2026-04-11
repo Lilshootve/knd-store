@@ -1053,6 +1053,7 @@ let _heroActions = {};
 const _gltfLoader = new GLTFLoader();
 const _heroDracoLoader = new DRACOLoader();
 _heroDracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+_heroDracoLoader.setDecoderConfig({ type: 'js' });
 _gltfLoader.setDRACOLoader(_heroDracoLoader);
 
 /**

@@ -12,7 +12,8 @@
       "Bash(ls c:/KND-Agents/backend/kndstore/includes/i18n*)",
       "Bash(ls c:/KND-Agents/backend/kndstore/lang*)",
       "Bash(mysql --defaults-file=/dev/null:*)",
-      "Bash(grep \"INSERT INTO \\\\`mw_avatars\\\\`\" c:/KND-Agents/backend/kndstore/sql/u354862096_kndstore.sql -A 60)"
+      "Bash(grep \"INSERT INTO \\\\`mw_avatars\\\\`\" c:/KND-Agents/backend/kndstore/sql/u354862096_kndstore.sql -A 60)",
+      "Bash(grep -l \"config-local\\\\|setSecurityHeaders\\\\|require\\\\|include\" \"c:/KND-Agents/backend/kndstore/games/arena-protocol/\"*.php)"
     ]
   }
 }

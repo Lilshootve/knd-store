@@ -462,6 +462,7 @@ let heroActions = {};
 
 const _heroDracoLoader = new DRACOLoader();
 _heroDracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+_heroDracoLoader.setDecoderConfig({ type: 'js' });
 const _gltfLoader = new GLTFLoader();
 _gltfLoader.setDRACOLoader(_heroDracoLoader);
 

@@ -242,6 +242,7 @@ let heroActions = {};
 const loader = new GLTFLoader();
 const _dracoLoader = new DRACOLoader();
 _dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+_dracoLoader.setDecoderConfig({ type: 'js' });
 loader.setDRACOLoader(_dracoLoader);
 let nexusRt = null;
 

@@ -275,6 +275,7 @@ composer.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), 0.85, 0.35, 0.50))
 
 const _dracoLoader = new DRACOLoader();
 _dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+_dracoLoader.setDecoderConfig({ type: 'js' });
 const loader    = new GLTFLoader();
 loader.setDRACOLoader(_dracoLoader);
 const clock     = new THREE.Clock();
