@@ -47,15 +47,19 @@
     ExpiresByType application/x-shockwave-flash "access plus 1 month"
 </IfModule>
 
-# Headers de seguridad
-<IfModule mod_headers.c>
-    # Pages that run Three.js + DRACO/meshopt WASM (model-viewer, hologram lab, squad arena, games, cards)
+# Pages that run Three.js + DRACO/meshopt WASM — must be outside <IfModule> so mod_setenvif
+# sets the env var before mod_headers evaluates the env= conditions on Header directives.
+<IfModule mod_setenvif.c>
     SetEnvIf Request_URI "^/viewer/" KND_VIEWER_PAGE
     SetEnvIf Request_URI "^/tools/hologram-lab/" KND_VIEWER_PAGE
     SetEnvIf Request_URI "^/squad-arena-v2/" KND_VIEWER_PAGE
     SetEnvIf Request_URI "^/module-viewer/" KND_VIEWER_PAGE
     SetEnvIf Request_URI "^/games/" KND_VIEWER_PAGE
     SetEnvIf Request_URI "^/tools/cards/" KND_VIEWER_PAGE
+</IfModule>
+
+# Headers de seguridad
+<IfModule mod_headers.c>
 
     # Protección XSS
     Header always set X-XSS-Protection "1; mode=block"

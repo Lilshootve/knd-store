@@ -4,6 +4,10 @@ require_once BASE_PATH . '/includes/session.php';
 require_once BASE_PATH . '/includes/auth.php';
 require_once BASE_PATH . '/includes/config.php';
 require_once BASE_PATH . '/includes/mw_avatar_models.php';
+
+// CSP: allow wasm-unsafe-eval for DRACO/Three.js
+header("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://code.jquery.com https://www.paypal.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net data:; img-src 'self' data: blob: https: https://www.paypalobjects.com; media-src 'self' data: blob:; frame-src 'self' https://www.paypal.com https://www.sandbox.paypal.com; connect-src 'self' blob: wss://knd-store-production.up.railway.app https://knd-store-production.up.railway.app http://127.0.0.1:3000 http://localhost:3000 ws://127.0.0.1:8765 ws://localhost:8765 ws://kndstore.com:8765 wss://kndstore.com:8765 ws://www.kndstore.com:8765 wss://www.kndstore.com:8765 https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com https://www.gstatic.com https://www.paypal.com https://www.paypalobjects.com https://api-m.paypal.com;");
+
 if (!is_logged_in()) {
     header('Location: /login?next=' . urlencode($_SERVER['REQUEST_URI']));
     exit;
