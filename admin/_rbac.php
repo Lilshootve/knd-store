@@ -14,6 +14,7 @@ $GLOBALS['_admin_role_permissions'] = [
         'dashboard.view', 'users.view', 'orders.view', 'payments.view', 'payments.confirm',
         'rewards.edit', 'leaderboard.view', 'leaderboard.reset_season', 'logs.view',
         'economy.adjust_kp', 'system.create_test_order', 'system.storage_diag', 'system.purge_cache',
+        'nexus.catalog.edit',
     ],
     'support' => [
         'dashboard.view', 'users.view', 'orders.view', 'payments.view', 'payments.confirm',

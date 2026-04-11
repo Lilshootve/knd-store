@@ -24,6 +24,33 @@ $method = $_SERVER['REQUEST_METHOD'];
 // Helpers
 // ──────────────────────────────────────────────────────────────────
 
+/**
+ * Returns the default room row for a user, creating one if it doesn't exist.
+ * Safe to call multiple times (idempotent).
+ */
+function ensure_room(PDO $pdo, int $uid): array {
+    $s = $pdo->prepare('SELECT * FROM nexus_rooms WHERE owner_user_id = ? LIMIT 1');
+    $s->execute([$uid]);
+    $room = $s->fetch(PDO::FETCH_ASSOC);
+    if ($room) return $room;
+
+    // Derive a friendly name from the plot if available
+    $nameRow = $pdo->prepare("SELECT COALESCE(NULLIF(TRIM(house_name),''), '') FROM nexus_plots WHERE user_id = ? LIMIT 1");
+    $nameRow->execute([$uid]);
+    $houseName = (string)($nameRow->fetchColumn() ?: '');
+    if ($houseName === '') {
+        $unRow = $pdo->prepare('SELECT username FROM users WHERE id = ? LIMIT 1');
+        $unRow->execute([$uid]);
+        $houseName = ((string)($unRow->fetchColumn() ?: 'Player')) . "'s Sanctum";
+    }
+
+    $pdo->prepare('INSERT INTO nexus_rooms (owner_user_id, name, is_public) VALUES (?, ?, 0)')
+        ->execute([$uid, $houseName]);
+
+    $s->execute([$uid]);
+    return $s->fetch(PDO::FETCH_ASSOC);
+}
+
 /** Auto-crea plot si el jugador no tiene uno todavía */
 function ensure_plot(PDO $pdo, int $uid): array {
     $s = $pdo->prepare('SELECT * FROM nexus_plots WHERE user_id=?');
@@ -90,10 +117,13 @@ if ($method === 'GET') {
     try {
         $sessionUid = (int) $uid;
         $reqRoom    = isset($_GET['room_user_id']) ? (int) $_GET['room_user_id'] : 0;
+        $reqRoomId  = isset($_GET['room_id'])      ? (int) $_GET['room_id']      : 0;
         $targetUid  = $sessionUid;
         $readOnly   = false;
+        $activeRoom = null;
 
         if ($reqRoom > 0 && $reqRoom !== $sessionUid) {
+            // Viewing another player's sanctum — verify it's public
             $tp = $pdo->prepare('SELECT * FROM nexus_plots WHERE user_id = ? LIMIT 1');
             $tp->execute([$reqRoom]);
             $tplot = $tp->fetch(PDO::FETCH_ASSOC);
@@ -103,11 +133,35 @@ if ($method === 'GET') {
             $targetUid = $reqRoom;
             $readOnly  = true;
             $plot      = $tplot;
+            // Load (or create) the target user's room
+            $activeRoom = ensure_room($pdo, $targetUid);
         } else {
-            $plot = ensure_plot($pdo, $sessionUid);
+            $plot       = ensure_plot($pdo, $sessionUid);
+            $activeRoom = ensure_room($pdo, $sessionUid);
         }
 
-        // Muebles colocados del dueño de la habitación (targetUid)
+        // Allow specific room_id override (future multi-room support)
+        if ($reqRoomId > 0) {
+            $rr = $pdo->prepare('SELECT * FROM nexus_rooms WHERE id = ? LIMIT 1');
+            $rr->execute([$reqRoomId]);
+            $rr = $rr->fetch(PDO::FETCH_ASSOC);
+            if ($rr) {
+                // If not the owner, verify the room owner's plot is public
+                if ((int)$rr['owner_user_id'] !== $sessionUid) {
+                    $tp2 = $pdo->prepare('SELECT is_public FROM nexus_plots WHERE user_id = ? LIMIT 1');
+                    $tp2->execute([(int)$rr['owner_user_id']]);
+                    $pub = $tp2->fetchColumn();
+                    if (!$pub) json_error('PRIVATE_SANCTUM', 'This room is private', 403);
+                    $readOnly = true;
+                }
+                $activeRoom = $rr;
+                $targetUid  = (int)$rr['owner_user_id'];
+            }
+        }
+
+        $roomId = (int)($activeRoom['id'] ?? 0);
+
+        // Load placed furniture: primary by room_id, fallback to user_id for legacy rows
         $ps = $pdo->prepare('
             SELECT rf.id, rf.furniture_id, rf.room, rf.cell_x, rf.cell_y,
                    rf.rotation, rf.color_override,
@@ -115,10 +169,10 @@ if ($method === 'GET') {
                    fc.width, fc.depth, fc.asset_data
             FROM nexus_room_furniture rf
             JOIN nexus_furniture_catalog fc ON fc.id = rf.furniture_id
-            WHERE rf.user_id = ?
+            WHERE (rf.room_id = ? OR (rf.room_id IS NULL AND rf.user_id = ?))
             ORDER BY rf.placed_at
         ');
-        $ps->execute([$targetUid]);
+        $ps->execute([$roomId, $targetUid]);
         $placed = $ps->fetchAll(PDO::FETCH_ASSOC);
         foreach ($placed as &$p) {
             $p['asset_data'] = $p['asset_data'] ? json_decode($p['asset_data'], true) : [];
@@ -127,7 +181,7 @@ if ($method === 'GET') {
 
         $catalog = nexus_furniture_catalog_fetch_active($pdo);
 
-        // Inventario / KP siempre del visitante (sesión)
+        // Inventory / KP always from the session user (visitor)
         $ownedFurnitureIds = sanctum_owned_furniture_ids($pdo, $sessionUid);
 
         $unOwner = $pdo->prepare('SELECT username FROM users WHERE id=?');
@@ -140,6 +194,7 @@ if ($method === 'GET') {
 
         json_success([
             'plot'                 => $plot,
+            'room'                 => $activeRoom,
             'placed'               => $placed,
             'catalog'              => $catalog,
             'balance'              => kp_balance($pdo, $sessionUid),
@@ -194,22 +249,30 @@ elseif ($method === 'POST') {
             $w = (int)$item['width'];
             $d = (int)$item['depth'];
 
-            // Verificar todas las celdas del footprint
-            $chk = $pdo->prepare('SELECT id FROM nexus_room_furniture WHERE user_id=? AND room=? AND cell_x=? AND cell_y=?');
+            // Resolve room_id for the session user
+            $activeRoom = ensure_room($pdo, (int)$uid);
+            $roomId     = (int)$activeRoom['id'];
+
+            // Verify footprint — check both room_id rows AND legacy user_id rows
+            $chk = $pdo->prepare('
+                SELECT id FROM nexus_room_furniture
+                WHERE (room_id = ? OR (room_id IS NULL AND user_id = ?))
+                  AND room = ? AND cell_x = ? AND cell_y = ?
+            ');
             for ($dx = 0; $dx < $w; $dx++) {
                 for ($dy = 0; $dy < $d; $dy++) {
                     $cx = $cell_x + $dx;
                     $cy = $cell_y + $dy;
                     if ($cx > 9 || $cy > 9) json_error('OUT_OF_BOUNDS', "Footprint exceeds room at $cx,$cy");
-                    $chk->execute([$uid, $room, $cx, $cy]);
+                    $chk->execute([$roomId, $uid, $room, $cx, $cy]);
                     if ($chk->fetch()) json_error('CELL_OCCUPIED', "Cell $cx,$cy is occupied");
                 }
             }
 
             $pdo->prepare('
-                INSERT INTO nexus_room_furniture (user_id,furniture_id,room,cell_x,cell_y,rotation)
-                VALUES (?,?,?,?,?,?)
-            ')->execute([$uid, $fid, $room, $cell_x, $cell_y, $rot]);
+                INSERT INTO nexus_room_furniture (user_id, room_id, furniture_id, room, cell_x, cell_y, rotation)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ')->execute([$uid, $roomId, $fid, $room, $cell_x, $cell_y, $rot]);
 
             json_success(['placed' => true, 'id' => (int)$pdo->lastInsertId()]);
         }
