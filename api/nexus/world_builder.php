@@ -185,25 +185,31 @@ if ($action === 'patch') {
     }
 
     // JSON field: light_data
-    if (isset($body['light_data'])) {
-        $normalized = normalize_json_field($body['light_data']);
-        if ($normalized !== null) {
-            $sets[]   = '`light_data` = ?';
-            $params[] = $normalized;
-        } elseif ($body['light_data'] === null || $body['light_data'] === '') {
-            // Explicit clear
-            $sets[]   = '`light_data` = NULL';
+    // NOTE: use array_key_exists (not isset) so explicit null is detected
+    if (array_key_exists('light_data', $body)) {
+        $val = $body['light_data'];
+        if ($val === null || $val === '') {
+            $sets[] = '`light_data` = NULL';   // explicit clear
+        } else {
+            $normalized = normalize_json_field($val);
+            if ($normalized !== null) {
+                $sets[]   = '`light_data` = ?';
+                $params[] = $normalized;
+            }
         }
     }
 
     // JSON field: material_data (only if column exists)
-    if ($hasMaterialData && isset($body['material_data'])) {
-        $normalized = normalize_json_field($body['material_data']);
-        if ($normalized !== null) {
-            $sets[]   = '`material_data` = ?';
-            $params[] = $normalized;
-        } elseif ($body['material_data'] === null || $body['material_data'] === '') {
-            $sets[]   = '`material_data` = NULL';
+    if ($hasMaterialData && array_key_exists('material_data', $body)) {
+        $val = $body['material_data'];
+        if ($val === null || $val === '') {
+            $sets[] = '`material_data` = NULL';  // explicit clear
+        } else {
+            $normalized = normalize_json_field($val);
+            if ($normalized !== null) {
+                $sets[]   = '`material_data` = ?';
+                $params[] = $normalized;
+            }
         }
     }
 

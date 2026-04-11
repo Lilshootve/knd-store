@@ -1125,18 +1125,28 @@ input[type=color].wb-color{
     }, 2000);
   }
 
-  /** Save ALL pending changes (transform + material + light) for selected object. */
+  /** Save ALL pending changes for selected object.
+   *
+   * NOTE: transform is NOT applied here — the gizmo's mouseUp and the
+   * numeric input onchange handlers already persist transforms in real-time.
+   * Applying transforms from the global bar is dangerous because the inputs
+   * only exist in the DOM when the Objects tab is active; calling
+   * _applyTransform() from any other tab would reset position to (0,0,0).
+   */
   _saveAllForSelected(btn) {
     const sel = this.builder.transformSystem.selectedEntry;
     if (!sel) return;
 
-    // 1. Flush transform (numeric inputs if they exist)
-    this._applyTransform();
+    // Only apply transform if the user is on the Objects tab
+    // (inputs exist in the DOM) — avoids resetting position to 0,0,0
+    if (this._activeTab === 'objects' && document.getElementById('wb-pos-x')) {
+      this._applyTransform();
+    }
 
-    // 2. Flush material immediately (bypass debounce)
+    // Flush material immediately (bypass 600ms debounce)
     this.builder.materialSystem.flushEntry(sel);
 
-    // 3. Light is already persisted on change (no extra step needed)
+    // Lights are already persisted on each setter call
 
     this._saveFeedback(btn, '💾 GUARDAR CAMBIOS AL OBJETO');
     this.setStatus(`✓ Cambios guardados: ${sel.item_id}`);
