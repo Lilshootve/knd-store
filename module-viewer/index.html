@@ -743,6 +743,8 @@ let holoMaterials = [];
 /** GLB root: re-frame after mixer updates skinned bounds */
 let framingRoot = null;
 let pendingFramingFrames = 0;
+/** En embed: no acercar la cámara por debajo del primer encuadre (bbox skinned suele mentir) */
+let embedFramingDistFloor = 0;
 /** Índices de clips idle para alternar (idle 02 → idle → idle 03) */
 let idleCycleIndices = [];
 let idleCycleCursor = 0;
@@ -806,9 +808,44 @@ function applyCameraFraming(root, paddingMult) {
 
   const center = box.getCenter(new THREE.Vector3());
   const size = box.getSize(new THREE.Vector3());
-  const maxDim = Math.max(size.x, size.y, size.z, 1e-6);
-  const dist =
-    (maxDim / (2 * Math.tan((camera.fov * Math.PI) / 360))) * paddingMult;
+  let maxDim = Math.max(size.x, size.y, size.z, 1e-6);
+  const halfDiag =
+    0.5 * Math.sqrt(size.x * size.x + size.y * size.y + size.z * size.z);
+
+  let hasSkinned = false;
+  root.traverse((ch) => {
+    if (ch.isSkinnedMesh) hasSkinned = true;
+  });
+
+  const vFovRad = (camera.fov * Math.PI) / 180;
+  const tanHalfV = Math.tan(vFovRad / 2);
+  const aspect = Math.max(camera.aspect, 0.2);
+  const tanHalfH = tanHalfV * aspect;
+
+  const distVert = (size.y * 0.5) / tanHalfV;
+  const distHoriz = (size.x * 0.5) / tanHalfH;
+  const distDepth = (size.z * 0.5) / tanHalfV;
+
+  if (_embedMode) {
+    maxDim = Math.max(maxDim, halfDiag * 1.08, hasSkinned ? 0.78 : 0);
+  }
+
+  let dist =
+    Math.max(
+      maxDim / (2 * tanHalfV),
+      distVert,
+      distHoriz,
+      distDepth,
+      halfDiag / tanHalfV
+    ) * paddingMult;
+
+  if (_embedMode) {
+    const skinBoost = hasSkinned ? 1.62 : 1.15;
+    dist = Math.max(dist * skinBoost, maxDim * 2.25 * paddingMult, 1.42);
+    if (embedFramingDistFloor > 0) {
+      dist = Math.max(dist, embedFramingDistFloor);
+    }
+  }
 
   controls.target.copy(center);
   camera.position.set(
@@ -823,6 +860,10 @@ function applyCameraFraming(root, paddingMult) {
     center.z + dist - center.z
   );
   const startRadius = startOffset.length();
+  if (_embedMode && embedFramingDistFloor <= 0) {
+    embedFramingDistFloor = startRadius;
+  }
+
   controls.minDistance = Math.max(maxDim * 0.06, 0.04);
   controls.maxDistance = Math.max(startRadius * 50, maxDim * 45, 20);
   camera.near = 0.05;
@@ -964,6 +1005,7 @@ function loadModel() {
   loader.load(
     _modelUrl,
     (gltf) => {
+      embedFramingDistFloor = 0;
       for (const m of holoMaterials) m.dispose();
       holoMaterials = [];
 
@@ -1006,7 +1048,7 @@ function loadModel() {
       }
 
       // Encuadre amplio (pose bind); con animación refinamos tras varios frames
-      applyCameraFraming(framingRoot, 1.52);
+      applyCameraFraming(framingRoot, _embedMode ? 1.72 : 1.52);
 
       if (mixer && animationClips.length > 0) {
         const targetAnim = (_paramAnim || '').trim().toLowerCase();
@@ -1055,7 +1097,7 @@ function animate() {
   if (pendingFramingFrames > 0 && framingRoot) {
     pendingFramingFrames--;
     if (pendingFramingFrames === 0) {
-      applyCameraFraming(framingRoot, _embedMode ? 1.52 : 1.36);
+      applyCameraFraming(framingRoot, _embedMode ? 1.68 : 1.36);
     }
   }
 
