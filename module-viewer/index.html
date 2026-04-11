@@ -826,10 +826,32 @@ function resolveIdleCycle(clips) {
   return { primary: cycle[0] };
 }
 
+function computeMeshWorldBounds(root) {
+  const box = new THREE.Box3();
+  let ok = false;
+  root.updateMatrixWorld(true);
+  root.traverse((o) => {
+    if (!o.isMesh || !o.geometry) return;
+    const g = o.geometry;
+    if (!g.boundingBox) g.computeBoundingBox();
+    const bb = g.boundingBox;
+    if (!bb || bb.isEmpty()) return;
+    const tmp = bb.clone().applyMatrix4(o.matrixWorld);
+    if (!ok) {
+      box.copy(tmp);
+      ok = true;
+    } else box.union(tmp);
+  });
+  return ok ? box : null;
+}
+
 function applyCameraFraming(root, paddingMult) {
   if (!root) return;
   root.updateMatrixWorld(true);
-  const box = new THREE.Box3().setFromObject(root);
+  let box = computeMeshWorldBounds(root);
+  if (!box || box.isEmpty()) {
+    box = new THREE.Box3().setFromObject(root);
+  }
   if (box.isEmpty()) return;
 
   const center = box.getCenter(new THREE.Vector3());
@@ -866,24 +888,28 @@ function applyCameraFraming(root, paddingMult) {
     ) * paddingMult;
 
   if (_embedMode) {
-    const skinBoost = hasSkinned ? 1.62 : 1.15;
-    dist = Math.max(dist * skinBoost, maxDim * 2.25 * paddingMult, 1.42);
+    const skinBoost = hasSkinned ? 1.72 : 1.15;
+    dist = Math.max(dist * skinBoost, maxDim * 2.45 * paddingMult, 1.55);
     if (embedFramingDistFloor > 0) {
       dist = Math.max(dist, embedFramingDistFloor);
     }
   }
 
-  controls.target.copy(center);
+  const target = center.clone();
+  if (_embedMode) {
+    target.y -= size.y * 0.12;
+  }
+  controls.target.copy(target);
   camera.position.set(
-    center.x + dist * 0.35,
-    center.y + dist * 0.22,
-    center.z + dist
+    target.x + dist * 0.35,
+    target.y + dist * 0.22,
+    target.z + dist
   );
 
   const startOffset = new THREE.Vector3(
-    center.x + dist * 0.35 - center.x,
-    center.y + dist * 0.22 - center.y,
-    center.z + dist - center.z
+    target.x + dist * 0.35 - target.x,
+    target.y + dist * 0.22 - target.y,
+    target.z + dist - target.z
   );
   const startRadius = startOffset.length();
   if (_embedMode && embedFramingDistFloor <= 0) {
@@ -892,7 +918,9 @@ function applyCameraFraming(root, paddingMult) {
 
   controls.minDistance = Math.max(maxDim * 0.06, 0.04);
   controls.maxDistance = Math.max(startRadius * 50, maxDim * 45, 20);
-  camera.near = 0.05;
+  camera.near = _embedMode
+    ? Math.max(0.008, Math.min(0.04, maxDim * 0.004))
+    : 0.05;
   camera.far = Math.min(Math.max(startRadius * 120, maxDim * 60, 200), 50000);
   camera.updateProjectionMatrix();
   controls.update();

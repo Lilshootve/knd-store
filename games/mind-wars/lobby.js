@@ -178,6 +178,7 @@
     u.searchParams.set('model', path);
     u.searchParams.set('autoload', '1');
     u.searchParams.set('embed', '1');
+    u.searchParams.set('anim', 'idle stand');
     const token = Math.random().toString(36).slice(2) + Date.now().toString(36);
     u.searchParams.set('reply_token', token);
     return { src: u.pathname + u.search, token: token };
