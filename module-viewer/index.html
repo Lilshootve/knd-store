@@ -468,7 +468,8 @@ const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath(
   `https://unpkg.com/three@${THREE_VER}/examples/jsm/libs/draco/gltf/`
 );
-dracoLoader.setDecoderConfig({ type: 'js' });
+// WASM decoder: avoids eval/new Function (CSP script-src needs wasm-unsafe-eval, not unsafe-eval)
+dracoLoader.setDecoderConfig({ type: 'wasm' });
 
 // === URL PARAMS — permite usar el viewer embebido en iframes ===
 const _params     = new URLSearchParams(location.search);
@@ -523,6 +524,17 @@ const DEFAULTS = {
   depthTest: 1,
   /** -1 = none, 0..n = clip index in the loaded GLB */
   activeAnimationIndex: 0
+};
+
+/** Arena holo lab preset; lobby embed uses ?preset=holo — only colorR/G/B vary by ?rarity= */
+const HOLO_ARENA_PRESET_URL = '/games/arena-protocol/assets/holo-preset.json';
+
+const RARITY_HOLO_RGB = {
+  common: { colorR: 0.28, colorG: 0.72, colorB: 0.88 },
+  rare: { colorR: 0.12, colorG: 0.48, colorB: 2.75 },
+  epic: { colorR: 2.35, colorG: 0.4, colorB: 2.95 },
+  legendary: { colorR: 2.95, colorG: 0.75, colorB: 0.22 },
+  special: { colorR: 0.12, colorG: 2.35, colorB: 0.95 }
 };
 
 const PRESETS = {
@@ -999,6 +1011,29 @@ function animate() {
 }
 
 async function bootstrapPresetAndModel() {
+  const rarityKey = (_params.get('rarity') || 'legendary').toLowerCase();
+  const rarityRgb =
+    RARITY_HOLO_RGB[rarityKey] || RARITY_HOLO_RGB.legendary;
+
+  if (_paramPreset === 'holo') {
+    let merged = { ...DEFAULTS };
+    try {
+      const res = await fetch(HOLO_ARENA_PRESET_URL);
+      if (res.ok) {
+        const json = await res.json();
+        merged = mergePresetFromObject(json) ?? merged;
+      }
+    } catch (_) {
+      /* fall back to DEFAULTS */
+    }
+    Object.assign(merged, rarityRgb);
+    P = merged;
+    baselinePreset = { ...P };
+    syncUI();
+    loadModel();
+    return;
+  }
+
   let fromFile = { ...DEFAULTS };
   try {
     const res = await fetch('./preset.json');
@@ -1014,7 +1049,6 @@ async function bootstrapPresetAndModel() {
   P = fromStorage ? { ...DEFAULTS, ...fromStorage } : fromFile;
   baselinePreset = { ...P };
 
-  // URL ?preset= tiene prioridad sobre localStorage/archivo (útil en embed)
   if (_paramPreset && PRESETS[_paramPreset]) {
     Object.assign(P, PRESETS[_paramPreset]);
     baselinePreset = { ...P };

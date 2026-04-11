@@ -1512,10 +1512,17 @@ function getAvatarModelPath(avatar) {
 }
 
 function initHeroViewer() {
-  const av  = PLAYER.avatar;
+  const av = PLAYER.avatar;
   const modelPath = getAvatarModelPath(av);
-  const preset    = av.rarity || 'knd';
-  const src = `/module-viewer/?model=${encodeURIComponent(modelPath)}&preset=${encodeURIComponent(preset)}&embed=1`;
+  const rarity = (av.rarity || 'legendary').toLowerCase();
+  const v = encodeURIComponent(modelPath + '|' + rarity);
+  const src =
+    '/module-viewer/?model=' +
+    encodeURIComponent(modelPath) +
+    '&preset=holo&rarity=' +
+    encodeURIComponent(rarity) +
+    '&embed=1&v=' +
+    v;
   const iframe = document.getElementById('hero-viewer-iframe');
   if (iframe) iframe.src = src;
 }
@@ -1719,10 +1726,33 @@ function equipAvatar(i) {
   AVATARS_COLLECTION.forEach(a=>a.equipped=false);
   AVATARS_COLLECTION[i].equipped = true;
   const av = AVATARS_COLLECTION[i];
+  PLAYER.avatar = {
+    name: av.name,
+    class: av.class,
+    rarity: av.rarity,
+    icon: av.icon
+  };
   document.getElementById('hero-name').textContent = av.name;
   document.getElementById('hero-class').textContent = av.class+' · '+av.rarity.toUpperCase();
+  const rtag = document.getElementById('hero-rarity-tag');
+  if (rtag) {
+    const rl = { common:'◆ COMMON', rare:'◆ RARE', epic:'◆ EPIC', legendary:'⭐ LEGENDARY', special:'✦ SPECIAL' };
+    rtag.textContent = rl[av.rarity] || String(av.rarity).toUpperCase();
+  }
+  const tbAv = document.querySelector('.tb-avatar');
+  if (tbAv && av.icon) {
+    let ring = tbAv.querySelector('.av-rarity-ring');
+    tbAv.textContent = '';
+    tbAv.appendChild(document.createTextNode(av.icon));
+    if (!ring) {
+      ring = document.createElement('div');
+      ring.className = 'av-rarity-ring';
+    }
+    tbAv.appendChild(ring);
+  }
   showToast(`⬡ Equipped ${av.name}!`,'success');
   renderAvatarGrid();
+  initHeroViewer();
   closeOverlay('av-overlay');
 }
 renderAvatarGrid();
