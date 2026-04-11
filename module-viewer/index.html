@@ -828,10 +828,23 @@ function resolveIdleCycle(clips) {
 
 function computeMeshWorldBounds(root) {
   const box = new THREE.Box3();
+  const v = new THREE.Vector3();
   let ok = false;
   root.updateMatrixWorld(true);
   root.traverse((o) => {
     if (!o.isMesh || !o.geometry) return;
+    const pos = o.geometry.attributes && o.geometry.attributes.position;
+    if (pos && pos.count) {
+      const mw = o.matrixWorld;
+      for (let i = 0; i < pos.count; i++) {
+        v.fromBufferAttribute(pos, i).applyMatrix4(mw);
+        if (!ok) {
+          box.setFromPoints([v.clone()]);
+          ok = true;
+        } else box.expandByPoint(v);
+      }
+      return;
+    }
     const g = o.geometry;
     if (!g.boundingBox) g.computeBoundingBox();
     const bb = g.boundingBox;
@@ -890,6 +903,9 @@ function applyCameraFraming(root, paddingMult) {
   if (_embedMode) {
     const skinBoost = hasSkinned ? 1.72 : 1.15;
     dist = Math.max(dist * skinBoost, maxDim * 2.45 * paddingMult, 1.55);
+    if (hasSkinned) {
+      dist = Math.max(dist, maxDim * 2.2);
+    }
     if (embedFramingDistFloor > 0) {
       dist = Math.max(dist, embedFramingDistFloor);
     }
@@ -897,7 +913,7 @@ function applyCameraFraming(root, paddingMult) {
 
   const target = center.clone();
   if (_embedMode) {
-    target.y -= size.y * 0.12;
+    target.y -= size.y * 0.2;
   }
   controls.target.copy(target);
   camera.position.set(
@@ -916,7 +932,9 @@ function applyCameraFraming(root, paddingMult) {
     embedFramingDistFloor = startRadius;
   }
 
-  controls.minDistance = Math.max(maxDim * 0.06, 0.04);
+  controls.minDistance = _embedMode
+    ? Math.max(maxDim * 0.45, 0.45)
+    : Math.max(maxDim * 0.06, 0.04);
   controls.maxDistance = Math.max(startRadius * 50, maxDim * 45, 20);
   camera.near = _embedMode
     ? Math.max(0.008, Math.min(0.04, maxDim * 0.004))
@@ -1199,6 +1217,11 @@ async function bootstrapPresetAndModel() {
     Object.assign(merged, rarityRgb);
     delete merged.activeAnimationIndex;
     P = merged;
+    /* holo-preset.json usa materialSide 0 + depthTest 0; en iframe eso recorta el cuerpo (solo cabeza). */
+    if (_embedMode) {
+      P.materialSide = 2;
+      P.depthTest = 1;
+    }
     baselinePreset = { ...P };
     syncUI();
     loadModel();
