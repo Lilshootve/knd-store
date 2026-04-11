@@ -213,34 +213,34 @@ if (typeof window !== 'undefined') { window.MeshoptDecoder = MeshoptDecoder; }
     return mixer;
   }
 
-  function addSharedSkinnedMesh(parent, source, material, renderOrder) {
-    var sm = new THREE.SkinnedMesh(source.geometry, material);
-    sm.skeleton = source.skeleton;
-    sm.bindMode = source.bindMode;
-    sm.bindMatrix.copy(source.bindMatrix);
-    sm.bindMatrixInverse.copy(source.bindMatrixInverse);
-    sm.castShadow = true;
-    sm.receiveShadow = true;
-    sm.frustumCulled = source.frustumCulled;
-    sm.renderOrder = renderOrder;
-    sm.matrixAutoUpdate = true;
-    parent.add(sm);
-    return sm;
+  function bindSkinnedClone(dst, src) {
+    dst.skeleton = src.skeleton;
+    dst.bindMode = src.bindMode;
+    dst.bindMatrix.copy(src.bindMatrix);
+    dst.bindMatrixInverse.copy(src.bindMatrixInverse);
+    dst.position.copy(src.position);
+    dst.quaternion.copy(src.quaternion);
+    dst.scale.copy(src.scale);
+    dst.castShadow = true;
+    dst.receiveShadow = true;
+    dst.frustumCulled = false;
+    dst.matrixAutoUpdate = src.matrixAutoUpdate;
+  }
+
+  /** Geometry rigged for skinning must not be flattened to static Mesh (bind pose / wrong culling). */
+  function geometryHasSkinWeights(geo) {
+    if (!geo || !geo.attributes) return false;
+    return geo.attributes.skinIndex !== undefined || geo.attributes.skinWeight !== undefined;
   }
 
   /**
-   * Replace one SkinnedMesh with a group of SkinnedMeshes (same skeleton/geometry) so materials can stack.
+   * Keep the original SkinnedMesh in the armature (like nexus-city GLB path); stack holo as sibling
+   * SkinnedMeshes sharing the same skeleton. Removing/reparenting the source mesh breaks many GLBs.
    */
-  function replaceSkinnedWithHoloLayers(sm, Pm, outUni, holoSkinnedVert) {
+  function augmentSkinnedMeshWithHoloLayers(sm, Pm, outUni, holoSkinnedVert) {
+    if (!sm || sm.userData._mwHoloLayer) return;
     var parent = sm.parent;
-    if (!parent) return;
-    var holder = new THREE.Group();
-    holder.name = (sm.name || 'skin') + '_holo';
-    holder.position.copy(sm.position);
-    holder.quaternion.copy(sm.quaternion);
-    holder.scale.copy(sm.scale);
-    holder.matrixAutoUpdate = sm.matrixAutoUpdate;
-    parent.remove(sm);
+    if (!parent || !sm.skeleton || !sm.geometry) return;
 
     var origMat = Array.isArray(sm.material) ? sm.material[0] : sm.material;
     var texMap = origMat && origMat.map ? origMat.map : null;
@@ -254,7 +254,11 @@ if (typeof window !== 'undefined') { window.MeshoptDecoder = MeshoptDecoder; }
       depthTest: true
     });
     baseMat.skinning = true;
-    addSharedSkinnedMesh(holder, sm, baseMat, 0);
+    sm.material = baseMat;
+    sm.renderOrder = 0;
+    sm.frustumCulled = false;
+    sm.castShadow = true;
+    sm.receiveShadow = true;
 
     if (texMap) {
       var texOnly = new THREE.MeshBasicMaterial({
@@ -266,7 +270,11 @@ if (typeof window !== 'undefined') { window.MeshoptDecoder = MeshoptDecoder; }
         depthTest: true
       });
       texOnly.skinning = true;
-      addSharedSkinnedMesh(holder, sm, texOnly, 1);
+      var smTex = new THREE.SkinnedMesh(sm.geometry, texOnly);
+      bindSkinnedClone(smTex, sm);
+      smTex.renderOrder = 1;
+      smTex.userData._mwHoloLayer = true;
+      parent.add(smTex);
     }
 
     var uniforms = {
@@ -294,7 +302,7 @@ if (typeof window !== 'undefined') { window.MeshoptDecoder = MeshoptDecoder; }
         depthWrite: false,
         depthTest: true,
         blending: THREE.AdditiveBlending,
-        side: THREE.FrontSide,
+        side: THREE.DoubleSide,
         skinning: true
       });
     } else {
@@ -308,9 +316,11 @@ if (typeof window !== 'undefined') { window.MeshoptDecoder = MeshoptDecoder; }
       });
       holoMat.skinning = true;
     }
-    addSharedSkinnedMesh(holder, sm, holoMat, 2);
-
-    parent.add(holder);
+    var smHolo = new THREE.SkinnedMesh(sm.geometry, holoMat);
+    bindSkinnedClone(smHolo, sm);
+    smHolo.renderOrder = 2;
+    smHolo.userData._mwHoloLayer = true;
+    parent.add(smHolo);
   }
 
   var holoFragmentShader = [
@@ -420,18 +430,28 @@ if (typeof window !== 'undefined') { window.MeshoptDecoder = MeshoptDecoder; }
 
     var skinnedList = [];
     root.traverse(function (child) {
-      if (child.isSkinnedMesh && child.geometry && child.skeleton) skinnedList.push(child);
+      if (child.isSkinnedMesh && child.geometry && child.skeleton && !child.userData._mwHoloLayer) {
+        skinnedList.push(child);
+      }
     });
     var si;
     for (si = 0; si < skinnedList.length; si++) {
-      replaceSkinnedWithHoloLayers(skinnedList[si], Pm, outUni, holoSkinnedVert);
+      augmentSkinnedMeshWithHoloLayers(skinnedList[si], Pm, outUni, holoSkinnedVert);
     }
 
     var modelGroup = new THREE.Group();
     root.updateMatrixWorld(true);
     var staticList = [];
     root.traverse(function (child) {
-      if (child.isMesh && !child.isSkinnedMesh && child.geometry) staticList.push(child);
+      if (child.userData._mwHoloLayer) return;
+      if (
+        child.isMesh &&
+        !child.isSkinnedMesh &&
+        child.geometry &&
+        !geometryHasSkinWeights(child.geometry)
+      ) {
+        staticList.push(child);
+      }
     });
     var st;
     for (st = 0; st < staticList.length; st++) {

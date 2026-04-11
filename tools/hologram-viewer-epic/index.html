@@ -310,29 +310,30 @@ function pickIdleClip(animations) {
   return idle || animations[0];
 }
 
-function addSharedSkinnedMesh(parent, source, material, renderOrder) {
-  const sm = new THREE.SkinnedMesh(source.geometry, material);
-  sm.skeleton = source.skeleton;
-  sm.bindMode = source.bindMode;
-  sm.bindMatrix.copy(source.bindMatrix);
-  sm.bindMatrixInverse.copy(source.bindMatrixInverse);
-  sm.castShadow = true;
-  sm.receiveShadow = true;
-  sm.frustumCulled = source.frustumCulled;
-  sm.renderOrder = renderOrder;
-  parent.add(sm);
-  return sm;
+function bindSkinnedClone(dst, src) {
+  dst.skeleton = src.skeleton;
+  dst.bindMode = src.bindMode;
+  dst.bindMatrix.copy(src.bindMatrix);
+  dst.bindMatrixInverse.copy(src.bindMatrixInverse);
+  dst.position.copy(src.position);
+  dst.quaternion.copy(src.quaternion);
+  dst.scale.copy(src.scale);
+  dst.castShadow = true;
+  dst.receiveShadow = true;
+  dst.frustumCulled = false;
+  dst.matrixAutoUpdate = src.matrixAutoUpdate;
 }
 
-function replaceSkinnedWithHoloLayers(sm, holoSkinnedVert) {
+function geometryHasSkinWeights(geo) {
+  if (!geo?.attributes) return false;
+  return geo.attributes.skinIndex !== undefined || geo.attributes.skinWeight !== undefined;
+}
+
+/** Keep SkinnedMesh under the armature; add holo layers as siblings (same skeleton). */
+function augmentSkinnedMeshWithHoloLayers(sm, holoSkinnedVert) {
+  if (!sm || sm.userData._mwHoloLayer) return;
   const parent = sm.parent;
-  if (!parent) return;
-  const holder = new THREE.Group();
-  holder.name = `${sm.name || 'skin'}_holo`;
-  holder.position.copy(sm.position);
-  holder.quaternion.copy(sm.quaternion);
-  holder.scale.copy(sm.scale);
-  parent.remove(sm);
+  if (!parent || !sm.skeleton || !sm.geometry) return;
 
   const origMat = Array.isArray(sm.material) ? sm.material[0] : sm.material;
   const texMap = origMat?.map ?? null;
@@ -346,7 +347,11 @@ function replaceSkinnedWithHoloLayers(sm, holoSkinnedVert) {
     depthTest: true
   });
   baseMat.skinning = true;
-  addSharedSkinnedMesh(holder, sm, baseMat, 0);
+  sm.material = baseMat;
+  sm.renderOrder = 0;
+  sm.frustumCulled = false;
+  sm.castShadow = true;
+  sm.receiveShadow = true;
 
   if (texMap) {
     const texOnly = new THREE.MeshBasicMaterial({
@@ -358,7 +363,11 @@ function replaceSkinnedWithHoloLayers(sm, holoSkinnedVert) {
       depthTest: true
     });
     texOnly.skinning = true;
-    addSharedSkinnedMesh(holder, sm, texOnly, 1);
+    const smTex = new THREE.SkinnedMesh(sm.geometry, texOnly);
+    bindSkinnedClone(smTex, sm);
+    smTex.renderOrder = 1;
+    smTex.userData._mwHoloLayer = true;
+    parent.add(smTex);
   }
 
   let holoMat;
@@ -383,8 +392,9 @@ function replaceSkinnedWithHoloLayers(sm, holoSkinnedVert) {
       fragmentShader: holoFragmentShader,
       transparent: true,
       depthWrite: false,
+      depthTest: true,
       blending: THREE.AdditiveBlending,
-      side: THREE.FrontSide,
+      side: THREE.DoubleSide,
       skinning: true
     });
   } else {
@@ -393,12 +403,16 @@ function replaceSkinnedWithHoloLayers(sm, holoSkinnedVert) {
       transparent: true,
       opacity: P.opacity * P.holoOpacityMul * 0.55,
       depthWrite: false,
+      depthTest: true,
       blending: THREE.AdditiveBlending
     });
     holoMat.skinning = true;
   }
-  addSharedSkinnedMesh(holder, sm, holoMat, 2);
-  parent.add(holder);
+  const smHolo = new THREE.SkinnedMesh(sm.geometry, holoMat);
+  bindSkinnedClone(smHolo, sm);
+  smHolo.renderOrder = 2;
+  smHolo.userData._mwHoloLayer = true;
+  parent.add(smHolo);
 }
 
 // ─── PROJECTOR BASE RING ──────────────────────────────────────────────────────
@@ -576,13 +590,23 @@ function buildHologramLayers(gltf) {
 
   const skinnedList = [];
   root.traverse((child) => {
-    if (child.isSkinnedMesh && child.geometry && child.skeleton) skinnedList.push(child);
+    if (child.isSkinnedMesh && child.geometry && child.skeleton && !child.userData._mwHoloLayer) {
+      skinnedList.push(child);
+    }
   });
-  skinnedList.forEach((sm) => replaceSkinnedWithHoloLayers(sm, holoSkinnedVertexShader));
+  skinnedList.forEach((sm) => augmentSkinnedMeshWithHoloLayers(sm, holoSkinnedVertexShader));
 
   const staticList = [];
   root.traverse((child) => {
-    if (child.isMesh && !child.isSkinnedMesh && child.geometry) staticList.push(child);
+    if (child.userData._mwHoloLayer) return;
+    if (
+      child.isMesh &&
+      !child.isSkinnedMesh &&
+      child.geometry &&
+      !geometryHasSkinWeights(child.geometry)
+    ) {
+      staticList.push(child);
+    }
   });
 
   staticList.forEach((child) => {
