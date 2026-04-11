@@ -1988,8 +1988,9 @@ let _wbSelBox        = null;    // BoxHelper de outline
 // Catálogo (se rellena en initWorldBuilder)
 let _wbCatalog       = [];
 
-// GLTFLoader compartido para todos los objetos del builder
-const _wbLoader      = new GLTFLoader();
+// GLTFLoader compartido para todos los objetos del builder (Draco: mismos cristales/GLB que Sanctum)
+const _wbLoader = new GLTFLoader();
+_wbLoader.setDRACOLoader(_heroDracoLoader);
 
 // ── buildWorldObject(item) ──
 // Construye un THREE.Group listo para añadir a la escena.
