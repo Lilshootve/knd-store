@@ -7,6 +7,7 @@
 <meta name="nexus-ws-url" content="wss://knd-store-production.up.railway.app">
 <title>NEXUS — Central City</title>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<!-- World Builder Pro styles are injected by builder-ui.js -->
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -179,37 +180,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
 .ld-f{height:100%;background:linear-gradient(90deg,#00e8ff,#9b30ff);border-radius:1px;animation:ld-anim 1.4s ease-in-out infinite}
 @keyframes ld-anim{0%{width:0%;margin-left:0}50%{width:60%}100%{width:0%;margin-left:100%}}
 
-/* ══ WORLD BUILDER ADMIN HUD ══ */
-#wb-hud{position:fixed;left:0;top:48px;bottom:56px;width:min(320px,44vw);max-width:100%;z-index:60;background:rgba(2,5,16,.97);border-right:1px solid rgba(155,48,255,.18);backdrop-filter:blur(14px);display:flex;flex-direction:column;gap:0;overflow-y:auto;overflow-x:hidden}
-#wb-hud::before{content:"";position:absolute;right:0;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,rgba(155,48,255,.45) 30%,rgba(0,232,255,.3) 70%,transparent);pointer-events:none}
-#wb-hud::-webkit-scrollbar{width:6px}#wb-hud::-webkit-scrollbar-thumb{background:rgba(155,48,255,.28);border-radius:3px}
-.wb-hdr{padding:12px 14px 10px;border-bottom:1px solid rgba(155,48,255,.12);display:flex;align-items:center;gap:8px;flex-shrink:0}
-.wb-badge{background:rgba(155,48,255,.15);border:1px solid rgba(155,48,255,.45);border-radius:4px;padding:3px 8px;font-family:"Orbitron",sans-serif;font-size:8px;font-weight:700;letter-spacing:.14em;color:#c158ff}
-.wb-title{font-family:"Orbitron",sans-serif;font-size:10px;font-weight:700;letter-spacing:.12em;color:rgba(200,175,255,.95)}
-.wb-close{margin-left:auto;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;color:rgba(255,255,255,.35);transition:all .15s;flex-shrink:0}
-.wb-close:hover{background:rgba(255,61,86,.1);color:#ff3d56;border-color:rgba(255,61,86,.3)}
-.wb-sect{padding:10px 14px;border-bottom:1px solid rgba(155,48,255,.07);flex-shrink:0}
-#wb-catalog-sect{max-height:min(46vh,400px);overflow-y:auto;flex-shrink:0}
-#wb-catalog-sect::-webkit-scrollbar{width:5px}#wb-catalog-sect::-webkit-scrollbar-thumb{background:rgba(155,48,255,.25);border-radius:3px}
-.wb-sl{font-size:8px;letter-spacing:.16em;color:rgba(155,100,255,.5);margin-bottom:8px}
-#wb-catalog-items{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.wbi{background:rgba(155,48,255,.06);border:1px solid rgba(155,48,255,.14);border-radius:6px;padding:9px 6px;cursor:pointer;text-align:center;transition:all .18s}
-.wbi:hover{background:rgba(155,48,255,.14);border-color:rgba(155,48,255,.38);transform:translateY(-1px)}
-.wbi.on{background:rgba(155,48,255,.22);border-color:#9b30ff;box-shadow:0 0 10px rgba(155,48,255,.35)}
-.wbi-icon{font-size:22px;line-height:1.15}
-.wbi-name{font-size:9px;letter-spacing:.03em;line-height:1.25;color:rgba(210,190,255,.75);margin-top:5px;white-space:normal;word-break:break-word;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.wb-btns{display:flex;flex-direction:column;gap:5px}
-.wb-btn{padding:9px 10px;border-radius:5px;cursor:pointer;font-family:"Orbitron",sans-serif;font-size:8.5px;font-weight:700;letter-spacing:.1em;text-align:center;border:1px solid;transition:all .15s;user-select:none}
-.wb-btn.info{background:rgba(0,232,255,.07);border-color:rgba(0,232,255,.25);color:#00e8ff}
-.wb-btn.info:hover{background:rgba(0,232,255,.15)}
-.wb-btn.info.on{background:rgba(0,232,255,.18);box-shadow:0 0 10px rgba(0,232,255,.2)}
-.wb-btn.warn{background:rgba(255,61,86,.07);border-color:rgba(255,61,86,.28);color:#ff3d56}
-.wb-btn.warn:hover{background:rgba(255,61,86,.15)}
-.wb-keys{display:flex;flex-direction:column;gap:5px}
-.wb-key-row{display:flex;align-items:center;gap:8px;padding:3px 0}
-.wb-k{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:20px;padding:0 6px;border-radius:4px;font-size:8.5px;border:1px solid rgba(155,48,255,.38);background:rgba(40,10,80,.5);color:rgba(200,150,255,.9);font-family:"Share Tech Mono",monospace}
-.wb-kl{font-size:8px;color:rgba(155,120,200,.6);letter-spacing:.05em}
-#wb-status{padding:10px 14px;font-size:9px;color:rgba(155,180,255,.65);letter-spacing:.03em;line-height:1.55;border-top:1px solid rgba(155,48,255,.08);min-height:48px;word-break:break-word;flex-shrink:0}
+/* World Builder Pro styles are injected dynamically by builder-ui.js */
 </style>
 </head>
 <body>
@@ -310,38 +281,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
   </div>
 </div>
 
-<!-- World Builder HUD (admin only, hidden until B is pressed) -->
-<div id="wb-hud" style="display:none">
-  <div class="wb-hdr">
-    <div class="wb-badge">ADMIN</div>
-    <div class="wb-title">WORLD BUILDER</div>
-    <div class="wb-close" onclick="window._wbToggleMode()">✕</div>
-  </div>
-  <div class="wb-sect" id="wb-catalog-sect">
-    <div class="wb-sl">CATÁLOGO DE OBJETOS</div>
-    <div id="wb-catalog-items"></div>
-  </div>
-  <div class="wb-sect">
-    <div class="wb-sl">ACCIONES</div>
-    <div class="wb-btns">
-      <div class="wb-btn info" id="wb-grid-btn" onclick="window._wbToggleGrid()">◫ GRID SNAP: OFF</div>
-      <div class="wb-btn warn" onclick="window.wbDeleteSelected()">✕ BORRAR SELECCIONADO</div>
-    </div>
-  </div>
-  <div class="wb-sect">
-    <div class="wb-sl">CONTROLES</div>
-    <div class="wb-keys">
-      <div class="wb-key-row"><span class="wb-k">B</span><span class="wb-kl">activar / desactivar</span></div>
-      <div class="wb-key-row"><span class="wb-k">Click</span><span class="wb-kl">colocar / seleccionar</span></div>
-      <div class="wb-key-row"><span class="wb-k">R</span><span class="wb-kl">rotar 45°</span></div>
-      <div class="wb-key-row"><span class="wb-k">+ / -</span><span class="wb-kl">escalar</span></div>
-      <div class="wb-key-row"><span class="wb-k">DEL</span><span class="wb-kl">eliminar seleccionado</span></div>
-      <div class="wb-key-row"><span class="wb-k">G</span><span class="wb-kl">grid snap toggle</span></div>
-      <div class="wb-key-row"><span class="wb-k">ESC</span><span class="wb-kl">cancelar colocación</span></div>
-    </div>
-  </div>
-  <div id="wb-status">Modo Builder activo.</div>
-</div>
+<!-- World Builder Pro panel is injected by WorldBuilderPro (js/world-builder/index.js) -->
 
 <!-- Customizer -->
 <div id="cu">
@@ -364,6 +304,7 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { WorldBuilderPro } from "./js/world-builder/index.js";
 
 // ══════════════════════════════════════════════════════
 // STATE
@@ -1059,6 +1000,33 @@ const _heroDracoLoader = new DRACOLoader();
 _heroDracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
 _heroDracoLoader.setDecoderConfig({ type: 'js' });
 _gltfLoader.setDRACOLoader(_heroDracoLoader);
+
+// ── WorldBuilderPro: created after renderer/scene/controls/dracoLoader are ready ──
+// B key: activate builder (admin only)
+document.addEventListener('keydown', e => {
+  if (e.code !== 'KeyB') return;
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (!window.IS_ADMIN || !_worldBuilder) return;
+  _worldBuilder.toggle();
+  e.preventDefault();
+}, { capture: false });
+
+function _initWorldBuilderPro() {
+  _worldBuilder = new WorldBuilderPro({
+    scene,
+    cam,
+    renderer,
+    orbitControls: controls,
+    fireEv,
+    normalizeGltfForRenderer,
+    applyHologramEffect,
+    addGroundRing,
+    applyGlowToObject3D: _applyGlowToObject3D,
+    disposeMaterialSafe: _disposeMaterialSafe,
+    dracoLoader: _heroDracoLoader,
+    webglLow: WEBGL_LOW,
+  });
+}
 const ENABLE_HOLOGRAM_AVATAR = false;
 let _holoAvatar = null;
 
@@ -1678,9 +1646,9 @@ window.applyCustomizer=async function(){
 const keys={};
 window.addEventListener("keydown",e=>{
   if(document.activeElement===document.getElementById("chat-input")) return;
-  // ── World Builder hotkeys (admin) ──
-  if(e.code==="KeyB" && !e.repeat && window.IS_ADMIN){ _wbToggleMode(); return; }
-  if(_wbActive && !e.repeat){ if(_wbHandleKey(e.code)) return; }
+  // ── World Builder hotkeys (B key) handled by WorldBuilderPro's own listener ──
+  // The builder captures B, T, Y, S, R, +, -, DEL, ESC, G, Ctrl+D internally.
+  if(_worldBuilder?.active && !e.repeat) return; // builder handles its own keys
   // ── Normal game keys ──
   keys[e.code]=true;
   if(e.code==="KeyE"&&!e.repeat) onInteract();
@@ -1932,8 +1900,7 @@ renderer.setAnimationLoop((nowMs)=>{
   // Ágora bubbles
   tickBubbles();
 
-  tickWorldPlacedObjectAnim(dt);
-  if (_wbActive) tickWorldBuilder(dt);
+  tickWorldPlacedObjectAnim(dt); // delegates to _worldBuilder.tick(dt)
 
   try{
     if (composer) composer.render();
@@ -1945,57 +1912,26 @@ renderer.setAnimationLoop((nowMs)=>{
 });
 
 // ══════════════════════════════════════════════════════
-// WORLD BUILDER  (admin only)
-// Módulo completamente aislado — no toca las variables
-// del juego excepto: scene, cam, renderer, fireEv.
+// WORLD BUILDER PRO  (admin only — B key)
+// Powered by WorldBuilderPro (js/world-builder/index.js)
 // ══════════════════════════════════════════════════════
 
-// ── RAYCASTER ──
-const _wbRaycaster   = new THREE.Raycaster();
-const _wbMouse       = new THREE.Vector2();
+// WorldBuilderPro instance — initialized after scene setup
+let _worldBuilder = null;
 
-// Plano invisible gigante en Y=0 para detectar posición del cursor en el mundo
-const _wbGroundPlane = (() => {
-  const m = new THREE.Mesh(
-    new THREE.PlaneGeometry(500, 500),
-    new THREE.MeshBasicMaterial({ visible: false, side: THREE.DoubleSide })
-  );
-  m.rotation.x = -Math.PI / 2;
-  m.name = '_wbGroundPlane';
-  scene.add(m);
-  return m;
-})();
+// ── WorldBuilderPro — initialized in initWorldBuilder() after scene is ready
 
-// ── ESTADO GLOBAL DEL BUILDER ──
-let _wbActive        = false;   // modo builder on/off
-let _wbPlacing       = false;   // hay ghost activo (item seleccionado para colocar)
-let _wbSelectedItem  = null;    // ítem del catálogo seleccionado
-let _wbGhost         = null;    // THREE.Group de preview semitransparente
-let _wbGhostRotY     = 0;       // rotación acumulada del ghost
-let _wbGhostScale    = 1.0;     // escala acumulada del ghost
-let _wbGridSnap      = false;   // snap a cuadrícula de 1u
-let _wbGridHelper    = null;    // GridHelper opcional (toggle G)
+// ── WorldBuilderPro context — built after scene, cam, renderer, controls are ready
 
-// Lista y mapa de objetos colocados en el mundo
-const _wbObjects     = [];          // [{id, item_id, mesh}]
-const _wbObjectMap   = new Map();   // id → entry
-let _wbWorldObjectsLoaded = false;
+// ── Dead variable stubs (old builder replaced by WorldBuilderPro; code below is unreachable dead code) ──
+let _wbActive=false,_wbPlacing=false,_wbSelectedItem=null,_wbGhost=null;
+let _wbGhostRotY=0,_wbGhostScale=1.0,_wbGridSnap=false,_wbGridHelper=null;
+let _wbSelObj=null,_wbSelBox=null,_wbCatalog=[],_wbWorldObjectsLoaded=false;
+const _wbObjects=[],_wbObjectMap=new Map();
+// _wbLoader stub (dead code — real loader lives in CatalogSystem)
+const _wbLoader={load:()=>{}};
 
-// Objeto seleccionado actualmente (para R, +/-, DEL)
-let _wbSelObj        = null;
-let _wbSelBox        = null;    // BoxHelper de outline
-
-// Catálogo (se rellena en initWorldBuilder)
-let _wbCatalog       = [];
-
-// GLTFLoader compartido para todos los objetos del builder (Draco: mismos cristales/GLB que Sanctum)
-const _wbLoader = new GLTFLoader();
-_wbLoader.setDRACOLoader(_heroDracoLoader);
-
-// ── buildWorldObject(item) ──
-// Construye un THREE.Group listo para añadir a la escena.
-// item: { id, name, model (URL|null), scale, color, light:{type,color,intensity,distance,height} }
-// Retorna: Promise<THREE.Group>
+// ── Old builder functions below are DEAD CODE — never called (proxies above delegate to WorldBuilderPro) ──
 async function buildWorldObject(item) {
   const g = new THREE.Group();
   g.userData.worldItem = item;
@@ -2480,14 +2416,8 @@ function _wbCatalogEntryByItemId(itemId) {
 
 /** Todos los jugadores ven los objetos colocados; el catálogo (sesión) resuelve modelos si falta model_url en BD. */
 async function ensureNexusWorldObjectsLoaded() {
-  if (_wbWorldObjectsLoaded) return;
-  _wbWorldObjectsLoaded = true;
-  try {
-    if ((window._userId | 0) > 0) await _wbFetchFurnitureCatalog();
-    await wbLoadObjects();
-  } catch (e) {
-    console.warn("[Nexus] ensureNexusWorldObjectsLoaded:", e);
-  }
+  // Delegated to WorldBuilderPro
+  if (_worldBuilder) await _worldBuilder.ensureWorldObjectsLoaded();
 }
 
 // ── CARGAR OBJETOS EXISTENTES DESDE API ──
@@ -2579,33 +2509,9 @@ function _wbSetStatus(msg) {
   if (el) el.textContent = msg;
 }
 
-// ── TICK DEL LOOP PRINCIPAL ──
-// Llamado desde renderer.setAnimationLoop cuando _wbActive=true
-
-let _wbPulseT = 0;
-function tickWorldPlacedObjectAnim(dt) {
-  _wbObjects.forEach(o => {
-    if (o.mesh?.userData?.mixer) o.mesh.userData.mixer.update(dt);
-  });
-  _wbPulseT += dt;
-  _wbObjects.forEach(o => {
-    const glow = o.mesh?.userData?.wbGlowMesh;
-    if (!glow) return;
-    const base = glow.userData.wbPulseBase ?? 0.22;
-    glow.material.opacity = base + Math.sin(_wbPulseT * 1.8) * 0.07;
-  });
-  const t = performance.now() * 0.002;
-  _wbObjects.forEach(o => {
-    const obj = o.mesh;
-    if (!obj) return;
-    if (obj.userData.scanline) obj.userData.scanline.position.y = (Math.sin(t) * 0.5) + 1;
-    if (obj.userData.ring) obj.userData.ring.scale.setScalar(1 + Math.sin(t) * 0.05);
-  });
-}
-
-function tickWorldBuilder(dt) {
-  if (_wbSelBox && _wbSelObj) _wbSelBox.update();
-}
+// ── BUILDER TICK — delegated to WorldBuilderPro ──
+function tickWorldPlacedObjectAnim(dt) { if (_worldBuilder) _worldBuilder.tick(dt); }
+function tickWorldBuilder(dt)          { /* handled inside WorldBuilderPro.tick() */ }
 
 // ── MANEJO DE TECLAS DEL BUILDER ──
 // Retorna true si consumió la tecla (evita propagación al juego)
@@ -2718,29 +2624,33 @@ function _wbToggleMode() {
   );
 }
 
-// ── INICIALIZACIÓN (llamada desde loadWorld cuando is_admin=true) ──
-
+// ── initWorldBuilder — delegated to WorldBuilderPro ──
 async function initWorldBuilder() {
-  if (!window.IS_ADMIN) return;
-
-  await _wbFetchFurnitureCatalog();
-  _wbBuildCatalogUI();
-
-  if (!_wbCatalog.length) {
-    fireEv('⚠', 'WB', 'Catálogo vacío o no cargado — revisa DB / sesión', 'rgba(255,160,80,.85)');
-  }
-  fireEv('🔧', 'ADMIN', 'World Builder — catálogo = Sanctum (DB)', 'rgba(155,48,255,.8)');
+  if (!window.IS_ADMIN || !_worldBuilder) return;
+  await _worldBuilder.initAdmin();
 }
 
-// Exponer funciones al scope global para los onclick del HTML
-window._wbToggleMode  = _wbToggleMode;
-window.wbDeleteSelected = wbDeleteSelected;
-window._wbToggleGrid  = _wbToggleGrid;
+// Expose globals for backward compat (panel is now JS-generated)
+window._wbToggleMode    = () => _worldBuilder?.toggle();
+window.wbDeleteSelected = () => {
+  if (!_worldBuilder?.active) return;
+  const sel = _worldBuilder.transformSystem.selectedEntry;
+  if (sel) { _worldBuilder.transformSystem.deselect(); _worldBuilder.catalogSystem.deleteObject(sel); }
+};
+window._wbToggleGrid = () => {
+  if (!_worldBuilder?.active) return;
+  _worldBuilder.catalogSystem.toggleGrid();
+  _worldBuilder.ui.refreshSceneTab();
+};
 
 // ══════════════════════════════════════════════════════
 // BOOT
 // ══════════════════════════════════════════════════════
 initPostFX();
+
+// Initialize WorldBuilderPro (scene, cam, renderer, controls all ready by now)
+_initWorldBuilderPro();
+
 loadWorld().then(()=>{
   // CRT power-on intro
   const crtEl=document.getElementById("crt-overlay");
