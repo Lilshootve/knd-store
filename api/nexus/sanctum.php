@@ -83,12 +83,31 @@ function sanctum_owned_furniture_ids(PDO $pdo, int $uid): array {
 
 // ──────────────────────────────────────────────────────────────────
 // GET — Cargar sanctum completo
+// Query opcional: room_user_id — ver muebles de otro usuario (solo si su plot is_public=1).
+// Catálogo siempre nexus_furniture_catalog (Sanctum / tienda). No mezclar con world_builder_catalog.
 // ──────────────────────────────────────────────────────────────────
 if ($method === 'GET') {
     try {
-        $plot = ensure_plot($pdo, $uid);
+        $sessionUid = (int) $uid;
+        $reqRoom    = isset($_GET['room_user_id']) ? (int) $_GET['room_user_id'] : 0;
+        $targetUid  = $sessionUid;
+        $readOnly   = false;
 
-        // Muebles colocados (con datos del catálogo)
+        if ($reqRoom > 0 && $reqRoom !== $sessionUid) {
+            $tp = $pdo->prepare('SELECT * FROM nexus_plots WHERE user_id = ? LIMIT 1');
+            $tp->execute([$reqRoom]);
+            $tplot = $tp->fetch(PDO::FETCH_ASSOC);
+            if (!$tplot || !(int) ($tplot['is_public'] ?? 0)) {
+                json_error('PRIVATE_SANCTUM', 'This sanctum is private or does not exist', 403);
+            }
+            $targetUid = $reqRoom;
+            $readOnly  = true;
+            $plot      = $tplot;
+        } else {
+            $plot = ensure_plot($pdo, $sessionUid);
+        }
+
+        // Muebles colocados del dueño de la habitación (targetUid)
         $ps = $pdo->prepare('
             SELECT rf.id, rf.furniture_id, rf.room, rf.cell_x, rf.cell_y,
                    rf.rotation, rf.color_override,
@@ -99,7 +118,7 @@ if ($method === 'GET') {
             WHERE rf.user_id = ?
             ORDER BY rf.placed_at
         ');
-        $ps->execute([$uid]);
+        $ps->execute([$targetUid]);
         $placed = $ps->fetchAll(PDO::FETCH_ASSOC);
         foreach ($placed as &$p) {
             $p['asset_data'] = $p['asset_data'] ? json_decode($p['asset_data'], true) : [];
@@ -108,20 +127,27 @@ if ($method === 'GET') {
 
         $catalog = nexus_furniture_catalog_fetch_active($pdo);
 
-        $ownedFurnitureIds = sanctum_owned_furniture_ids($pdo, $uid);
+        // Inventario / KP siempre del visitante (sesión)
+        $ownedFurnitureIds = sanctum_owned_furniture_ids($pdo, $sessionUid);
 
-        // Username
-        $un = $pdo->prepare('SELECT username FROM users WHERE id=?');
-        $un->execute([$uid]);
-        $username = (string)($un->fetchColumn() ?: 'Player');
+        $unOwner = $pdo->prepare('SELECT username FROM users WHERE id=?');
+        $unOwner->execute([$targetUid]);
+        $roomOwnerUsername = (string) ($unOwner->fetchColumn() ?: 'Player');
+
+        $unViewer = $pdo->prepare('SELECT username FROM users WHERE id=?');
+        $unViewer->execute([$sessionUid]);
+        $viewerUsername = (string) ($unViewer->fetchColumn() ?: 'Player');
 
         json_success([
             'plot'                 => $plot,
             'placed'               => $placed,
             'catalog'              => $catalog,
-            'balance'              => kp_balance($pdo, $uid),
-            'username'             => $username,
-            'is_admin'             => nexus_user_can_world_builder($pdo, $uid),
+            'balance'              => kp_balance($pdo, $sessionUid),
+            'username'             => $roomOwnerUsername,
+            'viewer_username'      => $viewerUsername,
+            'room_owner_id'        => $targetUid,
+            'read_only'            => $readOnly,
+            'is_admin'             => nexus_user_can_world_builder($pdo, $sessionUid),
             'owned_furniture_ids'  => $ownedFurnitureIds,
         ]);
     } catch (PDOException $e) {

@@ -1001,6 +1001,8 @@ _heroDracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
 _heroDracoLoader.setDecoderConfig({ type: 'js' });
 _gltfLoader.setDRACOLoader(_heroDracoLoader);
 
+// ── MODE: CITY (this page) — objetos globales vía world_builder.php + catálogo nexus_world_builder_catalog.
+// Sanctum (habitación) es sanctum.php: nexus_room_furniture + nexus_furniture_catalog; no mezclar loaders.
 // ── WorldBuilderPro: created after renderer/scene/controls/dracoLoader are ready ──
 // B key: activate builder (admin only)
 document.addEventListener('keydown', e => {

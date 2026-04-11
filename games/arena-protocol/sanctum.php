@@ -293,7 +293,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;b
     <span id="nav-exit-lbl">NEXUS</span>
   </div>
   <div class="tb-sep"></div>
-  <div id="room-name" onclick="openSettings()"><?php echo htmlspecialchars($_sanctumRoomDisplay, ENT_QUOTES, 'UTF-8'); ?></div>
+  <div id="room-name"><?php echo htmlspecialchars($_sanctumRoomDisplay, ENT_QUOTES, 'UTF-8'); ?></div>
   <div class="tb-r">
     <div class="kp-chip">
       <span class="kp-icon">◈</span>
@@ -476,6 +476,10 @@ _gltfLoader.setDRACOLoader(_heroDracoLoader);
 
 
 let nexusRt = null;
+/** Dueño de la habitación 3D cargada (coincide con filas nexus_room_furniture.user_id en servidor). */
+let sanctumRoomOwnerId = NEXUS_RT_UID;
+/** Visita pública (GET ?room_user_id / ?visit): sin colocar, comprar ni ajustes. */
+let sanctumReadOnly = false;
 
 /** GLB + MeshPhysical / Shader + texturas sin colorSpace rompen uniforms con EffectComposer (r170). */
 function normalizeGltfForRenderer(root) {
@@ -521,51 +525,40 @@ const floorCells   = [];       // 10x10 flat planes for hover highlight
 const animObjects  = [];       // { mesh, type, t0 }
 
 // ─────────────────────────────────────────────────────────────────
-// Boot
+// Boot — ciudad (nexus-city) ≠ sanctum: aquí solo habitación privada + catálogo muebles.
+// WebSocket districtId = sanctum:<roomOwnerId> para no mezclar avatares entre usuarios.
 // ─────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', async () => {
     initThree();
     document.getElementById('crt').className = 'on';
-    setLoadProgress(20);
+    setLoadProgress(15);
+
+    buildScene();
+    setLoadProgress(25);
 
     try {
-        const res = await fetch('/api/nexus/sanctum.php');
-        const json = await res.json();
-        if (!json.ok) throw new Error(json.error?.message || 'API error');
-
-        setLoadProgress(60);
-        catalogue  = json.data.catalog;
-        placed     = json.data.placed;
-        plotData   = json.data.plot;
-        balance    = json.data.balance;
-
-        ownedItems.clear();
-        const oid = json.data.owned_furniture_ids;
-        if (Array.isArray(oid)) oid.forEach(id => ownedItems.add(Number(id)));
-        else placed.forEach(p => ownedItems.add(p.furniture_id));
-
-        document.getElementById('kp-val').textContent = balance.toLocaleString();
-        const rname = plotData.house_name || (json.data.username.toUpperCase() + '\'S SANCTUM');
-        document.getElementById('room-name').textContent = rname;
+        const params = new URLSearchParams(location.search);
+        const visitUid = parseInt(params.get('visit') || '0', 10);
+        const initialRoom = (visitUid > 0 && !Number.isNaN(visitUid)) ? visitUid : NEXUS_RT_UID;
+        await enterSanctum(initialRoom > 0 ? initialRoom : NEXUS_RT_UID);
+        applyTheme(plotData?.exterior_theme || 'cyber');
         applyExitNav();
-
-        buildScene();
-        applyTheme(plotData.exterior_theme || 'cyber');
-        renderCatalog('all');
-        updateTabCounts();
-        renderPlaced();
-        spawnHero();
-        initNexusRealtime();
         setLoadProgress(100);
-
-    } catch(e) {
+    } catch (e) {
         console.error('Sanctum load error:', e);
         applyExitNav();
-        buildScene();
+        catalogue = [];
+        placed = [];
+        plotData = null;
+        balance = 0;
+        sanctumReadOnly = false;
+        sanctumRoomOwnerId = NEXUS_RT_UID;
+        applySanctumReadOnlyUi();
         renderCatalog('all');
         updateTabCounts();
         spawnHero();
-        initNexusRealtime();
+        if (NEXUS_RT_UID > 0) initNexusRealtime(sanctumRoomOwnerId);
+        applyTheme('cyber');
         setLoadProgress(100);
     }
 
@@ -1547,6 +1540,7 @@ function renderCatalog(catFilter = 'all') {
 }
 
 function selectCatalogItem(item, el) {
+    if (sanctumReadOnly) { toast('View-only visit', 'info'); return; }
     document.querySelectorAll('.fi').forEach(f => f.classList.remove('sel'));
     el.classList.add('sel');
     selectedCatalogItem = item;
@@ -1560,6 +1554,7 @@ function selectCatalogItem(item, el) {
 }
 
 window.activatePlace = () => {
+    if (!assertSanctumWritable()) return;
     if (!selectedCatalogItem) return;
     const owned = isOwnedItem(selectedCatalogItem);
     if (owned) {
@@ -1831,9 +1826,149 @@ function onWheel(e) {
 }
 
 // ─────────────────────────────────────────────────────────────────
+// Sanctum scene isolation — distrito WS por dueño (sanctum:<userId>), muebles solo de ese user_id
+// ─────────────────────────────────────────────────────────────────
+function disposeSanctumGroupDeep(group) {
+    if (!group) return;
+    group.traverse((o) => {
+        if (o.isMesh) {
+            o.geometry?.dispose();
+            const mats = Array.isArray(o.material) ? o.material : [o.material];
+            mats.forEach((m) => { m?.map?.dispose(); m?.dispose?.(); });
+        }
+        if (o.userData?.mixer) { try { o.userData.mixer.stopAllAction(); } catch (_) {} }
+    });
+}
+
+function disposeAllPlacedMeshes() {
+    placedMeshes.forEach((g) => {
+        scene.remove(g);
+        disposeSanctumGroupDeep(g);
+    });
+    placedMeshes.clear();
+}
+
+function pruneAnimObjectsDetached() {
+    const alive = new Set();
+    scene.traverse((o) => alive.add(o));
+    for (let i = animObjects.length - 1; i >= 0; i--) {
+        const ao = animObjects[i];
+        if (!ao.obj || !alive.has(ao.obj)) animObjects.splice(i, 1);
+    }
+}
+
+function clearSanctumDynamicContent() {
+    if (nexusRt) {
+        try { nexusRt.dispose(); } catch (_) {}
+        nexusRt = null;
+    }
+    disposeAllPlacedMeshes();
+    placed = [];
+    selectedPlacedId = null;
+    selectedCatalogItem = null;
+    buyCandidate = null;
+    if (hero) {
+        scene.remove(hero);
+        hero = null;
+    }
+    resetCellHighlights();
+    if (ghostGroup) ghostGroup.visible = false;
+    if (typeof window.setMode === 'function') window.setMode('view');
+    pruneAnimObjectsDetached();
+}
+
+async function fetchSanctumPayload(roomOwnerUserId) {
+    const url = new URL('/api/nexus/sanctum.php', location.origin);
+    if ((roomOwnerUserId | 0) !== (NEXUS_RT_UID | 0)) {
+        url.searchParams.set('room_user_id', String(roomOwnerUserId));
+    }
+    const res = await fetch(url.toString(), { credentials: 'same-origin' });
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error?.message || 'Sanctum API error');
+    return json;
+}
+
+function applySanctumServerPayload(json) {
+    const d = json.data;
+    catalogue = d.catalog || [];
+    placed = d.placed || [];
+    plotData = d.plot || null;
+    balance = d.balance | 0;
+    sanctumReadOnly = !!d.read_only;
+    sanctumRoomOwnerId = (d.room_owner_id | 0) || (NEXUS_RT_UID | 0);
+
+    ownedItems.clear();
+    const oid = d.owned_furniture_ids;
+    if (Array.isArray(oid)) oid.forEach((id) => ownedItems.add(Number(id)));
+    else placed.forEach((p) => ownedItems.add(p.furniture_id));
+
+    document.getElementById('kp-val').textContent = balance.toLocaleString();
+    const ownerLabel = (d.username || 'PLAYER').toUpperCase();
+    const rname = plotData?.house_name || (ownerLabel + '\'S SANCTUM');
+    document.getElementById('room-name').textContent = sanctumReadOnly
+        ? (rname.toUpperCase() + ' · VISIT')
+        : rname.toUpperCase();
+}
+
+function applySanctumReadOnlyUi() {
+    const ro = sanctumReadOnly;
+    const placeBtn = document.getElementById('place-btn');
+    if (placeBtn) {
+        placeBtn.style.display = ro ? 'none' : '';
+        if (ro) placeBtn.disabled = true;
+    }
+    const gear = document.querySelector('.gear-btn');
+    if (gear) gear.style.display = ro ? 'none' : '';
+    const tabs = document.querySelector('.t-row');
+    if (tabs) tabs.style.display = ro ? 'none' : '';
+    const rn = document.getElementById('room-name');
+    if (rn) {
+        rn.onclick = ro ? () => toast('View-only visit', 'info') : () => openSettings();
+    }
+}
+
+function assertSanctumWritable() {
+    if (sanctumReadOnly) {
+        toast('View-only visit', 'info');
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Carga el sanctum del dueño indicado: vacía muebles/remotes/hero, GET API, solo esos placed + tu avatar.
+ * Visitar: loadRoomFurniture(uid) o ?visit=<uid> si is_public en BD.
+ */
+async function enterSanctum(roomOwnerUserId) {
+    let rid = roomOwnerUserId | 0;
+    if (rid <= 0) rid = NEXUS_RT_UID | 0;
+
+    clearSanctumDynamicContent();
+
+    const json = await fetchSanctumPayload(rid);
+    applySanctumServerPayload(json);
+    applySanctumReadOnlyUi();
+
+    renderCatalog('all');
+    updateTabCounts();
+    renderPlaced();
+    spawnHero();
+    initNexusRealtime(sanctumRoomOwnerId);
+    applyExitNav();
+}
+
+async function loadRoomFurniture(targetUserId) {
+    return enterSanctum(targetUserId);
+}
+
+window.enterSanctum = enterSanctum;
+window.loadRoomFurniture = loadRoomFurniture;
+
+// ─────────────────────────────────────────────────────────────────
 // API Calls
 // ─────────────────────────────────────────────────────────────────
 async function apiPlace(fid, cx, cy, rot) {
+    if (!assertSanctumWritable()) return;
     try {
         const r = await fetch('/api/nexus/sanctum.php', {
             method:'POST', headers:{'Content-Type':'application/json'},
@@ -1853,6 +1988,7 @@ async function apiPlace(fid, cx, cy, rot) {
 }
 
 async function apiRemove(pid) {
+    if (!assertSanctumWritable()) return;
     try {
         const r = await fetch('/api/nexus/sanctum.php', {
             method:'POST', headers:{'Content-Type':'application/json'},
@@ -1867,6 +2003,7 @@ async function apiRemove(pid) {
 }
 
 async function apiRotate(pid) {
+    if (!assertSanctumWritable()) return;
     try {
         const r = await fetch('/api/nexus/sanctum.php', {
             method:'POST', headers:{'Content-Type':'application/json'},
@@ -1886,6 +2023,7 @@ async function apiRotate(pid) {
 }
 
 async function apiBuy(fid) {
+    if (!assertSanctumWritable()) return false;
     try {
         const r = await fetch('/api/nexus/sanctum.php', {
             method:'POST', headers:{'Content-Type':'application/json'},
@@ -1902,6 +2040,7 @@ async function apiBuy(fid) {
 }
 
 function showBuyModal(item) {
+    if (sanctumReadOnly) { toast('View-only visit', 'info'); return; }
     buyCandidate = item;
     const ad = item.asset_data || {};
     document.getElementById('buy-preview').textContent = rarityIcons[item.rarity] || '◻';
@@ -1972,6 +2111,10 @@ function applyTheme(theme) {
 // Mode & UI
 // ─────────────────────────────────────────────────────────────────
 window.setMode = (m) => {
+    if (sanctumReadOnly && m !== 'view') {
+        toast('View-only visit', 'info');
+        return;
+    }
     mode = m;
     ['view','place','rotate','delete'].forEach(id => {
         document.getElementById('mode-'+id).classList.toggle('on', id === m);
@@ -2055,11 +2198,17 @@ function mkProceduralHero() {
     return g;
 }
 
-function initNexusRealtime() {
+function initNexusRealtime(roomOwnerUserId) {
     if (!scene) return;
+    if (nexusRt) {
+        try { nexusRt.dispose(); } catch (_) {}
+        nexusRt = null;
+    }
+    const rid = (roomOwnerUserId | 0) || (NEXUS_RT_UID | 0);
+    const districtId = `sanctum:${rid}`;
     nexusRt = createNexusDistrictRealtime({
         scene,
-        districtId: 'sanctum',
+        districtId,
         userId: NEXUS_RT_UID,
         displayName: NEXUS_RT_DISPLAY,
         colorBody: '#00e8ff',
@@ -2179,6 +2328,7 @@ document.addEventListener('keydown', e => {
 
 // Settings
 window.openSettings = () => {
+    if (sanctumReadOnly) { toast('View-only visit', 'info'); return; }
     if (plotData) {
         document.getElementById('s-name').value  = plotData.house_name || '';
         document.getElementById('s-theme').value = plotData.exterior_theme || 'cyber';
@@ -2195,6 +2345,7 @@ window.openSettings = () => {
 window.closeSettings = () => document.getElementById('modal').classList.remove('open');
 
 window.saveSettings = async () => {
+    if (!assertSanctumWritable()) return;
     const name  = document.getElementById('s-name').value;
     const theme = document.getElementById('s-theme').value;
     const color = document.getElementById('s-color').value;

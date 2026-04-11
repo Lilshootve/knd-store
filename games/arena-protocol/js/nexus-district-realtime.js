@@ -87,7 +87,7 @@ function capColor(hex) {
 /**
  * @param {object} o
  * @param {THREE.Scene} o.scene
- * @param {string} o.districtId - casino | agora | tesla | olimpo | sanctum
+ * @param {string} o.districtId - casino | agora | tesla | olimpo | sanctum:<userId> (sanctum por dueño; evita ver otros jugadores en tu habitación)
  * @param {number} o.userId
  * @param {string} o.displayName
  * @param {string} [o.colorBody]

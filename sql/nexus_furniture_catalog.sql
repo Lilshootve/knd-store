@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 11-04-2026 a las 22:33:39
+-- Tiempo de generación: 11-04-2026 a las 22:52:42
 -- Versión del servidor: 11.8.6-MariaDB-log
 -- Versión de PHP: 7.2.34
 
