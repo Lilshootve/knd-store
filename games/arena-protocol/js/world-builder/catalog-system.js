@@ -56,16 +56,17 @@ export class CatalogSystem {
   async fetchCatalog() {
     this.catalog = [];
     try {
-      const res = await fetch('/api/nexus/furniture_catalog.php', { credentials: 'same-origin' });
+      const res = await fetch('/api/nexus/world_builder_catalog.php', { credentials: 'same-origin' });
       const j = await res.json();
-      if (!j.ok) { console.warn('[WB] furniture_catalog:', j.error?.code, j.error?.message); return; }
+      if (res.status === 403) return;
+      if (!j.ok) { console.warn('[WB] world_builder_catalog:', j.error?.code, j.error?.message); return; }
       const rows = j.data?.catalog;
       if (!Array.isArray(rows)) { console.warn('[WB] furniture_catalog: no data.catalog[]'); return; }
       this.catalog = rows
         .map(r => this._rowToItem(r))
         .sort((a, b) => Number(b.furniture_id) - Number(a.furniture_id));
     } catch (e) {
-      console.warn('[WB] furniture_catalog fetch:', e);
+      console.warn('[WB] world_builder_catalog fetch:', e);
     }
   }
 
@@ -76,7 +77,7 @@ export class CatalogSystem {
       name:        row.name,
       icon:        this._categoryIcon(row.category),
       model:       ad.model || ad.model_url || null,
-      color:       ad.color || '#00e8ff',
+      color:       ad.color != null && ad.color !== '' ? ad.color : undefined,
       scale:       typeof ad.wb_scale === 'number' ? ad.wb_scale : (typeof ad.scale === 'number' ? ad.scale : 1.0),
       furniture_id: row.id,
       rarity:      row.rarity,

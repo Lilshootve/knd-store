@@ -3,7 +3,7 @@
  * server-side pagination, rarity badges, and 3D mini-preview.
  *
  * Renders as a modal overlay on top of the builder panel.
- * Talks to the same /api/nexus/furniture_catalog.php endpoint,
+ * Talks to /api/nexus/world_builder_catalog.php (catálogo 3D admin, no Sanctum).
  * using ?search=&category=&page=&limit= query params.
  */
 import * as THREE from 'three';
@@ -279,8 +279,9 @@ canvas.wbm-preview-canvas{ width:100%!important;height:100%!important; }
         page:     this._page,
         limit:    PAGE_SIZE,
       });
-      const res = await fetch(`/api/nexus/furniture_catalog.php?${params}`, { credentials: 'same-origin' });
+      const res = await fetch(`/api/nexus/world_builder_catalog.php?${params}`, { credentials: 'same-origin' });
       const j   = await res.json();
+      if (res.status === 403) throw new Error('World builder access required');
       if (!j.ok) throw new Error(j.error?.message);
 
       // Support both paginated and flat responses

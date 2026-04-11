@@ -2335,7 +2335,7 @@ function _wbToggleGrid() {
   _wbSetStatus(`Grid snap: ${_wbGridSnap ? 'activado (objetos se pegan a cuadrícula de 1u)' : 'desactivado'}`);
 }
 
-// ── Catálogo World Builder = mismo origen que Sanctum (GET api/nexus/furniture_catalog.php) ──
+// ── Catálogo legacy WB: api/nexus/world_builder_catalog.php (separado del catálogo Sanctum) ──
 
 function _wbCategoryIcon(cat) {
   const m = { floor:'🟦', wall:'🧱', decoration:'✦', interactive:'⚡', rare:'💠' };
@@ -2366,7 +2366,7 @@ function _wbMapLightDataForWorld(ld) {
   return out;
 }
 
-/** Una fila de nexus_furniture_catalog (API) → ítem del World Builder. id en mundo = code (único en BD). */
+/** Fila API world_builder_catalog → ítem WB. item_id en BD = code. */
 function _wbRowToWorldItem(row) {
   const ad = row.asset_data && typeof row.asset_data === 'object' ? row.asset_data : {};
   const item = {
@@ -2374,7 +2374,7 @@ function _wbRowToWorldItem(row) {
     name: row.name,
     icon: _wbCategoryIcon(row.category),
     model: ad.model || ad.model_url || null,
-    color: ad.color || '#00e8ff',
+    color: ad.color != null && ad.color !== '' ? ad.color : undefined,
     scale: typeof ad.wb_scale === 'number' ? ad.wb_scale : (typeof ad.scale === 'number' ? ad.scale : 1.0),
     furniture_id: row.id,
     rarity: row.rarity,
@@ -2389,22 +2389,23 @@ function _wbRowToWorldItem(row) {
 async function _wbFetchFurnitureCatalog() {
   _wbCatalog = [];
   try {
-    const res = await fetch('/api/nexus/furniture_catalog.php', { credentials: 'same-origin' });
+    const res = await fetch('/api/nexus/world_builder_catalog.php', { credentials: 'same-origin' });
     const j = await res.json();
+    if (res.status === 403) return;
     if (!j.ok) {
-      console.warn('[WB] furniture_catalog:', j.error?.code, j.error?.message);
+      console.warn('[WB] world_builder_catalog:', j.error?.code, j.error?.message);
       return;
     }
     const rows = j.data?.catalog;
     if (!Array.isArray(rows)) {
-      console.warn('[WB] furniture_catalog: response sin data.catalog[]');
+      console.warn('[WB] world_builder_catalog: response sin data.catalog[]');
       return;
     }
     _wbCatalog = rows
       .map(_wbRowToWorldItem)
       .sort((a, b) => Number(b.furniture_id) - Number(a.furniture_id));
   } catch (e) {
-    console.warn('[WB] furniture_catalog fetch:', e);
+    console.warn('[WB] world_builder_catalog fetch:', e);
   }
 }
 

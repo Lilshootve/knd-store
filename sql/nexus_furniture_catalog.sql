@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1:3306
--- Tiempo de generación: 11-04-2026 a las 19:00:01
+-- Tiempo de generación: 11-04-2026 a las 22:33:39
 -- Versión del servidor: 11.8.6-MariaDB-log
 -- Versión de PHP: 7.2.34
 
@@ -65,12 +65,6 @@ INSERT INTO `nexus_furniture_catalog` (`id`, `code`, `name`, `category`, `rarity
 (17, 'lamp_purple', 'Echo Lamp', 'floor', 'special', 1, 1, 90, '{\"color\":\"#c040ff\",\"shape\":\"lamp\"}', 1, '2026-04-08 08:03:00'),
 (18, 'orb_red', 'Crimson Orb', 'interactive', 'special', 1, 1, 450, '{\"color\":\"#ff3040\",\"fx\":\"float\"}', 1, '2026-04-08 08:03:00'),
 (19, 'trophy_nexus', 'Nexus Champion Cup', 'decoration', 'legendary', 1, 1, 1000, '{\"color\":\"#00e8ff\",\"shape\":\"trophy\"}', 1, '2026-04-08 08:03:00'),
-(68, 'tree_neon_01', 'Neon Tree', 'decoration', 'rare', 1, 1, 320, '{\"model\": \"/assets/models/knd_tree_neon_01.glb\", \"color\": \"#00ff88\", \"shape\": \"tree\", \"light_data\": {\"type\": \"point\", \"color\": \"#00ff88\", \"intensity\": 0.1, \"distance\": 5.5, \"height\": 1.55}}', 1, '2026-04-09 16:16:48'),
-(69, 'energy_orb_neon_01', 'Neon Energy Orb', 'interactive', 'rare', 1, 1, 420, '{\"model\": \"/assets/models/knd_energy_orb_neon_01.glb\", \"color\": \"#c080ff\", \"shape\": \"orb\", \"fx\": \"float\", \"light_data\": {\"type\": \"point\", \"color\": \"#9b30ff\", \"intensity\": 0.1, \"distance\": 6.0, \"height\": 1.1}}', 1, '2026-04-09 16:40:44'),
-(70, 'plataform_neon_01', 'Neon Platform', 'floor', 'special', 2, 2, 340, '{\"model\": \"/assets/models/knd_plataform_neon_01.glb\", \"color\": \"#00a8ff\", \"shape\": \"prop\", \"wb_scale\": 1.0, \"light_data\": {\"type\": \"point\", \"color\": \"#00e8ff\", \"intensity\": 0.1, \"distance\": 8.0, \"height\": 0.35}}', 1, '2026-04-09 16:40:44'),
-(71, 'bench_neon_01', 'Neon Bench', 'floor', 'common', 2, 1, 165, '{\"model\": \"/assets/models/knd_bench_neon_01.glb\", \"color\": \"#00e8ff\", \"shape\": \"prop\", \"wb_scale\": 1.0}', 1, '2026-04-09 16:40:44'),
-(72, 'mountain_neon_01', 'Neon Mountain', 'decoration', 'epic', 2, 2, 520, '{\"model\": \"/assets/models/knd_mountain_neon_01.glb\", \"color\": \"#5ad8ff\", \"shape\": \"prop\", \"wb_scale\": 1.0, \"light_data\": {\"type\": \"point\", \"color\": \"#00ccff\", \"intensity\": 0.1, \"distance\": 7.5, \"height\": 2.0}}', 1, '2026-04-09 16:40:44'),
-(73, 'crystal_1', 'Crystal 1', 'decoration', 'common', 1, 1, 95, '{\"model\": \"/assets/models/crystal_1.glb\", \"color\": \"#8ec5e0\", \"shape\": \"crystal\", \"light_data\": {\"type\": \"point\", \"color\": \"#7eb8d8\", \"intensity\": 0.1, \"distance\": 3.6, \"height\": 0.72}}', 1, '2026-04-11 18:55:27'),
 (74, 'crystal_2', 'Crystal 2', 'decoration', 'common', 1, 1, 98, '{\"model\": \"/assets/models/crystal_2.glb\", \"color\": \"#8ec5e0\", \"shape\": \"crystal\", \"light_data\": {\"type\": \"point\", \"color\": \"#7eb8d8\", \"intensity\": 0.1, \"distance\": 3.6, \"height\": 0.72}}', 1, '2026-04-11 18:55:27'),
 (75, 'crystal_4', 'Crystal 4', 'decoration', 'common', 1, 1, 102, '{\"model\": \"/assets/models/crystal_4.glb\", \"color\": \"#8ec5e0\", \"shape\": \"crystal\", \"light_data\": {\"type\": \"point\", \"color\": \"#7eb8d8\", \"intensity\": 0.1, \"distance\": 3.6, \"height\": 0.72}}', 1, '2026-04-11 18:55:27'),
 (76, 'crystal_5', 'Crystal 5', 'decoration', 'common', 1, 1, 105, '{\"model\": \"/assets/models/crystal_5.glb\", \"color\": \"#8ec5e0\", \"shape\": \"crystal\", \"light_data\": {\"type\": \"point\", \"color\": \"#7eb8d8\", \"intensity\": 0.1, \"distance\": 3.6, \"height\": 0.72}}', 1, '2026-04-11 18:55:27'),
