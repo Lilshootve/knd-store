@@ -160,6 +160,13 @@ export class LightSystem {
     entry.mesh.userData.wbGlowMesh = glowMesh;
     entry.mesh.add(glowMesh);
 
+    // Persist immediately after adding
+    if (!String(entry.id).startsWith('tmp_')) {
+      this.builder.catalogSystem.patchObject(entry.id, {
+        light_data: JSON.stringify({ type, color: `#${new THREE.Color(color).getHexString()}`, intensity, distance, height }),
+      });
+    }
+
     return light;
   }
 
@@ -174,6 +181,11 @@ export class LightSystem {
     // Remove glow halo if present
     const glow = entry.mesh.userData.wbGlowMesh;
     if (glow) { entry.mesh.remove(glow); delete entry.mesh.userData.wbGlowMesh; }
+
+    // Persist removal (set light_data = null in DB)
+    if (!String(entry.id).startsWith('tmp_')) {
+      this.builder.catalogSystem.patchObject(entry.id, { light_data: null });
+    }
   }
 
   getObjectLightValues(entry) {
@@ -195,23 +207,49 @@ export class LightSystem {
     entry.mesh.traverse(c => {
       if ((c.isPointLight || c.isSpotLight) && c.userData.nexusDynamicLight) c.color.set(hexStr);
     });
+    this._scheduleObjectLightPatch(entry);
   }
 
   setObjectLightIntensity(entry, value) {
     entry.mesh.traverse(c => {
       if ((c.isPointLight || c.isSpotLight) && c.userData.nexusDynamicLight) c.intensity = Number(value);
     });
+    this._scheduleObjectLightPatch(entry);
   }
 
   setObjectLightDistance(entry, value) {
     entry.mesh.traverse(c => {
       if ((c.isPointLight || c.isSpotLight) && c.userData.nexusDynamicLight) c.distance = Number(value);
     });
+    this._scheduleObjectLightPatch(entry);
   }
 
   setObjectLightHeight(entry, value) {
     entry.mesh.traverse(c => {
       if ((c.isPointLight || c.isSpotLight) && c.userData.nexusDynamicLight) c.position.y = Number(value);
     });
+    this._scheduleObjectLightPatch(entry);
+  }
+
+  /** Debounced: persist current object-light state to DB after 600 ms. */
+  _lightPatchTimers = new Map();
+
+  _scheduleObjectLightPatch(entry) {
+    const id = entry.id;
+    if (String(id).startsWith('tmp_')) return;
+
+    const existing = this._lightPatchTimers.get(id);
+    if (existing) clearTimeout(existing);
+
+    const timer = setTimeout(() => {
+      this._lightPatchTimers.delete(id);
+      const vals = this.getObjectLightValues(entry);
+      // null means light was removed — persist null to clear
+      this.builder.catalogSystem.patchObject(id, {
+        light_data: vals ? JSON.stringify(vals) : null,
+      });
+    }, 600);
+
+    this._lightPatchTimers.set(id, timer);
   }
 }

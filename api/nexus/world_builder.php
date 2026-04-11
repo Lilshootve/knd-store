@@ -4,7 +4,7 @@
 // GET  ?action=load         → lista todos los objetos colocados
 // POST {action:'place', …}  → inserta uno nuevo
 // POST {action:'delete', id} → borra por id
-// POST {action:'patch', id, rot_y?, scale?} → actualiza transform
+// POST {action:'patch', id, rot_y?, scale?, pos_x?, material_data?, light_data?} → actualiza
 require_once __DIR__ . '/../../config/bootstrap.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
@@ -31,15 +31,43 @@ if ($method === 'GET') {
     json_error('METHOD_NOT_ALLOWED', 'Solo GET/POST', 405);
 }
 
-// ── LOAD: público (sin sesión). Misma visibilidad que el mundo 3D; escritura sigue restringida.
+// ── Helper: normaliza y valida JSON ──────────────────────────────────────────
+function normalize_json_field($value, int $maxLen = 16384): ?string {
+    if ($value === null || $value === '') return null;
+    if (is_array($value)) {
+        $enc = json_encode($value, JSON_UNESCAPED_UNICODE);
+        $value = ($enc !== false) ? $enc : null;
+    } else {
+        $value = (string) $value;
+    }
+    if ($value === null) return null;
+    // Validate JSON
+    json_decode($value);
+    if (json_last_error() !== JSON_ERROR_NONE) return null;
+    // Length guard
+    if (strlen($value) > $maxLen) return null;
+    return $value;
+}
+
+// ── LOAD: público (sin sesión) ───────────────────────────────────────────────
 if ($method === 'GET' && $action === 'load') {
     try {
+        // Detect whether material_data column exists (migration may not have run yet)
+        $cols = $pdo->query("SHOW COLUMNS FROM nexus_world_objects")->fetchAll(PDO::FETCH_COLUMN);
+        $hasMaterialData = in_array('material_data', $cols);
+
+        $selectExtra = $hasMaterialData ? ', material_data' : '';
+
         $rows = $pdo->query("
-            SELECT id, item_id, model_url, pos_x, pos_y, pos_z,
-                   rot_y, scale, light_data, created_by, created_at
+            SELECT id, item_id, model_url,
+                   pos_x, pos_y, pos_z,
+                   rot_y, scale,
+                   light_data{$selectExtra},
+                   created_by, created_at
             FROM nexus_world_objects
             ORDER BY id ASC
         ")->fetchAll(PDO::FETCH_ASSOC);
+
         json_success(['objects' => $rows]);
     } catch (Throwable $e) {
         error_log('world_builder load: ' . $e->getMessage());
@@ -47,7 +75,7 @@ if ($method === 'GET' && $action === 'load') {
     }
 }
 
-// ── Resto: requiere sesión ──
+// ── Resto: requiere sesión ───────────────────────────────────────────────────
 if (!is_logged_in()) {
     json_error('UNAUTHORIZED', 'Debes estar autenticado', 401);
 }
@@ -56,53 +84,57 @@ if (!$uid) {
     json_error('UNAUTHORIZED', 'Sesión sin user id válido', 401);
 }
 
-// ── Acciones de escritura → requieren admin ──
+// ── Acciones de escritura → requieren admin ──────────────────────────────────
 if (!nexus_user_can_world_builder($pdo, $uid)) {
     json_error('FORBIDDEN', 'Solo administradores pueden modificar el mundo', 403);
 }
 
-// ── PLACE ──
+// ── PLACE ────────────────────────────────────────────────────────────────────
 if ($action === 'place') {
-    $item_id   = trim($body['item_id']   ?? '');
-    $model_url = trim($body['model_url'] ?? '');
-    $pos_x     = (float)($body['pos_x']  ?? 0);
-    $pos_y     = (float)($body['pos_y']  ?? 0);
-    $pos_z     = (float)($body['pos_z']  ?? 0);
-    $rot_y     = (float)($body['rot_y']  ?? 0);
-    $scale     = (float)($body['scale']  ?? 1.0);
-    $rawLight  = $body['light_data'] ?? null;
-    $light_data = null;
-    if ($rawLight !== null && $rawLight !== '') {
-        if (is_array($rawLight)) {
-            $enc = json_encode($rawLight, JSON_UNESCAPED_UNICODE);
-            $light_data = $enc !== false ? $enc : null;
-        } else {
-            $light_data = (string) $rawLight;
-        }
-        if ($light_data !== null && strlen($light_data) > 8192) {
-            $light_data = null;
-        }
-    }
+    $item_id      = trim($body['item_id']   ?? '');
+    $model_url    = trim($body['model_url'] ?? '');
+    $pos_x        = (float)($body['pos_x']  ?? 0);
+    $pos_y        = (float)($body['pos_y']  ?? 0);
+    $pos_z        = (float)($body['pos_z']  ?? 0);
+    $rot_y        = (float)($body['rot_y']  ?? 0);
+    $scale        = (float)($body['scale']  ?? 1.0);
+    $light_data   = normalize_json_field($body['light_data']    ?? null);
+    $material_data = normalize_json_field($body['material_data'] ?? null);
 
     if ($item_id === '') {
         json_error('VALIDATION', 'item_id es requerido', 422);
     }
     if ($scale < 0.01 || $scale > 20) $scale = 1.0;
 
+    // Detect material_data column
+    $cols = $pdo->query("SHOW COLUMNS FROM nexus_world_objects")->fetchAll(PDO::FETCH_COLUMN);
+    $hasMaterialData = in_array('material_data', $cols);
+
     try {
-        $stmt = $pdo->prepare("
-            INSERT INTO nexus_world_objects
-                (item_id, model_url, pos_x, pos_y, pos_z, rot_y, scale, light_data, created_by)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ");
-        $stmt->execute([
-            $item_id,
-            $model_url ?: null,
-            $pos_x, $pos_y, $pos_z,
-            $rot_y, $scale,
-            $light_data,
-            $uid
-        ]);
+        if ($hasMaterialData) {
+            $stmt = $pdo->prepare("
+                INSERT INTO nexus_world_objects
+                    (item_id, model_url, pos_x, pos_y, pos_z, rot_y, scale,
+                     light_data, material_data, created_by)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ");
+            $stmt->execute([
+                $item_id, $model_url ?: null,
+                $pos_x, $pos_y, $pos_z, $rot_y, $scale,
+                $light_data, $material_data, $uid
+            ]);
+        } else {
+            $stmt = $pdo->prepare("
+                INSERT INTO nexus_world_objects
+                    (item_id, model_url, pos_x, pos_y, pos_z, rot_y, scale, light_data, created_by)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ");
+            $stmt->execute([
+                $item_id, $model_url ?: null,
+                $pos_x, $pos_y, $pos_z, $rot_y, $scale,
+                $light_data, $uid
+            ]);
+        }
         $newId = (int)$pdo->lastInsertId();
         json_success(['id' => $newId]);
     } catch (PDOException $e) {
@@ -112,7 +144,7 @@ if ($action === 'place') {
     return;
 }
 
-// ── DELETE ──
+// ── DELETE ───────────────────────────────────────────────────────────────────
 if ($action === 'delete') {
     $id = (int)($body['id'] ?? 0);
     if ($id <= 0) {
@@ -129,29 +161,62 @@ if ($action === 'delete') {
     return;
 }
 
-// ── PATCH (actualizar transform sin recolocar) ──
+// ── PATCH (transform + material + light) ────────────────────────────────────
 if ($action === 'patch') {
     $id = (int)($body['id'] ?? 0);
     if ($id <= 0) {
         json_error('VALIDATION', 'id inválido', 422);
     }
 
-    // Construir SET dinámico — sólo campos permitidos
-    $allowed = ['rot_y', 'scale', 'pos_x', 'pos_y', 'pos_z'];
-    $sets = []; $params = [];
-    foreach ($allowed as $field) {
+    // Detect material_data column
+    $cols = $pdo->query("SHOW COLUMNS FROM nexus_world_objects")->fetchAll(PDO::FETCH_COLUMN);
+    $hasMaterialData = in_array('material_data', $cols);
+
+    // Numeric fields
+    $numericAllowed = ['rot_y', 'scale', 'pos_x', 'pos_y', 'pos_z'];
+    $sets   = [];
+    $params = [];
+
+    foreach ($numericAllowed as $field) {
         if (isset($body[$field])) {
             $sets[]   = "`$field` = ?";
             $params[] = (float)$body[$field];
         }
     }
+
+    // JSON field: light_data
+    if (isset($body['light_data'])) {
+        $normalized = normalize_json_field($body['light_data']);
+        if ($normalized !== null) {
+            $sets[]   = '`light_data` = ?';
+            $params[] = $normalized;
+        } elseif ($body['light_data'] === null || $body['light_data'] === '') {
+            // Explicit clear
+            $sets[]   = '`light_data` = NULL';
+        }
+    }
+
+    // JSON field: material_data (only if column exists)
+    if ($hasMaterialData && isset($body['material_data'])) {
+        $normalized = normalize_json_field($body['material_data']);
+        if ($normalized !== null) {
+            $sets[]   = '`material_data` = ?';
+            $params[] = $normalized;
+        } elseif ($body['material_data'] === null || $body['material_data'] === '') {
+            $sets[]   = '`material_data` = NULL';
+        }
+    }
+
     if (empty($sets)) {
         json_error('VALIDATION', 'Ningún campo válido para actualizar', 422);
     }
+
     $params[] = $id;
 
     try {
-        $stmt = $pdo->prepare("UPDATE nexus_world_objects SET " . implode(', ', $sets) . " WHERE id = ?");
+        $stmt = $pdo->prepare(
+            "UPDATE nexus_world_objects SET " . implode(', ', $sets) . " WHERE id = ?"
+        );
         $stmt->execute($params);
         json_success(['updated' => $stmt->rowCount() > 0]);
     } catch (PDOException $e) {

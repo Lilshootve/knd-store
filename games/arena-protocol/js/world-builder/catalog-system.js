@@ -147,16 +147,16 @@ export class CatalogSystem {
         if (!light && cat && cat.light) light = { ...cat.light };
 
         const item = {
-          id:        obj.item_id,
-          name:      cat ? cat.name : obj.item_id,
-          model:     modelResolved,
-          model_url: modelResolved,
-          scale:     parseFloat(obj.scale) || (cat && cat.scale) || 1.0,
-          light_data: obj.light_data || null,
+          id:           obj.item_id,
+          name:         cat ? cat.name : obj.item_id,
+          model:        modelResolved,
+          model_url:    modelResolved,
+          scale:        parseFloat(obj.scale) || (cat && cat.scale) || 1.0,
+          light_data:   obj.light_data || null,
           light,
-          rarity:    cat ? cat.rarity : undefined,
-          hologram:  !!(cat && cat.hologram),
-          color:     (cat && cat.color) || undefined,
+          rarity:       cat ? cat.rarity : undefined,
+          hologram:     !!(cat && cat.hologram),
+          color:        (cat && cat.color) || undefined,
           _noVariation: true,
         };
         const mesh = await this.buildWorldObject(item);
@@ -165,9 +165,17 @@ export class CatalogSystem {
         mesh.scale.setScalar(parseFloat(obj.scale) || 1.0);
         mesh.userData.worldObjectId = obj.id;
         this.ctx.scene.add(mesh);
+
         const entry = { id: obj.id, item_id: obj.item_id, mesh };
         this._objects.push(entry);
         this._objectMap.set(obj.id, entry);
+
+        // ── Apply stored material overrides ──────────────────────────────
+        if (obj.material_data) {
+          try {
+            this.builder.materialSystem.applyStoredData(mesh, obj.material_data);
+          } catch (_) {}
+        }
       }
       if (j.data.objects?.length) console.log(`[WB] ${j.data.objects.length} world objects loaded`);
     } catch (err) {
@@ -485,19 +493,24 @@ export class CatalogSystem {
   }
 
   // ─────────────────────────────────────────────────────────
-  // PATCH (persist transform changes to server)
+  // PATCH (persist transform + material + light changes)
   // ─────────────────────────────────────────────────────────
 
   async patchObject(id, patch) {
     if (String(id).startsWith('tmp_')) return;
     try {
-      await fetch('/api/nexus/world_builder.php', {
-        method: 'POST',
+      const body = { action: 'patch', id, ...patch };
+      const res = await fetch('/api/nexus/world_builder.php', {
+        method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
-        body: JSON.stringify({ action: 'patch', id, ...patch }),
+        body: JSON.stringify(body),
       });
-    } catch (_) {}
+      const j = await res.json();
+      if (!j.ok) console.warn('[WB] patch failed:', j.error?.message);
+    } catch (err) {
+      console.warn('[WB] patchObject network error:', err.message);
+    }
   }
 
   // ─────────────────────────────────────────────────────────
