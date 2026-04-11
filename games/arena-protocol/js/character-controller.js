@@ -335,7 +335,6 @@ export class CharacterController {
       'KeyW','KeyA','KeyS','KeyD',
       'ArrowUp','ArrowDown','ArrowLeft','ArrowRight',
       'Space','ShiftLeft','ShiftRight',
-      'ControlLeft','ControlRight',
       'KeyC',
     ]);
     if (GAME_KEYS.has(e.code)) {
@@ -382,8 +381,8 @@ export class CharacterController {
     const back   = !!(k.KeyS   || k.ArrowDown);
     return {
       left, right, fwd, back,
-      run:    !!(k.ShiftLeft   || k.ShiftRight),
-      crouch: !!(k.ControlLeft || k.ControlRight),
+      run:    !!(k.ShiftLeft || k.ShiftRight),
+      crouch: false,
       moving: left || right || fwd || back,
       dx:     (right ? 1 : 0) - (left ? 1 : 0),
       dz:     (back  ? 1 : 0) - (fwd  ? 1 : 0),

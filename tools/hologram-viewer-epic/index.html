@@ -337,19 +337,46 @@ function findIdleVariantIndex(clips, variant) {
   return -1;
 }
 
-/** Ciclo: idle (02) → idle genérico → idle (03). */
+function findIdleStandIndex(clips) {
+  for (let i = 0; i < clips.length; i++) {
+    const n = clipNameNorm(clips[i]);
+    if (/\bidle\s*stand\b|idle_stand|\bidle-stand\b/.test(n)) return i;
+  }
+  return -1;
+}
+
+/** Evita usar "falling idle", "idle cover crouched", etc. como idle genérico. */
+function isJunkIdleName(n) {
+  if (/\bidle\s*stand\b/.test(n)) return false;
+  return /\b(falling|jumping|jump\b|crouch|sneak|cover|roll|landing)\b/i.test(n);
+}
+
+function findPlainIdleIndex(clips) {
+  for (let i = 0; i < clips.length; i++) {
+    const n = clipNameNorm(clips[i]);
+    if (!/\bidle\b/.test(n)) continue;
+    if (/\(02\)|\(03\)|\b02\b|\b03\b/.test(n)) continue;
+    if (isJunkIdleName(n)) continue;
+    return i;
+  }
+  return -1;
+}
+
+/** Ciclo: idle stand → idle (02) → idle genérico (filtrado) → idle (03). */
 function resolveIdleCycle(clips) {
   if (!clips.length) {
     idleCycleIndices = [];
     return { primary: -1 };
   }
+  const iStand = findIdleStandIndex(clips);
   const i02 = findIdleVariantIndex(clips, '02');
-  const iPlain = findIdleVariantIndex(clips, 'plain');
+  const iPlain = findPlainIdleIndex(clips);
   const i03 = findIdleVariantIndex(clips, '03');
   const firstIdle = clips.findIndex((c) => clipNameNorm(c).includes('idle'));
 
   const cycle = [];
-  if (i02 >= 0) cycle.push(i02);
+  if (iStand >= 0) cycle.push(iStand);
+  if (i02 >= 0 && !cycle.includes(i02)) cycle.push(i02);
   if (iPlain >= 0 && !cycle.includes(iPlain)) cycle.push(iPlain);
   if (i03 >= 0 && !cycle.includes(i03)) cycle.push(i03);
   if (!cycle.length && firstIdle >= 0) cycle.push(firstIdle);
