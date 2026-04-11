@@ -185,8 +185,9 @@ export class CharacterController {
     this._onKeyUp   = this._handleKeyUp.bind(this);
     this._onFinish  = this._handleFinished.bind(this);
 
-    window.addEventListener('keydown', this._onKeyDown);
-    window.addEventListener('keyup',   this._onKeyUp);
+    // capture:true fires before browser default actions (e.g. Ctrl+W closes tab)
+    document.addEventListener('keydown', this._onKeyDown, { capture: true });
+    document.addEventListener('keyup',   this._onKeyUp,   { capture: true });
   }
 
   // ───────────────────────────────────────────────────────────────────────────
@@ -307,8 +308,8 @@ export class CharacterController {
    * Call on scene dispose / page unload to avoid memory leaks.
    */
   dispose() {
-    window.removeEventListener('keydown', this._onKeyDown);
-    window.removeEventListener('keyup',   this._onKeyUp);
+    document.removeEventListener('keydown', this._onKeyDown, { capture: true });
+    document.removeEventListener('keyup',   this._onKeyUp,   { capture: true });
     if (this._mixer) {
       this._mixer.stopAllAction();
       this._mixer.removeEventListener('finished', this._onFinish);
@@ -521,9 +522,17 @@ export class CharacterController {
         this._fadeTo(CLIP.FALL);
         break;
 
-      case STATES.LAND:
-        this._fadeTo(CLIP.LAND, o.fastFadeTime);
+      case STATES.LAND: {
+        const landAction = this._fadeTo(CLIP.LAND, o.fastFadeTime);
+        // Play landing at 1.5× speed so recovery feels snappy
+        if (landAction) landAction.timeScale = 1.5;
+        // Safety fallback: if 'finished' never fires, force-exit after 1.2 s
+        clearTimeout(this._landTimer);
+        this._landTimer = setTimeout(() => {
+          if (this._state === STATES.LAND) this._enterState(STATES.IDLE);
+        }, 1200);
         break;
+      }
 
       case STATES.RUN_STOP:
         this._fadeTo(CLIP.RUN_STOP);
@@ -602,6 +611,7 @@ export class CharacterController {
 
     // Landing → idle
     if (name === CLIP.LAND) {
+      clearTimeout(this._landTimer);
       this._enterState(STATES.IDLE);
       return;
     }
@@ -655,7 +665,7 @@ export class CharacterController {
   // Private — Rotation
   // ───────────────────────────────────────────────────────────────────────────
 
-  _updateFacing(dt) {
+  _updateFacing(_dt) {
     if (!this._rootMesh) return;
     // Freeze rotation during landing and cover transitions
     if (
@@ -687,16 +697,16 @@ export class CharacterController {
    * @param {number} [duration]
    */
   _fadeTo(clipName, duration = this._opts.fadeTime) {
-    if (!this._mixer) return;
+    if (!this._mixer) return null;
 
     const action = this._resolve(clipName);
     if (!action) {
       console.warn(`[CharCtrl] Clip not found: "${clipName}". Available:`, Object.keys(this._actions));
-      return;
+      return null;
     }
 
     const resolvedName = this._normalize(action.getClip().name);
-    if (resolvedName === this._current) return;
+    if (resolvedName === this._current) return action;
 
     // Fade out all currently running actions
     Object.values(this._actions).forEach(a => {
@@ -706,6 +716,7 @@ export class CharacterController {
     // Start the new action
     action.reset().fadeIn(duration).play();
     this._current = resolvedName;
+    return action;
   }
 
   /**
