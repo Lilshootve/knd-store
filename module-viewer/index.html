@@ -487,6 +487,41 @@ if (_embedMode) {
   if (_cp) _cp.style.display = 'none';
 }
 
+// === CAMERA PERSISTENCE (embed only) ===
+// Key por modelo para que cada avatar recuerde su propia cámara.
+const _camStorageKey = _embedMode
+  ? 'mv-cam:' + _modelUrl.replace(/[^a-zA-Z0-9._-]/g, '_')
+  : null;
+let _camUserMoved = false;   // true después de que el usuario mueve la cámara
+
+function _saveCam() {
+  if (!_camStorageKey) return;
+  try {
+    localStorage.setItem(_camStorageKey, JSON.stringify({
+      px: camera.position.x, py: camera.position.y, pz: camera.position.z,
+      tx: controls.target.x,  ty: controls.target.y,  tz: controls.target.z
+    }));
+  } catch (_) {}
+}
+
+function _restoreCam() {
+  if (!_camStorageKey) return false;
+  try {
+    const raw = localStorage.getItem(_camStorageKey);
+    if (!raw) return false;
+    const s = JSON.parse(raw);
+    camera.position.set(s.px, s.py, s.pz);
+    controls.target.set(s.tx, s.ty, s.tz);
+    controls.update();
+    return true;
+  } catch (_) { return false; }
+}
+
+function _resetCamSaved() {
+  if (!_camStorageKey) return;
+  try { localStorage.removeItem(_camStorageKey); } catch (_) {}
+}
+
 const DEFAULTS = {
   colorR: 0.1,
   colorG: 1.2,
@@ -720,6 +755,20 @@ controls.enableZoom = true;
 controls.zoomSpeed = 0.85;
 controls.minDistance = 0.05;
 controls.maxDistance = 500;
+
+// Guardar cámara al terminar de arrastrar/zoom (embed only)
+if (_embedMode) {
+  controls.addEventListener('end', () => {
+    _camUserMoved = true;
+    _saveCam();
+  });
+  // Doble-click en el canvas → resetear a encuadre automático
+  renderer.domElement.addEventListener('dblclick', () => {
+    _resetCamSaved();
+    _camUserMoved = false;
+    if (framingRoot) applyCameraFraming(framingRoot, 1.02);
+  });
+}
 
 /** Run in DevTools when the view breaks: __kndViewerDebug() */
 window.__kndViewerDebug = function () {
@@ -1151,6 +1200,8 @@ function loadModel() {
         pendingFramingFrames = 0;
         populateAnimationSelect();
         applyAnimationFromP();
+        // Sin animación: restaurar cámara guardada ahora mismo
+        if (_embedMode) _restoreCam();
       }
 
       console.log('[module-viewer] modelo cargado:', _modelUrl);
@@ -1176,6 +1227,8 @@ function animate() {
     pendingFramingFrames--;
     if (pendingFramingFrames === 0) {
       applyCameraFraming(framingRoot, _embedMode ? 1.02 : 1.36);
+      // Restaurar posición guardada por el usuario (si existe) después del encuadre automático
+      if (_embedMode) _restoreCam();
     }
   }
 
@@ -1383,8 +1436,9 @@ window.addEventListener('resize', resizeViewerToWindow);
 if (_embedMode && typeof ResizeObserver !== 'undefined') {
   const ro = new ResizeObserver(() => {
     resizeViewerToWindow();
-    if (framingRoot) {
-      applyCameraFraming(framingRoot, _embedMode ? 1.02 : 1.4);
+    // Solo re-encuadrar si el usuario no ha personalizado la cámara
+    if (framingRoot && !_camUserMoved) {
+      applyCameraFraming(framingRoot, 1.02);
     }
   });
   ro.observe(document.documentElement);
