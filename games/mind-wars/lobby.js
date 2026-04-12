@@ -23,7 +23,7 @@
   /** @type {AudioContext|null} */
   let audioCtx = null;
 
-  const HOLOGRAM_VIEWER_PATH = '/tools/hologram-viewer-epic/';
+  const HOLOGRAM_VIEWER_PATH = '/module-viewer/';
 
   const HERO_SIL_HTML =
     '<div class="hero-sil" id="hero-avatar-fallback">' +
@@ -172,13 +172,14 @@
     }
   }
 
-  function buildHologramViewerIframeSrc(modelUrl) {
+  function buildHologramViewerIframeSrc(modelUrl, rarity) {
     const path = modelPathForHologramQuery(modelUrl);
     const u = new URL(HOLOGRAM_VIEWER_PATH, window.location.origin);
     u.searchParams.set('model', path);
-    u.searchParams.set('autoload', '1');
     u.searchParams.set('embed', '1');
     u.searchParams.set('anim', 'idle stand');
+    u.searchParams.set('preset', 'holo');
+    if (rarity) u.searchParams.set('rarity', String(rarity).toLowerCase());
     const token = Math.random().toString(36).slice(2) + Date.now().toString(36);
     u.searchParams.set('reply_token', token);
     return { src: u.pathname + u.search, token: token };
@@ -200,10 +201,10 @@
   }
 
   /** Same holographic Three.js viewer as tools/cards (iframe). */
-  function mountHeroHologramIframe(wrap, modelUrl, onError) {
+  function mountHeroHologramIframe(wrap, modelUrl, rarity, onError) {
     disposeHeroHologram(wrap);
     wrap.innerHTML = '';
-    const { src, token } = buildHologramViewerIframeSrc(modelUrl);
+    const { src, token } = buildHologramViewerIframeSrc(modelUrl, rarity);
     wrap.setAttribute('data-hologram-token', token);
 
     const projector = document.createElement('div');
@@ -263,7 +264,8 @@
     const fallback = function () {
       renderHero2d(wrap, imgUrl);
     };
-    mountHeroHologramIframe(wrap, modelUrl, fallback);
+    const rarity = sel ? String(sel.rarity || 'common').toLowerCase() : 'common';
+    mountHeroHologramIframe(wrap, modelUrl, rarity, fallback);
   }
 
   function applyLobbyData(d) {
