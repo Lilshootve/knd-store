@@ -922,8 +922,8 @@ function applyCameraFraming(root, paddingMult) {
 
   const target = center.clone();
   if (_embedMode) {
-    /* shift target UP so model sits in lower-center of frame */
-    target.y += size.y * 0.08;
+    /* shift target UP so model sits in lower portion of frame */
+    target.y += size.y * 0.32;
   }
   controls.target.copy(target);
   camera.position.set(
