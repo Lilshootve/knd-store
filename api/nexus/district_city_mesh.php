@@ -1,8 +1,11 @@
 <?php
 /**
- * PATCH district GLB landmark transform (and optional URL) for Nexus City.
- * Read values come from GET /api/nexus/world.php (districts[]).
- * Write: POST JSON — requires login + World Builder permission.
+ * Distrito — GLB en Nexus City + transform compartido por todos los usuarios.
+ *
+ * GET  (sin auth)  → { districts: [{ id, city_glb_url, city_mesh_* }], migration_applied }
+ * POST (auth+WB)   → actualiza city_glb_url y/o pos_x,pos_y,pos_z,rot_y,scale (mismas claves que world builder)
+ *
+ * Lectura completa del mundo: GET /api/nexus/world.php (incluye estos campos en districts[]).
  */
 require_once __DIR__ . '/../../config/bootstrap.php';
 header('Content-Type: application/json; charset=utf-8');
@@ -14,8 +17,39 @@ require_once BASE_PATH . '/includes/auth.php';
 require_once BASE_PATH . '/includes/nexus_world_builder_gate.php';
 require_once BASE_PATH . '/includes/json.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    json_error('METHOD_NOT_ALLOWED', 'Only POST allowed', 405);
+$pdo = getDBConnection();
+$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+
+// ── GET: lectura pública (comprueba migración y lista URLs/transforms) ───────
+if ($method === 'GET') {
+    try {
+        $cols = $pdo->query('SHOW COLUMNS FROM nexus_districts')->fetchAll(PDO::FETCH_COLUMN);
+    } catch (Throwable $e) {
+        error_log('district_city_mesh GET: ' . $e->getMessage());
+        json_success(['districts' => [], 'migration_applied' => false]);
+    }
+    if (!in_array('city_glb_url', $cols, true)) {
+        json_success(['districts' => [], 'migration_applied' => false]);
+    }
+    try {
+        $rows = $pdo->query('
+            SELECT id,
+                   city_glb_url,
+                   city_mesh_pos_x, city_mesh_pos_y, city_mesh_pos_z,
+                   city_mesh_rot_y, city_mesh_scale
+            FROM nexus_districts
+            ORDER BY sort_order ASC, id ASC
+        ')->fetchAll(PDO::FETCH_ASSOC);
+        json_success(['districts' => $rows, 'migration_applied' => true]);
+    } catch (Throwable $e) {
+        error_log('district_city_mesh GET list: ' . $e->getMessage());
+        json_error('DB_ERROR', 'No se pudo leer distritos', 500);
+    }
+}
+
+// ── POST: escritura solo World Builder ──────────────────────────────────────
+if ($method !== 'POST') {
+    json_error('METHOD_NOT_ALLOWED', 'Solo GET o POST', 405);
 }
 
 if (!is_logged_in()) {
@@ -26,8 +60,6 @@ $uid = (int) current_user_id();
 if ($uid <= 0) {
     json_error('UNAUTHORIZED', 'Sesión sin user id válido', 401);
 }
-
-$pdo = getDBConnection();
 
 if (!nexus_user_can_world_builder($pdo, $uid)) {
     json_error('FORBIDDEN', 'Solo administradores pueden modificar distritos', 403);
@@ -44,7 +76,6 @@ if ($districtId === '' || !preg_match('/^[a-z0-9_-]{1,32}$/', $districtId)) {
     json_error('INVALID_DISTRICT', 'district_id inválido', 422);
 }
 
-// Verify column exists (migration)
 try {
     $cols = $pdo->query('SHOW COLUMNS FROM nexus_districts')->fetchAll(PDO::FETCH_COLUMN);
 } catch (Throwable $e) {
@@ -60,7 +91,7 @@ if (!$check->fetchColumn()) {
     json_error('NOT_FOUND', 'Distrito no encontrado', 404);
 }
 
-/** @return string|null sanitized URL or null if invalid */
+/** @return string|null */
 function nexus_sanitize_city_glb_url($v): ?string
 {
     if ($v === null || $v === '') {
