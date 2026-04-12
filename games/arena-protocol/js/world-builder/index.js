@@ -10,7 +10,7 @@
  *   // In animation loop: builder.tick(dt);
  */
 
-import { CatalogSystem }      from './catalog-system.js?v=20250411';
+import { CatalogSystem }      from './catalog-system.js?v=20260411';
 import { TransformSystem }    from './transform-system.js';
 import { MaterialSystem }     from './material-system.js';
 import { LightSystem }        from './light-system.js';

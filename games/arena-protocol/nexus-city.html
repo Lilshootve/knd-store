@@ -304,7 +304,7 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { WorldBuilderPro } from "./js/world-builder/index.js?v=20250411";
+import { WorldBuilderPro } from "./js/world-builder/index.js?v=20260411";
 
 // ══════════════════════════════════════════════════════
 // STATE
@@ -778,9 +778,18 @@ function buildDistrictMeshWorldBuilderOpts(d) {
 /** @returns {boolean} true if registered or already present */
 function registerDistrictCityMeshWithWorldBuilder(d, model) {
   if (!_worldBuilder || !window.IS_ADMIN) return false;
+  const cs = _worldBuilder.catalogSystem;
+  if (!cs || typeof cs.registerExternalObject !== 'function') {
+    return false;
+  }
   const extId = 'district:' + d.id;
-  if (_worldBuilder.catalogSystem.getEntryById(extId)) return true;
-  _worldBuilder.catalogSystem.registerExternalObject(model, extId, buildDistrictMeshWorldBuilderOpts(d));
+  if (cs.getEntryById(extId)) return true;
+  try {
+    cs.registerExternalObject(model, extId, buildDistrictMeshWorldBuilderOpts(d));
+  } catch (e) {
+    console.warn('[district mesh] register failed', d.id, e);
+    return false;
+  }
   return true;
 }
 
@@ -816,45 +825,58 @@ function attachDistrictCityGlbModel(d, g, c) {
   _gltfLoader.load(
     url,
     (gltf) => {
-      const model = gltf.scene;
-      normalizeGltfForRenderer(model);
-      const box0 = new THREE.Box3().setFromObject(model);
-      const sz0 = new THREE.Vector3();
-      box0.getSize(sz0);
-      const maxD = Math.max(sz0.x, sz0.y, sz0.z);
-      if (maxD > 0) model.scale.setScalar(7 / maxD);
-      const box1 = new THREE.Box3().setFromObject(model);
-      model.position.y = -box1.min.y + 0.5;
-      model.traverse((o) => {
-        if (o.isMesh) {
-          o.castShadow = true;
-          o.receiveShadow = true;
+      let model = null;
+      try {
+        model = gltf.scene;
+        normalizeGltfForRenderer(model);
+        const box0 = new THREE.Box3().setFromObject(model);
+        const sz0 = new THREE.Vector3();
+        box0.getSize(sz0);
+        const maxD = Math.max(sz0.x, sz0.y, sz0.z);
+        if (maxD > 0) model.scale.setScalar(7 / maxD);
+        const box1 = new THREE.Box3().setFromObject(model);
+        model.position.y = -box1.min.y + 0.5;
+        model.traverse((o) => {
+          if (o.isMesh) {
+            o.castShadow = true;
+            o.receiveShadow = true;
+          }
+        });
+        g.add(model);
+        g.userData._districtCityGlbLoaded = true;
+
+        const box2 = new THREE.Box3().setFromObject(model);
+        const modelTop = box2.max.y + 1.2;
+        top.position.y = modelTop;
+        top.userData.pulseBaseY = modelTop;
+
+        applySavedCityMeshTransform(model, d, top);
+
+        window.__kndDistrictCityMeshes = window.__kndDistrictCityMeshes || [];
+        const idx = window.__kndDistrictCityMeshes.findIndex((x) => x.d.id === d.id);
+        const row = { d, model };
+        if (idx >= 0) window.__kndDistrictCityMeshes[idx] = row;
+        else window.__kndDistrictCityMeshes.push(row);
+
+        if (!registerDistrictCityMeshWithWorldBuilder(d, model) && window.IS_ADMIN) {
+          const iv = setInterval(() => {
+            if (registerDistrictCityMeshWithWorldBuilder(d, model)) clearInterval(iv);
+          }, 200);
+          setTimeout(() => clearInterval(iv), 12000);
         }
-      });
-      g.add(model);
-
-      const box2 = new THREE.Box3().setFromObject(model);
-      const modelTop = box2.max.y + 1.2;
-      top.position.y = modelTop;
-      top.userData.pulseBaseY = modelTop;
-
-      applySavedCityMeshTransform(model, d, top);
-
-      window.__kndDistrictCityMeshes = window.__kndDistrictCityMeshes || [];
-      const idx = window.__kndDistrictCityMeshes.findIndex((x) => x.d.id === d.id);
-      const row = { d, model };
-      if (idx >= 0) window.__kndDistrictCityMeshes[idx] = row;
-      else window.__kndDistrictCityMeshes.push(row);
-
-      if (!registerDistrictCityMeshWithWorldBuilder(d, model) && window.IS_ADMIN) {
-        const iv = setInterval(() => {
-          if (registerDistrictCityMeshWithWorldBuilder(d, model)) clearInterval(iv);
-        }, 200);
-        setTimeout(() => clearInterval(iv), 12000);
+      } catch (e) {
+        console.warn('[district GLB] setup failed', d.id, url, e);
+        if (model && model.parent) g.remove(model);
+        delete g.userData._districtCityGlbLoaded;
+        buildDistrictCityGlbFallback(d, g, c);
       }
     },
     undefined,
     (err) => {
+      if (g.userData._districtCityGlbLoaded) {
+        console.warn('[district GLB] post-success error ignored', d.id, err);
+        return;
+      }
       console.warn('[district GLB]', d.id, url, err);
       buildDistrictCityGlbFallback(d, g, c);
     }
