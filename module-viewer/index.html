@@ -18,6 +18,9 @@
       background: radial-gradient(circle at center, #0a0f1f, #000);
       font-family: 'Segoe UI', system-ui, sans-serif;
     }
+    body.embed-transparent {
+      background: transparent !important;
+    }
     #canvas-host {
       position: fixed;
       inset: 0;
@@ -697,10 +700,16 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.set(0, 1, 5);
 
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: _embedMode });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setClearColor(0x05070f, 1);
+if (_embedMode) {
+  renderer.setClearColor(0x000000, 0);
+  scene.background = null;
+  document.body.classList.add('embed-transparent');
+} else {
+  renderer.setClearColor(0x05070f, 1);
+}
 document.getElementById('canvas-host').appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -901,10 +910,10 @@ function applyCameraFraming(root, paddingMult) {
     ) * paddingMult;
 
   if (_embedMode) {
-    const skinBoost = hasSkinned ? 1.72 : 1.15;
-    dist = Math.max(dist * skinBoost, maxDim * 2.45 * paddingMult, 1.55);
+    const skinBoost = hasSkinned ? 1.18 : 1.08;
+    dist = Math.max(dist * skinBoost, maxDim * 1.55 * paddingMult, 1.55);
     if (hasSkinned) {
-      dist = Math.max(dist, maxDim * 2.2);
+      dist = Math.max(dist, maxDim * 1.35);
     }
     if (embedFramingDistFloor > 0) {
       dist = Math.max(dist, embedFramingDistFloor);
@@ -1120,7 +1129,7 @@ function loadModel() {
       }
 
       // Encuadre amplio (pose bind); con animación refinamos tras varios frames
-      applyCameraFraming(framingRoot, _embedMode ? 1.72 : 1.52);
+      applyCameraFraming(framingRoot, _embedMode ? 1.18 : 1.52);
 
       if (mixer && animationClips.length > 0) {
         const targetAnim = (_paramAnim || '').trim().toLowerCase();
@@ -1169,7 +1178,7 @@ function animate() {
   if (pendingFramingFrames > 0 && framingRoot) {
     pendingFramingFrames--;
     if (pendingFramingFrames === 0) {
-      applyCameraFraming(framingRoot, _embedMode ? 1.68 : 1.36);
+      applyCameraFraming(framingRoot, _embedMode ? 1.14 : 1.36);
     }
   }
 
@@ -1383,7 +1392,7 @@ if (_embedMode && typeof ResizeObserver !== 'undefined') {
   const ro = new ResizeObserver(() => {
     resizeViewerToWindow();
     if (framingRoot) {
-      applyCameraFraming(framingRoot, _embedMode ? 1.65 : 1.4);
+      applyCameraFraming(framingRoot, _embedMode ? 1.14 : 1.4);
     }
   });
   ro.observe(document.documentElement);

@@ -618,9 +618,9 @@ a.tb-icon-btn{text-decoration:none;color:inherit;box-sizing:border-box}
 /* avatar figure */
 .hero-avatar-wrap{
   position:relative;
-  width:min(88vw,268px);height:min(62vh,360px);
-  max-width:268px;max-height:360px;
-  display:flex;align-items:flex-end;justify-content:center;
+  width:min(92vw,300px);height:min(68vh,420px);
+  max-width:300px;max-height:420px;
+  display:flex;align-items:center;justify-content:center;
   z-index:3;
 }
 @media (prefers-reduced-motion: reduce){
@@ -639,13 +639,13 @@ a.tb-icon-btn{text-decoration:none;color:inherit;box-sizing:border-box}
 .hero-holo-projector{
   position:relative;
   width:100%;height:100%;
-  min-height:260px;
-  display:flex;align-items:flex-end;justify-content:center;
+  min-height:300px;
+  display:flex;align-items:center;justify-content:center;
 }
 .hero-holo-projector-inner{
   position:relative;
   width:100%;height:100%;
-  max-height:360px;
+  max-height:420px;
   border-radius:0;
   overflow:visible;
   background:transparent;
@@ -656,9 +656,11 @@ a.tb-icon-btn{text-decoration:none;color:inherit;box-sizing:border-box}
   display:block;
   width:100%;
   height:100%;
-  min-height:260px;
+  min-height:300px;
   border:none;
   background:transparent;
+  /* allow WebGL alpha=true to show through */
+  -webkit-backdrop-filter:none;
 }
 
 /* hero silhouette (fallback) */
@@ -1605,12 +1607,12 @@ a.bnav-item{text-decoration:none;color:inherit}
     overflow:visible;
   }
   .hero-avatar-wrap{
-    width:min(78vw, 260px);
-    max-height:min(48vmin, 300px);
-    height:auto;
+    width:min(86vw, 300px);
+    max-height:min(58vmin, 380px);
+    height:min(58vmin, 380px);
   }
-  .hero-holo-projector-inner{max-height:min(48vmin, 300px)}
-  .hero-hologram-iframe{min-height:min(36vmin, 220px)}
+  .hero-holo-projector-inner{max-height:min(58vmin, 380px)}
+  .hero-hologram-iframe{min-height:min(52vmin, 340px)}
   .hero-rarity-tag{margin-bottom:10px;font-size:9px;padding:3px 10px}
   .hero-name{font-size:clamp(15px, 4.2vw, 22px);letter-spacing:2px;margin-top:4px}
   .hero-class{font-size:10px}
