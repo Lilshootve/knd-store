@@ -23,10 +23,17 @@ $uid = is_logged_in() ? current_user_id() : null;
 try {
     // 1. Distritos + echo status por distrito
     try {
+        $distCols = $pdo->query('SHOW COLUMNS FROM nexus_districts')->fetchAll(PDO::FETCH_COLUMN);
+        $hasCityMesh = in_array('city_glb_url', $distCols, true);
+        $citySelect = $hasCityMesh
+            ? ', d.city_glb_url, d.city_mesh_pos_x, d.city_mesh_pos_y, d.city_mesh_pos_z, d.city_mesh_rot_y, d.city_mesh_scale'
+            : '';
+
         $districts = $pdo->query("
             SELECT
                 d.id, d.name, d.era, d.tag, d.color_hex, d.icon, d.game_url,
-                d.pos_x, d.pos_z,
+                d.pos_x, d.pos_z
+                {$citySelect},
                 COUNT(e.avatar_id)                       AS total_echoes,
                 ROUND(AVG(e.resonance), 1)               AS avg_resonance,
                 SUM(e.status = 'active')                 AS echoes_active,
@@ -36,6 +43,18 @@ try {
             GROUP BY d.id
             ORDER BY d.sort_order
         ")->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$hasCityMesh) {
+            foreach ($districts as &$drow) {
+                $drow['city_glb_url'] = null;
+                $drow['city_mesh_pos_x'] = null;
+                $drow['city_mesh_pos_y'] = null;
+                $drow['city_mesh_pos_z'] = null;
+                $drow['city_mesh_rot_y'] = null;
+                $drow['city_mesh_scale'] = null;
+            }
+            unset($drow);
+        }
     } catch (PDOException $_) { $districts = []; }
 
     $districts = nexus_district_room_apply_game_urls($districts);

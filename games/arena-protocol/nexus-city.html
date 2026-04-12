@@ -706,6 +706,138 @@ function makePath(tx,tz){
   for(let i=1;i<9;i++){const t=i/9,dot=new THREE.Mesh(new THREE.SphereGeometry(.09,4,4),new THREE.MeshStandardMaterial({color:0x00e8ff,emissive:0x00e8ff,emissiveIntensity:2.5,transparent:true,opacity:.7}));dot.position.set(tx*t,.12,tz*t);dot.userData.pp=i*.65;scene.add(dot);pathDots.push(dot);}
 }
 
+/** Fallback GLB paths until `city_glb_url` is set in DB (sql/nexus_districts_city_mesh.sql). */
+const DEFAULT_DISTRICT_CITY_GLBS = { olimpo: '/assets/models/olimpo.glb' };
+
+function resolveDistrictCityGlbUrl(d) {
+  const fromDb = d.city_glb_url != null && String(d.city_glb_url).trim();
+  if (fromDb) return String(d.city_glb_url).trim();
+  return DEFAULT_DISTRICT_CITY_GLBS[d.id] || '';
+}
+
+function applySavedCityMeshTransform(model, d, topBeacon) {
+  const px = d.city_mesh_pos_x, py = d.city_mesh_pos_y, pz = d.city_mesh_pos_z;
+  const ry = d.city_mesh_rot_y, sc = d.city_mesh_scale;
+  if (px != null && px !== '') model.position.x = Number(px);
+  if (py != null && py !== '') model.position.y = Number(py);
+  if (pz != null && pz !== '') model.position.z = Number(pz);
+  if (ry != null && ry !== '') model.rotation.y = Number(ry);
+  if (sc != null && sc !== '' && Number(sc) > 0) model.scale.setScalar(Number(sc));
+  if (topBeacon) {
+    const b3 = new THREE.Box3().setFromObject(model);
+    const t = b3.max.y + 1.2;
+    topBeacon.position.y = t;
+    topBeacon.userData.pulseBaseY = t;
+  }
+}
+
+function buildDistrictCityGlbFallback(d, g, c) {
+  if (d.id === 'olimpo') {
+    const pk = new THREE.Mesh(new THREE.ConeGeometry(3.8, 6.5, 8), new THREE.MeshStandardMaterial({ color: 0x1a1408, metalness: 0.35, roughness: 0.55, emissive: c.clone().multiplyScalar(0.07), emissiveIntensity: 1 }));
+    pk.position.y = 4;
+    g.add(pk);
+    for (let i = 0; i < 5; i++) {
+      const a = (i / 5) * Math.PI * 2;
+      const col = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.28, 5, 8), new THREE.MeshStandardMaterial({ color: 0xd4c89a, metalness: 0.3, roughness: 0.5 }));
+      col.position.set(Math.cos(a) * 3, 2.5, Math.sin(a) * 3);
+      g.add(col);
+    }
+    return;
+  }
+  const stub = new THREE.Mesh(
+    new THREE.CylinderGeometry(1.2, 1.5, 4, 8),
+    new THREE.MeshStandardMaterial({ color: c.clone(), emissive: c.clone().multiplyScalar(0.12), emissiveIntensity: 1, metalness: 0.4, roughness: 0.5 })
+  );
+  stub.position.y = 2.2;
+  g.add(stub);
+}
+
+/**
+ * If the distrito has `city_glb_url` (DB) or a default in DEFAULT_DISTRICT_CITY_GLBS,
+ * loads the GLB, applies server-saved transform, registers with World Builder for admins.
+ * @returns {boolean} true if GLB load was started (skip procedural landmark for this distrito)
+ */
+function attachDistrictCityGlbModel(d, g, c) {
+  const url = resolveDistrictCityGlbUrl(d);
+  if (!url) return false;
+
+  const top = new THREE.Mesh(new THREE.OctahedronGeometry(0.55, 0), new THREE.MeshStandardMaterial({ color: d.col, emissive: d.col, emissiveIntensity: 3 }));
+  top.position.y = 8;
+  top.userData.pulse = true;
+  top.userData.pulseBaseY = 8;
+  g.add(top);
+  [1.2, 2, 2.8].forEach((r, i) => {
+    const tr = new THREE.Mesh(new THREE.TorusGeometry(r, 0.04, 4, 6), new THREE.MeshStandardMaterial({ color: d.col, emissive: d.col, emissiveIntensity: 0.8, transparent: true, opacity: 0.4 }));
+    tr.rotation.x = Math.PI / 2;
+    tr.position.y = 1 + i * 0.4;
+    g.add(tr);
+  });
+
+  _gltfLoader.load(
+    url,
+    (gltf) => {
+      const model = gltf.scene;
+      normalizeGltfForRenderer(model);
+      const box0 = new THREE.Box3().setFromObject(model);
+      const sz0 = new THREE.Vector3();
+      box0.getSize(sz0);
+      const maxD = Math.max(sz0.x, sz0.y, sz0.z);
+      if (maxD > 0) model.scale.setScalar(7 / maxD);
+      const box1 = new THREE.Box3().setFromObject(model);
+      model.position.y = -box1.min.y + 0.5;
+      model.traverse((o) => {
+        if (o.isMesh) {
+          o.castShadow = true;
+          o.receiveShadow = true;
+        }
+      });
+      g.add(model);
+
+      const box2 = new THREE.Box3().setFromObject(model);
+      const modelTop = box2.max.y + 1.2;
+      top.position.y = modelTop;
+      top.userData.pulseBaseY = modelTop;
+
+      applySavedCityMeshTransform(model, d, top);
+
+      const extId = 'district:' + d.id;
+      const tryRegister = () => {
+        if (!_worldBuilder || !window.IS_ADMIN) return false;
+        _worldBuilder.catalogSystem.registerExternalObject(model, extId, {
+          label: d.name + ' · ciudad',
+          noDelete: true,
+          onPatch: (patch) => {
+            fetch('/api/nexus/district_city_mesh.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'same-origin',
+              body: JSON.stringify({ district_id: d.id, ...patch }),
+            })
+              .then((r) => r.json())
+              .then((j) => {
+                if (!j.ok) console.warn('[district mesh]', j.error);
+              })
+              .catch((e) => console.warn('[district mesh]', e));
+          },
+        });
+        return true;
+      };
+      if (!tryRegister()) {
+        const iv = setInterval(() => {
+          if (tryRegister()) clearInterval(iv);
+        }, 200);
+        setTimeout(() => clearInterval(iv), 12000);
+      }
+    },
+    undefined,
+    (err) => {
+      console.warn('[district GLB]', d.id, url, err);
+      buildDistrictCityGlbFallback(d, g, c);
+    }
+  );
+  return true;
+}
+
 function buildDist(d){
   const g=new THREE.Group(), c=new THREE.Color(d.col);
   const platMat=new THREE.MeshStandardMaterial({color:0x060810,metalness:.5,roughness:.35,emissive:c.clone().multiplyScalar(.1),emissiveIntensity:1});
@@ -755,11 +887,8 @@ function buildDist(d){
     const runeRing=new THREE.Mesh(new THREE.TorusGeometry(4.15,.07,4,6),new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:2.2}));
     runeRing.rotation.x=Math.PI/2; runeRing.position.y=.57; g.add(runeRing);
 
-  } else if(d.id==="olimpo"){
-    const pk=new THREE.Mesh(new THREE.ConeGeometry(3.8,6.5,8),new THREE.MeshStandardMaterial({color:0x1a1408,metalness:.35,roughness:.55,emissive:c.clone().multiplyScalar(.07),emissiveIntensity:1})); pk.position.y=4; g.add(pk);
-    for(let i=0;i<5;i++){const a=(i/5)*Math.PI*2,col=new THREE.Mesh(new THREE.CylinderGeometry(.22,.28,5,8),new THREE.MeshStandardMaterial({color:0xd4c89a,metalness:.3,roughness:.5}));col.position.set(Math.cos(a)*3,2.5,Math.sin(a)*3);g.add(col);}
-    const top=new THREE.Mesh(new THREE.OctahedronGeometry(.55,0),new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:3})); top.position.y=8; top.userData.pulse=true; top.userData.pulseBaseY=8; g.add(top);
-    [1.2,2,2.8].forEach((r,i)=>{const tr=new THREE.Mesh(new THREE.TorusGeometry(r,.04,4,6),new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:.8,transparent:true,opacity:.4}));tr.rotation.x=Math.PI/2;tr.position.y=1+i*.4;g.add(tr);});
+  } else if (attachDistrictCityGlbModel(d, g, c)) {
+    // GLB de ciudad (DB `city_glb_url` o DEFAULT_DISTRICT_CITY_GLBS) — transform en servidor para todos los usuarios
   } else if(d.id==="tesla"){
     const tw=new THREE.Mesh(new THREE.BoxGeometry(4,7,4),new THREE.MeshStandardMaterial({color:0x050c18,metalness:.75,roughness:.22,emissive:c.clone().multiplyScalar(.09),emissiveIntensity:1})); tw.position.y=4.1; g.add(tw);
     for(let row=0;row<3;row++)for(let side=0;side<4;side++){const a=(side/4)*Math.PI*2,w=new THREE.Mesh(new THREE.PlaneGeometry(.55,.38),new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:1.6,transparent:true,opacity:.78}));w.position.set(Math.cos(a)*2.02,1.2+row*1.9,Math.sin(a)*2.02);w.rotation.y=-a;g.add(w);}
@@ -777,6 +906,28 @@ function buildDist(d){
     const dw=new THREE.Mesh(dGeo,new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:.9,wireframe:true,transparent:true,opacity:.28})); dw.position.y=3; g.add(dw);
     const top=new THREE.Mesh(new THREE.SphereGeometry(.38,8,6),new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:3})); top.position.y=5.5; top.userData.pulse=true; top.userData.pulseBaseY=5.5; g.add(top);
     [0,1,2,3,4,5].forEach(i=>{const a=(i/6)*Math.PI*2,col=new THREE.Mesh(new THREE.CylinderGeometry(.15,.18,3.5,6),new THREE.MeshStandardMaterial({color:0x1a1e2c,metalness:.3,roughness:.6}));col.position.set(Math.cos(a)*2.6,1.75,Math.sin(a)*2.6);g.add(col);});
+  } else if (d.id === 'olimpo') {
+    // Solo si no hay GLB (sin URL en DB ni en DEFAULT_DISTRICT_CITY_GLBS)
+    const pk = new THREE.Mesh(new THREE.ConeGeometry(3.8, 6.5, 8), new THREE.MeshStandardMaterial({ color: 0x1a1408, metalness: 0.35, roughness: 0.55, emissive: c.clone().multiplyScalar(0.07), emissiveIntensity: 1 }));
+    pk.position.y = 4;
+    g.add(pk);
+    for (let i = 0; i < 5; i++) {
+      const a = (i / 5) * Math.PI * 2;
+      const col = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.28, 5, 8), new THREE.MeshStandardMaterial({ color: 0xd4c89a, metalness: 0.3, roughness: 0.5 }));
+      col.position.set(Math.cos(a) * 3, 2.5, Math.sin(a) * 3);
+      g.add(col);
+    }
+    const topO = new THREE.Mesh(new THREE.OctahedronGeometry(0.55, 0), new THREE.MeshStandardMaterial({ color: d.col, emissive: d.col, emissiveIntensity: 3 }));
+    topO.position.y = 8;
+    topO.userData.pulse = true;
+    topO.userData.pulseBaseY = 8;
+    g.add(topO);
+    [1.2, 2, 2.8].forEach((r, i) => {
+      const tr = new THREE.Mesh(new THREE.TorusGeometry(r, 0.04, 4, 6), new THREE.MeshStandardMaterial({ color: d.col, emissive: d.col, emissiveIntensity: 0.8, transparent: true, opacity: 0.4 }));
+      tr.rotation.x = Math.PI / 2;
+      tr.position.y = 1 + i * 0.4;
+      g.add(tr);
+    });
   }
 
   const gl=new THREE.Mesh(new THREE.CircleGeometry(5.5,32),new THREE.MeshStandardMaterial({color:d.col,emissive:d.col,emissiveIntensity:1.2,transparent:true,opacity:.18,side:THREE.DoubleSide})); gl.rotation.x=-Math.PI/2; gl.position.y=.06; g.add(gl); g.userData.glowM=gl.material;
@@ -1698,6 +1849,12 @@ async function loadWorld(){
         icon:   d.icon||"⬡",
         mem:    d.avg_resonance!=null?d.avg_resonance:80,
         game_url: d.game_url||null,
+        city_glb_url:       d.city_glb_url ?? null,
+        city_mesh_pos_x:    d.city_mesh_pos_x ?? null,
+        city_mesh_pos_y:    d.city_mesh_pos_y ?? null,
+        city_mesh_pos_z:    d.city_mesh_pos_z ?? null,
+        city_mesh_rot_y:    d.city_mesh_rot_y ?? null,
+        city_mesh_scale:    d.city_mesh_scale ?? null,
       }));
 
     echoByDist = data.echoes_by_district || {};
@@ -1769,11 +1926,12 @@ function loadFallback(){
   // Hardcoded fallback when API unreachable (dev/offline)
   const _distFiles = {olimpo:"olimpo", tesla:"tesla-lab", casino:"casino", agora:"agora"};
   const _dr = (id) => "/games/arena-protocol/" + encodeURIComponent(_distFiles[id]||id) + ".php";
+  const _cm = { city_glb_url: null, city_mesh_pos_x: null, city_mesh_pos_y: null, city_mesh_pos_z: null, city_mesh_rot_y: null, city_mesh_scale: null };
   DISTS=[
-    {id:"olimpo",name:"MONTE OLIMPO",  era:"ERA DE LOS DIOSES",   tag:"Combate · PvP",     col:0xffd600,hex:"#ffd600",pos:{x:-26,z:-14},icon:"⚡",mem:88,game_url:_dr("olimpo")},
-    {id:"tesla", name:"LAB TESLA",     era:"ERA DE LA CIENCIA",   tag:"XP · Conocimiento", col:0x00e8ff,hex:"#00e8ff",pos:{x:26,z:-14},icon:"⚗️",mem:94,game_url:_dr("tesla")},
-    {id:"casino",name:"CASINO DESTINO",era:"ERA DEL AZAR",        tag:"Economía · Riesgo",  col:0x9b30ff,hex:"#9b30ff",pos:{x:-26,z:18},icon:"🎰",mem:71,game_url:_dr("casino")},
-    {id:"agora", name:"ÁGORA SOCIAL",  era:"ERA GUARDIANES",      tag:"Social · Comunidad", col:0x00ff88,hex:"#00ff88",pos:{x:26,z:18},icon:"🏛",mem:82,game_url:_dr("agora")},
+    {id:"olimpo",name:"MONTE OLIMPO",  era:"ERA DE LOS DIOSES",   tag:"Combate · PvP",     col:0xffd600,hex:"#ffd600",pos:{x:-26,z:-14},icon:"⚡",mem:88,game_url:_dr("olimpo"),..._cm},
+    {id:"tesla", name:"LAB TESLA",     era:"ERA DE LA CIENCIA",   tag:"XP · Conocimiento", col:0x00e8ff,hex:"#00e8ff",pos:{x:26,z:-14},icon:"⚗️",mem:94,game_url:_dr("tesla"),..._cm},
+    {id:"casino",name:"CASINO DESTINO",era:"ERA DEL AZAR",        tag:"Economía · Riesgo",  col:0x9b30ff,hex:"#9b30ff",pos:{x:-26,z:18},icon:"🎰",mem:71,game_url:_dr("casino"),..._cm},
+    {id:"agora", name:"ÁGORA SOCIAL",  era:"ERA GUARDIANES",      tag:"Social · Comunidad", col:0x00ff88,hex:"#00ff88",pos:{x:26,z:18},icon:"🏛",mem:82,game_url:_dr("agora"),..._cm},
   ];
   DISTS.forEach(buildDist);
   logNexusDebugDistricts();

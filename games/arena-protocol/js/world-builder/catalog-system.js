@@ -30,6 +30,10 @@ export class CatalogSystem {
     this._objectMap = new Map(); // id → entry
     this._loaded = false;
 
+    // External objects registered from outside the catalog (e.g. district GLB anchors).
+    // id → { onPatch(patch), label, noDelete }
+    this._externalCallbacks = new Map();
+
     // Ground plane for raycasting (invisible, Y=0)
     this._groundPlane = (() => {
       const m = new THREE.Mesh(
@@ -475,6 +479,14 @@ export class CatalogSystem {
 
   async deleteObject(entry) {
     if (!entry) return;
+
+    // External objects (district anchors, etc.) cannot be deleted from the builder
+    const ext = this._externalCallbacks.get(entry.id);
+    if (ext?.noDelete) {
+      this.ctx.fireEv('⚠', 'WB', `"${entry.label ?? entry.id}" es un anchor de distrito — no se puede eliminar desde aquí`, 'rgba(255,160,80,.8)');
+      return;
+    }
+
     this.ctx.scene.remove(entry.mesh);
     this.disposeGroup(entry.mesh);
     const idx = this._objects.indexOf(entry);
@@ -501,6 +513,14 @@ export class CatalogSystem {
 
   async patchObject(id, patch) {
     if (String(id).startsWith('tmp_')) return;
+
+    // External objects route to their own callback instead of the world_builder API
+    const ext = this._externalCallbacks.get(id);
+    if (ext) {
+      try { ext.onPatch?.(patch); } catch (e) { console.warn('[WB] external patch callback error:', e); }
+      return;
+    }
+
     try {
       const body = { action: 'patch', id, ...patch };
       const res = await fetch('/api/nexus/world_builder.php', {
@@ -568,6 +588,47 @@ export class CatalogSystem {
 
   getEntryById(id) { return this._objectMap.get(id) || null; }
   getObjects()     { return this._objects; }
+
+  /**
+   * Register an external Three.js Object3D (e.g. a district GLB) so the
+   * world-builder can select, move, rotate and scale it with its gizmo.
+   * Changes are routed to `onPatch(patch)` instead of the world_builder API.
+   *
+   * @param {THREE.Object3D} mesh   - The object to make selectable.
+   * @param {string}         id     - Unique ID (e.g. 'district:olimpo').
+   * @param {{
+   *   label?:    string,
+   *   onPatch?:  (patch: {pos_x?,pos_y?,pos_z?,rot_y?,scale?}) => void,
+   *   noDelete?: boolean
+   * }} opts
+   */
+  registerExternalObject(mesh, id, opts = {}) {
+    if (this._objectMap.has(id)) return; // already registered
+
+    mesh.userData.worldObjectId = id;
+    mesh.userData.wbLabel = opts.label ?? id;
+
+    const entry = { id, item_id: id, mesh, label: opts.label ?? id, external: true };
+    this._objects.push(entry);
+    this._objectMap.set(id, entry);
+    this._externalCallbacks.set(id, {
+      onPatch:  opts.onPatch  ?? null,
+      noDelete: opts.noDelete ?? true,
+    });
+    this.builder.ui.refreshObjectsTab?.();
+  }
+
+  /** Remove a previously registered external object from the builder (does NOT dispose geometry). */
+  unregisterExternalObject(id) {
+    const entry = this._objectMap.get(id);
+    if (!entry?.external) return;
+    const idx = this._objects.indexOf(entry);
+    if (idx >= 0) this._objects.splice(idx, 1);
+    this._objectMap.delete(id);
+    this._externalCallbacks.delete(id);
+    if (entry.mesh) delete entry.mesh.userData.worldObjectId;
+    this.builder.ui.refreshObjectsTab?.();
+  }
 
   // ─────────────────────────────────────────────────────────
   // ANIMATION TICK
