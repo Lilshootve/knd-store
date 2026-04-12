@@ -529,8 +529,8 @@ const DEFAULTS = {
   activeAnimationIndex: 0
 };
 
-/** Arena holo lab preset; lobby embed uses ?preset=holo — only colorR/G/B vary by ?rarity= */
-const HOLO_ARENA_PRESET_URL = '/games/arena-protocol/assets/holo-preset.json';
+/** Lobby embed usa ?preset=holo — only colorR/G/B vary by ?rarity= */
+const HOLO_ARENA_PRESET_URL = '/module-viewer/holo-preset.json';
 
 const RARITY_HOLO_RGB = {
   common: { colorR: 0.28, colorG: 0.72, colorB: 0.88 },
@@ -910,10 +910,10 @@ function applyCameraFraming(root, paddingMult) {
     ) * paddingMult;
 
   if (_embedMode) {
-    const skinBoost = hasSkinned ? 1.18 : 1.08;
-    dist = Math.max(dist * skinBoost, maxDim * 1.55 * paddingMult, 1.55);
+    const skinBoost = hasSkinned ? 1.05 : 1.02;
+    dist = Math.max(dist * skinBoost, maxDim * 1.2 * paddingMult, 1.2);
     if (hasSkinned) {
-      dist = Math.max(dist, maxDim * 1.35);
+      dist = Math.max(dist, maxDim * 1.1);
     }
     if (embedFramingDistFloor > 0) {
       dist = Math.max(dist, embedFramingDistFloor);
@@ -922,12 +922,13 @@ function applyCameraFraming(root, paddingMult) {
 
   const target = center.clone();
   if (_embedMode) {
-    target.y -= size.y * 0.2;
+    /* shift target UP so model sits in lower-center of frame */
+    target.y += size.y * 0.08;
   }
   controls.target.copy(target);
   camera.position.set(
-    target.x + dist * 0.35,
-    target.y + dist * 0.22,
+    target.x,
+    target.y + dist * 0.12,
     target.z + dist
   );
 
@@ -1129,7 +1130,7 @@ function loadModel() {
       }
 
       // Encuadre amplio (pose bind); con animación refinamos tras varios frames
-      applyCameraFraming(framingRoot, _embedMode ? 1.18 : 1.52);
+      applyCameraFraming(framingRoot, _embedMode ? 1.05 : 1.52);
 
       if (mixer && animationClips.length > 0) {
         const targetAnim = (_paramAnim || '').trim().toLowerCase();
@@ -1178,7 +1179,7 @@ function animate() {
   if (pendingFramingFrames > 0 && framingRoot) {
     pendingFramingFrames--;
     if (pendingFramingFrames === 0) {
-      applyCameraFraming(framingRoot, _embedMode ? 1.14 : 1.36);
+      applyCameraFraming(framingRoot, _embedMode ? 1.02 : 1.36);
     }
   }
 
@@ -1226,11 +1227,6 @@ async function bootstrapPresetAndModel() {
     Object.assign(merged, rarityRgb);
     delete merged.activeAnimationIndex;
     P = merged;
-    /* holo-preset.json usa materialSide 0 + depthTest 0; en iframe eso recorta el cuerpo (solo cabeza). */
-    if (_embedMode) {
-      P.materialSide = 2;
-      P.depthTest = 1;
-    }
     baselinePreset = { ...P };
     syncUI();
     loadModel();
@@ -1392,7 +1388,7 @@ if (_embedMode && typeof ResizeObserver !== 'undefined') {
   const ro = new ResizeObserver(() => {
     resizeViewerToWindow();
     if (framingRoot) {
-      applyCameraFraming(framingRoot, _embedMode ? 1.14 : 1.4);
+      applyCameraFraming(framingRoot, _embedMode ? 1.02 : 1.4);
     }
   });
   ro.observe(document.documentElement);
