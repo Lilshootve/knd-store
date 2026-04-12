@@ -752,6 +752,46 @@ function buildDistrictCityGlbFallback(d, g, c) {
   g.add(stub);
 }
 
+/** Tracks loaded district city GLB roots so we can (re)register with World Builder after admin init. */
+window.__kndDistrictCityMeshes = window.__kndDistrictCityMeshes || [];
+
+function buildDistrictMeshWorldBuilderOpts(d) {
+  return {
+    label: d.name + ' · ciudad',
+    noDelete: true,
+    onPatch: (patch) => {
+      fetch('/api/nexus/district_city_mesh.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ district_id: d.id, ...patch }),
+      })
+        .then((r) => r.json())
+        .then((j) => {
+          if (!j.ok) console.warn('[district mesh]', j.error);
+        })
+        .catch((e) => console.warn('[district mesh]', e));
+    },
+  };
+}
+
+/** @returns {boolean} true if registered or already present */
+function registerDistrictCityMeshWithWorldBuilder(d, model) {
+  if (!_worldBuilder || !window.IS_ADMIN) return false;
+  const extId = 'district:' + d.id;
+  if (_worldBuilder.catalogSystem.getEntryById(extId)) return true;
+  _worldBuilder.catalogSystem.registerExternalObject(model, extId, buildDistrictMeshWorldBuilderOpts(d));
+  return true;
+}
+
+function flushDistrictCityMeshesWorldBuilder() {
+  const list = window.__kndDistrictCityMeshes;
+  if (!list || !list.length) return;
+  for (const { d, model } of list) {
+    registerDistrictCityMeshWithWorldBuilder(d, model);
+  }
+}
+
 /**
  * If the distrito has `city_glb_url` (DB) or a default in DEFAULT_DISTRICT_CITY_GLBS,
  * loads the GLB, applies server-saved transform, registers with World Builder for admins.
@@ -800,31 +840,15 @@ function attachDistrictCityGlbModel(d, g, c) {
 
       applySavedCityMeshTransform(model, d, top);
 
-      const extId = 'district:' + d.id;
-      const tryRegister = () => {
-        if (!_worldBuilder || !window.IS_ADMIN) return false;
-        _worldBuilder.catalogSystem.registerExternalObject(model, extId, {
-          label: d.name + ' · ciudad',
-          noDelete: true,
-          onPatch: (patch) => {
-            fetch('/api/nexus/district_city_mesh.php', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              credentials: 'same-origin',
-              body: JSON.stringify({ district_id: d.id, ...patch }),
-            })
-              .then((r) => r.json())
-              .then((j) => {
-                if (!j.ok) console.warn('[district mesh]', j.error);
-              })
-              .catch((e) => console.warn('[district mesh]', e));
-          },
-        });
-        return true;
-      };
-      if (!tryRegister()) {
+      window.__kndDistrictCityMeshes = window.__kndDistrictCityMeshes || [];
+      const idx = window.__kndDistrictCityMeshes.findIndex((x) => x.d.id === d.id);
+      const row = { d, model };
+      if (idx >= 0) window.__kndDistrictCityMeshes[idx] = row;
+      else window.__kndDistrictCityMeshes.push(row);
+
+      if (!registerDistrictCityMeshWithWorldBuilder(d, model) && window.IS_ADMIN) {
         const iv = setInterval(() => {
-          if (tryRegister()) clearInterval(iv);
+          if (registerDistrictCityMeshWithWorldBuilder(d, model)) clearInterval(iv);
         }, 200);
         setTimeout(() => clearInterval(iv), 12000);
       }
@@ -1835,6 +1859,9 @@ async function loadWorld(){
     if(!j.ok) throw new Error(j.error?.message||"API error");
     const data=j.data;
 
+    window.__kndDistrictCityMeshes = [];
+    window.IS_ADMIN = !!data.is_admin;
+
     // Build DISTS
     DISTS=(data.districts||[])
       .filter(d=>d.id!=="central")
@@ -1910,8 +1937,8 @@ async function loadWorld(){
     await ensureNexusWorldObjectsLoaded();
 
     if (data.is_admin) {
-      window.IS_ADMIN = true;
       await initWorldBuilder();
+      flushDistrictCityMeshesWorldBuilder();
     }
 
     return true;
@@ -1923,6 +1950,8 @@ async function loadWorld(){
 }
 
 function loadFallback(){
+  window.IS_ADMIN = false;
+  window.__kndDistrictCityMeshes = [];
   // Hardcoded fallback when API unreachable (dev/offline)
   const _distFiles = {olimpo:"olimpo", tesla:"tesla-lab", casino:"casino", agora:"agora"};
   const _dr = (id) => "/games/arena-protocol/" + encodeURIComponent(_distFiles[id]||id) + ".php";

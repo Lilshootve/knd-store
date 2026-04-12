@@ -180,7 +180,7 @@ export class HierarchyPanel {
     const renderNode = (entry, depth = 0) => {
       const children = childrenOf.get(entry.id) || [];
       const hasChildren = children.length > 0;
-      const label = this._labels.get(entry.id) || entry.item_id || entry.id;
+      const label = entry.label || this._labels.get(entry.id) || entry.item_id || entry.id;
       const isSel = this.builder.transformSystem.selectedEntry?.id === entry.id ||
                     this.builder.multiSelect.isSelected(entry);
       const catEntry = this.builder.catalogSystem.findCatalogEntry(entry.item_id);

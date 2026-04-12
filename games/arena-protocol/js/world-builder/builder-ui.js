@@ -133,6 +133,27 @@ export class BuilderUI {
   -webkit-box-orient:vertical;overflow:hidden;word-break:break-word;
 }
 
+/* Placed objects list (catalog + district anchors) */
+.wb-scene-list{
+  display:flex;flex-direction:column;gap:6px;
+  max-height:180px;overflow-y:auto;padding-right:4px;
+}
+.wb-scene-list::-webkit-scrollbar{ width:4px; }
+.wb-scene-list::-webkit-scrollbar-thumb{ background:rgba(155,48,255,.35);border-radius:2px; }
+.wb-scene-item{
+  background:rgba(0,232,255,.06);border:1px solid rgba(0,232,255,.15);
+  border-radius:6px;padding:8px 10px;cursor:pointer;font-size:11px;
+  color:rgba(200,225,255,.88);transition:all .15s;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.wb-scene-item:hover{
+  background:rgba(0,232,255,.12);border-color:rgba(0,232,255,.35);
+}
+.wb-scene-item.on{
+  background:rgba(155,48,255,.2);border-color:rgba(155,48,255,.55);
+  box-shadow:0 0 10px rgba(155,48,255,.2);
+}
+
 /* Row control */
 .wb-ctrl-row{ display:flex;align-items:center;gap:8px; }
 .wb-ctrl-lbl{
@@ -415,12 +436,37 @@ input[type=color].wb-color{
   _renderObjectsTab(body) {
     const catalog = this.builder.catalogSystem;
     const sel = this.builder.transformSystem.selectedEntry;
+    const placed = catalog.getObjects();
+
+    // — Objects already in scene (furniture + district GLB anchors) —
+    if (placed.length > 0) {
+      body.appendChild(this._el('div', 'wb-sec-lbl', `EN ESCENA (${placed.length})`));
+      const list = this._el('div', 'wb-scene-list');
+      placed.forEach(entry => {
+        const row = this._el('div', 'wb-scene-item');
+        const isOn = sel?.id === entry.id;
+        if (isOn) row.classList.add('on');
+        const label = entry.label || entry.item_id || entry.id;
+        row.textContent = entry.external ? `📍 ${label}` : label;
+        row.title = String(entry.id);
+        row.onclick = (e) => {
+          e.stopPropagation();
+          this.builder.multiSelect.clear();
+          this.builder.transformSystem.select(entry);
+          this.builder.hierarchyPanel?.refresh?.();
+          this._renderTab('objects');
+        };
+        list.appendChild(row);
+      });
+      body.appendChild(list);
+      body.appendChild(this._div());
+    }
 
     // — Selected object info —
     if (sel) {
       const { mesh, item_id } = sel;
       const catEntry = catalog.findCatalogEntry(item_id);
-      const name = catEntry?.name || item_id;
+      const name = sel.label || catEntry?.name || item_id;
 
       const selBox = this._el('div', 'wb-sel-box');
       selBox.innerHTML = `<div class="wb-sel-name">📌 ${name}</div>`;
@@ -479,15 +525,18 @@ input[type=color].wb-color{
 
       body.appendChild(selBox);
 
-      // Action buttons
+      // Action buttons (district anchors are external — no duplicate/delete)
       const actionRow = this._el('div', 'wb-btn-row');
-      const dupBtn = this._pbtn('📋 DUPLICATE', 'cyan');
-      dupBtn.onclick = () => catalog.duplicateObject(sel);
       const focusBtn = this._pbtn('⊙ FOCUS', 'purple');
       focusBtn.onclick = () => this.builder.transformSystem.focusSelected();
-      const delBtn = this._pbtn('✕ DELETE', 'red');
-      delBtn.onclick = () => { this.builder.transformSystem.deselect(); catalog.deleteObject(sel); };
-      actionRow.append(dupBtn, focusBtn, delBtn);
+      actionRow.appendChild(focusBtn);
+      if (!sel.external) {
+        const dupBtn = this._pbtn('📋 DUPLICATE', 'cyan');
+        dupBtn.onclick = () => catalog.duplicateObject(sel);
+        const delBtn = this._pbtn('✕ DELETE', 'red');
+        delBtn.onclick = () => { this.builder.transformSystem.deselect(); catalog.deleteObject(sel); };
+        actionRow.append(dupBtn, delBtn);
+      }
       body.appendChild(actionRow);
 
       body.appendChild(this._div());
