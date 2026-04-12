@@ -922,13 +922,13 @@ function applyCameraFraming(root, paddingMult) {
 
   const target = center.clone();
   if (_embedMode) {
-    /* shift target UP so model sits in lower portion of frame */
-    target.y += size.y * 0.32;
+    /* Raise look-at target to upper-body; camera high above → steep downward look → model in lower frame */
+    target.y += size.y * 0.55;
   }
   controls.target.copy(target);
   camera.position.set(
     target.x,
-    target.y + dist * 0.12,
+    target.y + dist * 0.7,
     target.z + dist
   );
 
