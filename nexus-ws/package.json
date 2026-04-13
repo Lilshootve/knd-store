@@ -1,0 +1,17 @@
+{
+  "name": "knd-nexus-realtime",
+  "version": "1.0.0",
+  "private": true,
+  "description": "WebSocket server for Nexus shared-world realtime (authoritative movement)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

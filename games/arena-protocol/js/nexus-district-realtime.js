@@ -1,9 +1,10 @@
 /**
- * Nexus district rooms — WebSocket presence + remote avatars (nexus-ws.js protocol).
- * Filters peers by district_id on the client; move events are global from the server.
+ * Nexus district rooms — legacy nexus-ws.js (welcome/move) or authoritative nexus-ws/index.js (join/input/state).
+ * Filters peers by district_id on the client.
  */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { createNexusAuthoritativeClient } from './nexus-authoritative-client.js';
 
 function normalizeNexusWsUrl(raw) {
   let u = String(raw || '').trim();
@@ -97,10 +98,12 @@ function capColor(hex) {
  * @param {() => {x:number,z:number}} o.getPosition
  * @param {() => number} o.getRotationY
  * @param {number} [o.remoteHeight=1.8]
+ * @param {boolean} [o.useAuthoritativeWs=false] — nexus-ws/index.js (input/state); legacy si false
  */
 export function createNexusDistrictRealtime(o) {
   const districtId = o.districtId;
   const userId = o.userId | 0;
+  const useAuthoritativeWs = !!o.useAuthoritativeWs;
   const displayName = (o.displayName || 'PLAYER').slice(0, 20);
   const colorBody = capColor(o.colorBody);
   const colorVisor = capColor(o.colorVisor);
@@ -118,14 +121,104 @@ export function createNexusDistrictRealtime(o) {
 
   let ws = null;
   let myPid = null;
+  /** @type {ReturnType<createNexusAuthoritativeClient>|null} */
+  let authClient = null;
   let disposed = false;
   let moveTimer = null;
   let hbTimer = null;
   let reconnectTimer = null;
   let reconnectAttempt = 0;
+  const authRemoteMiss = new Map();
+  const AUTH_MISS_TICKS = 5;
+  const _authKeys = {};
+  let _authKd = null;
+  let _authKu = null;
 
   function shouldShow(rec) {
-    return rec && rec.player_id != null && String(rec.player_id) !== String(myPid) && rec.district_id === districtId;
+    if (!rec || rec.player_id == null) return false;
+    const self = useAuthoritativeWs ? String(userId) : String(myPid);
+    return String(rec.player_id) !== self && rec.district_id === districtId;
+  }
+
+  function bindAuthKeys() {
+    if (_authKd) return;
+    _authKd = (e) => {
+      _authKeys[e.code] = true;
+    };
+    _authKu = (e) => {
+      _authKeys[e.code] = false;
+    };
+    window.addEventListener('keydown', _authKd, true);
+    window.addEventListener('keyup', _authKu, true);
+  }
+
+  function unbindAuthKeys() {
+    if (_authKd) window.removeEventListener('keydown', _authKd, true);
+    if (_authKu) window.removeEventListener('keyup', _authKu, true);
+    _authKd = _authKu = null;
+    Object.keys(_authKeys).forEach((k) => delete _authKeys[k]);
+  }
+
+  function readDistrictAuthKeys() {
+    const t = document.activeElement?.tagName;
+    if (t === 'INPUT' || t === 'TEXTAREA' || t === 'SELECT') {
+      return { forward: false, backward: false, left: false, right: false, run: false };
+    }
+    return {
+      forward: !!(_authKeys.KeyW || _authKeys.ArrowUp),
+      backward: !!(_authKeys.KeyS || _authKeys.ArrowDown),
+      left: !!(_authKeys.KeyA || _authKeys.ArrowLeft),
+      right: !!(_authKeys.KeyD || _authKeys.ArrowRight),
+      run: !!(_authKeys.ShiftLeft || _authKeys.ShiftRight),
+    };
+  }
+
+  function handleAuthState(msg) {
+    const myId = String(userId);
+    const idsThis = new Set();
+    for (const pl of msg.players || []) {
+      const rid = pl.id == null ? '' : String(pl.id);
+      if (!rid || rid === myId) continue;
+      idsThis.add(rid);
+      const k = pidKey(rid);
+      let rec = playerData.get(k);
+      if (!rec) {
+        mergePlayer({
+          player_id: rid,
+          display_name: '?',
+          color_body: '#6b7280',
+          color_visor: colorVisor,
+          color_echo: colorEcho,
+          hero_model_url: null,
+          pos_x: typeof pl.x === 'number' && Number.isFinite(pl.x) ? pl.x : 0,
+          pos_z: typeof pl.z === 'number' && Number.isFinite(pl.z) ? pl.z : 0,
+          dir: typeof pl.ry === 'number' && Number.isFinite(pl.ry) ? pl.ry : 0,
+          district_id: districtId,
+        });
+        rec = playerData.get(k);
+      } else {
+        if (typeof pl.x === 'number' && Number.isFinite(pl.x)) rec.pos_x = pl.x;
+        if (typeof pl.z === 'number' && Number.isFinite(pl.z)) rec.pos_z = pl.z;
+        if (typeof pl.ry === 'number' && Number.isFinite(pl.ry)) rec.dir = pl.ry;
+      }
+      authRemoteMiss.set(k, 0);
+      if (shouldShow(rec)) ensureRemoteMesh(rec);
+      const e = remoteEntries.get(k);
+      if (e) {
+        if (e.group) e.group.visible = true;
+        e.tx = rec.pos_x;
+        e.tz = rec.pos_z;
+        e.tyRot = typeof rec.dir === 'number' ? rec.dir : 0;
+      }
+    }
+    remoteEntries.forEach((e, k) => {
+      const rec = playerData.get(k);
+      if (!rec || String(rec.player_id) === myId || rec.district_id !== districtId) return;
+      if (idsThis.has(k)) return;
+      const m = (authRemoteMiss.get(k) || 0) + 1;
+      authRemoteMiss.set(k, m);
+      if (m >= AUTH_MISS_TICKS && e.group) e.group.visible = false;
+    });
   }
 
   function mergePlayer(pl) {
@@ -136,6 +229,7 @@ export function createNexusDistrictRealtime(o) {
   }
 
   function scheduleReconnect() {
+    if (useAuthoritativeWs) return;
     if (disposed || userId <= 0) return;
     if (reconnectTimer) return;
     const base = Math.min(3e4, 1200 * Math.pow(1.85, reconnectAttempt));
@@ -314,6 +408,28 @@ export function createNexusDistrictRealtime(o) {
 
   function connect() {
     if (disposed || userId <= 0) return;
+    if (useAuthoritativeWs) {
+      authClient = createNexusAuthoritativeClient({
+        userId,
+        districtId,
+        username: displayName,
+        avatar: heroModelUrl || '',
+        color: colorBody,
+        getSpawn: () => {
+          const pos = getPosition();
+          return { x: pos.x, z: pos.z, ry: getRotationY() };
+        },
+        onJoined: () => {
+          reconnectAttempt = 0;
+        },
+        onState: handleAuthState,
+        onChatHistory: () => {},
+        onChat: () => {},
+        onTyping: () => {},
+      });
+      authClient.start();
+      return;
+    }
     const url = getNexusWsUrl();
     if (!url) {
       scheduleReconnect();
@@ -362,6 +478,7 @@ export function createNexusDistrictRealtime(o) {
 
   function startTimers() {
     if (moveTimer) return;
+    if (useAuthoritativeWs) return;
     moveTimer = setInterval(() => {
       if (!ws || ws.readyState !== WebSocket.OPEN || myPid == null) return;
       const pos = getPosition();
@@ -396,11 +513,15 @@ export function createNexusDistrictRealtime(o) {
   }
 
   function update(dt) {
+    if (useAuthoritativeWs && authClient && authClient.isOpen()) {
+      authClient.tickInput(readDistrictAuthKeys());
+    }
     const d = Math.min(0.05, dt || 0.016);
     const kPos = 1 - Math.exp(-14 * d);
     const kRot = 1 - Math.exp(-10 * d);
     remoteEntries.forEach((e) => {
       if (!e.group || e.pending) return;
+      if (e.group.visible === false) return;
       e.group.position.x += (e.tx - e.group.position.x) * kPos;
       e.group.position.z += (e.tz - e.group.position.z) * kPos;
       let dr = e.tyRot - e.group.rotation.y;
@@ -415,6 +536,7 @@ export function createNexusDistrictRealtime(o) {
     start() {
       if (userId <= 0) return;
       disposed = false;
+      if (useAuthoritativeWs) bindAuthKeys();
       connect();
       startTimers();
     },
@@ -422,10 +544,18 @@ export function createNexusDistrictRealtime(o) {
     dispose() {
       disposed = true;
       stopTimers();
-      try {
-        ws && ws.close(1000);
-      } /* ignore */ catch (_) {}
-      ws = null;
+      if (useAuthoritativeWs) {
+        unbindAuthKeys();
+        try {
+          authClient && authClient.stop();
+        } catch (_) {}
+        authClient = null;
+      } else {
+        try {
+          ws && ws.close(1000);
+        } catch (_) {}
+        ws = null;
+      }
       remoteEntries.forEach((_, pid) => removeRemote(pid));
     },
   };

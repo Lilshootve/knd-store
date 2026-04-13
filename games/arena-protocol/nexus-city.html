@@ -305,10 +305,13 @@ import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { WorldBuilderPro } from "./js/world-builder/index.js?v=20260411";
+import { createNexusAuthoritativeClient } from "./js/nexus-authoritative-client.js";
 
 // ══════════════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════════════
+/** Autoritativo nexus-ws/index.js (join + input + state). Legacy si false. Prueba: 2 pestañas, servidor Node nexus-ws, chat vía POST /api/nexus/chat.php. */
+const USE_NEW_NEXUS_WS = false;
 /** Activa con ?nexusDebug=1 — AxesHelper, BoxHelper del GLB y logs de AABB/posiciones */
 const NEXUS_DEBUG_SCENE = new URLSearchParams(location.search).has('nexusDebug');
 /** Metros hacia dentro del borde del AABB de la plataforma (evita que el avatar “cuegue”). */
@@ -367,6 +370,158 @@ let chatOpen   = false;
 
 // Remote players: { pid: { mesh, labelSprite, tx, tz, curX, curZ } }
 const remotePlayers = new Map();
+
+// ── Nexus authoritative WS (nexus-ws/index.js) ──
+let nexusAuthClient = null;
+const _nexusKeyDown = {};
+const _nexusAuthRemoteMiss = new Map();
+const NEXUS_STATE_MISS_TICKS = 5;
+
+function nexusInputBlocked() {
+  const t = document.activeElement?.tagName;
+  return t === "INPUT" || t === "TEXTAREA" || t === "SELECT";
+}
+
+function readNexusAuthoritativeKeys() {
+  if (nexusInputBlocked()) {
+    return { forward: false, backward: false, left: false, right: false, run: false };
+  }
+  const k = _nexusKeyDown;
+  return {
+    forward: !!(k.KeyW || k.ArrowUp),
+    backward: !!(k.KeyS || k.ArrowDown),
+    left: !!(k.KeyA || k.ArrowLeft),
+    right: !!(k.KeyD || k.ArrowRight),
+    run: !!(k.ShiftLeft || k.ShiftRight),
+  };
+}
+
+function addRemotePlayerFromNexusState(id, p) {
+  const pid = String(id);
+  if (remotePlayers.has(pid)) return;
+  const mesh = mkGuardian("#6b7280", "#94a3b8", "#ffd600", true, "#44aaaa");
+  const x = typeof p.x === "number" && Number.isFinite(p.x) ? p.x : 0;
+  const z = typeof p.z === "number" && Number.isFinite(p.z) ? p.z : 0;
+  mesh.position.set(x, 0, z);
+  const label = mkSprite("GUARDIAN", 6, "rgba(180,210,255,.7)");
+  label.position.y = 2.35;
+  mesh.add(label);
+  scene.add(mesh);
+  remotePlayers.set(pid, {
+    mesh,
+    tx: x,
+    tz: z,
+    mixer: null,
+    heroUrl: null,
+    feetOffsetY: null,
+    nexusRemote: true,
+    hiddenCull: false,
+    targetDir: typeof p.ry === "number" && Number.isFinite(p.ry) ? p.ry : undefined,
+  });
+  _nexusAuthRemoteMiss.set(pid, 0);
+}
+
+function handleNexusState(msg) {
+  const myId = String(window._userId || "");
+  const idsThisFrame = new Set();
+  for (const pl of msg.players || []) {
+    const id = pl && pl.id != null ? String(pl.id) : "";
+    if (!id || id === myId) continue;
+    idsThisFrame.add(id);
+    if (!remotePlayers.has(id)) addRemotePlayerFromNexusState(id, pl);
+    const x = typeof pl.x === "number" && Number.isFinite(pl.x) ? pl.x : 0;
+    const z = typeof pl.z === "number" && Number.isFinite(pl.z) ? pl.z : 0;
+    const ry = typeof pl.ry === "number" && Number.isFinite(pl.ry) ? pl.ry : undefined;
+    moveRemotePlayer(id, x, z, ry);
+    const rp = remotePlayers.get(id);
+    if (rp) {
+      rp.nexusRemote = true;
+      rp.hiddenCull = false;
+      if (rp.mesh) rp.mesh.visible = true;
+      _nexusAuthRemoteMiss.set(id, 0);
+    }
+  }
+  remotePlayers.forEach((rp, pid) => {
+    if (!rp.nexusRemote) return;
+    if (idsThisFrame.has(pid)) return;
+    const m = (_nexusAuthRemoteMiss.get(pid) || 0) + 1;
+    _nexusAuthRemoteMiss.set(pid, m);
+    if (m >= NEXUS_STATE_MISS_TICKS && rp.mesh) {
+      rp.hiddenCull = true;
+      rp.mesh.visible = false;
+    }
+  });
+}
+
+function appendChatFromNexusPayload(pl) {
+  if (!pl || typeof pl.message !== "string" || !pl.message) return;
+  appendChatMsg({
+    display_name: pl.username || pl.display_name || "?",
+    color: typeof pl.color === "string" && pl.color.startsWith("#") ? pl.color : "#94a3b8",
+    message: pl.message,
+  });
+}
+
+function handleNexusChatHistory(msg) {
+  for (const entry of msg.messages || []) {
+    const pl = entry && entry.payload ? entry.payload : entry;
+    appendChatFromNexusPayload(pl);
+  }
+}
+
+function handleNexusChatEnvelope(msg) {
+  const pl = msg && msg.payload ? msg.payload : msg;
+  appendChatFromNexusPayload(pl);
+  if (chatChannel === "agora" && msg && msg.origin && Number.isFinite(msg.origin.x) && Number.isFinite(msg.origin.z)) {
+    showBubble(
+      pl.message || "",
+      msg.origin.x,
+      msg.origin.z,
+      typeof pl.color === "string" ? pl.color : "#00ff88",
+      pl.username || "?",
+    );
+  }
+}
+
+function handleNexusTyping(msg) {
+  const pl = msg && msg.payload ? msg.payload : {};
+  if (pl.user_id == null) return;
+  if (pl.isTyping) {
+    fireEv("✎", String(pl.user_id), "escribiendo…", "rgba(90,165,190,.55)");
+  }
+}
+
+function startNexusAuthoritativeRealtime() {
+  if (!USE_NEW_NEXUS_WS) return;
+  if ((window._userId | 0) <= 0) {
+    console.info("[NexusAuth] sin conectar: inicia sesión");
+    return;
+  }
+  if (nexusAuthClient) nexusAuthClient.stop();
+  nexusAuthClient = createNexusAuthoritativeClient({
+    userId: window._userId,
+    districtId: "central",
+    username: gName,
+    avatar: (window._heroModelUrl && String(window._heroModelUrl).trim()) || "",
+    color: gColorHex,
+    getSpawn: () => ({
+      x: player.position.x,
+      z: player.position.z,
+      ry: player.rotation.y,
+    }),
+    onJoined: () => {
+      fireEv("⬡", "NEXUS", "sincronizado (servidor autoritativo)", "rgba(0,255,136,.7)");
+    },
+    onChatHistory: handleNexusChatHistory,
+    onState: handleNexusState,
+    onChat: handleNexusChatEnvelope,
+    onTyping: handleNexusTyping,
+    onConnectionError: () => {
+      fireEv("⚠", "NEXUS", "tiempo real autoritativo no disponible", "rgba(255,160,80,.82)");
+    },
+  });
+  nexusAuthClient.start();
+}
 
 // ══════════════════════════════════════════════════════
 // CALIDAD WEBGL (compartida con Sanctum: localStorage)
@@ -1599,23 +1754,61 @@ function appendChatMsg(msg){
 
 function escapeHtml(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 
-window.sendChat=function(){
+window.sendChat=async function(){
   const input=document.getElementById("chat-input");
   const msg=input.value.trim(); if(!msg) return;
   input.value="";
+  if(USE_NEW_NEXUS_WS && (window._userId|0)>0){
+    try{
+      const res=await fetch("/api/nexus/chat.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        credentials:"same-origin",
+        body:JSON.stringify({channel:chatChannel,message:msg})
+      });
+      const j=await res.json().catch(()=>({}));
+      if(res.ok && j.ok && j.data){
+        const d=j.data;
+        appendChatMsg({display_name:d.display_name||gName,color:d.color||gColorHex,message:msg});
+        if(chatChannel==="agora") showBubble(msg, player.position.x, player.position.z, d.color||gColorHex, d.display_name||gName);
+      }else{
+        appendChatMsg({display_name:gName,color:gColorHex,message:msg});
+        if(chatChannel==="agora") showBubble(msg, player.position.x, player.position.z, gColorHex, gName);
+      }
+    }catch(_){
+      appendChatMsg({display_name:gName,color:gColorHex,message:msg});
+      if(chatChannel==="agora") showBubble(msg, player.position.x, player.position.z, gColorHex, gName);
+    }
+    return;
+  }
   if(ws && ws.readyState===WebSocket.OPEN){
     ws.send(JSON.stringify({type:"chat",channel:chatChannel,message:msg}));
   } else {
-    // guest mode: show locally only
     appendChatMsg({display_name:gName,color:gColorHex,message:msg});
     if(chatChannel==="agora") showBubble(msg, player.position.x, player.position.z, gColorHex, gName);
   }
 };
 
-document.getElementById("chat-input").addEventListener("keydown",e=>{
+const _chatInputEl=document.getElementById("chat-input");
+_chatInputEl.addEventListener("keydown",e=>{
   if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();window.sendChat();}
   e.stopPropagation(); // prevent WASD while typing
 });
+_chatInputEl.addEventListener("focus",()=>{
+  if(USE_NEW_NEXUS_WS && nexusAuthClient && nexusAuthClient.isOpen()) nexusAuthClient.sendTyping(true);
+});
+_chatInputEl.addEventListener("blur",()=>{
+  if(USE_NEW_NEXUS_WS && nexusAuthClient && nexusAuthClient.isOpen()) nexusAuthClient.sendTyping(false);
+});
+
+window.addEventListener("keydown",e=>{
+  if(!USE_NEW_NEXUS_WS) return;
+  _nexusKeyDown[e.code]=true;
+},{capture:true});
+window.addEventListener("keyup",e=>{
+  if(!USE_NEW_NEXUS_WS) return;
+  _nexusKeyDown[e.code]=false;
+},{capture:true});
 
 // ══════════════════════════════════════════════════════
 // WEBSOCKET
@@ -1627,6 +1820,7 @@ let _wsReconnectAttempt=0;
 let _wsFatalNotified=false;
 
 function scheduleWSReconnect(){
+  if (USE_NEW_NEXUS_WS) return;
   if (_wsReconnectTimer) return;
   const base = Math.min(30000, 1200 * Math.pow(1.85, _wsReconnectAttempt));
   const jitter = base * 0.15 * Math.random();
@@ -1640,6 +1834,7 @@ function scheduleWSReconnect(){
 }
 
 function connectWS(){
+  if (USE_NEW_NEXUS_WS) return;
   if ((window._userId | 0) <= 0) {
     console.info("[WS] sin conectar: inicia sesión para tiempo real");
     return;
@@ -1951,9 +2146,11 @@ async function loadWorld(){
       fireEv("⚠",e.name,"está desvaneciendo — memoria crítica","rgba(255,100,60,.7)");
     }
 
-    // WebSocket: el servidor exige user_id en join; sin sesión no intentar (evita ruido en consola).
-    if ((window._userId | 0) > 0) connectWS();
-    else console.info('[WS] sin conectar: inicia sesión para tiempo real');
+    // WebSocket: legacy o servidor autoritativo (no ambos).
+    if ((window._userId | 0) > 0) {
+      if (USE_NEW_NEXUS_WS) startNexusAuthoritativeRealtime();
+      else connectWS();
+    } else console.info('[WS] sin conectar: inicia sesión para tiempo real');
 
     // Objetos colocados del World Builder: todos los visitantes (antes sólo se cargaban en modo admin).
     await ensureNexusWorldObjectsLoaded();
@@ -2016,6 +2213,9 @@ renderer.setAnimationLoop((nowMs)=>{
     // GLB hero — controller handles mixer, Y physics, and rotation.
     // We only apply XZ bounds here.
     const { vx, vz } = _charCtrl.update(dt, _heroMesh);
+    if (USE_NEW_NEXUS_WS && nexusAuthClient && nexusAuthClient.isOpen()) {
+      nexusAuthClient.tickInput(readNexusAuthoritativeKeys());
+    }
     _heroMesh.position.x = THREE.MathUtils.clamp(_heroMesh.position.x + vx * dt, nexusPlayBounds.minX, nexusPlayBounds.maxX);
     _heroMesh.position.z = THREE.MathUtils.clamp(_heroMesh.position.z + vz * dt, nexusPlayBounds.minZ, nexusPlayBounds.maxZ);
 
@@ -2027,6 +2227,9 @@ renderer.setAnimationLoop((nowMs)=>{
     player.position.copy(_heroMesh.position);
     player.rotation.copy(_heroMesh.rotation);
   } else {
+    if (USE_NEW_NEXUS_WS && nexusAuthClient && nexusAuthClient.isOpen()) {
+      nexusAuthClient.tickInput(readNexusAuthoritativeKeys());
+    }
     // Procedural guardian
     player.position.x=THREE.MathUtils.clamp(player.position.x+vel.x*dt,nexusPlayBounds.minX,nexusPlayBounds.maxX);
     player.position.z=THREE.MathUtils.clamp(player.position.z+vel.z*dt,nexusPlayBounds.minZ,nexusPlayBounds.maxZ);
