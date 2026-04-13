@@ -19,6 +19,25 @@ function normalizeNexusWsUrl(raw) {
   return u;
 }
 
+function rewriteLocalhostWsToPageHostname(url) {
+  if (!url || typeof location === 'undefined') return url;
+  try {
+    const p = new URL(url);
+    if (p.protocol !== 'ws:' && p.protocol !== 'wss:') return url;
+    const metaHost = p.hostname;
+    const pageHost = location.hostname;
+    if (
+      (metaHost === 'localhost' || metaHost === '127.0.0.1') &&
+      pageHost !== 'localhost' &&
+      pageHost !== '127.0.0.1'
+    ) {
+      const portPart = p.port ? `:${p.port}` : '';
+      return `${p.protocol}//${pageHost}${portPart}`;
+    }
+  } catch (_) { /* keep url */ }
+  return url;
+}
+
 function upgradeNexusWsUrlForHttpsPage(url) {
   if (!url || typeof location === 'undefined' || location.protocol !== 'https:') return url;
   try {
@@ -44,7 +63,7 @@ function getNexusWsUrl() {
     const proto = location.protocol === 'https:' ? 'wss' : 'ws';
     u = `${proto}://${location.hostname}:8765`;
   }
-  return upgradeNexusWsUrlForHttpsPage(u);
+  return upgradeNexusWsUrlForHttpsPage(rewriteLocalhostWsToPageHostname(u));
 }
 
 function makeLabelSprite(name, color) {

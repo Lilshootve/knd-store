@@ -6,6 +6,27 @@
 <!-- WebSocket: wss sin barra final. Producción Railway (ajusta si cambia el deploy): -->
 <meta name="nexus-ws-url" content="ws://localhost:8080">
 <title>NEXUS — Central City</title>
+<script>
+(function () {
+  try {
+    var q = new URLSearchParams(window.location.search);
+    var h = (q.get("nexusWsHost") || q.get("nexus_ws_host") || "").trim();
+    if (!h || h === "localhost" || h === "127.0.0.1") return;
+    var meta = document.querySelector('meta[name="nexus-ws-url"]');
+    var raw = meta && meta.getAttribute("content") && meta.getAttribute("content").trim();
+    var port = "8080";
+    if (raw) {
+      try {
+        var u = new URL(raw.replace(/\/+$/, ""));
+        if (u.port) port = u.port;
+      } catch (e) {}
+    }
+    var tls = location.protocol === "https:";
+    window.NEXUS_WS_URL = (tls ? "wss:" : "ws:") + "//" + h + ":" + port;
+    console.info("[NEXUS WS] URL por ?nexusWsHost= →", window.NEXUS_WS_URL);
+  } catch (e) {}
+})();
+</script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <!-- World Builder Pro styles are injected by builder-ui.js -->
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -387,6 +408,21 @@ function finalizeNexusWsUrlFromMeta(raw) {
   return upgradeNexusWsUrlForHttpsPage(rewriteLocalhostWsToPageHostname(normalizeNexusWsUrl(raw)));
 }
 function getNexusWsUrl(){
+  const q = new URLSearchParams(location.search);
+  const qh = (q.get("nexusWsHost") || q.get("nexus_ws_host") || "").trim();
+  if (qh && qh !== "localhost" && qh !== "127.0.0.1") {
+    const meta = document.querySelector('meta[name="nexus-ws-url"]');
+    const raw = meta?.getAttribute("content")?.trim();
+    let port = "8080";
+    if (raw) {
+      try {
+        const u = new URL(raw.replace(/\/+$/, ""));
+        if (u.port) port = u.port;
+      } catch (_) {}
+    }
+    const p = location.protocol === "https:" ? "wss" : "ws";
+    return upgradeNexusWsUrlForHttpsPage(`${p}://${qh}:${port}`);
+  }
   const win = window.NEXUS_WS_URL;
   if (win && String(win).trim()) return finalizeNexusWsUrlFromMeta(String(win).trim());
   const meta = document.querySelector('meta[name="nexus-ws-url"]');

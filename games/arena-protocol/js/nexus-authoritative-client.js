@@ -21,6 +21,35 @@ function normalizeNexusWsUrl(raw) {
   return u;
 }
 
+/**
+ * Si el meta apunta a localhost pero la página se abre por IP o dominio (p. ej. amigo en http://TU-IP/…),
+ * cada navegador intentaría ws://localhost → solo funciona en tu máquina. Usar el mismo host que la página.
+ */
+function rewriteLocalhostWsToPageHostname(url) {
+  if (!url || typeof location === 'undefined') return url;
+  try {
+    const p = new URL(url);
+    if (p.protocol !== 'ws:' && p.protocol !== 'wss:') return url;
+    const metaHost = p.hostname;
+    const pageHost = location.hostname;
+    if (
+      (metaHost === 'localhost' || metaHost === '127.0.0.1') &&
+      pageHost !== 'localhost' &&
+      pageHost !== '127.0.0.1'
+    ) {
+      const portPart = p.port ? `:${p.port}` : '';
+      const next = `${p.protocol}//${pageHost}${portPart}`;
+      if (typeof console !== 'undefined' && console.info) {
+        console.info('[NEXUS WS] URL meta era localhost; usando host de la página:', next);
+      }
+      return next;
+    }
+  } catch (_) {
+    /* keep url */
+  }
+  return url;
+}
+
 /** HTTPS pages cannot use ws:// (mixed content); upgrade to wss:// same host:port. Safe for http:// local dev (no change). */
 function upgradeNexusWsUrlForHttpsPage(url) {
   if (!url || typeof location === 'undefined' || location.protocol !== 'https:') return url;
@@ -38,9 +67,34 @@ function upgradeNexusWsUrlForHttpsPage(url) {
   return url;
 }
 
+function wsUrlFromNexusWsHostQuery() {
+  if (typeof location === 'undefined') return '';
+  const q = new URLSearchParams(location.search);
+  const forceHost = (q.get('nexusWsHost') || q.get('nexus_ws_host') || '').trim();
+  if (!forceHost || forceHost === 'localhost' || forceHost === '127.0.0.1') return '';
+  let port = '8080';
+  if (typeof document !== 'undefined') {
+    const meta = document.querySelector('meta[name="nexus-ws-url"]');
+    const fromMeta = meta && meta.getAttribute('content') && meta.getAttribute('content').trim();
+    if (fromMeta) {
+      try {
+        const pm = new URL(normalizeNexusWsUrl(fromMeta));
+        if (pm.port) port = pm.port;
+      } catch (_) {
+        /* keep port */
+      }
+    }
+  }
+  const wsProto = location.protocol === 'https:' ? 'wss' : 'ws';
+  return `${wsProto}://${forceHost}:${port}`;
+}
+
 export function getNexusAuthoritativeWsUrl() {
   let u = '';
-  if (typeof window !== 'undefined' && typeof window.NEXUS_WS_URL === 'string' && window.NEXUS_WS_URL.trim()) {
+  const fromQuery = wsUrlFromNexusWsHostQuery();
+  if (fromQuery) {
+    u = normalizeNexusWsUrl(fromQuery);
+  } else if (typeof window !== 'undefined' && typeof window.NEXUS_WS_URL === 'string' && window.NEXUS_WS_URL.trim()) {
     u = normalizeNexusWsUrl(window.NEXUS_WS_URL.trim());
   } else if (typeof document !== 'undefined') {
     const meta = document.querySelector('meta[name="nexus-ws-url"]');
@@ -51,6 +105,7 @@ export function getNexusAuthoritativeWsUrl() {
     const proto = location.protocol === 'https:' ? 'wss' : 'ws';
     u = `${proto}://${location.hostname}:8765`;
   }
+  u = rewriteLocalhostWsToPageHostname(u);
   return upgradeNexusWsUrlForHttpsPage(u);
 }
 
@@ -138,10 +193,18 @@ export function createNexusAuthoritativeClient(opts) {
       return;
     }
 
+    if (typeof console !== 'undefined' && console.warn && /localhost|127\.0\.0\.1/.test(url)) {
+      console.warn(
+        '[nexus-auth-ws] URL apunta a localhost: solo funciona en el PC donde corre Node. Amigos: misma IP en la barra (http://TU-IP/…) o enlace con ?nexusWsHost=TU_IP — conectando a:',
+        url,
+      );
+    }
     try {
       ws = new WebSocket(url);
     } catch (e) {
-      if (typeof console !== 'undefined' && console.warn) console.warn('[nexus-auth-ws]', e.message);
+      if (typeof console !== 'undefined' && console.warn) {
+        console.warn('[nexus-auth-ws] WebSocket constructor failed:', e.message, '| URL:', url);
+      }
       scheduleReconnect();
       return;
     }
@@ -194,6 +257,12 @@ export function createNexusAuthoritativeClient(opts) {
     });
 
     ws.addEventListener('error', () => {
+      if (typeof console !== 'undefined' && console.warn) {
+        console.warn(
+          '[nexus-auth-ws] error (¿firewall, CSP, o localhost en el meta mientras la página es otra URL?). URL:',
+          url,
+        );
+      }
       if (onConnectionError) onConnectionError();
       try {
         if (ws) ws.close();
