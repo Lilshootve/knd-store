@@ -21,20 +21,37 @@ function normalizeNexusWsUrl(raw) {
   return u;
 }
 
-export function getNexusAuthoritativeWsUrl() {
-  if (typeof window !== 'undefined' && typeof window.NEXUS_WS_URL === 'string' && window.NEXUS_WS_URL.trim()) {
-    return normalizeNexusWsUrl(window.NEXUS_WS_URL.trim());
+/** HTTPS pages cannot use ws:// (mixed content); upgrade to wss:// same host:port. Safe for http:// local dev (no change). */
+export function upgradeNexusWsUrlForHttpsPage(url) {
+  if (!url || typeof location === 'undefined' || location.protocol !== 'https:') return url;
+  try {
+    const p = new URL(url);
+    if (p.protocol === 'ws:') {
+      return `wss://${p.host}`;
+    }
+  } catch (_) {
+    /* keep url */
   }
-  if (typeof document !== 'undefined') {
+  if (String(url).startsWith('ws://')) {
+    console.warn('Running HTTPS with ws:// may fail. Consider wss://');
+  }
+  return url;
+}
+
+export function getNexusAuthoritativeWsUrl() {
+  let u = '';
+  if (typeof window !== 'undefined' && typeof window.NEXUS_WS_URL === 'string' && window.NEXUS_WS_URL.trim()) {
+    u = normalizeNexusWsUrl(window.NEXUS_WS_URL.trim());
+  } else if (typeof document !== 'undefined') {
     const meta = document.querySelector('meta[name="nexus-ws-url"]');
     const fromMeta = meta && meta.getAttribute('content') && meta.getAttribute('content').trim();
-    if (fromMeta) return normalizeNexusWsUrl(fromMeta);
+    if (fromMeta) u = normalizeNexusWsUrl(fromMeta);
   }
-  if (typeof location !== 'undefined') {
+  if (!u && typeof location !== 'undefined') {
     const proto = location.protocol === 'https:' ? 'wss' : 'ws';
-    return `${proto}://${location.hostname}:8765`;
+    u = `${proto}://${location.hostname}:8765`;
   }
-  return '';
+  return upgradeNexusWsUrlForHttpsPage(u);
 }
 
 /**
@@ -132,6 +149,7 @@ export function createNexusAuthoritativeClient(opts) {
     ws.addEventListener('open', () => {
       reconnectAttempt = 0;
       lastInputJson = '';
+      console.log('[NEXUS NEW] connected');
       try {
         ws.send(JSON.stringify(buildJoinPayload()));
       } catch (_) {}
@@ -146,6 +164,7 @@ export function createNexusAuthoritativeClient(opts) {
         return;
       }
       if (!msg || typeof msg.type !== 'string') return;
+      console.log('[NEXUS NEW]', msg.type);
       switch (msg.type) {
         case 'joined':
           if (onJoined) onJoined(msg);

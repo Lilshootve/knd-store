@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- WebSocket: wss sin barra final. Producción Railway (ajusta si cambia el deploy): -->
-<meta name="nexus-ws-url" content="wss://knd-store-production.up.railway.app">
+<meta name="nexus-ws-url" content="ws://localhost:8080">
 <title>NEXUS — Central City</title>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <!-- World Builder Pro styles are injected by builder-ui.js -->
@@ -305,13 +305,13 @@ import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { WorldBuilderPro } from "./js/world-builder/index.js?v=20260411";
-import { createNexusAuthoritativeClient } from "./js/nexus-authoritative-client.js";
+import { createNexusAuthoritativeClient, upgradeNexusWsUrlForHttpsPage } from "./js/nexus-authoritative-client.js";
 
 // ══════════════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════════════
 /** Autoritativo nexus-ws/index.js (join + input + state). Legacy si false. Prueba: 2 pestañas, servidor Node nexus-ws, chat vía POST /api/nexus/chat.php. */
-const USE_NEW_NEXUS_WS = false;
+const USE_NEW_NEXUS_WS = true;
 /** Activa con ?nexusDebug=1 — AxesHelper, BoxHelper del GLB y logs de AABB/posiciones */
 const NEXUS_DEBUG_SCENE = new URLSearchParams(location.search).has('nexusDebug');
 /** Metros hacia dentro del borde del AABB de la plataforma (evita que el avatar “cuegue”). */
@@ -351,10 +351,10 @@ function normalizeNexusWsUrl(raw) {
 }
 function getNexusWsUrl(){
   const win = window.NEXUS_WS_URL;
-  if (win && String(win).trim()) return normalizeNexusWsUrl(String(win).trim());
+  if (win && String(win).trim()) return upgradeNexusWsUrlForHttpsPage(normalizeNexusWsUrl(String(win).trim()));
   const meta = document.querySelector('meta[name="nexus-ws-url"]');
   const fromMeta = meta?.getAttribute('content')?.trim();
-  if (fromMeta) return normalizeNexusWsUrl(fromMeta);
+  if (fromMeta) return upgradeNexusWsUrlForHttpsPage(normalizeNexusWsUrl(fromMeta));
   const proto = location.protocol === 'https:' ? 'wss' : 'ws';
   return `${proto}://${location.hostname}:8765`;
 }

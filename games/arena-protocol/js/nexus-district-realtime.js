@@ -4,7 +4,7 @@
  */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { createNexusAuthoritativeClient } from './nexus-authoritative-client.js';
+import { createNexusAuthoritativeClient, upgradeNexusWsUrlForHttpsPage } from './nexus-authoritative-client.js';
 
 function normalizeNexusWsUrl(raw) {
   let u = String(raw || '').trim();
@@ -20,14 +20,19 @@ function normalizeNexusWsUrl(raw) {
 }
 
 function getNexusWsUrl() {
+  let u = '';
   if (typeof window.NEXUS_WS_URL === 'string' && window.NEXUS_WS_URL.trim()) {
-    return normalizeNexusWsUrl(window.NEXUS_WS_URL.trim());
+    u = normalizeNexusWsUrl(window.NEXUS_WS_URL.trim());
+  } else {
+    const meta = document.querySelector('meta[name="nexus-ws-url"]');
+    const fromMeta = meta && meta.getAttribute('content') && meta.getAttribute('content').trim();
+    if (fromMeta) u = normalizeNexusWsUrl(fromMeta);
   }
-  const meta = document.querySelector('meta[name="nexus-ws-url"]');
-  const fromMeta = meta && meta.getAttribute('content') && meta.getAttribute('content').trim();
-  if (fromMeta) return normalizeNexusWsUrl(fromMeta);
-  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
-  return `${proto}://${location.hostname}:8765`;
+  if (!u) {
+    const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+    u = `${proto}://${location.hostname}:8765`;
+  }
+  return upgradeNexusWsUrlForHttpsPage(u);
 }
 
 function makeLabelSprite(name, color) {
