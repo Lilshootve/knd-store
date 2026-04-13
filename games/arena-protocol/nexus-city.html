@@ -305,7 +305,7 @@ import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { WorldBuilderPro } from "./js/world-builder/index.js?v=20260411";
-import { createNexusAuthoritativeClient, upgradeNexusWsUrlForHttpsPage } from "./js/nexus-authoritative-client.js";
+import { createNexusAuthoritativeClient } from "./js/nexus-authoritative-client.js";
 
 // ══════════════════════════════════════════════════════
 // STATE
@@ -347,6 +347,18 @@ function normalizeNexusWsUrl(raw) {
       u = `${p.protocol}//${p.host}`;
     }
   } catch (_) { /* usar u ya recortada */ }
+  return u;
+}
+/** Same logic as authoritative client; kept local so legacy getNexusWsUrl does not depend on a named re-export. */
+function upgradeNexusWsUrlForHttpsPage(u) {
+  if (!u || typeof location === 'undefined' || location.protocol !== 'https:') return u;
+  try {
+    const p = new URL(u);
+    if (p.protocol === 'ws:') return `wss://${p.host}`;
+  } catch (_) { /* keep u */ }
+  if (String(u).startsWith('ws://')) {
+    console.warn('Running HTTPS with ws:// may fail. Consider wss://');
+  }
   return u;
 }
 function getNexusWsUrl(){

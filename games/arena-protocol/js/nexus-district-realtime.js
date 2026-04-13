@@ -4,7 +4,7 @@
  */
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { createNexusAuthoritativeClient, upgradeNexusWsUrlForHttpsPage } from './nexus-authoritative-client.js';
+import { createNexusAuthoritativeClient } from './nexus-authoritative-client.js';
 
 function normalizeNexusWsUrl(raw) {
   let u = String(raw || '').trim();
@@ -17,6 +17,18 @@ function normalizeNexusWsUrl(raw) {
     }
   } catch (_) { /* keep u */ }
   return u;
+}
+
+function upgradeNexusWsUrlForHttpsPage(url) {
+  if (!url || typeof location === 'undefined' || location.protocol !== 'https:') return url;
+  try {
+    const p = new URL(url);
+    if (p.protocol === 'ws:') return `wss://${p.host}`;
+  } catch (_) { /* keep url */ }
+  if (String(url).startsWith('ws://')) {
+    console.warn('Running HTTPS with ws:// may fail. Consider wss://');
+  }
+  return url;
 }
 
 function getNexusWsUrl() {

@@ -22,7 +22,7 @@ function normalizeNexusWsUrl(raw) {
 }
 
 /** HTTPS pages cannot use ws:// (mixed content); upgrade to wss:// same host:port. Safe for http:// local dev (no change). */
-export function upgradeNexusWsUrlForHttpsPage(url) {
+function upgradeNexusWsUrlForHttpsPage(url) {
   if (!url || typeof location === 'undefined' || location.protocol !== 'https:') return url;
   try {
     const p = new URL(url);
