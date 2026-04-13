@@ -314,6 +314,8 @@ import { createNexusAuthoritativeClient } from "./js/nexus-authoritative-client.
 const USE_NEW_NEXUS_WS = true;
 /** Activa con ?nexusDebug=1 — AxesHelper, BoxHelper del GLB y logs de AABB/posiciones */
 const NEXUS_DEBUG_SCENE = new URLSearchParams(location.search).has('nexusDebug');
+/** ?nexusSyncDebug=1 — consola: quién viene en cada state (útil si no ves remotos). */
+const NEXUS_SYNC_DEBUG = new URLSearchParams(location.search).has('nexusSyncDebug');
 /** Metros hacia dentro del borde del AABB de la plataforma (evita que el avatar “cuegue”). */
 const NEXUS_PLAY_EDGE_INSET = 3;
 /** Límites XZ en espacio mundo; se actualizan al cargar el GLB (antes: ±65 sobre plano 140). */
@@ -349,6 +351,26 @@ function normalizeNexusWsUrl(raw) {
   } catch (_) { /* usar u ya recortada */ }
   return u;
 }
+/** Same logic as authoritative client; localhost en meta → host de la página si no eres tú en localhost. */
+function rewriteLocalhostWsToPageHostname(url) {
+  if (!url || typeof location === 'undefined') return url;
+  try {
+    const p = new URL(url);
+    if (p.protocol !== 'ws:' && p.protocol !== 'wss:') return url;
+    const metaHost = p.hostname;
+    const pageHost = location.hostname;
+    if (
+      (metaHost === 'localhost' || metaHost === '127.0.0.1') &&
+      pageHost !== 'localhost' &&
+      pageHost !== '127.0.0.1'
+    ) {
+      const portPart = p.port ? `:${p.port}` : '';
+      console.info('[NEXUS WS] meta localhost → host de la página:', `${p.protocol}//${pageHost}${portPart}`);
+      return `${p.protocol}//${pageHost}${portPart}`;
+    }
+  } catch (_) { /* keep url */ }
+  return url;
+}
 /** Same logic as authoritative client; kept local so legacy getNexusWsUrl does not depend on a named re-export. */
 function upgradeNexusWsUrlForHttpsPage(u) {
   if (!u || typeof location === 'undefined' || location.protocol !== 'https:') return u;
@@ -361,14 +383,17 @@ function upgradeNexusWsUrlForHttpsPage(u) {
   }
   return u;
 }
+function finalizeNexusWsUrlFromMeta(raw) {
+  return upgradeNexusWsUrlForHttpsPage(rewriteLocalhostWsToPageHostname(normalizeNexusWsUrl(raw)));
+}
 function getNexusWsUrl(){
   const win = window.NEXUS_WS_URL;
-  if (win && String(win).trim()) return upgradeNexusWsUrlForHttpsPage(normalizeNexusWsUrl(String(win).trim()));
+  if (win && String(win).trim()) return finalizeNexusWsUrlFromMeta(String(win).trim());
   const meta = document.querySelector('meta[name="nexus-ws-url"]');
   const fromMeta = meta?.getAttribute('content')?.trim();
-  if (fromMeta) return upgradeNexusWsUrlForHttpsPage(normalizeNexusWsUrl(fromMeta));
+  if (fromMeta) return finalizeNexusWsUrlFromMeta(fromMeta);
   const proto = location.protocol === 'https:' ? 'wss' : 'ws';
-  return `${proto}://${location.hostname}:8765`;
+  return upgradeNexusWsUrlForHttpsPage(`${proto}://${location.hostname}:8765`);
 }
 
 // Player config (loaded from API, then editable)
@@ -433,11 +458,23 @@ function addRemotePlayerFromNexusState(id, p) {
   _nexusAuthRemoteMiss.set(pid, 0);
 }
 
+let _nexusSyncDebugLastSig = "";
 function handleNexusState(msg) {
-  const myId = String(window._userId || "");
+  const myId = String(window._userId != null ? window._userId : "").trim();
   const idsThisFrame = new Set();
-  for (const pl of msg.players || []) {
-    const id = pl && pl.id != null ? String(pl.id) : "";
+  const list = msg.players || [];
+  if (NEXUS_SYNC_DEBUG) {
+    const sig = list
+      .map((p) => (p && p.id != null ? String(p.id) : "?"))
+      .sort()
+      .join(",");
+    if (sig !== _nexusSyncDebugLastSig) {
+      _nexusSyncDebugLastSig = sig;
+      console.info("[NexusSync] state packet ids:", list.map((p) => p && p.id).filter((x) => x != null), "| my user_id:", window._userId, "| count:", list.length);
+    }
+  }
+  for (const pl of list) {
+    const id = pl && pl.id != null ? String(pl.id).trim() : "";
     if (!id || id === myId) continue;
     idsThisFrame.add(id);
     if (!remotePlayers.has(id)) addRemotePlayerFromNexusState(id, pl);
@@ -1635,7 +1672,17 @@ async function replaceRemotePlayerWithGlb(pid, p, url){
     remAura.position.set(0, 1.0, 0);
     model.add(remAura);
     model.userData.auraLight = remAura;
-    remotePlayers.set(pid,{ mesh:model, tx:rp.tx, tz:rp.tz, mixer, targetDir:rp.targetDir, heroUrl:url, feetOffsetY });
+    remotePlayers.set(pid, {
+      mesh: model,
+      tx: rp.tx,
+      tz: rp.tz,
+      mixer,
+      targetDir: rp.targetDir,
+      heroUrl: url,
+      feetOffsetY,
+      nexusRemote: !!rp.nexusRemote,
+      hiddenCull: !!rp.hiddenCull,
+    });
   }catch(e){
     console.warn("[remote] GLB avatar falló, se mantiene guardian procedural:", abs, e.message||e);
   }

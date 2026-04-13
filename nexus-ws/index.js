@@ -22,7 +22,11 @@ const { WebSocketServer, WebSocket } = require('ws');
 
 const TICK_HZ = 20;
 const TICK_MS = 1000 / TICK_HZ;
-const NEARBY_RADIUS = 50;
+/** World units: peers farther than this are omitted from your `state` (bandwidth). Dev: NEXUS_NEARBY_RADIUS=200 */
+const NEARBY_RADIUS = (() => {
+  const n = Number(process.env.NEXUS_NEARBY_RADIUS);
+  return Number.isFinite(n) && n > 0 ? n : 50;
+})();
 const NEARBY_RADIUS_SQ = NEARBY_RADIUS * NEARBY_RADIUS;
 
 /** Walk speed in world units per second */
@@ -385,10 +389,19 @@ function applyMovement(player, dt) {
 // Broadcasting (per-room, distance-culled, interpolation-friendly)
 // ---------------------------------------------------------------------------
 
+function broadcastFullStateToAllPeers() {
+  return String(process.env.NEXUS_BROADCAST_FULL_STATE || '') === '1';
+}
+
 function buildStatePayload(viewer, room, tick, serverTime) {
+  const fullRoom = broadcastFullStateToAllPeers();
   const players = [];
   for (const other of room.values()) {
-    if (distSq(viewer.x, viewer.z, other.x, other.z) > NEARBY_RADIUS_SQ && other.id !== viewer.id) {
+    if (
+      !fullRoom &&
+      distSq(viewer.x, viewer.z, other.x, other.z) > NEARBY_RADIUS_SQ &&
+      other.id !== viewer.id
+    ) {
       continue;
     }
     players.push({
@@ -1149,7 +1162,8 @@ function createNexusServer(options = {}) {
   httpServer.listen(port, host, () => {
     // eslint-disable-next-line no-console
     console.log(
-      `[nexus-ws] HTTP+WS on http://${host}:${port} (WS upgrade, POST /internal/event) — ${TICK_HZ} Hz, nearby ${NEARBY_RADIUS}u`
+      `[nexus-ws] HTTP+WS on http://${host}:${port} (WS upgrade, POST /internal/event) — ${TICK_HZ} Hz, nearby ${NEARBY_RADIUS}u` +
+        (broadcastFullStateToAllPeers() ? ' (NEXUS_BROADCAST_FULL_STATE=1: no distance cull)' : '')
     );
   });
 
